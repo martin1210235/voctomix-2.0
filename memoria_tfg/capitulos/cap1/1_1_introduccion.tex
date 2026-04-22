@@ -17,10 +17,20 @@ de control, permitiendo distribuir la carga de procesamiento en distintos nodos 
 El presente Trabajo de Fin de Grado toma como punto de partida la versión original
 de Voctomix y propone una serie de extensiones orientadas a su uso en producciones
 en directo de mediana escala: rotulación dinámica sobre el vídeo, gestión avanzada
-del blanking de stream, seguimiento automático del audio a la fuente de vídeo activa,
-telemetría en tiempo real mediante un servicio de notario, y la contenerización completa
-del sistema mediante Docker y Docker Compose. El resultado es Voctomix 2.0, una
-plataforma más versátil, desplegable y adaptada a flujos de trabajo profesionales.
+del blanking de stream, composites avanzados de vídeo, telemetría en tiempo real
+mediante un broker de mensajería, y la contenerización completa del sistema mediante
+Docker y Docker Compose. El resultado es Voctomix 2.0, una plataforma más versátil,
+desplegable y adaptada a flujos de trabajo profesionales.
+
+Un elemento diferenciador de este proyecto es su orientación hacia un \textbf{caso de uso
+real}: el sistema desarrollado está previsto para su utilización por el grupo de
+investigación \textbf{CyberNemo} de la Universidad Politécnica de Madrid (UPM). Este
+grupo necesita una solución de producción audiovisual remota que permita retransmitir
+sus actividades, seminarios y presentaciones con calidad profesional y sin depender de
+infraestructura hardware costosa. Voctomix 2.0 responde directamente a estas necesidades,
+proporcionando un entorno reproducible y fácilmente desplegable que puede ponerse en
+funcionamiento con un único comando (\texttt{docker compose up}) en cualquier equipo
+Linux estándar.
 
 % --- Figura sugerida ---
 % \begin{figure}[H]
@@ -34,6 +44,6 @@ plataforma más versátil, desplegable y adaptada a flujos de trabajo profesiona
 % \begin{figure}[H]
 %   \centering
 %   \includegraphics[width=0.85\textwidth]{figuras/diagrama_contexto.png}
-%   \caption{Diagrama de contexto: Voctomix en una producción audiovisual típica.}
+%   \caption{Diagrama de contexto: Voctomix 2.0 en el entorno de producción del grupo CyberNemo (UPM).}
 %   \label{fig:diagrama_contexto}
 % \end{figure}
