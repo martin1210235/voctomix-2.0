@@ -1,0 +1,45 @@
+\section{Stream Blanker}
+
+El stream blanker es el mecanismo que permite interrumpir la emisión hacia el público
+sin interrumpir el flujo de trabajo interno del realizador. Se implementa en
+\texttt{voctocore/lib/streamblanker.py} como un elemento GStreamer adicional que se
+interpone entre la mezcla y el puerto de salida de stream (puerto 15000).
+
+\subsection{Estados del sistema}
+
+El sistema define tres estados de emisión:
+
+\begin{itemize}
+  \item \textbf{LIVE:} se emite la mezcla activa producida por voctocore. El realizador
+        controla en todo momento lo que ve el espectador.
+  \item \textbf{PAUSE:} se emite un bucle de vídeo de pausa (típicamente una imagen
+        animada con música) con su canal de audio asociado.
+  \item \textbf{NOSTREAM:} se emite un bucle de fuera de emisión, indicando al
+        espectador que la transmisión ha finalizado o aún no ha comenzado.
+\end{itemize}
+
+La transición entre estados se realiza modificando los pesos del compositor en tiempo
+real, evitando cortes bruscos en el stream de salida.
+
+\subsection{Interfaz de control}
+
+Desde la interfaz gráfica, el operador dispone de tres botones en la barra de
+herramientas (\texttt{voctogui/lib/toolbar/streamblank.py}) etiquetados LIVE, PAUSE
+y NOSTREAM. Al activar cualquiera de ellos se envía el comando
+\texttt{set\_stream\_blank <estado>} al núcleo mediante el protocolo TCP.
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.6\textwidth]{figuras/fsm_stream_blanker.png}
+%   \caption{Máquina de estados del Stream Blanker (LIVE / PAUSE / NOSTREAM).}
+%   \label{fig:fsm_stream_blanker}
+% \end{figure}
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.5\textwidth]{figuras/botones_stream_blanker.png}
+%   \caption{Botones LIVE, PAUSE y NOSTREAM en la barra de herramientas de voctogui.}
+%   \label{fig:botones_stream_blanker}
+% \end{figure}

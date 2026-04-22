@@ -1,0 +1,56 @@
+\section{Telemetría: el servicio notario}
+
+El notario es un servicio Python independiente que monitoriza en tiempo real el estado
+de la sesión de Voctomix. Se suscribe al protocolo de control TCP de voctocore como
+un cliente más y registra todos los cambios de estado: fuente de vídeo activa, modo
+de composite, estado del stream blanker, overlays cargados, etc.
+
+\subsection{Exportación de datos}
+
+Los datos se exportan en dos formatos complementarios:
+
+\begin{itemize}
+  \item \textbf{API REST HTTP (puerto 8080):} devuelve el estado actual de la sesión
+        en formato JSON, accesible por cualquier cliente HTTP. Resulta útil para
+        dashboards de monitorización en tiempo real.
+  \item \textbf{Mensajería AMQP (RabbitMQ):} cada cambio de estado se publica como
+        un mensaje en el broker RabbitMQ, permitiendo la integración con sistemas
+        de registro, alertas o automatización mediante colas de mensajes.
+\end{itemize}
+
+\subsection{Diseño no-SPOF}
+
+La arquitectura desacoplada del notario ---conectado como un cliente TCP ordinario,
+sin privilegios especiales sobre el núcleo--- garantiza que su eventual fallo no
+afecte al procesamiento multimedia principal (\textit{single point of failure} libre).
+El sistema de producción puede operar con plenas garantías aunque el servicio de
+telemetría no esté disponible.
+
+El módulo \texttt{voctogui/lib/gui\_state\_exporter.py} complementa esta funcionalidad
+desde el lado de la GUI, serializando el estado de la interfaz en ficheros JSON que
+permiten retomar una sesión interrumpida sin pérdida de configuración.
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.85\textwidth]{figuras/integracion_notario.png}
+%   \caption{Diagrama de integración: voctocore -- notario -- RabbitMQ -- consumidores.}
+%   \label{fig:integracion_notario}
+% \end{figure}
+
+% --- Tabla sugerida ---
+% \begin{table}[H]
+%   \centering
+%   \caption{Endpoints REST del servicio notario.}
+%   \label{tab:endpoints_notario}
+%   \begin{tabular}{|l|c|l|}
+%     \hline
+%     \textbf{Ruta} & \textbf{Método} & \textbf{Descripción} \\
+%     \hline
+%     \texttt{/status}      & GET & Estado completo de la sesión en JSON \\
+%     \texttt{/video}       & GET & Fuente de vídeo activa (A y B) \\
+%     \texttt{/composite}   & GET & Modo de composite activo \\
+%     \texttt{/stream}      & GET & Estado del stream blanker \\
+%     \hline
+%   \end{tabular}
+% \end{table}

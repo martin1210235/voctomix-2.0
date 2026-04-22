@@ -1,0 +1,40 @@
+\section{Auto-off de overlays}
+
+La funcionalidad \textit{auto-off} resuelve un problema frecuente en producción en
+directo: el operador realiza un corte de cámara olvidando retirar el rótulo activo,
+que queda superpuesto sobre la nueva fuente de forma inapropiada. La consecuencia
+habitual es que el nombre de un ponente aparece sobre la imagen de otro, lo que
+resulta en un error visible para el espectador.
+
+\subsection{Funcionamiento}
+
+Cuando la opción \texttt{auto-off = true} está activa en la sección \texttt{[overlay]}
+del fichero de configuración, el módulo \texttt{voctocore/lib/overlay.py} registra un
+\textit{listener} sobre el evento \texttt{video\_status}. Cada vez que la fuente de
+vídeo activa cambia, el \textit{listener} inicia automáticamente la secuencia de
+fundido de salida del overlay PNG activo, retirándolo del aire antes de que el nuevo
+plano sea completamente visible para el espectador.
+
+Adicionalmente, si hay textos dinámicos superpuestos sobre el rótulo (nombre del
+ponente, subtítulos), éstos se eliminan junto al overlay gráfico, garantizando que
+ningún elemento de rotulación quede huérfano en pantalla.
+
+\subsection{Configuración}
+
+El comportamiento se controla mediante los siguientes parámetros en la sección
+\texttt{[overlay]} del fichero INI:
+
+\begin{itemize}
+  \item \texttt{auto-off = true/false} --- activa o desactiva la funcionalidad.
+  \item \texttt{user-auto-off = true/false} --- permite al operador activar/desactivar
+        el auto-off desde la GUI sin modificar el fichero de configuración.
+  \item \texttt{blend-time = <ms>} --- tiempo de fundido de salida en milisegundos.
+\end{itemize}
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.75\textwidth]{figuras/secuencia_autooff.png}
+%   \caption{Diagrama de secuencia: corte de cámara con auto-off activo.}
+%   \label{fig:secuencia_autooff}
+% \end{figure}

@@ -1,0 +1,41 @@
+\section{Rotulación dinámica}
+
+La rotulación dinámica permite superponer gráficos de texto (rótulos de ponente,
+títulos de sesión, avisos informativos) sobre el vídeo en directo. El sistema se basa
+en imágenes PNG con canal alfa que se inyectan en el pipeline GStreamer mediante el
+elemento \texttt{gdkpixbufoverlay}.
+
+\subsection{Implementación}
+
+El módulo \texttt{voctocore/lib/overlay.py} gestiona el ciclo de vida completo de
+un rótulo: carga del fichero PNG, fundido de entrada (\textit{blend-in}), mantenimiento
+en pantalla y fundido de salida (\textit{blend-out}). El tiempo de fundido se controla
+mediante el parámetro \texttt{blend-time} en la sección \texttt{[overlay]} del fichero
+de configuración INI, expresado en milisegundos.
+
+La carpeta de rótulos disponibles se define mediante el parámetro \texttt{path} de
+la misma sección, lo que permite adaptar la identidad visual a cada evento (logotipos,
+tipografías, colores corporativos) sin modificar el código.
+
+\subsection{Integración con la GUI}
+
+La interfaz gráfica expone un selector de fichero PNG y un campo de texto para el
+nombre del ponente. El texto se renderiza sobre la plantilla gráfica activa utilizando
+la biblioteca Cairo, generando en tiempo real la imagen PNG resultante que se envía
+al núcleo mediante el comando \texttt{set\_overlay}.
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.85\textwidth]{figuras/overlay_ejemplo.png}
+%   \caption{Fotograma con rótulo de ponente activo sobre la imagen de cámara.}
+%   \label{fig:overlay_ejemplo}
+% \end{figure}
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.7\textwidth]{figuras/ciclo_vida_overlay.png}
+%   \caption{Ciclo de vida de un rótulo: carga, blend-in, visible, blend-out y eliminación.}
+%   \label{fig:ciclo_vida_overlay}
+% \end{figure}

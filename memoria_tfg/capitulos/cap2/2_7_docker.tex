@@ -1,0 +1,44 @@
+\section{Contenerización con Docker}
+
+La contenerización es una técnica de virtualización ligera que permite ejecutar
+procesos aislados (\textit{contenedores}) compartiendo el kernel del sistema operativo
+anfitrión, a diferencia de las máquinas virtuales que virtualizan el hardware completo.
+Cada contenedor encapsula el sistema de ficheros, las dependencias y la configuración
+de una aplicación, garantizando que su comportamiento sea idéntico independientemente
+del entorno donde se ejecute.
+
+\textbf{Docker} es la plataforma de contenerización más extendida. Define un formato
+de imagen en capas (\textit{Dockerfile}) que permite describir de forma declarativa
+y reproducible el entorno de ejecución de una aplicación. Las imágenes se almacenan
+en registros (Docker Hub, registros privados) y pueden desplegarse en cualquier sistema
+con Docker instalado sin modificaciones.
+
+En el contexto de herramientas multimedia, la contenerización resuelve el problema
+habitual de la gestión de dependencias: Docker permite empaquetar una aplicación junto con todas sus dependencias en una
+imagen reproducible e independiente del sistema operativo anfitrión. En el contexto
+de Voctomix, la contenerización resuelve uno de los principales obstáculos para su
+adopción: la instalación manual de GStreamer y sus plugins en distintas distribuciones
+Linux puede resultar tediosa y propensa a errores de versión, especialmente dado que
+Voctomix requiere tanto los plugins básicos (\texttt{gstreamer1.0-plugins-base, -good})
+como los opcionales y no libres (\texttt{-bad, -ugly, libav}).
+
+Docker Compose extiende este concepto al nivel de sistema, describiendo en un único
+fichero YAML el conjunto de servicios, redes y volúmenes que componen la instalación
+completa. En Voctomix 2.0 se definen diez servicios organizados en una red bridge
+privada (\texttt{voctomix\_net}): el núcleo (\texttt{voctocore}), las cuatro fuentes de
+cámara, el generador de contenido de pausa y fuera de emisión (\texttt{stream\_blanker}),
+el broker de mensajería (\texttt{rabbitmq}), el servicio de telemetría (\texttt{notario})
+y el gestor de audio (\texttt{audio\_manager}).
+
+Las fuentes de cámara comparten el \textit{network namespace} del contenedor
+\texttt{voctocore} mediante la directiva \texttt{network\_mode: service:voctocore},
+lo que les permite comunicarse por \texttt{localhost} sin overhead de red virtual y
+simplifica la configuración de los puertos de entrada.
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.9\textwidth]{figuras/docker_compose.png}
+%   \caption{Diagrama de servicios Docker Compose de Voctomix 2.0.}
+%   \label{fig:docker_compose}
+% \end{figure}

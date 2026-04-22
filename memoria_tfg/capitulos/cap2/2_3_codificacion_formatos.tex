@@ -1,0 +1,71 @@
+\section{Codificación y formatos de vídeo}
+
+La codificación de vídeo es el proceso de reducir el volumen de datos que representa
+una secuencia de imágenes en movimiento mediante la eliminación de redundancia espacial
+(dentro de cada fotograma) y temporal (entre fotogramas consecutivos). La elección del
+\textit{codec} y del contenedor condiciona directamente la calidad de imagen, la
+latencia de procesamiento, el ancho de banda necesario y la compatibilidad con
+plataformas de distribución.
+
+\subsection{Codecs relevantes}
+
+\begin{itemize}
+  \item \textbf{H.264 / AVC} (\textit{Advanced Video Coding}, ITU-T H.264 / ISO 14496-10):
+  el codec más extendido en la actualidad. Ofrece buena calidad a tasas de bits moderadas
+  y es soportado por prácticamente toda la infraestructura de streaming existente
+  (YouTube, Twitch, hardware encoders). Es el codec empleado habitualmente en la
+  salida de streaming de Voctomix mediante FFmpeg.
+  \item \textbf{H.265 / HEVC} (\textit{High Efficiency Video Coding}): sucesor de H.264
+  que reduce el bitrate necesario aproximadamente a la mitad para la misma calidad
+  perceptual. Su adopción está limitada por el coste computacional de la codificación
+  y por restricciones de licencias en algunas plataformas.
+  \item \textbf{VP8 / VP9}: codecs libres de royalties desarrollados por Google, empleados
+  principalmente en WebRTC (VP8) y YouTube (VP9). Ofrecen eficiencia comparable a H.264/H.265
+  sin restricciones de licencia.
+  \item \textbf{AV1}: codec abierto desarrollado por la Alliance for Open Media. Es el
+  sucesor de VP9 y el más eficiente de los mencionados, aunque su adopción en tiempo
+  real aún está limitada por la demanda de cómputo del encoder.
+\end{itemize}
+
+\subsection{Formatos de vídeo sin comprimir}
+
+Internamente, Voctomix opera sobre vídeo \textbf{sin comprimir} para evitar artefactos
+acumulativos en el proceso de composición. Los formatos más relevantes son:
+
+\begin{itemize}
+  \item \textbf{UYVY} (también denominado YUY2 en variante packed): formato de crominancia
+  submuestreada 4:2:2, con 2~bytes por píxel. Es el formato nativo de entrada y salida
+  de voctocore.
+  \item \textbf{I420} (YUV 4:2:0 planar): formato habitual en la entrada de encoders
+  de H.264, con menor resolución cromática que UYVY pero suficiente para la mayoría
+  de contenidos.
+\end{itemize}
+
+\subsection{Contenedores}
+
+El contenedor define cómo se encapsulan y multiplexan los flujos de vídeo y audio:
+
+\begin{itemize}
+  \item \textbf{Matroska (MKV)}: contenedor flexible y extensible, empleado por
+  Voctomix para el transporte interno de señal sin comprimir sobre TCP.
+  \item \textbf{MPEG-TS} (\textit{Transport Stream}): estándar de broadcast diseñado
+  para transmisión con pérdidas. Es el contenedor habitual en emisión por satélite,
+  TDT y algunos protocolos de streaming como HLS.
+  \item \textbf{MP4 / ISOBMFF}: contenedor de referencia para distribución de ficheros
+  y streaming HTTP (DASH, HLS fragmentado).
+  \item \textbf{FLV}: contenedor legado asociado a RTMP, aún utilizado en la mayoría
+  de plataformas de streaming en directo.
+\end{itemize}
+
+\subsection{FFmpeg como herramienta de referencia}
+
+FFmpeg es la herramienta de línea de comandos de código abierto más utilizada para el
+procesamiento de audio y vídeo en entornos Linux. Incorpora prácticamente todos los
+codecs, contenedores y filtros descritos en este capítulo, actuando como capa de
+abstracción sobre las bibliotecas subyacentes (libx264, libx265, libvpx, libaom).
+
+En el contexto de Voctomix 2.0, FFmpeg desempeña un doble papel: como
+\textbf{generador de fuentes de prueba} mediante los scripts incluidos en
+\texttt{example-scripts/ffmpeg/} (barras de color, \textit{test card} con reloj),
+y como \textbf{encoder de salida} que convierte la mezcla en bruto del puerto 11000
+en un flujo H.264/AAC apto para plataformas como YouTube Live o Twitch.

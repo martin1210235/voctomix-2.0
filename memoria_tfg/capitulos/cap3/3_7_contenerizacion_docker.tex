@@ -1,0 +1,62 @@
+\section{Contenerización Docker}
+
+La contenerización de Voctomix 2.0 se articula en dos ficheros: un \texttt{Dockerfile}
+que define la imagen base del sistema y un \texttt{docker-compose.yml} que orquesta
+el conjunto de servicios que componen la instalación completa.
+
+\subsection{Dockerfile}
+
+La imagen se construye sobre \texttt{ubuntu:22.04} e instala todas las dependencias
+del sistema en una sola capa: GStreamer 1.0 con sus plugins base, buenos, malos y
+\textit{ugly}, FFmpeg, las \textit{bindings} Python de GObject (\texttt{python3-gi}),
+el cliente AMQP (\texttt{pika}) y utilidades de red (\texttt{netcat}, \texttt{iproute2}).
+El directorio de trabajo del contenedor es \texttt{/opt/voctomix} y el punto de
+entrada es el propio \texttt{voctocore.py}.
+
+Un \textit{healthcheck} basado en \texttt{nc -zw1 localhost 9999} permite a Docker
+Compose determinar cuándo el núcleo está listo para aceptar conexiones, lo que evita
+condiciones de carrera durante el arranque del sistema.
+
+\subsection{Docker Compose}
+
+El fichero \texttt{docker-compose.yml} define diez servicios organizados en una
+red bridge privada (\texttt{voctomix\_net}):
+
+\begin{itemize}
+  \item \textbf{voctocore:} núcleo de procesamiento multimedia. Expone los puertos
+        de control (9999), salida de stream (15000) y entradas de cámara (10000--10005).
+  \item \textbf{cam1--cam4:} fuentes FFmpeg de prueba. Comparten el
+        \textit{network namespace} de voctocore para comunicarse por localhost.
+  \item \textbf{stream\_blanker:} genera los bucles de pausa y fuera de emisión.
+  \item \textbf{rabbitmq:} broker de mensajería AMQP (puertos 5672 y 15672 para
+        la consola de administración web).
+  \item \textbf{notario:} servicio de telemetría (puerto 8080).
+  \item \textbf{audio\_manager:} gestión dinámica de niveles de audio.
+\end{itemize}
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.9\textwidth]{figuras/docker_compose_detalle.png}
+%   \caption{Diagrama completo de servicios Docker Compose: servicios, red y puertos.}
+%   \label{fig:docker_compose_detalle}
+% \end{figure}
+
+% --- Tabla sugerida ---
+% \begin{table}[H]
+%   \centering
+%   \caption{Servicios definidos en docker-compose.yml.}
+%   \label{tab:servicios_docker}
+%   \begin{tabular}{|l|l|c|l|}
+%     \hline
+%     \textbf{Servicio} & \textbf{Imagen base} & \textbf{Puertos} & \textbf{Función} \\
+%     \hline
+%     voctocore      & local/voctomix & 9999, 15000, 10000--10005 & Núcleo multimedia \\
+%     cam1--cam4     & local/voctomix & (localhost interno)       & Fuentes de prueba \\
+%     stream\_blanker& local/voctomix & 17000--17001, 18000       & Bucles pausa/offline \\
+%     rabbitmq       & rabbitmq:mgmt  & 5672, 15672               & Broker AMQP \\
+%     notario        & local/voctomix & 8080                      & Telemetría REST/AMQP \\
+%     audio\_manager & local/voctomix & ---                       & Gestor de audio \\
+%     \hline
+%   \end{tabular}
+% \end{table}

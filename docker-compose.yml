@@ -1,0 +1,213 @@
+
+# Dedicated bridge network: isolates the telemetry service from the voctocore network stack,
+# removing the single point of failure that would take down all services if voctocore crashed.
+networks:
+  voctomix_net:
+    driver: bridge
+
+services:
+  # 0. RABBITMQ (Message Broker - event decoupling)
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    networks:
+      - voctomix_net
+    ports:
+      - "5672:5672"    # AMQP (messaging protocol)
+      - "15672:15672"  # Web management panel
+    environment:
+      RABBITMQ_DEFAULT_USER: voctomix
+      RABBITMQ_DEFAULT_PASS: voctomix123
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+
+  # 1. VOCTOCORE (Central Server)
+  voctocore:
+    build: .
+    container_name: voctocore
+    command: python3 voctocore/voctocore.py
+    volumes:
+      - ./:/opt/voctomix
+      - ./images:/opt/images
+    working_dir: /opt/voctomix
+    networks:
+      - voctomix_net
+    ports:
+      - "9998:9998"
+      - "9998:9998/udp"
+      - "9999:9999"
+      - "10000:10000"   # cam1 input
+      - "10001:10001"   # cam2 input
+      - "10002:10002"   # cam3 input
+      - "10003:10003"   # cam4 input
+      - "10004:10004"   # break input
+      - "10005:10005"
+      - "11000:11000"
+      - "12000:12000"
+      - "13000-13005:13000-13005"
+      - "14000-14005:14000-14005"
+      - "15000:15000"
+    # Real healthcheck: waits until the control port is listening
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo '' | nc -zw1 localhost 9999"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 20s
+
+  # 2. TELEMETRY SERVICE (Telemetry and JSON logging) - on an independent network from voctocore
+  telemetry:
+    image: voctomix-voctocore:latest
+    container_name: telemetry
+    command: python3 example-scripts/ffmpeg/telemetry_service.py
+    environment:
+      - TELEMETRY_USE_UDP=1
+      # MI_IP_REAL: LAN IP of PC 1. Override with an environment variable:
+      #   MI_IP_REAL=10.0.0.5 sudo docker compose up -d
+      - MI_IP_REAL=${MI_IP_REAL:-192.168.0.42}
+      - VOCTOCORE_HOST=voctocore
+      # RabbitMQ: Docker hostname of the broker
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=voctomix
+      - RABBITMQ_PASS=voctomix123
+    user: "1000:1000"
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    networks:
+      - voctomix_net
+    ports:
+      - "8080:8080"
+    depends_on:
+      voctocore:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  # 3. CAMERA 1
+  cam1:
+    build: .
+    container_name: cam1
+    command: sh example-scripts/ffmpeg/source-testvideo-as-cam1.sh
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    # Cameras share the voctocore network stack to send via localhost (matroska TCP).
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 4. CAMERA 2
+  cam2:
+    build: .
+    container_name: cam2
+    command: sh example-scripts/ffmpeg/source-testvideo-as-cam2.sh
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 5. CAMERA 3
+  cam3:
+    build: .
+    container_name: cam3
+    command: sh example-scripts/ffmpeg/source-testvideo-as-cam3.sh
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 6. CAMERA 4
+  cam4:
+    build: .
+    container_name: cam4
+    command: sh example-scripts/ffmpeg/source-testvideo-as-cam4.sh
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 7. BREAK
+  break:
+    build: .
+    container_name: break
+    command: sh example-scripts/ffmpeg/source-testvideo-as-break.sh
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 8. INTRO - runs an ffmpeg loop to keep the intro source pre-loaded at all times
+  intro:
+    build: .
+    container_name: intro
+    command: >
+      bash -c "while true; do
+        ffmpeg -loglevel quiet -nostats -re
+          -i /opt/voctomix/videos/intro.mp4
+          -f lavfi -i anullsrc=r=48000:cl=stereo
+          -pix_fmt yuv420p -s 1920x1080 -r 25
+          -c:v rawvideo -c:a pcm_s16le
+          -map 0:v:0 -map 1:a:0
+          -shortest
+          -f matroska tcp://127.0.0.1:10005 2>/dev/null;
+        sleep 1;
+      done"
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 9. STREAM BLANKER
+  stream_blanker:
+    build: .
+    container_name: stream_blanker
+    command: sh example-scripts/ffmpeg/stream_blanker_source.sh
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 10. DYNAMIC AUDIO CONTROLLER
+  audio_manager:
+    build: .
+    container_name: audio_manager
+    command: sh example-scripts/ffmpeg/audio_control.sh
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy

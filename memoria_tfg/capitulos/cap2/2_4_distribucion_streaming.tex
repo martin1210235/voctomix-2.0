@@ -1,0 +1,55 @@
+\section{Distribución y streaming}
+
+Una vez producida la señal de programa, esta debe distribuirse hasta la audiencia.
+En producción en directo sobre IP, la distribución se realiza mediante protocolos de
+streaming que equilibran de distinta forma tres factores en tensión: latencia,
+fiabilidad y escalabilidad.
+
+\subsection{Protocolos de streaming}
+
+\begin{itemize}
+  \item \textbf{RTMP} (\textit{Real-Time Messaging Protocol}): protocolo desarrollado
+  por Adobe sobre TCP, con latencia típica de 2--5~s. Durante más de una década fue
+  el estándar \textit{de facto} para ingestar vídeo en plataformas como YouTube Live
+  o Twitch. Aunque obsoleto en el lado del reproductor (Flash), sigue siendo el
+  protocolo de ingesta más soportado por encoders y mezcladores de software, incluido
+  Voctomix mediante FFmpeg.
+  \item \textbf{HLS} (\textit{HTTP Live Streaming}): protocolo de Apple basado en la
+  división del flujo en segmentos de fichero servidos por HTTP. Su latencia habitual
+  es de 10--30~s (modo estándar) o 2--5~s (Low-Latency HLS). Es el protocolo de
+  distribución más compatible con reproductores y CDN actuales.
+  \item \textbf{SRT} (\textit{Secure Reliable Transport}): protocolo de baja latencia
+  (< 1~s) con corrección de errores ARQ, diseñado para contribución y distribución
+  sobre redes no confiables. Está ganando adopción rápida como sustituto de RTMP en
+  flujos de ingesta.
+  \item \textbf{WebRTC} (\textit{Web Real-Time Communication}): estándar del W3C para
+  comunicación multimedia en tiempo real directamente desde el navegador, con latencias
+  de 100--500~ms. Su uso en distribución broadcast es limitado por la complejidad de
+  escalar a grandes audiencias, pero es ideal para monitorización remota y retorno
+  de comunicaciones.
+\end{itemize}
+
+\subsection{Plataformas y CDN}
+
+Las plataformas de streaming (YouTube Live, Twitch, Facebook Live) actúan como
+intermediarios que reciben la señal del encoder mediante RTMP o SRT, la recodifican
+en múltiples calidades y la distribuyen a la audiencia a través de sus propias redes
+de distribución de contenidos (CDN). Esto descarga al sistema de producción de la
+responsabilidad de escalar la distribución, que puede involucrar decenas de miles de
+espectadores simultáneos.
+
+En instalaciones propias ---como la configuración de tres escenarios implementada en
+este trabajo--- la distribución puede realizarse directamente sin plataforma
+intermediaria, empleando un servidor HLS o SRT accesible en la red local o con
+acceso controlado desde Internet.
+
+\subsection{Latencia frente a calidad}
+
+Existe un compromiso fundamental entre latencia y calidad en los sistemas de
+streaming: los codecs de alta eficiencia (H.265, AV1) requieren mayor complejidad
+de codificación y ventanas temporales más largas para explotar la correlación entre
+fotogramas, lo que se traduce inevitablemente en mayor latencia. En producción en
+directo, la elección del punto de operación en este compromiso depende del caso de uso:
+una retransmisión deportiva interactiva exige baja latencia aunque ello suponga menor
+calidad, mientras que una conferencia técnica puede asumir latencias de decenas de
+segundos a cambio de una imagen de mayor resolución y nitidez.

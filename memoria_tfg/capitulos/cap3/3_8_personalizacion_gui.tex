@@ -1,0 +1,36 @@
+\section{Personalización de la interfaz gráfica}
+
+La interfaz gráfica de Voctomix 2.0 se ha adaptado a los requisitos de una producción
+de tipo evento técnico. Los cambios se concentran en tres áreas principales:
+
+\subsection{Barra de herramientas}
+
+Se han añadido los botones de Stream Blanker (LIVE, PAUSE, NOSTREAM), el selector de
+overlay activo con vista previa en miniatura y el indicador de estado del notario.
+El \textit{layout} de la barra se define en el fichero XML
+\texttt{voctogui/ui/voctogui.ui}, que describe la jerarquía de widgets GTK3 y permite
+reorganizar los elementos sin modificar el código Python.
+
+\subsection{Panel de previsualizaciones}
+
+El panel lateral muestra cuatro miniaturas JPEG de las fuentes activas (cam1--cam4),
+actualizadas a 25 fps desde los puertos de previsualización 14000--14003. Cada
+miniatura incluye un indicador de nivel de audio (\textit{VU-meter}) y un slider de
+volumen individual para la monitorización de sala, independiente del volumen emitido
+al stream.
+
+\subsection{Reloj de estudio}
+
+El módulo \texttt{voctogui/lib/studioclock.py} implementa un reloj de estudio que
+muestra la hora actual y la duración de la sesión en curso, sincronizado con el
+servidor mediante el reloj de red GStreamer. El reloj es visible en todo momento
+en la esquina superior de la interfaz, permitiendo al realizador gestionar los tiempos
+de la producción sin recurrir a herramientas externas.
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.9\textwidth]{figuras/gui_anotada.png}
+%   \caption{Captura anotada de la interfaz gráfica de Voctomix 2.0.}
+%   \label{fig:gui_anotada}
+% \end{figure}

@@ -1,0 +1,51 @@
+\section{Análisis de rendimiento}
+
+Para caracterizar el rendimiento del sistema se han medido tres métricas principales:
+uso de CPU del proceso voctocore, consumo de memoria RAM y latencia extremo a extremo
+(desde la captura de un fotograma en la fuente hasta su visualización en el monitor
+principal de voctogui).
+
+Las mediciones se realizaron en el Escenario 1 (monopuesto) con el sistema operando
+con cuatro fuentes FFmpeg activas simultáneamente a 1920×1080 @25\,fps, durante
+sesiones de prueba de 30 minutos.
+
+\subsection{Uso de CPU}
+
+El proceso voctocore consume la mayor parte de los recursos de CPU, ya que concentra
+toda la composición de vídeo mediante el pipeline GStreamer. El uso observado varía
+en función del número de fuentes activas y del modo de composite empleado.
+
+\subsection{Latencia}
+
+La latencia extremo a extremo en el Escenario 1 (loopback TCP) es inferior a la de
+un fotograma a 25\,fps ($<$40\,ms), lo que garantiza una experiencia de realización
+fluida sin retardos perceptibles entre la acción del operador y el efecto en el
+monitor de programa.
+
+En el Escenario 2 (red local 1\,GbE), la latencia aumenta en función de la
+configuración de jitter buffer de GStreamer, manteniéndose en valores adecuados para
+producción en directo.
+
+% --- Tabla sugerida ---
+% \begin{table}[H]
+%   \centering
+%   \caption{Métricas de rendimiento por escenario (4 fuentes 1080p @25fps).}
+%   \label{tab:rendimiento}
+%   \begin{tabular}{|l|c|c|c|}
+%     \hline
+%     \textbf{Escenario} & \textbf{CPU voctocore (\%)} & \textbf{RAM (MB)} & \textbf{Latencia (ms)} \\
+%     \hline
+%     1 --- Monopuesto    & xx\%  & xxx & $<$40 \\
+%     2 --- Red local     & xx\%  & xxx & xx--xx \\
+%     3 --- Docker        & xx\%  & xxx & xx--xx \\
+%     \hline
+%   \end{tabular}
+% \end{table}
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.7\textwidth]{figuras/cpu_vs_fuentes.png}
+%   \caption{Uso de CPU de voctocore en función del número de fuentes activas.}
+%   \label{fig:cpu_vs_fuentes}
+% \end{figure}

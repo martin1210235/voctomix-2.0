@@ -1,0 +1,55 @@
+\section{Contribución de vídeo}
+
+En el contexto de producción en directo, se denomina \textit{contribución de vídeo}
+al transporte de la señal audiovisual desde la fuente (cámara, ordenador, reproductor)
+hasta el mezclador. Es el primer eslabón de la cadena y determina la calidad máxima
+que el sistema puede procesar, así como la latencia de extremo a extremo.
+
+\subsection{Interfaces físicas}
+
+Las interfaces de contribución más extendidas en entornos profesionales son:
+
+\begin{itemize}
+  \item \textbf{SDI} (\textit{Serial Digital Interface}, SMPTE 259M/292M/424M):
+  estándar de la industria broadcast para el transporte de vídeo sin comprimir sobre
+  cable coaxial o fibra óptica. Soporta desde SD (270~Mbit/s) hasta 12G-SDI
+  (11,88~Gbit/s para 4K). Proporciona latencia sub-imagen y es inherentemente síncrono.
+  \item \textbf{HDMI}: interfaz digital de consumo, ampliamente disponible en cámaras
+  y ordenadores. Aunque no está diseñada para largas distancias, su ubicuidad la
+  convierte en la opción habitual en producciones de bajo coste cuando se emplean
+  tarjetas de captura USB o PCIe.
+  \item \textbf{Composite / Component}: interfaces analógicas en desuso, relevantes
+  únicamente en instalaciones heredadas.
+\end{itemize}
+
+\subsection{Contribución sobre IP}
+
+La tendencia actual en producción audiovisual es reemplazar el cableado dedicado por
+transporte sobre redes Ethernet estándar mediante protocolos IP:
+
+\begin{itemize}
+  \item \textbf{NDI} (\textit{Network Device Interface}): protocolo propietario de
+  NewTek que permite enviar vídeo sin comprimir o con compresión ligera sobre LAN con
+  latencia de un fotograma. Es compatible con gran número de cámaras PTZ y software de
+  producción.
+  \item \textbf{SRT} (\textit{Secure Reliable Transport}): protocolo abierto desarrollado
+  por Haivision que proporciona transmisión fiable de baja latencia sobre redes no
+  confiables (Internet). Incorpora corrección de errores ARQ y cifrado AES-128/256,
+  lo que lo hace idóneo para contribuciones remotas.
+  \item \textbf{RTSP} (\textit{Real-Time Streaming Protocol}): protocolo de control
+  empleado junto con RTP para la distribución de flujos multimedia en redes locales.
+  Habitual en cámaras IP y sistemas de videovigilancia.
+\end{itemize}
+
+\subsection{Captura por software en Linux}
+
+En sistemas Linux, la captura de señal de vídeo desde hardware se realiza
+principalmente a través de \textbf{V4L2} (\textit{Video4Linux 2}), la API del
+kernel que expone los dispositivos de captura (tarjetas capturadoras, webcams) como
+ficheros de dispositivo (\texttt{/dev/video*}). GStreamer y FFmpeg interactúan
+directamente con V4L2 para leer fotogramas y reencapsularlos en el formato que
+voctocore espera (UYVY + PCM S16LE en Matroska/TCP).
+
+Para entornos de desarrollo o pruebas sin hardware real, FFmpeg puede generar fuentes
+sintéticas (barras de color, reloj en tiempo real) e inyectarlas directamente en
+los puertos de entrada de voctocore, simulando el comportamiento de una cámara física.

@@ -1,0 +1,23 @@
+\section{Audio Follows Video}
+
+En una producción con múltiples fuentes de cámara es habitual que cada cámara tenga
+su propio micrófono o línea de audio asociada. La funcionalidad \textit{Audio Follows
+Video} automatiza la selección del canal de audio al seleccionar una fuente de vídeo,
+eliminando la necesidad de que el operador realice dos acciones independientes en cada
+corte, lo que reduce significativamente el riesgo de errores en directo.
+
+\subsection{Implementación}
+
+La lógica reside en \texttt{voctocore/lib/audiomix.py}. Cuando el comando
+\texttt{set\_video\_a <fuente>} modifica la fuente de vídeo activa, el mezclador de
+audio recibe automáticamente una instrucción equivalente para activar el canal de audio
+de la nueva fuente y silenciar el anterior. El cambio de ganancia se aplica mediante
+una rampa lineal para evitar clics o artefactos audibles en el stream de salida.
+
+\subsection{Control del operador}
+
+El comportamiento puede desactivarse desde la GUI mediante un botón de alternancia en
+la barra de herramientas. Esto resulta necesario en producciones que requieran audio
+independiente del vídeo, por ejemplo, cuando se desea continuar con el audio de una
+mesa de sonido externa mientras se muestra un vídeo de apoyo (B-roll) en pantalla, o
+durante una pausa en la que el realizador monitoriza el audio en sala sin emitirlo.

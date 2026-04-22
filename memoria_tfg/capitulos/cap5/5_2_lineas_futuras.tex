@@ -1,0 +1,32 @@
+\section{Líneas de trabajo futuro}
+
+El desarrollo de Voctomix 2.0 ha puesto de manifiesto varias áreas de mejora e
+investigación que quedan fuera del alcance de este Trabajo de Fin de Grado pero que
+constituyen líneas de trabajo futuro de interés:
+
+\begin{itemize}
+  \item \textbf{Orquestación con Kubernetes:} migrar el fichero \texttt{docker-compose.yml}
+        a un \textit{chart} Helm permitiría escalar voctocore horizontalmente para
+        producciones multi-sala, donde varias salas de conferencias comparten la
+        misma infraestructura de streaming.
+
+  \item \textbf{Interfaz web de control:} sustituir voctogui por una aplicación web
+        de página única (SPA) basada en React o Vue que consuma la API REST del notario
+        eliminaría la dependencia de GTK y permitiría controlar el sistema desde
+        cualquier dispositivo con navegador, incluidos tabletas y teléfonos móviles.
+
+  \item \textbf{Detección automática de silencio:} integrar un clasificador de audio
+        que monitorice continuamente los niveles de entrada y alerte al operador cuando
+        una fuente pierde señal (micrófono desconectado, cable en mal estado), reduciendo
+        los incidentes técnicos durante producciones en directo.
+
+  \item \textbf{Grabación por segmentos:} implementar un \textit{sink} de grabación que
+        genere ficheros MKV por ponencia de forma automática, sincronizado con los
+        eventos del notario (inicio/fin de ponencia), eliminando la necesidad de post-proceso
+        manual de los ficheros de grabación.
+
+  \item \textbf{Soporte NDI:} incorporar el protocolo NDI (\textit{Network Device Interface})
+        como fuente de entrada alternativa a TCP/MKV, facilitando la integración con
+        cámaras de red y \textit{hardware} de producción moderno sin necesidad de
+        adaptadores de señal adicionales.
+\end{itemize}
