@@ -1,60 +1,59 @@
-\section{Producción audiovisual en directo}
+\section{Producción audiovisual}
 
-La producción audiovisual en directo engloba el conjunto de procesos técnicos y
-organizativos que permiten capturar, mezclar y distribuir contenido de vídeo y audio
-en tiempo real, sin posibilidad de edición posterior antes de su emisión. A diferencia
-de la producción diferida, donde los errores se corrigen en postproducción, el directo
-exige que todos los elementos del sistema funcionen de forma sincronizada y sin
-interrupciones durante toda la duración del evento.
+La producción audiovisual engloba el conjunto de procesos técnicos y organizativos que
+permiten capturar, procesar y distribuir contenido de vídeo y audio. En los últimos
+años, la evolución tecnológica ha transformado radicalmente la forma en que se lleva a
+cabo este proceso, pasando de modelos basados en infraestructura hardware dedicada y
+presencia física en el lugar de emisión hacia soluciones de software que permiten
+realizar toda la producción de forma remota y con una fracción del coste anterior.
 
-\subsection{Flujo de trabajo de una realización}
+\subsection{Producción audiovisual tradicional}
 
-El flujo de trabajo típico de una realización en directo sigue una cadena bien definida:
-las fuentes de vídeo (cámaras, ordenadores de presentación, reproductores de vídeo)
-generan señales que llegan al \textit{mezclador} o \textit{switcher}, donde el
-realizador selecciona en cada instante qué fuente se emite al programa. La señal de
-programa resultante se envía simultáneamente al sistema de grabación y al sistema de
-distribución (streaming, emisión broadcast o proyección en sala).
+Históricamente, la producción audiovisual en directo ha requerido el despliegue físico
+de toda la infraestructura necesaria en el lugar donde se realiza la retransmisión. El
+modelo tradicional, tal y como se ha llevado a cabo en la televisión convencional,
+implica trasladar al plató o al emplazamiento del evento un conjunto de equipos
+especializados: cámaras profesionales conectadas mediante cableado SDI
+(\textit{Serial Digital Interface}), mezcladores de vídeo hardware (como los de las
+marcas Ross, Blackmagic ATEM o Grass Valley), sistemas de intercomunicación entre el
+equipo de producción, generadores de rótulos y equipos de grabación dedicados.
 
-Sobre la señal de programa pueden superponerse \textit{overlays} gráficos: logotipos,
-barras de información, rótulos con el nombre del ponente (\textit{lower thirds}) o
-señales indicadoras del estado de la emisión. Esta superposición puede realizarse
-antes o después de la mezcla, dependiendo de la arquitectura del sistema.
+Este modelo ofrece ventajas indudables en términos de latencia y fiabilidad: la señal
+SDI proporciona latencias sub-imagen y sincronismo garantizado entre todas las fuentes
+del sistema. Los equipos hardware dedicados están diseñados y certificados para
+funcionar de forma ininterrumpida durante horas, con modos de redundancia que garantizan
+la continuidad del servicio ante cualquier fallo. Sin embargo, el modelo tradicional
+implica un coste elevado ---tanto en la adquisición del equipamiento como en el
+transporte y montaje en cada evento--- y una logística compleja que requiere personal
+técnico especializado para la instalación y operación.
 
-\subsection{Terminología fundamental}
+\subsection{Producción audiovisual remota}
 
-Los conceptos clave en producción en directo que aparecen a lo largo de este trabajo son:
+La producción audiovisual remota surge como respuesta a las limitaciones logísticas y
+económicas del modelo tradicional. Mediante el uso de herramientas de software y el
+transporte de señal audiovisual sobre redes IP, es posible realizar la mezcla y
+producción del vídeo desde una ubicación diferente al emplazamiento del evento, o
+incluso desde el otro lado del mundo.
+
+Las ventajas de este enfoque son considerables desde varios puntos de vista:
 
 \begin{itemize}
-  \item \textbf{Switcher / mezclador}: dispositivo o software que selecciona y combina
-  las fuentes de vídeo para producir la señal de programa.
-  \item \textbf{Corte} (\textit{cut}): transición instantánea de una fuente a otra,
-  sin efecto intermedio.
-  \item \textbf{Composite}: modo en que dos o más fuentes se combinan visualmente en
-  pantalla simultáneamente (p. ej., \textit{picture-in-picture}, pantalla dividida).
-  \item \textbf{Overlay}: elemento gráfico superpuesto sobre la señal de vídeo sin
-  reemplazarla, como logotipos o rótulos.
-  \item \textbf{Stream blanker}: mecanismo que sustituye la señal de programa por una
-  señal alternativa (pausa o corte de señal) cuando la emisión debe interrumpirse
-  temporalmente sin detener el sistema.
-  \item \textbf{Preview} / \textbf{Program}: el bus de programa contiene la señal que
-  se emite al exterior; el bus de preview muestra la fuente que se emitirá a
-  continuación, permitiendo al realizador prepararla.
+  \item \textbf{Reducción de costes:} se simplifica enormemente la infraestructura a
+  desplegar en el lugar del evento (bastan cámaras con conectividad IP y un ordenador
+  de propósito general), eliminando la necesidad de transporte y alquiler de equipo
+  broadcast especializado.
+  \item \textbf{Flexibilidad geográfica:} el equipo de producción puede trabajar desde
+  cualquier ubicación con acceso a la red, posibilitando colaboraciones distribuidas y
+  reduciendo los costes de desplazamiento.
+  \item \textbf{Escalabilidad:} al basarse en software ejecutado sobre hardware
+  convencional, resulta sencillo adaptar la capacidad del sistema añadiendo más fuentes
+  o aumentando la resolución sin necesidad de sustituir equipamiento hardware.
 \end{itemize}
 
-\subsection{Producción broadcast tradicional frente a producción IP}
-
-Históricamente, la producción en directo se ha basado en infraestructura hardware
-dedicada: mezcladores de vídeo profesionales (Ross, Blackmagic ATEM, Grass Valley),
-matrices de enrutamiento y cableado SDI (\textit{Serial Digital Interface}).
-Este modelo ofrece latencias subimagen y alta fiabilidad, pero implica un coste
-elevado y una infraestructura poco portable.
-
-La producción IP o basada en software reemplaza parte de ese hardware por procesamiento
-en CPU/GPU de propósito general. Herramientas como Voctomix, OBS Studio o vMix ejecutan
-el mezclado íntegramente por software, lo que permite desplegar un estudio de producción
-completo sobre hardware convencional y reducir los costes de infraestructura de forma
-significativa. La contrapartida es una mayor dependencia del sistema operativo y una
-latencia algo superior, que en la mayoría de casos de uso ---retransmisión de
-conferencias, eventos académicos, producciones comunitarias--- resulta perfectamente
-aceptable.
+Herramientas como OBS Studio, vMix o Voctomix implementan toda la lógica de mezclado
+en software, convirtiendo un ordenador convencional en un completo estudio de
+producción. Voctomix 2.0 lleva este concepto aún más lejos al adoptar una arquitectura
+cliente-servidor que permite separar el motor de mezcla de la interfaz de control,
+posibilitando que el realizador opere desde un equipo diferente al servidor de
+procesamiento e incluyendo capacidades de telemetría y despliegue contenerizado
+mediante Docker.

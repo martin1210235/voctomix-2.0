@@ -1,0 +1,51 @@
+\section{Transiciones y señal de programa final}
+
+Las transiciones controlan cómo se realiza el cambio de una fuente o composite a otro
+en el flujo de programa. Voctomix 2.0 ofrece dos modos de transición que el realizador
+activa desde la barra de herramientas de la interfaz gráfica.
+
+\subsection{Cut (corte instantáneo)}
+
+El botón \textbf{Cut} realiza una transición instantánea: en el siguiente fotograma
+tras la pulsación, la fuente de programa pasa a ser la fuente de preview. No existe
+ningún efecto intermedio. Es la transición estándar en producción broadcast: el
+``corte'' es la forma más común y natural de cambiar de plano en directo, ya que imita
+el montaje cinematográfico y resulta imperceptible cuando el timing es correcto.
+
+\subsection{Trans (transición suave)}
+
+El botón \textbf{Trans} realiza una transición animada entre el estado actual y el
+nuevo estado de composite o fuente, interpolando los parámetros geométricos y de
+transparencia durante un tiempo configurable (por defecto 750~ms, definido en la
+sección \texttt{[transitions]} del fichero INI). La transición se implementa
+modificando progresivamente los valores de los pads del compositor de GStreamer.
+
+Voctomix 2.0 define múltiples trayectorias de transición según el estado de origen y
+destino (por ejemplo, de \texttt{fs} a \texttt{pip} la transición pasa por el composite
+intermedio \texttt{fs-pip} antes de llegar a \texttt{pip}), garantizando que la
+animación sea visualmente coherente independientemente del cambio solicitado.
+
+\subsection{Señal de programa final}
+
+La señal de programa final es la mezcla procesada por voctocore una vez aplicados el
+composite activo y los overlays. Esta señal se emite simultáneamente en dos puertos:
+
+\begin{itemize}
+  \item \textbf{Puerto 11000}: salida de la mezcla en bruto (vídeo sin comprimir en
+  I420), destinada a herramientas de grabación o encoders externos como FFmpeg.
+  \item \textbf{Puerto 15000}: salida de streaming, que pasa previamente por el
+  stream blanker. Cuando el estado es LIVE, esta salida es idéntica al puerto 11000;
+  cuando el estado es PAUSE o NOSTREAM, emite el vídeo alternativo correspondiente.
+\end{itemize}
+
+El encoder de salida (tipicamente FFmpeg) se conecta al puerto 15000 y produce el
+flujo H.264/AAC que se ingesta en la plataforma de streaming (RTMP/SRT hacia YouTube
+Live, Twitch u otras plataformas).
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.7\textwidth]{figuras/botones_transicion.png}
+%   \caption{Botones Cut y Trans en la barra de herramientas de voctogui.}
+%   \label{fig:botones_transicion}
+% \end{figure}

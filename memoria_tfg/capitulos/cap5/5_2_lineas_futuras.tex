@@ -5,28 +5,29 @@ investigación que quedan fuera del alcance de este Trabajo de Fin de Grado pero
 constituyen líneas de trabajo futuro de interés:
 
 \begin{itemize}
-  \item \textbf{Orquestación con Kubernetes:} migrar el fichero \texttt{docker-compose.yml}
-        a un \textit{chart} Helm permitiría escalar voctocore horizontalmente para
-        producciones multi-sala, donde varias salas de conferencias comparten la
-        misma infraestructura de streaming.
+  \item \textbf{Despliegue en Kubernetes:} migrar la orquestación del sistema de
+        Docker Compose a Kubernetes permitiría gestionar el ciclo de vida de los
+        contenedores de forma más robusta, con capacidad de reinicio automático,
+        escalado horizontal y despliegue en infraestructura cloud. La migración
+        del \texttt{docker-compose.yml} a un \textit{chart} Helm es la ruta natural
+        para llevarlo a entornos de producción multinode.
+
+  \item \textbf{Prueba con cámaras reales:} la validación definitiva del sistema
+        consiste en conectar cámaras físicas a los puertos de entrada de voctocore
+        y realizar una retransmisión en directo completa. Este caso de uso está
+        previsto en el contexto del grupo de investigación CyberNemo de la UPM,
+        donde Voctomix 2.0 se utilizará para retransmitir seminarios y presentaciones
+        con cámaras reales conectadas mediante tarjetas de captura o directamente
+        mediante NDI. Esta prueba permitirá validar el sistema en condiciones reales
+        y detectar posibles problemas de sincronización, latencia o estabilidad que
+        no se manifiestan con fuentes sintéticas.
 
   \item \textbf{Interfaz web de control:} sustituir voctogui por una aplicación web
-        de página única (SPA) basada en React o Vue que consuma la API REST del notario
-        eliminaría la dependencia de GTK y permitiría controlar el sistema desde
-        cualquier dispositivo con navegador, incluidos tabletas y teléfonos móviles.
+        que consuma la API REST del servicio de telemetría eliminaría la dependencia
+        de GTK y permitiría controlar el sistema desde cualquier dispositivo con
+        navegador, incluidas tabletas y teléfonos móviles.
 
-  \item \textbf{Detección automática de silencio:} integrar un clasificador de audio
-        que monitorice continuamente los niveles de entrada y alerte al operador cuando
-        una fuente pierde señal (micrófono desconectado, cable en mal estado), reduciendo
-        los incidentes técnicos durante producciones en directo.
-
-  \item \textbf{Grabación por segmentos:} implementar un \textit{sink} de grabación que
-        genere ficheros MKV por ponencia de forma automática, sincronizado con los
-        eventos del notario (inicio/fin de ponencia), eliminando la necesidad de post-proceso
-        manual de los ficheros de grabación.
-
-  \item \textbf{Soporte NDI:} incorporar el protocolo NDI (\textit{Network Device Interface})
-        como fuente de entrada alternativa a TCP/MKV, facilitando la integración con
-        cámaras de red y \textit{hardware} de producción moderno sin necesidad de
-        adaptadores de señal adicionales.
+  \item \textbf{Soporte NDI nativo:} incorporar el protocolo NDI como fuente de
+        entrada alternativa a TCP/MKV facilitaría la integración con cámaras de red
+        modernas y con herramientas de producción compatibles con este protocolo.
 \end{itemize}

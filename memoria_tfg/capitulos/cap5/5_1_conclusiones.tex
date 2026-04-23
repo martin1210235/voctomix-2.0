@@ -1,26 +1,30 @@
 \section{Conclusiones}
 
-Este trabajo ha demostrado que es posible extender una herramienta \textit{open-source}
-de producción audiovisual en directo ---Voctomix--- con funcionalidades de nivel
-profesional sin comprometer su arquitectura modular ni su rendimiento en tiempo real.
+Este trabajo ha desarrollado Voctomix 2.0, un sistema de producción audiovisual remota
+de código abierto que extiende la herramienta original Voctomix con funcionalidades
+de nivel profesional, orientado a su uso real en el grupo de investigación CyberNemo
+de la Universidad Politécnica de Madrid.
 
-Las seis funcionalidades implementadas (rotulación dinámica, stream blanker avanzado,
-Audio Follows Video, auto-off de overlays, telemetría con el servicio notario y
-contenerización Docker) responden a necesidades reales identificadas en producciones
-de eventos técnicos, y han sido validadas satisfactoriamente en los tres escenarios
-de despliegue propuestos.
+El sistema implementado integra en una plataforma cohesionada: cuatro fuentes de cámara
+simultáneas, fuentes auxiliares (break, intro, stream blanker), múltiples modos de
+composición (full screen, picture-in-picture, side by side, lecture), transiciones
+animadas, un sistema completo de overlays y rotulación dinámica, telemetría en tiempo
+real mediante RabbitMQ y despliegue contenerizado con Docker Compose.
+
+Las funcionalidades implementadas responden a necesidades reales identificadas en
+producciones de eventos técnicos universitarios. El mecanismo de stream blanker permite
+gestionar con profesionalidad las pausas entre sesiones. Los composites y la rotulación
+dinámica proporcionan la calidad visual esperada en una producción académica o
+institucional. La telemetría con RabbitMQ ofrece trazabilidad completa de la sesión.
+Y la contenerización Docker elimina la principal barrera de adopción del sistema: la
+instalación manual de dependencias GStreamer.
 
 Desde el punto de vista técnico, la elección de GStreamer como motor multimedia ha
-resultado especialmente acertada: su modelo de \textit{pipeline} dinámico ha
-permitido integrar todas las nuevas funcionalidades como módulos independientes que
-se instancian y conectan en función de la configuración, sin necesidad de modificar
-el núcleo del sistema original.
-
-La contenerización mediante Docker Compose representa la aportación más transversal
-del proyecto: elimina la principal barrera de adopción de Voctomix ---la instalación
-manual de dependencias GStreamer--- y abre la puerta a despliegues en infraestructura
-\textit{cloud} o en clústeres de orquestación de contenedores.
+resultado especialmente adecuada: su modelo de \textit{pipeline} dinámico ha permitido
+integrar todas las nuevas funcionalidades como módulos independientes sin necesidad de
+modificar el núcleo del sistema original.
 
 En definitiva, Voctomix 2.0 constituye una plataforma de producción audiovisual en
-directo robusta, reproducible y extensible, adecuada tanto para producciones de
-eventos técnicos universitarios como para conferencias de mayor escala.
+directo robusta, reproducible y extensible, lista para su despliegue en el entorno
+real del grupo CyberNemo y adecuada para cualquier producción de eventos técnicos de
+mediana escala.

@@ -1,0 +1,56 @@
+\section{Fuentes de señal de cámaras}
+
+El sistema acepta hasta cuatro fuentes de cámara simultáneas (cam1--cam4), que
+constituyen las entradas principales del mezclador. Cada cámara envía su señal al
+núcleo mediante una conexión TCP en formato Matroska con vídeo en bruto (I420) y audio
+PCM S16LE a 48~kHz estéreo.
+
+\subsection{Conexión de las fuentes}
+
+Cada fuente de cámara se conecta al puerto TCP correspondiente de voctocore:
+
+\begin{itemize}
+  \item \textbf{cam1} $\rightarrow$ puerto 10000
+  \item \textbf{cam2} $\rightarrow$ puerto 10001
+  \item \textbf{cam3} $\rightarrow$ puerto 10002
+  \item \textbf{cam4} $\rightarrow$ puerto 10003
+\end{itemize}
+
+El envío de la señal puede realizarse con cualquier herramienta capaz de producir un
+flujo Matroska sobre TCP. En el entorno de desarrollo y pruebas, las fuentes de cámara
+se simulan mediante scripts FFmpeg que generan vídeo de prueba (barras de color o
+\textit{test card} con reloj en tiempo real). En un despliegue real con cámaras físicas,
+la señal se captura habitualmente mediante tarjetas de captura y se reencapsula en
+Matroska/TCP con FFmpeg.
+
+Los scripts de prueba se encuentran en el directorio
+\texttt{example-scripts/ffmpeg/source-testvideo-as-cam*.sh}. En el escenario Docker,
+cada cámara es un contenedor independiente que comparte el \textit{network namespace}
+de voctocore (directiva \texttt{network\_mode: service:voctocore}), lo que les permite
+conectarse directamente por \texttt{localhost} sin overhead de red virtual.
+
+\subsection{Previsualización en la interfaz gráfica}
+
+Una vez conectadas, las fuentes de cámara aparecen automáticamente en el panel de
+previsualizaciones de voctogui. La interfaz muestra cuatro miniaturas JPEG de las
+fuentes activas, recibidas desde los puertos 14000--14003 a una resolución reducida
+(1024×576) para minimizar el consumo de ancho de banda entre el servidor y el cliente
+de control. Cada miniatura incluye:
+
+\begin{itemize}
+  \item Un indicador visual del nombre de la fuente (cam1, cam2, cam3, cam4).
+  \item Botones de selección para asignar la fuente al bus A o al bus B del mezclador.
+  \item Un indicador del nivel de audio asociado a esa fuente.
+\end{itemize}
+
+El realizador selecciona la fuente activa haciendo clic sobre la miniatura
+correspondiente, lo que envía el comando \texttt{set\_video\_a <fuente>} o
+\texttt{set\_video\_b <fuente>} al núcleo mediante el protocolo de control TCP.
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.8\textwidth]{figuras/panel_camaras.png}
+%   \caption{Panel de previsualizaciones de las cuatro fuentes de cámara en voctogui.}
+%   \label{fig:panel_camaras}
+% \end{figure}

@@ -1,55 +1,78 @@
 \section{Contribución de vídeo}
 
-En el contexto de producción en directo, se denomina \textit{contribución de vídeo}
-al transporte de la señal audiovisual desde la fuente (cámara, ordenador, reproductor)
-hasta el mezclador. Es el primer eslabón de la cadena y determina la calidad máxima
-que el sistema puede procesar, así como la latencia de extremo a extremo.
+La contribución de vídeo designa el transporte de la señal audiovisual desde la fuente
+(cámara, ordenador, reproductor) hasta el mezclador o núcleo del sistema de producción.
+Es el primer eslabón de la cadena y determina la calidad máxima disponible, así como la
+latencia de extremo a extremo del sistema. En función del contexto (producción
+tradicional o remota), las interfaces, protocolos y formatos empleados varían
+considerablemente.
 
-\subsection{Interfaces físicas}
+\subsection{Interfaces y protocolos}
 
-Las interfaces de contribución más extendidas en entornos profesionales son:
+Las principales interfaces y protocolos empleados en contribución de vídeo son:
 
 \begin{itemize}
   \item \textbf{SDI} (\textit{Serial Digital Interface}, SMPTE 259M/292M/424M):
-  estándar de la industria broadcast para el transporte de vídeo sin comprimir sobre
-  cable coaxial o fibra óptica. Soporta desde SD (270~Mbit/s) hasta 12G-SDI
-  (11,88~Gbit/s para 4K). Proporciona latencia sub-imagen y es inherentemente síncrono.
-  \item \textbf{HDMI}: interfaz digital de consumo, ampliamente disponible en cámaras
-  y ordenadores. Aunque no está diseñada para largas distancias, su ubicuidad la
-  convierte en la opción habitual en producciones de bajo coste cuando se emplean
-  tarjetas de captura USB o PCIe.
-  \item \textbf{Composite / Component}: interfaces analógicas en desuso, relevantes
-  únicamente en instalaciones heredadas.
+  estándar profesional de la industria broadcast para el transporte de vídeo sin
+  comprimir sobre cable coaxial o fibra óptica. Cubre desde SD (270~Mbit/s) hasta
+  12G-SDI (11,88~Gbit/s) para resoluciones 4K. Ofrece latencia sub-imagen y
+  sincronismo garantizado, siendo la referencia en instalaciones broadcast tradicionales.
+
+  \item \textbf{SMPTE ST 2022}: estándar que define el transporte de señales broadcast
+  sobre redes IP. Su variante SMPTE ST 2022-6 permite encapsular señales SDI en paquetes
+  UDP/IP, facilitando la migración de infraestructuras broadcast existentes hacia redes
+  Ethernet estándar sin sustituir el equipamiento de generación de señal.
+
+  \item \textbf{SMPTE ST 2110}: estándar publicado en 2017 que define el transporte de
+  componentes de media desempaquetadas (vídeo, audio y metadatos como flujos IP
+  independientes) sobre redes Ethernet de alta velocidad. Representa la evolución hacia
+  una producción completamente basada en IP, con gran implantación en nuevas
+  instalaciones broadcast profesionales y en estudios de televisión de nueva construcción.
+
+  \item \textbf{NDI} (\textit{Network Device Interface}): protocolo propietario de
+  Vizrt/NewTek que permite enviar vídeo con compresión ligera sobre LAN estándar con
+  latencia de un fotograma. Ampliamente soportado por cámaras PTZ y herramientas de
+  software de producción.
 \end{itemize}
 
-\subsection{Contribución sobre IP}
+\subsection{Codecs de contribución}
 
-La tendencia actual en producción audiovisual es reemplazar el cableado dedicado por
-transporte sobre redes Ethernet estándar mediante protocolos IP:
+En la etapa de contribución se prioriza la calidad sobre la eficiencia de compresión,
+empleándose habitualmente formatos de baja compresión o directamente sin comprimir:
 
 \begin{itemize}
-  \item \textbf{NDI} (\textit{Network Device Interface}): protocolo propietario de
-  NewTek que permite enviar vídeo sin comprimir o con compresión ligera sobre LAN con
-  latencia de un fotograma. Es compatible con gran número de cámaras PTZ y software de
-  producción.
-  \item \textbf{SRT} (\textit{Secure Reliable Transport}): protocolo abierto desarrollado
-  por Haivision que proporciona transmisión fiable de baja latencia sobre redes no
-  confiables (Internet). Incorpora corrección de errores ARQ y cifrado AES-128/256,
-  lo que lo hace idóneo para contribuciones remotas.
-  \item \textbf{RTSP} (\textit{Real-Time Streaming Protocol}): protocolo de control
-  empleado junto con RTP para la distribución de flujos multimedia en redes locales.
-  Habitual en cámaras IP y sistemas de videovigilancia.
+  \item \textbf{Vídeo sin comprimir (RAW)}: el vídeo se transporta sin ningún tipo de
+  compresión, preservando toda la información de la señal original. Los formatos más
+  habituales son UYVY (crominancia 4:2:2 empaquetada, 2~bytes/píxel) e I420 (YUV
+  4:2:0 planar). Voctomix emplea I420 internamente para todo el procesamiento mediante
+  el motor GStreamer.
+
+  \item \textbf{ProRes} (Apple) y \textbf{DNxHD/DNxHR} (Avid): codecs de alta calidad
+  diseñados para producción profesional, con compresión intra-frame que minimiza la
+  degradación acumulativa en múltiples etapas de procesamiento.
+
+  \item \textbf{JPEG 2000}: empleado en sistemas de contribución broadcast de alta
+  calidad, ofrece compresión sin pérdidas o con pérdidas mínimas y latencia muy
+  reducida gracias a su codificación por tiles independientes.
 \end{itemize}
 
-\subsection{Captura por software en Linux}
+\subsection{Formatos contenedor}
 
-En sistemas Linux, la captura de señal de vídeo desde hardware se realiza
-principalmente a través de \textbf{V4L2} (\textit{Video4Linux 2}), la API del
-kernel que expone los dispositivos de captura (tarjetas capturadoras, webcams) como
-ficheros de dispositivo (\texttt{/dev/video*}). GStreamer y FFmpeg interactúan
-directamente con V4L2 para leer fotogramas y reencapsularlos en el formato que
-voctocore espera (UYVY + PCM S16LE en Matroska/TCP).
+El formato contenedor define cómo se encapsulan y multiplexan los flujos de vídeo y
+audio para su transporte:
 
-Para entornos de desarrollo o pruebas sin hardware real, FFmpeg puede generar fuentes
-sintéticas (barras de color, reloj en tiempo real) e inyectarlas directamente en
-los puertos de entrada de voctocore, simulando el comportamiento de una cámara física.
+\begin{itemize}
+  \item \textbf{Matroska (MKV)}: contenedor flexible y extensible basado en un formato
+  binario abierto. Voctomix lo utiliza como contenedor de transporte interno: las fuentes
+  envían sus señales de vídeo (I420/UYVY) y audio (PCM S16LE) encapsuladas en MKV sobre
+  conexiones TCP, lo que facilita el mantenimiento de la sincronía audio-vídeo y permite
+  transportar múltiples pistas en un único flujo.
+
+  \item \textbf{MPEG-TS} (\textit{Transport Stream}): contenedor estándar de broadcast
+  diseñado para transmisión con posibilidad de pérdidas, empleado en contribuciones
+  sobre redes no fiables y en la integración con sistemas de distribución broadcast.
+
+  \item \textbf{RTP/RTSP}: protocolo de transporte en tiempo real utilizado junto con
+  RTSP para la distribución de flujos multimedia en redes locales, habitual en cámaras
+  IP profesionales.
+\end{itemize}

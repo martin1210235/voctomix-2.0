@@ -1,0 +1,68 @@
+\section{Escenarios de despliegue}
+
+La validación del sistema se ha llevado a cabo en dos escenarios de despliegue que
+cubren los casos de uso más representativos: un despliegue en dos PCs en red local y
+un despliegue completamente contenerizado mediante Docker. Ambos escenarios utilizan
+la misma configuración de voctocore y la misma interfaz gráfica, diferenciándose
+únicamente en cómo se gestiona el entorno de ejecución.
+
+\subsection{Escenario 1 --- Dos PCs en red local}
+
+En este escenario, voctocore y las fuentes FFmpeg se ejecutan en un primer PC
+(\textit{servidor/cerebro}) mientras que voctogui se conecta desde un segundo PC
+mediante la red local. Este es el escenario que más se aproxima a una producción real
+con cámaras físicas: el servidor de procesamiento puede situarse en un rack técnico
+mientras el realizador trabaja desde otro equipo en la mesa de producción.
+
+\textbf{Requisitos de instalación:} ambos equipos deben tener instalado Python 3,
+las dependencias de GStreamer y sus plugins (\texttt{gstreamer1.0-plugins-base},
+\texttt{-good}, \texttt{-bad}, \texttt{-ugly}, \texttt{libav}) y FFmpeg. La instalación
+manual de estas dependencias puede ser tediosa, especialmente en distribuciones Linux
+con versiones de GStreamer distintas a las esperadas.
+
+Los scripts de arranque se encuentran en el directorio \texttt{2pc\_escenario2/}:
+\begin{itemize}
+  \item \texttt{arrancar\_voctocore\_pc1.sh}: inicializa el servidor en el PC de
+        procesamiento, detectando la IP local y mostrándola para que el realizador
+        la configure en su equipo.
+  \item \texttt{arrancar\_voctogui\_pc2.sh}: lanza la interfaz gráfica en el PC del
+        realizador, conectándose al servidor por su dirección IP.
+\end{itemize}
+
+La GUI recibe los flujos de previsualización en formato JPEG comprimido, minimizando
+el ancho de banda requerido entre ambos equipos sobre una red local 1~GbE estándar.
+
+\subsection{Escenario 2 --- Docker Compose}
+
+El despliegue contenerizado elimina la necesidad de instalar manualmente Python ni
+ninguna dependencia de GStreamer en el sistema anfitrión: todo el entorno de ejecución
+se encuentra empaquetado dentro de la imagen Docker. El sistema completo se despliega
+con un único comando desde el directorio \texttt{docker\_escenario3/}:
+
+\begin{verbatim}
+docker compose up -d
+\end{verbatim}
+
+Docker Compose levanta los diez servicios definidos en \texttt{docker-compose.yml} en
+el orden correcto, gestionando automáticamente las dependencias de arranque mediante
+los \textit{healthchecks} configurados. El realizador se conecta desde un segundo
+equipo exactamente igual que en el Escenario 1.
+
+Las ventajas de este escenario respecto al anterior son:
+\begin{itemize}
+  \item \textbf{Cero dependencias en el host:} basta con tener Docker instalado; no
+        se requiere Python ni GStreamer.
+  \item \textbf{Reproducibilidad total:} la imagen Docker garantiza que el entorno
+        de ejecución es idéntico independientemente del sistema operativo anfitrión.
+  \item \textbf{Gestión simplificada:} un único comando arranca y detiene todos los
+        servicios, incluyendo voctocore, las fuentes, RabbitMQ y el servicio de
+        telemetría.
+\end{itemize}
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.9\textwidth]{figuras/diagramas_escenarios.png}
+%   \caption{Diagramas de red de los dos escenarios de despliegue.}
+%   \label{fig:diagramas_escenarios}
+% \end{figure}

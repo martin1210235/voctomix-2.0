@@ -1,0 +1,68 @@
+\section{Overlays, logos y texto dinámico}
+
+Voctomix 2.0 incorpora un sistema completo de superposición de elementos gráficos
+sobre la señal de vídeo: logos corporativos, overlays PNG con canal alfa y texto
+dinámico renderizado en tiempo real. Todos estos elementos se gestionan desde la
+interfaz gráfica sin interrumpir el pipeline de procesamiento.
+
+\subsection{Logos}
+
+El sistema soporta hasta dos logos simultáneos, superpuestos en posiciones fijas del
+encuadre definidas mediante la configuración INI:
+
+\begin{itemize}
+  \item \textbf{logo1}: posicionado en la esquina inferior derecha del fotograma.
+  \item \textbf{logo2}: posicionado en la esquina superior izquierda del fotograma.
+\end{itemize}
+
+Los ficheros PNG de los logos se definen en las secciones \texttt{[logo1]} y
+\texttt{[logo2]} del fichero de configuración, permitiendo adaptar la identidad visual
+del evento sin modificar el código. La visibilidad de cada logo se puede activar o
+desactivar individualmente desde la interfaz gráfica.
+
+\subsection{Overlays PNG y texto dinámico}
+
+Los overlays son imágenes PNG con canal alfa que se superponen sobre la señal de vídeo
+mediante el elemento GStreamer \texttt{gdkpixbufoverlay}. El módulo
+\texttt{voctocore/lib/overlay.py} gestiona el ciclo de vida completo de un overlay:
+carga del fichero PNG, fundido de entrada (\textit{blend-in}), mantenimiento en
+pantalla y fundido de salida (\textit{blend-out}). El tiempo de fundido se controla
+mediante el parámetro \texttt{blend-time} en la sección \texttt{[overlay]} del
+fichero INI (en milisegundos).
+
+Sobre la plantilla PNG activa se puede renderizar texto dinámico (nombre del ponente,
+título de la sesión) utilizando la biblioteca Cairo. El texto se introduce en la
+interfaz gráfica y se renderiza en tiempo real generando la imagen PNG resultante,
+que se envía al núcleo mediante el comando \texttt{set\_overlay}. Esto permite a los
+operadores actualizar los rótulos de ponente durante la emisión sin preparación previa
+de imágenes.
+
+\subsection{Auto-off de overlays}
+
+La funcionalidad \textit{auto-off} resuelve un problema frecuente en producción en
+directo: el operador realiza un corte de cámara olvidando retirar el overlay activo,
+que queda superpuesto sobre la nueva fuente de forma inapropiada (por ejemplo, el
+nombre de un ponente apareciendo sobre la imagen de otro).
+
+Cuando la opción \texttt{auto-off = true} está activa en la configuración, el módulo
+\texttt{overlay.py} registra un \textit{listener} sobre el evento \texttt{video\_status}.
+Cada vez que la fuente de vídeo activa cambia, el listener inicia automáticamente la
+secuencia de fundido de salida del overlay activo. Si hay texto dinámico superpuesto,
+éste se elimina junto al overlay gráfico, garantizando que ningún elemento de
+rotulación quede huérfano en pantalla.
+
+El comportamiento puede configurarse mediante:
+\begin{itemize}
+  \item \texttt{auto-off = true/false} --- activa o desactiva la funcionalidad.
+  \item \texttt{user-auto-off = true/false} --- expone un botón de alternancia en la
+        GUI para que el operador pueda activar/desactivar el auto-off en tiempo real.
+  \item \texttt{blend-time = <ms>} --- tiempo de fundido de salida en milisegundos.
+\end{itemize}
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.85\textwidth]{figuras/overlay_ejemplo.png}
+%   \caption{Fotograma con overlay activo (rótulo de ponente) sobre imagen de cámara.}
+%   \label{fig:overlay_ejemplo}
+% \end{figure}

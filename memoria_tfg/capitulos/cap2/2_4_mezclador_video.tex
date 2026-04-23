@@ -1,0 +1,72 @@
+\section{Mezclador de vídeo}
+
+El mezclador de vídeo ---también denominado \textit{switcher}--- es el componente
+central de cualquier sistema de producción audiovisual en directo. Su función es
+seleccionar, en cada instante, qué fuente de vídeo (o combinación de fuentes) se emite
+a la salida de programa, gestionando además las transiciones entre fuentes y la
+incorporación de elementos gráficos sobre la imagen.
+
+\subsection{Mezclado tradicional}
+
+En la producción broadcast tradicional, el mezclado se realiza mediante hardware
+dedicado. Los mezcladores hardware profesionales (Blackmagic ATEM, Ross Video,
+Grass Valley Kayenne) ofrecen latencias sub-imagen, alta fiabilidad y soporte para
+múltiples buses simultáneos de programa y preview. Son la solución estándar en
+producciones televisivas de gran escala: retransmisiones deportivas, eventos
+parlamentarios, galas de premios y producciones multicámara de cualquier tipo.
+
+Un caso de uso paradigmático es la producción de retransmisiones en directo de grandes
+eventos, donde un mezclador hardware gestiona decenas de fuentes de cámara simultáneas
+con conmutación en tiempo real, garantizando la continuidad de la señal incluso ante
+fallos puntuales. Esta robustez se logra mediante redundancia hardware (fuentes de
+alimentación duplicadas, procesadores de backup) y certificación de los equipos para
+operación continua.
+
+\subsection{Mezclado por software y producción remota}
+
+La producción audiovisual basada en software de mezclado permite realizar la producción
+sin hardware dedicado, utilizando ordenadores de propósito general. Este enfoque ha
+democratizado el acceso a la producción audiovisual profesional, reduciendo la barrera
+de entrada tanto en coste como en complejidad de instalación.
+
+Las principales herramientas de mezclado por software son:
+
+\begin{itemize}
+  \item \textbf{OBS Studio}: solución de código abierto ampliamente utilizada para
+  \textit{streaming} y grabación. Su arquitectura monolítica está orientada a un único
+  operador en un único equipo, lo que la hace ideal para producciones individuales pero
+  limita su uso en entornos distribuidos donde el procesamiento debe separarse de la
+  interfaz de operador.
+
+  \item \textbf{vMix}: solución comercial profesional para Windows con soporte para
+  NDI, multiview y producción 4K. Su coste de licencia y su limitación a Windows la
+  excluyen de entornos de producción \textit{open-source} sobre Linux.
+
+  \item \textbf{Voctomix}: herramienta de código abierto con arquitectura
+  cliente-servidor que separa el motor de mezcla (\texttt{voctocore}) de la interfaz
+  de control (\texttt{voctogui}). Esta separación permite que el procesamiento se
+  realice en un servidor mientras el operador trabaja desde otro equipo conectado por
+  red, facilitando la producción completamente remota. Es la herramienta desarrollada
+  y extendida en el presente trabajo.
+\end{itemize}
+
+La investigación académica sobre mezclado de vídeo por software en entornos remotos
+ha crecido en los últimos años de la mano de la madurez de las infraestructuras de
+red IP. Trabajos como \cite{XXX} han analizado la viabilidad de arquitecturas
+cliente-servidor para producción en directo sobre redes de campus universitarios,
+concluyendo que herramientas como Voctomix son adecuadas para producciones de mediana
+escala cuando se dispone de una red local de baja latencia.
+% TODO: añadir referencias bibliográficas relevantes sobre mezclado remoto y producción IP
+
+\subsection{GStreamer como motor de mezclado}
+
+GStreamer es el \textit{framework} multimedia de código abierto sobre el que se
+construye voctocore. Su arquitectura de \textit{pipeline} ---grafos dirigidos de
+elementos de procesamiento interconectados mediante \textit{pads} tipados--- permite
+construir cadenas de composición de vídeo arbitrariamente complejas combinando
+elementos existentes. El elemento central en Voctomix es \texttt{compositor}, el
+mezclador de vídeo multipista de GStreamer 1.x, que acepta $N$ pads de entrada con
+sus propias transformaciones geométricas y produce un único flujo de salida. Las
+propiedades de cada pad se modifican en tiempo real mediante mensajes GObject,
+permitiendo transiciones suaves sin interrumpir el pipeline ni generar fotogramas
+corruptos.

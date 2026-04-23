@@ -1,0 +1,63 @@
+\section{Composites}
+
+Los composites definen cómo se combinan visualmente las dos fuentes de vídeo activas
+(bus A y bus B) en el fotograma de salida. Voctomix implementa los composites mediante
+el elemento GStreamer \texttt{compositor}, que sitúa y escala cada fuente de acuerdo
+con los parámetros geométricos definidos en la sección \texttt{[composites]} del
+fichero de configuración INI. La modificación de estos parámetros en tiempo real
+permite transiciones suaves entre composites sin generar fotogramas corruptos.
+
+Los composites disponibles en Voctomix 2.0 son los siguientes:
+
+\subsection{Full Screen (fs)}
+
+La fuente A ocupa toda la pantalla y la fuente B queda oculta (alpha = 0). Es el modo
+por defecto de una realización convencional: el realizador selecciona una fuente y la
+emite a pantalla completa. Resulta adecuado para la emisión de una ponencia individual,
+una demostración en pantalla o cualquier situación en la que una única fuente deba
+ocupar todo el encuadre.
+
+\subsection{Picture in Picture (pip)}
+
+La fuente A se muestra a pantalla completa mientras la fuente B aparece reducida en
+una esquina del encuadre (tipicamente la esquina inferior derecha), a una escala
+aproximada del 27\% del ancho del fotograma. Es el composite clásico de ``ponente con
+presentación'': la cámara del ponente ocupa la pantalla completa y las diapositivas
+aparecen en la esquina, o viceversa. Puede configurarse con \texttt{mirror=true} para
+que la fuente A se invierta horizontalmente, útil cuando la cámara tiene la imagen
+especular por la disposición del equipo.
+
+\subsection{Side by Side (sbs)}
+
+Ambas fuentes se muestran a igual tamaño, situadas una junto a la otra y ocupando
+cada una aproximadamente la mitad del fotograma. Es útil para comparaciones visuales,
+debates con dos participantes o para mostrar simultáneamente la cámara del ponente y
+sus diapositivas con el mismo peso visual.
+
+\subsection{Lecture (lec)}
+
+La fuente A ocupa la mayor parte del encuadre (aproximadamente el 75\%) mientras que
+la fuente B aparece reducida en la parte derecha. Este composite está específicamente
+diseñado para retransmisiones de ponencias o clases: las diapositivas (fuente A)
+dominan el encuadre y la cámara del ponente (fuente B) aparece en un recuadro lateral
+de menor tamaño, manteniendo siempre la legibilidad del contenido proyectado. La
+variante \texttt{lec\_43} aplica recortes adicionales para acomodar contenido 4:3
+en el encuadre 16:9.
+
+\subsection{Mirror}
+
+Aunque no es un composite independiente sino una propiedad disponible en varios de
+los anteriores (\texttt{mirror=true} en \texttt{pip}, \texttt{lec} y \texttt{fs-pip}),
+el efecto espejo permite invertir horizontalmente la fuente A o B en el composite. Esto
+es necesario cuando la señal de cámara llega especularmente invertida, como puede
+ocurrir con ciertos modelos de cámaras web o cuando la cámara está orientada de forma
+atípica. Al activar el mirror desde el fichero de configuración, el núcleo aplica la
+inversión directamente en el compositor de GStreamer sin coste adicional.
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.9\textwidth]{figuras/composites.png}
+%   \caption{Los cuatro composites principales de Voctomix 2.0: fs, pip, sbs y lec.}
+%   \label{fig:composites}
+% \end{figure}

@@ -1,71 +1,101 @@
 \section{Arquitectura del sistema}
 
-Voctomix 2.0 mantiene la separación en dos procesos principales heredada de la versión
-original, pero introduce un tercer servicio de soporte ---el notario--- que convierte
-la arquitectura en un sistema de tres capas: procesamiento, control y telemetría.
+Voctomix 2.0 se articula en torno a dos procesos principales que se comunican por red,
+heredados de la versión original, a los que se añade un conjunto de servicios de soporte
+que amplían sus capacidades: telemetría, gestión de audio y contenerización.
 
 \subsection{voctocore --- Núcleo multimedia}
 
-El núcleo se inicializa en \texttt{voctocore/voctocore.py}, que instancia en orden el
-\texttt{Pipeline} central, el \texttt{ControlServer} TCP y el proveedor de tiempo de
-red GStreamer (\texttt{NetTimeProvider}). El \texttt{Pipeline} construye dinámicamente
-la cadena GStreamer a partir de la configuración INI: crea una instancia de
-\texttt{AVSource} por cada fuente declarada, instancia el \texttt{VideoMix} y el
+\texttt{voctocore} es el servidor central del sistema: gestiona todo el procesamiento
+multimedia, acepta las fuentes de vídeo entrantes, realiza la composición y expone los
+resultados en distintos puertos TCP. Se inicializa mediante \texttt{voctocore/voctocore.py},
+que instancia en orden el \texttt{Pipeline} central (grafo GStreamer), el
+\texttt{ControlServer} TCP y el proveedor de tiempo de red GStreamer
+(\texttt{NetTimeProvider}, puerto UDP 9998). El \texttt{Pipeline} construye
+dinámicamente la cadena GStreamer a partir de la configuración INI: crea una instancia
+de \texttt{AVSource} por cada fuente declarada, instancia el \texttt{VideoMix} y el
 \texttt{AudioMix}, conecta el \texttt{StreamBlanker} y abre los puertos de salida.
 
-La tabla~\ref{tab:ficheros_core} recoge los ficheros más relevantes del núcleo y
-su responsabilidad dentro del sistema.
+\subsection{voctogui --- Interfaz gráfica de control}
 
-\subsection{voctogui --- Interfaz gráfica}
+\texttt{voctogui} es el cliente de control: implementado en PyGTK3, proporciona al
+realizador la interfaz visual para operar el sistema en tiempo real. Se conecta al
+núcleo mediante un socket TCP no bloqueante gestionado con \texttt{GObject.io\_add\_watch},
+de forma que los eventos de red no bloquean el hilo principal de GTK. La GUI recibe
+los flujos de previsualización de cada fuente en formato JPEG comprimido (puertos
+14000--14005) para minimizar el consumo de ancho de banda, mientras que el monitor
+principal recibe la mezcla final en bruto (puerto 11000).
 
-La interfaz gráfica se implementa en PyGTK3 y carga su \textit{layout} desde el
-fichero XML \texttt{voctogui/ui/voctogui.ui}. Se conecta al núcleo mediante un socket
-TCP no-bloqueante gestionado con \texttt{GObject.io\_add\_watch}, de forma que los
-eventos de red no bloquean el hilo principal de GTK. Los previsualizadores de cámara
-reciben un stream JPEG comprimido (puerto 12000/14000+) para minimizar el ancho de banda
-de red, mientras que el monitor principal recibe la mezcla en bruto (puerto 11000).
+\subsection{Diagrama de puertos del sistema}
+
+La figura~\ref{fig:diagrama_sistema} muestra la arquitectura completa del sistema,
+con los bloques principales y los flujos de datos entre ellos: las cámaras y fuentes
+de señal auxiliares alimentan el núcleo voctocore, que genera la mezcla. El resultado
+pasa por el stream blanker antes de salir por el puerto de streaming. La GUI se conecta
+al núcleo para control y visualización. RabbitMQ y el servicio de telemetría completan
+el sistema recopilando los eventos de estado.
+
+% --- Figura principal ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.95\textwidth]{figuras/diagrama_sistema_completo.png}
+%   \caption{Arquitectura de Voctomix 2.0: fuentes, núcleo, salidas, GUI, RabbitMQ
+%            y servicio de telemetría, todo ello en contenedor Docker.}
+%   \label{fig:diagrama_sistema}
+% \end{figure}
+
+La tabla~\ref{tab:puertos_sistema} recoge los puertos TCP/UDP utilizados por voctocore
+y su función dentro del sistema.
+
+\begin{table}[H]
+  \centering
+  \caption{Puertos del sistema Voctomix 2.0.}
+  \label{tab:puertos_sistema}
+  \begin{tabular}{|c|l|l|}
+    \hline
+    \textbf{Puerto} & \textbf{Protocolo} & \textbf{Función} \\
+    \hline
+    9998     & UDP & Sincronización de reloj de red GStreamer \\
+    9999     & TCP & Protocolo de control (GUI, scripts, notario) \\
+    10000    & TCP & Entrada cámara 1 (MKV/raw) \\
+    10001    & TCP & Entrada cámara 2 (MKV/raw) \\
+    10002    & TCP & Entrada cámara 3 (MKV/raw) \\
+    10003    & TCP & Entrada cámara 4 (MKV/raw) \\
+    10004    & TCP & Entrada fuente break (vídeo de pausa) \\
+    10005    & TCP & Entrada fuente intro (vídeo introductorio) \\
+    11000    & TCP & Salida mezcla principal en bruto \\
+    12000    & TCP & Salida previsualización de mezcla (GUI) \\
+    14000--14005 & TCP & Salidas JPEG comprimidas por fuente (GUI) \\
+    15000    & TCP & Salida de streaming (tras stream blanker) \\
+    17000    & TCP & Entrada vídeo stream blanker PAUSE \\
+    17001    & TCP & Entrada vídeo stream blanker NOSTREAM \\
+    18000    & TCP & Entrada audio (música de fondo) \\
+    8080     & HTTP & API REST del servicio de telemetría \\
+    \hline
+  \end{tabular}
+\end{table}
+
+% --- Figura adicional ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.95\textwidth]{figuras/diagrama_puertos.png}
+%   \caption{Diagrama de puertos de Voctomix 2.0: numeración de cada conexión entre
+%            fuentes, núcleo y consumidores.}
+%   \label{fig:diagrama_puertos}
+% \end{figure}
 
 \subsection{Protocolo de control}
 
-La comunicación entre la GUI y el núcleo se realiza mediante un protocolo de texto
-plano sobre TCP (puerto 9999). Cada comando tiene la forma
-\texttt{<verbo>\_<objeto> [parámetros]}, por ejemplo:
+La comunicación entre la GUI, el servicio de telemetría y el núcleo se realiza
+mediante un protocolo de texto plano sobre TCP (puerto 9999). Cada comando tiene la
+forma \texttt{<verbo>\_<objeto> [parámetros]}. Por ejemplo:
 
 \begin{itemize}
   \item \texttt{set\_video\_a cam2} --- selecciona cam2 como fuente A de vídeo.
-  \item \texttt{set\_composite\_mode fs-pip} --- activa el composite Picture in Picture.
-  \item \texttt{set\_stream\_blank pause} --- activa el bucle de pausa en el stream.
+  \item \texttt{set\_composite\_mode pip} --- activa el composite Picture in Picture.
+  \item \texttt{set\_stream\_blank pause} --- activa el estado PAUSE en el stream.
 \end{itemize}
 
-El servidor transmite por \textit{broadcast} cada cambio de estado a todos los
-clientes conectados, de forma que múltiples instancias de voctogui (o scripts de
-automatización) mantienen siempre una vista coherente del sistema.
-
-% --- Figura sugerida ---
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.9\textwidth]{figuras/arquitectura_tres_capas.png}
-%   \caption{Arquitectura de tres capas de Voctomix 2.0 con flujos de datos.}
-%   \label{fig:arquitectura_tres_capas}
-% \end{figure}
-
-% --- Tabla sugerida ---
-% \begin{table}[H]
-%   \centering
-%   \caption{Ficheros clave de voctocore y su responsabilidad.}
-%   \label{tab:ficheros_core}
-%   \begin{tabular}{|l|l|}
-%     \hline
-%     \textbf{Fichero} & \textbf{Responsabilidad} \\
-%     \hline
-%     \texttt{voctocore.py}        & Punto de entrada; inicializa pipeline y servidor TCP \\
-%     \texttt{lib/pipeline.py}     & Construcción dinámica del grafo GStreamer \\
-%     \texttt{lib/videomix.py}     & Compositor de vídeo multipista \\
-%     \texttt{lib/audiomix.py}     & Mezclador de audio y Audio Follows Video \\
-%     \texttt{lib/streamblanker.py}& Intercalador de bucles de pausa/offline \\
-%     \texttt{lib/overlay.py}      & Superposición de rótulos PNG con fundido \\
-%     \texttt{lib/commands.py}     & Intérprete del protocolo de control TCP \\
-%     \texttt{lib/controlserver.py}& Servidor TCP; gestiona sesiones y broadcast \\
-%     \hline
-%   \end{tabular}
-% \end{table}
+El servidor transmite por \textit{broadcast} cada cambio de estado a todos los clientes
+conectados, de forma que múltiples instancias de voctogui o scripts de automatización
+mantienen siempre una vista coherente del sistema.

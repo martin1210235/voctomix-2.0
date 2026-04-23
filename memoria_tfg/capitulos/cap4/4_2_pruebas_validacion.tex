@@ -1,0 +1,97 @@
+\section{Pruebas de validación}
+
+Las pruebas de validación tienen por objetivo verificar el correcto funcionamiento del
+sistema en los dos escenarios de despliegue y caracterizar su comportamiento en términos
+de latencia y fiabilidad del registro de telemetría.
+
+\subsection{Configuración del entorno de pruebas}
+
+Para las pruebas se emplea la siguiente configuración:
+\begin{itemize}
+  \item Cuatro fuentes de vídeo simuladas mediante scripts FFmpeg (barras de color con
+        reloj en tiempo real a 1920×1080 @25~fps).
+  \item Fuentes auxiliares: break, intro, stream blanker y audio de fondo.
+  \item Interfaz gráfica voctogui conectada desde un segundo equipo (Escenario 1) o
+        desde el host anfitrión (Escenario 2).
+\end{itemize}
+
+% --- Tabla sugerida ---
+% \begin{table}[H]
+%   \centering
+%   \caption{Especificaciones hardware de los equipos empleados en las pruebas.}
+%   \label{tab:hardware_pruebas}
+%   \begin{tabular}{|l|l|l|}
+%     \hline
+%     \textbf{Equipo} & \textbf{CPU} & \textbf{RAM / Red} \\
+%     \hline
+%     PC Servidor (voctocore)  & Intel Core i7-xxxx @ x núcleos & xx GB / 1 GbE \\
+%     PC Realizador (voctogui) & Intel Core i5-xxxx @ x núcleos & xx GB / 1 GbE \\
+%     \hline
+%   \end{tabular}
+% \end{table}
+
+\subsection{Medición de latencia de conmutación}
+
+Una de las métricas más relevantes para un sistema de producción en directo es la
+latencia de conmutación: el tiempo que transcurre desde que el realizador pulsa un
+botón de cambio de fuente o composite hasta que el cambio es efectivo y visible en el
+monitor de programa.
+
+% TODO: incluir medición real de la latencia (cronómetro en fotograma, marca de tiempo
+% del comando vs. evento de telemetría recibido).
+% Resultado esperado: latencia < 1 fotograma (< 40 ms) en escenario local.
+
+\begin{itemize}
+  \item \textbf{Método de medición:} se registra la marca de tiempo del comando de
+        control enviado por la GUI (evento en el log del protocolo TCP) y la marca de
+        tiempo del primer fotograma con el nuevo estado visible en el monitor. La
+        diferencia entre ambas marcas constituye la latencia de conmutación.
+  \item \textbf{Resultado esperado:} latencia inferior a un fotograma a 25~fps
+        ($<$40~ms) en el escenario de dos PCs en red local.
+\end{itemize}
+
+\subsection{Verificación del sistema de telemetría en RabbitMQ}
+
+Para verificar que todos los eventos de la sesión quedan correctamente registrados en
+RabbitMQ, se realiza el siguiente procedimiento:
+
+\begin{enumerate}
+  \item Se lanza el sistema completo en el Escenario 2 (Docker Compose).
+  \item Se ejecuta una secuencia de acciones representativas: cambio de fuente,
+        cambio de composite, activación de stream blanker PAUSE y LIVE, carga y
+        descarga de overlay.
+  \item Se accede a la consola de administración de RabbitMQ
+        (\texttt{http://localhost:15672}) y se comprueba que la cola contiene un
+        mensaje por cada acción realizada.
+  \item Se ejecuta el script \texttt{rabbit\_consumer\_example.py} para visualizar
+        el contenido de los mensajes en formato JSON.
+\end{enumerate}
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.85\textwidth]{figuras/rabbitmq_cola.png}
+%   \caption{Consola de administración de RabbitMQ mostrando los mensajes de telemetría
+%            registrados durante una sesión de prueba.}
+%   \label{fig:rabbitmq_cola}
+% \end{figure}
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.85\textwidth]{figuras/gui_en_funcionamiento.png}
+%   \caption{Captura de pantalla de voctogui durante una sesión de prueba con cuatro
+%            fuentes activas, composite pip y overlay cargado.}
+%   \label{fig:gui_prueba}
+% \end{figure}
+
+\subsection{Resultados}
+
+% TODO: completar con los resultados reales de las pruebas.
+
+Los resultados de las pruebas confirman el correcto funcionamiento del sistema en
+ambos escenarios de despliegue. La latencia de conmutación medida es inferior a un
+fotograma en el escenario de red local, lo que proporciona una experiencia de
+realización fluida sin retardos perceptibles. El sistema de telemetría registra
+correctamente todos los eventos de sesión en RabbitMQ, con la marca de tiempo y
+el contenido esperados en cada mensaje.

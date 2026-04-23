@@ -1,0 +1,74 @@
+\section{Distribución de contenidos}
+
+Una vez procesada la señal en el mezclador, el resultado ---la señal de programa---
+debe distribuirse hasta la audiencia. Esta etapa difiere significativamente de la
+contribución: mientras que en la contribución se prioriza la calidad y la latencia
+mínima para no degradar la señal, en la distribución se debe equilibrar calidad, ancho
+de banda y escalabilidad para llegar al máximo número de espectadores posible con los
+recursos disponibles.
+
+\subsection{Interfaces y protocolos de distribución}
+
+Los principales protocolos empleados en la distribución de contenidos audiovisuales en
+directo son:
+
+\begin{itemize}
+  \item \textbf{RTMP} (\textit{Real-Time Messaging Protocol}): protocolo sobre TCP
+  desarrollado por Adobe. Con latencias típicas de 2--5~s, fue durante años el estándar
+  de ingesta en plataformas como YouTube Live o Twitch. Sigue siendo el protocolo más
+  soportado por encoders y mezcladores de software, incluido Voctomix mediante FFmpeg.
+
+  \item \textbf{SRT} (\textit{Secure Reliable Transport}): protocolo abierto de baja
+  latencia ($<$1~s) con corrección de errores ARQ y cifrado AES, diseñado para
+  distribución sobre redes no fiables. Está desplazando progresivamente a RTMP como
+  protocolo de ingesta hacia plataformas y CDN.
+
+  \item \textbf{HLS} (\textit{HTTP Live Streaming}): protocolo de Apple basado en
+  segmentos de vídeo servidos por HTTP. Latencia habitual de 10--30~s en modo estándar
+  o 2--5~s en Low-Latency HLS. Es el protocolo de reproducción más compatible con
+  dispositivos y redes de distribución de contenidos (CDN).
+
+  \item \textbf{WebRTC}: estándar del W3C para comunicación multimedia en tiempo real,
+  con latencias de 100--500~ms. Útil para monitorización remota y retornos de
+  comunicación, aunque su escalabilidad para audiencias masivas es limitada.
+\end{itemize}
+
+\subsection{Codecs de distribución}
+
+A diferencia de la contribución, en la distribución se emplean codecs de alta eficiencia
+que reducen el ancho de banda necesario para llegar a la audiencia final:
+
+\begin{itemize}
+  \item \textbf{H.264 / AVC} (\textit{Advanced Video Coding}): el codec más extendido
+  en la actualidad. Ofrece buena calidad a tasas de bits moderadas y es soportado por
+  la práctica totalidad de dispositivos y plataformas de streaming. Es el codec de
+  salida habitual en Voctomix mediante FFmpeg.
+
+  \item \textbf{H.265 / HEVC} (\textit{High Efficiency Video Coding}): sucesor de
+  H.264 que reduce el bitrate necesario aproximadamente a la mitad para la misma calidad
+  perceptual. Su adopción está limitada por el coste computacional de codificación y
+  por restricciones de licencias en algunas plataformas.
+
+  \item \textbf{AV1}: codec abierto desarrollado por la Alliance for Open Media. Es el
+  más eficiente de los mencionados y su adopción en codificación en tiempo real está
+  creciendo conforme aumenta la disponibilidad de aceleración hardware dedicada.
+
+  \item \textbf{AAC / Opus}: codecs de audio frecuentemente empleados junto con los
+  anteriores codecs de vídeo en la distribución de contenido audiovisual.
+\end{itemize}
+
+\subsection{Formatos de distribución}
+
+\begin{itemize}
+  \item \textbf{MPEG-TS} (\textit{Transport Stream}): estándar de distribución
+  broadcast empleado en emisión por satélite, TDT y algunos protocolos de streaming
+  como HLS.
+
+  \item \textbf{MP4 / ISOBMFF}: contenedor de referencia para distribución mediante
+  HTTP progresivo y streaming adaptativo (DASH, HLS fragmentado). Es el formato de
+  salida habitual para grabaciones y distribución bajo demanda.
+
+  \item \textbf{FLV}: contenedor legado asociado a RTMP, todavía utilizado en la
+  ingesta a plataformas de streaming en directo a pesar de estar técnicamente
+  obsoleto como formato de reproducción.
+\end{itemize}
