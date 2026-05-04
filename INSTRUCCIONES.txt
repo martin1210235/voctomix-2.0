@@ -35,7 +35,17 @@ REQUISITOS
     sudo docker compose build
 
 
---- OPCIÓN C: Servidor en PC1, operador en PC2 ---
+--- OPCIÓN C: Servidor K8s en PC1, operador en PC2 ---
+
+  En PC1:
+    cd k8s_escenario && ./start_server_pc1.sh
+
+  En PC2:
+    cd k8s_escenario && ./start_operator_pc2.sh
+    (si la IP del PC1 no es 192.168.0.42: IP_SERVIDOR=<ip> ./start_operator_pc2.sh)
+
+
+--- OPCIÓN D: Servidor Docker en PC1, operador en PC2 ---
 
   En PC1:
     cd docker_escenario3 && ./start_server_pc1.sh
