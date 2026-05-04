@@ -1,4 +1,5 @@
 import logging
+import os
 from gi.repository import Gtk, Gdk
 
 from lib.config import Config

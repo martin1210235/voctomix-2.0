@@ -1,4 +1,5 @@
 import logging
+import os
 from queue import Queue
 from gi.repository import GObject
 
@@ -12,7 +13,7 @@ class ControlServer(TCPMultiConnection):
     def __init__(self, pipeline):
         '''Initialize server and start listening.'''
         self.log = logging.getLogger('ControlServer')
-        super().__init__(port=9999)
+        super().__init__(port=int(os.environ.get("VOCTOCORE_PORT", "9999")))
 
         self.command_queue = Queue()
 

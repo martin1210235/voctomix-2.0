@@ -1,12 +1,10 @@
-# Usamos la última versión estable de Ubuntu (LTS)
 FROM ubuntu:22.04
 
-# Evitamos que la instalación nos haga preguntas interactivas
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Actualizamos repositorios e instalamos todas las dependencias
 RUN apt-get update && apt-get install -y \
     python3 \
+    python3-pip \
     python3-gi \
     python3-gi-cairo \
     python3-scipy \
@@ -23,18 +21,14 @@ RUN apt-get update && apt-get install -y \
     ffmpeg \
     netcat-openbsd \
     iproute2 \
+    && pip3 install --no-cache-dir pika==1.3.2 \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && pip3 install --no-cache-dir pika==1.3.2
+    && rm -rf /var/lib/apt/lists/*
 
-
-# Creamos el directorio de trabajo
 WORKDIR /opt/voctomix
 
-# Copiamos todo nuestro proyecto dentro de la imagen
 COPY . /opt/voctomix/
 
-# Healthcheck base: el servicio que lo sobreescriba en compose puede refinarlo.
-# Por defecto comprueba que el puerto de control de voctocore escucha.
-HEALTHCHECK --interval=5s --timeout=3s --retries=12 --start-period=20s \
-    CMD bash -c 'echo "" | nc -zw1 localhost 9999' || exit 1
+HEALTHCHECK --interval=5s --timeout=3s --retries=12 \
+    --start-period=20s \
+    CMD bash -c "echo '' | nc -zw1 localhost ${VOCTOCORE_PORT:-9999}" || exit 1

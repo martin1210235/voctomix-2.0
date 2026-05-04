@@ -54,7 +54,7 @@ class MixToolbarController(object):
             # Intro source is detected on either channel A (fullscreen) or B (PIP/SBS).
             # ffmpeg is restarted from the beginning and a delay is added before the cut.
             if str(command.A) == 'intro' or str(command.B) == 'intro':
-                ruta_script = os.path.abspath(os.path.join(
+                script_path = os.path.abspath(os.path.join(
                     os.path.dirname(__file__),
                     '../../../example-scripts/ffmpeg/launch_intro.sh'
                 ))
@@ -68,7 +68,7 @@ class MixToolbarController(object):
                     ['pgrep', '-f', 'tcp://.*:10005'],
                     capture_output=True
                 ).returncode == 0
-                subprocess.Popen(['/bin/bash', ruta_script])
+                subprocess.Popen(['/bin/bash', script_path])
                 # If a process was already running, launch_intro.sh kills it and
                 # voctocore sleeps 1 s before accepting a new connection (~1300 ms total).
                 # If nothing was running, only ffmpeg startup time is needed (~500 ms).

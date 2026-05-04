@@ -1,38 +1,16 @@
-# --- ARCHIVOS DE DOCKER (No nos copiamos a nosotros mismos) ---
 Dockerfile
 docker-compose.yml
 .dockerignore
-
-# --- VÍDEOS Y MULTIMEDIA PESADA ---
-videos/
-*.mp4
-*.mkv
-*.avi
-*.ts
-*.mp3
-
-# --- REGISTROS Y TELEMETRÍA ---
 registros/
+sessions/
 *.jsonl
 *.log
-
-# --- SCRIPTS LOCALES DE LANZAMIENTO ---
-arrancar_servidor_docker.sh
-arrancar_realizacion_pc2.sh
-lanzar_realizacion_docker.sh
-pruebas_lanzar_realizacion.sh
-
-# --- BASURA DEL SISTEMA ---
 .git/
 .gitignore
 .DS_Store
 __pycache__/
 *.pyc
 *.bak
-
-# --- DOCUMENTACIÓN Y NOTION ---
 notion_tfg/
-
-# --- FICHEROS DE COPIA DE SEGURIDAD Y DUPLICADOS ---
-*" (copia)"*
-*" (otra copia)"*
+memoria_tfg/
+k8s/

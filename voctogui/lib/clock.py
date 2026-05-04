@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 import logging
+import os
 from gi.repository import Gst, GstNet
 
 __all__ = ['Clock']
-port = 9998
+port = int(os.environ.get("VOCTOCORE_CLOCK_PORT", "9998"))
 
 log = logging.getLogger('Clock')
 Clock = None
@@ -16,6 +17,10 @@ def obtainClock(host):
     Clock = GstNet.NetClientClock.new('voctocore', host, port, 0)
     log.debug('obtained NetClientClock from host %s: %s', host, Clock)
 
-    log.debug('waiting for NetClientClock to sync to host')
-    Clock.wait_for_sync(Gst.CLOCK_TIME_NONE)
-    log.info('successfully synced NetClientClock to host')
+    timeout_ns = int(os.environ.get("CLOCK_SYNC_TIMEOUT_MS", "5000")) * Gst.MSECOND
+    log.debug('waiting for NetClientClock to sync (timeout %dms)', timeout_ns // Gst.MSECOND)
+    synced = Clock.wait_for_sync(timeout_ns)
+    if synced:
+        log.info('successfully synced NetClientClock to host')
+    else:
+        log.warning('clock sync timed out, continuing without sync')

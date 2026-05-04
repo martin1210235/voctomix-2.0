@@ -21,15 +21,17 @@ class IntroLauncher(Gtk.Window):
         print("Launching intro source...")
         # Switch voctocore to the 'intro' source
         try:
+            host = os.environ.get("VOCTOCORE_HOST", "127.0.0.1")
+            port = int(os.environ.get("VOCTOCORE_PORT", "9999"))
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.connect(('127.0.0.1', 9999))
+            s.connect((host, port))
             s.sendall(b'set_video_a intro\n')
             s.close()
-        except:
+        except Exception:
             pass
 
-        ruta_script = os.path.join(os.path.dirname(__file__), "launch_intro.sh")
-        subprocess.Popen(["/bin/bash", ruta_script])
+        script_path = os.path.join(os.path.dirname(__file__), "launch_intro.sh")
+        subprocess.Popen(["/bin/bash", script_path])
 
 win = IntroLauncher()
 win.connect("destroy", Gtk.main_quit)

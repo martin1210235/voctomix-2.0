@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 import logging
+import os
 from gi.repository import Gst, GstNet
 
 __all__ = ['Clock', 'NetTimeProvider']
-port = 9998
+port = int(os.environ.get("VOCTOCORE_CLOCK_PORT", "9998"))
 
 log = logging.getLogger('Clock')
 

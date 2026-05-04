@@ -20,10 +20,10 @@ except ImportError:
 def get_lan_ip():
     """Returns the local LAN IP address.
 
-    In Docker, reads the MI_IP_REAL environment variable set in the compose file.
+    In Docker, reads the HOST_IP environment variable set in the compose file.
     In native mode (1PC / 2PC), auto-discovers the outgoing interface IP.
     """
-    ip_docker = os.environ.get("MI_IP_REAL")
+    ip_docker = os.environ.get("HOST_IP")
     if ip_docker:
         return ip_docker
 
@@ -41,8 +41,8 @@ LOCAL_IP = get_lan_ip()
 
 # In Docker with a separate network, override with: VOCTOCORE_HOST=voctocore
 HOST = os.environ.get("VOCTOCORE_HOST", "127.0.0.1")
-PORT = 9999
-HTTP_PORT = 8080
+PORT = int(os.environ.get("VOCTOCORE_PORT", "9999"))
+HTTP_PORT = int(os.environ.get("TELEMETRY_HTTP_PORT", "8080"))
 USE_NETWORK = os.environ.get("TELEMETRY_USE_UDP") == "1"
 
 STATE_SECONDS = 5
@@ -57,7 +57,7 @@ RABBITMQ_PASS = os.environ.get("RABBITMQ_PASS", "voctomix123")
 RABBITMQ_EXCHANGE = "voctomix_events"
 USE_RABBITMQ = PIKA_AVAILABLE and os.environ.get("RABBITMQ_HOST") is not None
 
-BASE_DIR = "/opt/voctomix"
+BASE_DIR = os.environ.get("VOCTOMIX_BASE_DIR", "/opt/voctomix")
 if not os.path.exists(BASE_DIR):
     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 SESSIONS_DIR = os.path.join(BASE_DIR, "sessions")
@@ -71,6 +71,9 @@ if not USE_NETWORK:
             os.remove(GUI_STATE_PATH)
     except Exception:
         pass
+
+# SAVE_LOGS: set to "false" in docker-compose to disable session file writing
+SAVE_LOGS = os.environ.get("SAVE_LOGS", "true").strip().lower() not in ("false", "0", "no")
 
 session_index = 1
 while os.path.exists(os.path.join(SESSIONS_DIR, f"session{session_index}.jsonl")):
@@ -331,11 +334,11 @@ def load_gui_state_file():
 
 
 def is_valid_channel(value):
-    return value not in (None, "", "unknown", "none", "desconocido", "ninguno")
+    return value not in (None, "", "unknown", "none")
 
 
 def is_valid_text(value):
-    return value not in (None, "", "unknown", "desconocido")
+    return value not in (None, "", "unknown")
 
 
 def merge_gui_state():
@@ -408,11 +411,12 @@ def save_event(event_type="state"):
 
     publish_to_rabbit(payload)
 
-    try:
-        with open(log_file_path, "a", encoding="utf-8") as f:
-            f.write(json.dumps(payload, ensure_ascii=False) + "\n")
-    except Exception:
-        pass
+    if SAVE_LOGS:
+        try:
+            with open(log_file_path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(payload, ensure_ascii=False) + "\n")
+        except Exception:
+            pass
 
 
 def print_state(prefix="STATE"):
@@ -566,9 +570,9 @@ def process_line(line):
             try:
                 json_str = line.split(" ", 1)[1]
                 connections = json.loads(json_str)
-                for name, conectado in connections.items():
+                for name, connected in connections.items():
                     if name in state["sources"]:
-                        state["sources"][name] = bool(conectado)
+                        state["sources"][name] = bool(connected)
             except Exception:
                 pass
 
@@ -630,7 +634,10 @@ mode_text = "Network/Docker (HTTP)" if USE_NETWORK else "Local (disk)"
 rabbit_text = f"yes ({RABBITMQ_HOST}:{RABBITMQ_PORT})" if USE_RABBITMQ else "no (RABBITMQ_HOST not set)"
 print(f"TELEMETRY SERVICE ACTIVE - Mode: {mode_text}")
 print(f"RabbitMQ: {rabbit_text}")
-print(f"Saving JSON to: session{session_index}.jsonl")
+if SAVE_LOGS:
+    print(f"Saving JSON to: session{session_index}.jsonl")
+else:
+    print("SAVE_LOGS=false — session log file disabled")
 print("=" * 85 + "\n")
 
 if USE_NETWORK:

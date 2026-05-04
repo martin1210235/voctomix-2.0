@@ -7,7 +7,7 @@ Usage:
     python3 rabbit_consumer_example.py
 
 Override host or credentials via environment variables:
-    RABBITMQ_HOST=192.168.0.42 python3 rabbit_consumer_example.py
+    RABBITMQ_HOST=<host_ip> python3 rabbit_consumer_example.py
 """
 
 import json

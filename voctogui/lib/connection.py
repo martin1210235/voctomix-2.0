@@ -9,7 +9,7 @@ from gi.repository import Gtk, GObject
 log = logging.getLogger('Connection')
 conn = None
 ip = None
-port = 9999
+port = int(os.environ.get("VOCTOCORE_PORT", "9999"))
 command_queue = Queue()
 signal_handlers = {}
 cam_volumes = {}   # preferred volume per source: {source_name: float}

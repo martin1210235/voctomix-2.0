@@ -17,13 +17,13 @@ class GuiStateExporter:
         self.thread = None
 
         self.target_ip = os.environ.get("GUI_TARGET_IP")
-        self.target_port = 8080
+        self.target_port = int(os.environ.get("TELEMETRY_HTTP_PORT", "8080"))
 
         if not self.target_ip:
             self.base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.."))
-            self.registros_dir = os.path.join(self.base_dir, "registros")
-            self.output_path = os.path.join(self.registros_dir, "gui_state.json")
-            os.makedirs(self.registros_dir, exist_ok=True)
+            self.sessions_dir = os.path.join(self.base_dir, "sessions")
+            self.output_path = os.path.join(self.sessions_dir, "gui_state.json")
+            os.makedirs(self.sessions_dir, exist_ok=True)
 
     def start(self):
         if self.running:
