@@ -14,6 +14,9 @@ REQUISITOS
 
 --- OPCIÓN A: Kubernetes (recomendado) ---
 
+  Todos los comandos se ejecutan desde la raíz del proyecto:
+  /home/sonda/Documentos/voctomix
+
   1. Inicia el clúster:
        minikube start
 

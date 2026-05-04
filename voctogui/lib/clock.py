@@ -23,4 +23,4 @@ def obtainClock(host):
     if synced:
         log.info('successfully synced NetClientClock to host')
     else:
-        log.warning('clock sync timed out, continuing without sync')
+        log.debug('clock sync timed out, continuing without sync')

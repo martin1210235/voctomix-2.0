@@ -28,7 +28,10 @@ if sys.version_info < minPy:
                     'is too old, at least', minPy, 'is required')
 
 # init GObject & Co. before importing local classes
-GObject.threads_init()
+import warnings
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore")
+    GObject.threads_init()
 Gdk.init([])
 Gtk.init([])
 
