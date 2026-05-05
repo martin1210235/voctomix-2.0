@@ -1,7 +1,8 @@
-\section{Transiciones y señal de programa final}
+\section{Transiciones}
+\label{sec:transiciones}
 
 Las transiciones controlan cómo se realiza el cambio de una fuente o composite a otro
-en el flujo de programa. Voctomix 2.0 ofrece dos modos de transición que el realizador
+en el flujo de programa. Voctomix 2.0 ofrece tres modos de transición que el realizador
 activa desde la barra de herramientas de la interfaz gráfica.
 
 \subsection{Cut (corte instantáneo)}
@@ -9,8 +10,8 @@ activa desde la barra de herramientas de la interfaz gráfica.
 El botón \textbf{Cut} realiza una transición instantánea: en el siguiente fotograma
 tras la pulsación, la fuente de programa pasa a ser la fuente de preview. No existe
 ningún efecto intermedio. Es la transición estándar en producción broadcast: el
-``corte'' es la forma más común y natural de cambiar de plano en directo, ya que imita
-el montaje cinematográfico y resulta imperceptible cuando el timing es correcto.
+corte imita el montaje cinematográfico y resulta imperceptible cuando el
+\textit{timing} es correcto.
 
 \subsection{Trans (transición suave)}
 
@@ -25,27 +26,12 @@ destino (por ejemplo, de \texttt{fs} a \texttt{pip} la transición pasa por el c
 intermedio \texttt{fs-pip} antes de llegar a \texttt{pip}), garantizando que la
 animación sea visualmente coherente independientemente del cambio solicitado.
 
-\subsection{Señal de programa final}
+\subsection{Retake}
 
-La señal de programa final es la mezcla procesada por voctocore una vez aplicados el
-composite activo y los overlays. Esta señal se emite simultáneamente en dos puertos:
-
-\begin{itemize}
-  \item \textbf{Puerto 11000}: salida de la mezcla en bruto (vídeo sin comprimir en
-  I420), destinada a herramientas de grabación o encoders externos como FFmpeg.
-  \item \textbf{Puerto 15000}: salida de streaming, que pasa previamente por el
-  stream blanker. Cuando el estado es LIVE, esta salida es idéntica al puerto 11000;
-  cuando el estado es PAUSE o NOSTREAM, emite el vídeo alternativo correspondiente.
-\end{itemize}
-
-El encoder de salida (tipicamente FFmpeg) se conecta al puerto 15000 y produce el
-flujo H.264/AAC que se ingesta en la plataforma de streaming (RTMP/SRT hacia YouTube
-Live, Twitch u otras plataformas).
-
-% --- Figura sugerida ---
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.7\textwidth]{figuras/botones_transicion.png}
-%   \caption{Botones Cut y Trans en la barra de herramientas de voctogui.}
-%   \label{fig:botones_transicion}
-% \end{figure}
+El botón \textbf{Retake} permite al realizador deshacer el último cambio de fuente o
+composite y volver al estado inmediatamente anterior sin interrumpir la señal de
+programa. Su funcionamiento es equivalente a un Cut inverso: en el siguiente fotograma,
+el sistema intercambia programa y preview, restaurando la fuente que estaba en antena
+antes del cambio. Esta función resulta especialmente útil cuando el realizador realiza
+un corte erróneo y necesita corregirlo de inmediato sin generar un segundo corte
+visible en la emisión.

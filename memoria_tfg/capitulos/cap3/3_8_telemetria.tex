@@ -1,4 +1,4 @@
-\section{Sistema de telemetría: el Notario}
+\section{Sistema de telemetría}
 \label{sec:telemetria}
 
 El sistema de telemetría de Voctomix~2.0 permite registrar en tiempo real todos los
@@ -6,18 +6,18 @@ eventos que ocurren durante una sesión de producción: cambios de fuente activa
 de composite, activaciones del stream blanker, carga y descarga de overlays, niveles de
 audio, y métricas de rendimiento del servidor. Esta información resulta valiosa tanto
 para la monitorización durante el directo como para la auditoría posterior de la sesión.
-El módulo se denomina internamente \textbf{Notario} por su papel de testigo imparcial
+El módulo
 de todo lo que ocurre en la mesa de mezclas.
 
-\subsection{Arquitectura del Notario}
+\subsection{Arquitectura del servicio de telemetría}
 
-El Notario (\texttt{example-scripts/ffmpeg/telemetry\_service.py}) es un proceso Python
+El servicio de telemetría (\texttt{example-scripts/ffmpeg/telemetry\_service.py}) es un proceso Python
 independiente que no requiere privilegios especiales sobre el núcleo. Su arquitectura se
 articula en cinco capas funcionales:
 
 \subsubsection{Intercepción del núcleo por TCP}
 
-El Notario abre una conexión de socket TCP al puerto 9999 de voctocore, comportándose
+El servicio abre una conexión de socket TCP al puerto 9999 de voctocore, comportándose
 como un cliente de control más. Escucha en un hilo secundario (\texttt{threading}) los
 mensajes del protocolo interno, filtrando los eventos de estado relevantes:
 \texttt{video\_status} (fuente en previo y en programa), \texttt{composite\_mode}
@@ -40,12 +40,12 @@ integrado en voctogui.
 Este módulo lee constantemente el estado de los widgets GTK mediante
 \texttt{GLib.idle\_add} (para garantizar la seguridad de hilos) y exporta un fichero
 local \texttt{gui\_state.json} con los niveles de audio por cámara (\texttt{cam1\_db},
-etc.) y el estado de la superposición de textos y logos. El Notario consume este
+etc.) y el estado de la superposición de textos y logos. El servicio de telemetría consume este
 fichero JSON para completar la vista unificada del sistema.
 
 \subsubsection{Fusión de estados y doble lógica de registro}
 
-El Notario unifica los datos del núcleo (TCP) y de la interfaz (JSON local) mediante
+El servicio unifica los datos del núcleo (TCP) y de la interfaz (JSON local) mediante
 un sistema de fusión protegido por cerrojos de hilo (\texttt{threading.Lock()}) para
 evitar condiciones de carrera. El registro sigue una doble vía temporal:
 
@@ -61,7 +61,7 @@ evitar condiciones de carrera. El registro sigue una doble vía temporal:
 
 \subsubsection{Telemetría técnica: métricas de rendimiento}
 
-Para dotar al log de utilidad operativa, el Notario registra en cada entrada un bloque
+Para dotar al log de utilidad operativa, el servicio registra en cada entrada un bloque
 \texttt{performance} con las siguientes métricas del servidor:
 
 \begin{itemize}
@@ -114,12 +114,12 @@ estructura:
 \subsubsection{Autodescubrimiento de red}
 
 Para que el log identifique el origen de los comandos en escenarios distribuidos
-(dos PCs, Docker), el Notario implementa una función de autodescubrimiento de red
+(dos PCs, Docker), el servicio implementa una función de autodescubrimiento de red
 en dos niveles:
 
 \begin{enumerate}
   \item \textbf{Nivel contenedor (prioridad):} si existe la variable de entorno
-        \texttt{MI\_IP\_REAL} (inyectada por Docker Compose), el Notario la utiliza
+        \texttt{MI\_IP\_REAL} (inyectada por Docker Compose), el servicio la utiliza
         directamente como IP de la interfaz LAN real del servidor.
   \item \textbf{Nivel nativo (fallback):} si la variable no existe, el script activa
         un socket UDP hacia \texttt{8.8.8.8} sin llegar a realizar la conexión
@@ -130,7 +130,7 @@ en dos niveles:
 
 \subsection{API REST y mensajería AMQP}
 
-El Notario expone los datos de telemetría en dos canales complementarios:
+El servicio expone los datos de telemetría en dos canales complementarios:
 
 \begin{itemize}
   \item \textbf{API REST HTTP (puerto 8080):} implementada con
@@ -143,7 +143,7 @@ El Notario expone los datos de telemetría en dos canales complementarios:
         un mensaje JSON en el exchange \texttt{voctomix\_events} del broker RabbitMQ,
         permitiendo que cualquier consumidor externo (sistema de streaming, dashboard
         web, automatización) se suscriba a los eventos sin acoplarse directamente al
-        Notario ni a voctocore.
+        el servicio de telemetría ni a voctocore.
 \end{itemize}
 
 \subsection{RabbitMQ como broker de mensajería}
@@ -174,7 +174,7 @@ Voctomix con sistemas externos.
 La arquitectura desacoplada del servicio de telemetría, conectado al núcleo como un
 cliente TCP ordinario sin privilegios especiales, garantiza que su eventual fallo no
 afecte al procesamiento multimedia principal: el sistema de producción opera con plenas
-garantías aunque el Notario no esté disponible (\textit{single point of failure} libre).
+garantías aunque el servicio de telemetría no esté disponible (\textit{single point of failure} libre).
 
 % --- Figura sugerida ---
 % \begin{figure}[H]
@@ -187,22 +187,22 @@ garantías aunque el Notario no esté disponible (\textit{single point of failur
 \subsection{Evolución del protocolo de telemetría: de UDP a HTTP}
 \label{sec:evolucion_telemetria}
 
-En el escenario de dos PCs, el Notario necesita recibir los datos de estado de la GUI
+En el escenario de dos PCs, el servicio de telemetría necesita recibir los datos de estado de la GUI
 (niveles de audio, estado de overlays) desde el PC del realizador a través de la red.
 La implementación inicial utilizó UDP (\texttt{socket.SOCK\_DGRAM}), que presenta dos
 fallos críticos en entornos Wi-Fi:
 
 \begin{itemize}
   \item \textbf{Falta de fiabilidad:} UDP es \textit{fire-and-forget}; los paquetes
-        de estado pueden perderse sin que el emisor lo detecte, dejando el Notario y
+        de estado pueden perderse sin que el emisor lo detecte, dejando el servicio y
         la GUI desincronizados.
   \item \textbf{Bloqueos del kernel (\texttt{Errno 98}):} al reiniciar los scripts
         rápidamente durante el desarrollo, el kernel mantenía el puerto UDP en estado
-        \texttt{TIME\_WAIT}, impidiendo que el Notario volviera a enlazar el puerto
+        \texttt{TIME\_WAIT}, impidiendo que el servicio volviera a enlazar el puerto
         hasta que expirase el tiempo de gracia.
 \end{itemize}
 
-La solución fue migrar a un modelo \textbf{HTTP/TCP}: el Notario actúa como servidor
+La solución fue migrar a un modelo \textbf{HTTP/TCP}: el servicio de telemetría actúa como servidor
 HTTP en el puerto 8080, y el \texttt{gui\_state\_exporter.py} del PC del realizador
 envía los datos de estado mediante peticiones HTTP POST con cuerpo JSON. TCP garantiza
 la entrega secuencial de los datos, y HTTP proporciona un estándar robusto para el

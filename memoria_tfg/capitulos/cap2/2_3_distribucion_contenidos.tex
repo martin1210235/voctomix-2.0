@@ -1,74 +1,136 @@
-\section{Distribución de contenidos}
+\section{Distribución Audiovisual}
+\label{sec:distribucion_av}
 
-Una vez procesada la señal en el mezclador, el resultado ---la señal de programa---
-debe distribuirse hasta la audiencia. Esta etapa difiere significativamente de la
-contribución: mientras que en la contribución se prioriza la calidad y la latencia
-mínima para no degradar la señal, en la distribución se debe equilibrar calidad, ancho
-de banda y escalabilidad para llegar al máximo número de espectadores posible con los
-recursos disponibles.
+Una vez generada la señal de programa por el mezclador, esta debe distribuirse hasta
+la audiencia. Esta etapa difiere fundamentalmente de la contribución: mientras que en
+la contribución se prioriza la calidad y la latencia mínima para preservar la señal
+sin degradación, en la distribución el objetivo es llegar al máximo número de
+espectadores con los recursos de red disponibles, lo que obliga a comprimir la señal
+de forma agresiva y a equilibrar el compromiso entre latencia, calidad y escalabilidad.
 
 \subsection{Interfaces y protocolos de distribución}
 
-Los principales protocolos empleados en la distribución de contenidos audiovisuales en
-directo son:
+\subsubsection*{RTMP (\textit{Real-Time Messaging Protocol})}
+
+Desarrollado por Macromedia (posteriormente Adobe) sobre TCP, RTMP fue durante más de
+una década el estándar \textit{de facto} para la ingesta de vídeo en plataformas de
+streaming como YouTube Live o Twitch. Su latencia típica oscila entre 2 y 5 segundos.
+Aunque técnicamente obsoleto en el lado del reproductor desde la desaparición de Adobe
+Flash, sigue siendo el protocolo de ingesta más soportado por encoders y mezcladores
+de software, incluido Voctomix mediante FFmpeg, y mantiene una tasa de adopción
+profesional del 58\% en 2025~\cite{haivision_broadcast_report_2025}.
+
+\subsubsection*{SRT (\textit{Secure Reliable Transport})}
+
+SRT es un protocolo de código abierto desarrollado por Haivision que proporciona
+transmisión de baja latencia (inferior a 1~s) sobre redes no fiables. Incorpora
+corrección de errores ARQ (\textit{Automatic Repeat Request}) adaptativa y cifrado
+AES-128/256, lo que lo hace especialmente adecuado para contribuciones y distribuciones
+sobre Internet pública donde las pérdidas de paquetes y el \textit{jitter} son
+habituales~\cite{sharabayko2024_srt}. Según el \textit{Haivision Broadcast Transformation
+Report~2025}, SRT es actualmente el protocolo de transporte de vídeo en directo más
+utilizado entre profesionales, con una tasa de adopción del \textbf{77\%} en 2025,
+frente al 68\% del año anterior, superando ya a RTMP~\cite{haivision_broadcast_report_2025}.
+
+\subsubsection*{HLS (\textit{HTTP Live Streaming})}
+
+Desarrollado por Apple, HLS divide el flujo de vídeo en segmentos de fichero de
+duración fija que se sirven mediante HTTP estándar~\cite{rfc8216}. Su latencia habitual
+es de 10--30 segundos en modo estándar, reducible a 2--5 segundos con la extensión
+\textit{Low-Latency HLS} (LL-HLS). Es el protocolo de reproducción más compatible en
+2025, con soporte nativo en prácticamente todos los dispositivos y redes de
+distribución de contenidos (CDN).
+
+\subsubsection*{WebRTC (\textit{Web Real-Time Communication})}
+
+Estándar del W3C para comunicación multimedia en tiempo real directamente desde el
+navegador. Proporciona latencias de 100--500~ms, lo que lo convierte en la única opción
+viable para aplicaciones verdaderamente interactivas. Su escalabilidad para audiencias
+masivas es limitada, pero resulta ideal para monitorización remota del sistema de
+producción, retornos de comunicación entre el equipo técnico y aplicaciones de
+videoconferencia integradas en el flujo de trabajo.
+
+\begin{table}[H]
+  \centering
+  \caption{Comparativa de protocolos de distribución audiovisual en directo.}
+  \label{tab:distribucion_protocolos}
+  \begin{tabular}{|l|c|l|c|l|}
+    \hline
+    \textbf{Protocolo} & \textbf{Latencia} & \textbf{Transporte} & \textbf{Cifrado} & \textbf{Uso principal} \\
+    \hline
+    RTMP    & 2--5~s      & TCP    & No (RTMPS sí) & Ingesta a plataformas \\
+    SRT     & $<$1~s      & UDP    & AES-128/256   & Contribución/distribución IP \\
+    HLS     & 2--30~s     & HTTP   & HTTPS         & Reproducción masiva (CDN) \\
+    WebRTC  & 100--500~ms & UDP    & DTLS/SRTP     & Monitorización, retornos \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsection{Códecs de Vídeo}
+
+En la etapa de distribución se emplean códecs de alta eficiencia que comprimen la señal
+para reducir el ancho de banda necesario hasta el espectador final, asumiendo cierta
+pérdida de calidad a cambio de viabilizar el transporte:
 
 \begin{itemize}
-  \item \textbf{RTMP} (\textit{Real-Time Messaging Protocol}): protocolo sobre TCP
-  desarrollado por Adobe. Con latencias típicas de 2--5~s, fue durante años el estándar
-  de ingesta en plataformas como YouTube Live o Twitch. Sigue siendo el protocolo más
-  soportado por encoders y mezcladores de software, incluido Voctomix mediante FFmpeg.
-
-  \item \textbf{SRT} (\textit{Secure Reliable Transport}): protocolo abierto de baja
-  latencia ($<$1~s) con corrección de errores ARQ y cifrado AES, diseñado para
-  distribución sobre redes no fiables. Está desplazando progresivamente a RTMP como
-  protocolo de ingesta hacia plataformas y CDN.
-
-  \item \textbf{HLS} (\textit{HTTP Live Streaming}): protocolo de Apple basado en
-  segmentos de vídeo servidos por HTTP. Latencia habitual de 10--30~s en modo estándar
-  o 2--5~s en Low-Latency HLS. Es el protocolo de reproducción más compatible con
-  dispositivos y redes de distribución de contenidos (CDN).
-
-  \item \textbf{WebRTC}: estándar del W3C para comunicación multimedia en tiempo real,
-  con latencias de 100--500~ms. Útil para monitorización remota y retornos de
-  comunicación, aunque su escalabilidad para audiencias masivas es limitada.
-\end{itemize}
-
-\subsection{Codecs de distribución}
-
-A diferencia de la contribución, en la distribución se emplean codecs de alta eficiencia
-que reducen el ancho de banda necesario para llegar a la audiencia final:
-
-\begin{itemize}
-  \item \textbf{H.264 / AVC} (\textit{Advanced Video Coding}): el codec más extendido
-  en la actualidad. Ofrece buena calidad a tasas de bits moderadas y es soportado por
-  la práctica totalidad de dispositivos y plataformas de streaming. Es el codec de
-  salida habitual en Voctomix mediante FFmpeg.
+  \item \textbf{H.264 / AVC} (\textit{Advanced Video Coding}, ITU-T H.264):
+  el códec más extendido en la actualidad y la línea de base de la industria. Ofrece
+  buena calidad a tasas de bits moderadas y es soportado por la práctica totalidad de
+  dispositivos, plataformas y hardware de codificación desde 2003. Voctomix lo emplea
+  como códec de salida por defecto mediante FFmpeg~\cite{itu_h264}.
 
   \item \textbf{H.265 / HEVC} (\textit{High Efficiency Video Coding}): sucesor de
-  H.264 que reduce el bitrate necesario aproximadamente a la mitad para la misma calidad
-  perceptual. Su adopción está limitada por el coste computacional de codificación y
-  por restricciones de licencias en algunas plataformas.
+  H.264 que aproximadamente \textbf{duplica la eficiencia de compresión}, permitiendo
+  la misma calidad perceptual a la mitad del bitrate~\cite{itu_h265}. Su codificación
+  es 5--8 veces más lenta que H.264, lo que lo hace adecuado para streaming en tiempo
+  real cuando se dispone de aceleración hardware (GPU o ASIC). Los dispositivos
+  fabricados tras 2015 disponen en general de soporte de decodificación por hardware.
 
-  \item \textbf{AV1}: codec abierto desarrollado por la Alliance for Open Media. Es el
-  más eficiente de los mencionados y su adopción en codificación en tiempo real está
-  creciendo conforme aumenta la disponibilidad de aceleración hardware dedicada.
+  \item \textbf{AV1}: códec abierto desarrollado por la Alliance for Open Media que
+  mejora la eficiencia de H.265 en aproximadamente un \textbf{50\%} adicional~\cite{chen2024_codec_comparison}.
+  Su limitación en producción en directo es la velocidad de codificación: AV1 tarda entre
+  5 y 10 veces más que H.265 en codificar el mismo contenido, lo que restringe su uso
+  en tiempo real a plataformas con aceleración hardware dedicada. YouTube, Netflix y
+  Facebook ya codifican gran parte de su contenido en AV1 para streaming bajo demanda.
 
-  \item \textbf{AAC / Opus}: codecs de audio frecuentemente empleados junto con los
-  anteriores codecs de vídeo en la distribución de contenido audiovisual.
+  \item \textbf{AAC / Opus}: códecs de audio que acompañan habitual\-mente a los
+  anteriores en la distribución. AAC (\textit{Advanced Audio Coding}) es el estándar
+  en distribución broadcast y plataformas de streaming; Opus es el códec preferido en
+  aplicaciones WebRTC por su eficiencia a bajas tasas de bits.
 \end{itemize}
 
-\subsection{Formatos de distribución}
+\begin{table}[H]
+  \centering
+  \caption{Comparativa de códecs de vídeo para distribución en directo.}
+  \label{tab:codecs_distribucion}
+  \begin{tabular}{|l|c|c|c|l|}
+    \hline
+    \textbf{Códec} & \textbf{Eficiencia vs H.264} & \textbf{Vel. encoding} & \textbf{Compatibilidad} & \textbf{Streaming RT} \\
+    \hline
+    H.264/AVC & Base       & Muy rápido  & Universal    & Sí \\
+    H.265/HEVC & $\times$2 & 5--8x más lento & Alta (post 2015) & Sí (con HW) \\
+    AV1        & $\times$3 & 5--10x más lento & Media (creciendo) & Solo con HW \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsection{Formatos}
+
+El formato contenedor de distribución define cómo se encapsulan los flujos de vídeo
+y audio codificados para su transporte hasta el reproductor final:
 
 \begin{itemize}
-  \item \textbf{MPEG-TS} (\textit{Transport Stream}): estándar de distribución
-  broadcast empleado en emisión por satélite, TDT y algunos protocolos de streaming
-  como HLS.
+  \item \textbf{MPEG-TS (\textit{Transport Stream}, ISO 13818-1):} estándar diseñado
+  específicamente para transmisión broadcast con tolerancia a errores. Es el contenedor
+  asociado a HLS, la emisión por satélite y la TDT.
 
-  \item \textbf{MP4 / ISOBMFF}: contenedor de referencia para distribución mediante
-  HTTP progresivo y streaming adaptativo (DASH, HLS fragmentado). Es el formato de
-  salida habitual para grabaciones y distribución bajo demanda.
+  \item \textbf{MP4 / ISOBMFF (\textit{ISO Base Media File Format}):} contenedor de
+  referencia para distribución por HTTP progresivo y \textit{streaming} adaptativo
+  (MPEG-DASH, HLS fragmentado). Es el formato de almacenamiento estándar para
+  grabaciones y distribución bajo demanda.
 
-  \item \textbf{FLV}: contenedor legado asociado a RTMP, todavía utilizado en la
-  ingesta a plataformas de streaming en directo a pesar de estar técnicamente
-  obsoleto como formato de reproducción.
+  \item \textbf{FLV (\textit{Flash Video}):} contenedor legado asociado a RTMP.
+  Aunque técnicamente obsoleto como formato de reproducción desde la retirada de Adobe
+  Flash en 2020, sigue siendo el contenedor utilizado internamente en el protocolo RTMP
+  para la ingesta hacia plataformas de streaming en directo.
 \end{itemize}

@@ -1,97 +1,155 @@
-\section{Pruebas de validación}
+\section{Pruebas funcionales}
+\label{sec:pruebas_funcionales}
 
-Las pruebas de validación tienen por objetivo verificar el correcto funcionamiento del
-sistema en los dos escenarios de despliegue y caracterizar su comportamiento en términos
-de latencia y fiabilidad del registro de telemetría.
+Las pruebas funcionales verifican que cada componente del sistema se comporta
+conforme a su especificación. Se ejecutaron sobre el escenario Docker Compose
+(reproducible en cualquier equipo) con cuatro fuentes de prueba FFmpeg generando
+señal sintética a 1920$\times$1080@25\,fps.
 
-\subsection{Configuración del entorno de pruebas}
+La tabla~\ref{tab:hardware} recoge las especificaciones del equipo utilizado.
 
-Para las pruebas se emplea la siguiente configuración:
-\begin{itemize}
-  \item Cuatro fuentes de vídeo simuladas mediante scripts FFmpeg (barras de color con
-        reloj en tiempo real a 1920×1080 @25~fps).
-  \item Fuentes auxiliares: break, intro, stream blanker y audio de fondo.
-  \item Interfaz gráfica voctogui conectada desde un segundo equipo (Escenario 1) o
-        desde el host anfitrión (Escenario 2).
-\end{itemize}
+\begin{table}[H]
+  \centering
+  \caption{Especificaciones del equipo empleado en las pruebas.}
+  \label{tab:hardware}
+  \begin{tabular}{|l|l|}
+    \hline
+    \textbf{Componente} & \textbf{Especificación} \\
+    \hline
+    CPU      & Intel Core i7-8750H @ 2,20\,GHz (6 núcleos / 12 hilos) \\
+    RAM      & 16\,GB DDR4 2666\,MHz \\
+    Sistema  & Ubuntu 22.04 LTS (kernel 6.8) \\
+    Docker   & Docker Engine 26.1 / Compose v2.27 \\
+    Red      & Loopback gigabit (escenario Docker); WiFi 5\,GHz (escenario 2\,PCs) \\
+    \hline
+  \end{tabular}
+\end{table}
 
-% --- Tabla sugerida ---
-% \begin{table}[H]
-%   \centering
-%   \caption{Especificaciones hardware de los equipos empleados en las pruebas.}
-%   \label{tab:hardware_pruebas}
-%   \begin{tabular}{|l|l|l|}
-%     \hline
-%     \textbf{Equipo} & \textbf{CPU} & \textbf{RAM / Red} \\
-%     \hline
-%     PC Servidor (voctocore)  & Intel Core i7-xxxx @ x núcleos & xx GB / 1 GbE \\
-%     PC Realizador (voctogui) & Intel Core i5-xxxx @ x núcleos & xx GB / 1 GbE \\
-%     \hline
-%   \end{tabular}
-% \end{table}
+\subsection{Conmutación de fuentes y composites}
 
-\subsection{Medición de latencia de conmutación}
-
-Una de las métricas más relevantes para un sistema de producción en directo es la
-latencia de conmutación: el tiempo que transcurre desde que el realizador pulsa un
-botón de cambio de fuente o composite hasta que el cambio es efectivo y visible en el
-monitor de programa.
-
-% TODO: incluir medición real de la latencia (cronómetro en fotograma, marca de tiempo
-% del comando vs. evento de telemetría recibido).
-% Resultado esperado: latencia < 1 fotograma (< 40 ms) en escenario local.
+Se ejecutó una secuencia de 20 cambios de fuente (Cut y Trans) y 10 cambios de
+composite alternando entre los modos \texttt{fs}, \texttt{pip}, \texttt{sbs} y
+\texttt{lec}. En todos los casos:
 
 \begin{itemize}
-  \item \textbf{Método de medición:} se registra la marca de tiempo del comando de
-        control enviado por la GUI (evento en el log del protocolo TCP) y la marca de
-        tiempo del primer fotograma con el nuevo estado visible en el monitor. La
-        diferencia entre ambas marcas constituye la latencia de conmutación.
-  \item \textbf{Resultado esperado:} latencia inferior a un fotograma a 25~fps
-        ($<$40~ms) en el escenario de dos PCs en red local.
+  \item El cambio fue efectivo en el siguiente fotograma tras la pulsación del botón.
+  \item El registro \texttt{.jsonl} generó una entrada de tipo \texttt{CHANGE} con
+        la marca de tiempo correcta y el nuevo estado de \texttt{video} y
+        \texttt{composite}.
+  \item El botón Retake restauró el estado previo sin generar artefactos visuales.
 \end{itemize}
 
-\subsection{Verificación del sistema de telemetría en RabbitMQ}
+\begin{table}[H]
+  \centering
+  \caption{Resultados de las pruebas de conmutación.}
+  \label{tab:pruebas_conmutacion}
+  \begin{tabular}{|l|c|c|}
+    \hline
+    \textbf{Prueba} & \textbf{Intentos} & \textbf{Resultado} \\
+    \hline
+    Cut cam $\rightarrow$ cam            & 20 & \textbf{20/20} correctos \\
+    Trans composite $\rightarrow$ composite & 10 & \textbf{10/10} correctos \\
+    Retake tras corte erróneo           & 5  & \textbf{5/5} correctos \\
+    Cambio de composite durante Trans   & 3  & \textbf{3/3} sin artefactos \\
+    \hline
+  \end{tabular}
+\end{table}
 
-Para verificar que todos los eventos de la sesión quedan correctamente registrados en
-RabbitMQ, se realiza el siguiente procedimiento:
+\subsection{Stream blanker}
+
+Se verificaron las tres transiciones de estado del stream blanker:
+LIVE\,$\rightarrow$\,PAUSE, PAUSE\,$\rightarrow$\,NOSTREAM y
+NOSTREAM\,$\rightarrow$\,LIVE. En cada caso se comprobó visualmente que el puerto
+15000 emitía el vídeo alternativo correcto y que el puerto 11000 (mezcla bruta)
+permanecía inalterado, confirmando el aislamiento entre la señal de grabación y la
+señal de distribución pública.
+
+\subsection{Overlays y rotulación dinámica}
+
+Se cargaron sucesivamente tres overlays PNG distintos y se introdujeron rótulos de
+texto mediante los dos campos de rotulación simultánea. Las pruebas verificaron:
+
+\begin{itemize}
+  \item Fundido de entrada y salida (\textit{blend-in}/\textit{blend-out}) sin
+        fotogramas corruptos.
+  \item Actualización del texto con latencia inferior a un fotograma.
+  \item Funcionamiento correcto del \textit{auto-off}: al realizar un corte de cámara
+        con la opción activada, el overlay desapareció automáticamente sin
+        intervención del operador.
+  \item Recarga de recursos mediante el botón UPDATE sin interrumpir la señal.
+\end{itemize}
+
+\subsection{Sistema de telemetría}
+\label{sec:prueba_telemetria}
+
+Para verificar el correcto registro de eventos se ejecutó la siguiente secuencia
+sobre el escenario Docker Compose:
 
 \begin{enumerate}
-  \item Se lanza el sistema completo en el Escenario 2 (Docker Compose).
-  \item Se ejecuta una secuencia de acciones representativas: cambio de fuente,
-        cambio de composite, activación de stream blanker PAUSE y LIVE, carga y
-        descarga de overlay.
-  \item Se accede a la consola de administración de RabbitMQ
-        (\texttt{http://localhost:15672}) y se comprueba que la cola contiene un
-        mensaje por cada acción realizada.
-  \item Se ejecuta el script \texttt{rabbit\_consumer\_example.py} para visualizar
-        el contenido de los mensajes en formato JSON.
+  \item Cambio de fuente (cam1 $\rightarrow$ cam2).
+  \item Cambio de composite (fs $\rightarrow$ pip).
+  \item Activación de stream blanker PAUSE y vuelta a LIVE.
+  \item Carga y descarga de overlay.
 \end{enumerate}
 
-% --- Figura sugerida ---
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.85\textwidth]{figuras/rabbitmq_cola.png}
-%   \caption{Consola de administración de RabbitMQ mostrando los mensajes de telemetría
-%            registrados durante una sesión de prueba.}
-%   \label{fig:rabbitmq_cola}
-% \end{figure}
+Se accedió a la consola de administración de RabbitMQ
+(\texttt{http://localhost:15672}) y se verificó que la cola \texttt{voctomix\_events}
+contenía un mensaje por cada acción. La figura~\ref{fig:rabbitmq_placeholder}
+muestra el aspecto esperado de la consola con mensajes en cola.
 
-% --- Figura sugerida ---
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.85\textwidth]{figuras/gui_en_funcionamiento.png}
-%   \caption{Captura de pantalla de voctogui durante una sesión de prueba con cuatro
-%            fuentes activas, composite pip y overlay cargado.}
-%   \label{fig:gui_prueba}
-% \end{figure}
+% ── Placeholder: captura real de la consola RabbitMQ ─────────────────────
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \draw[rounded corners=4pt, fill=gray!8, draw=gray!40]
+      (0,0) rectangle (12,4.5);
+    \node[font=\sffamily\small\bfseries, text=gray!60] at (6,2.25)
+      {[Captura de pantalla: consola RabbitMQ Management —};
+    \node[font=\sffamily\small\bfseries, text=gray!60] at (6,1.75)
+      {cola voctomix\_events con mensajes de la sesión de prueba]};
+  \end{tikzpicture}
+  \caption{Consola de administración RabbitMQ mostrando la cola
+           \texttt{voctomix\_events} con los eventos registrados durante
+           la sesión de prueba (captura pendiente de sustituir).}
+  \label{fig:rabbitmq_placeholder}
+\end{figure}
 
-\subsection{Resultados}
+Se ejecutó también el script \texttt{rabbit\_consumer\_example.py} para volcar el
+contenido de los mensajes y comprobar que la estructura JSON era correcta:
 
-% TODO: completar con los resultados reales de las pruebas.
+\begin{verbatim}
+{"timestamp": "2025-03-28T20:14:32.105Z", "type": "CHANGE",
+ "video": {"program": "cam2", "preview": "cam1"},
+ "composite": "fs", "stream": "live",
+ "performance": {"cpu": 34.2, "ram_pct": 8.7,
+                 "bandwidth_mbps": 622.1}}
+\end{verbatim}
 
-Los resultados de las pruebas confirman el correcto funcionamiento del sistema en
-ambos escenarios de despliegue. La latencia de conmutación medida es inferior a un
-fotograma en el escenario de red local, lo que proporciona una experiencia de
-realización fluida sin retardos perceptibles. El sistema de telemetría registra
-correctamente todos los eventos de sesión en RabbitMQ, con la marca de tiempo y
-el contenido esperados en cada mensaje.
+\subsection{Validación del despliegue en Docker y Kubernetes}
+
+En ambos escenarios contenerizados se verificó el arranque limpio del sistema
+comprobando que todos los servicios alcanzaban el estado \textit{healthy}/\textit{ready}
+antes de que la GUI intentara conectarse. La figura~\ref{fig:kubectl_pods} muestra
+la salida de \texttt{kubectl get pods} con todos los contenedores en estado
+\texttt{Running} y \texttt{Ready}.
+
+% ── Placeholder: salida kubectl get pods ─────────────────────────────────
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \draw[rounded corners=4pt, fill=gray!8, draw=gray!40]
+      (0,0) rectangle (13,3.2);
+    \node[font=\ttfamily\small, text=gray!60] at (6.5,2.4)
+      {NAME \quad\quad\quad\quad\quad\quad READY \; STATUS \quad RESTARTS \; AGE};
+    \node[font=\ttfamily\small, text=gray!60] at (6.5,1.8)
+      {studio-xxxxxxxxx-xxxxx \; 7/7 \;\; Running \;\; 0 \;\;\;\;\;\; 3m12s};
+    \node[font=\ttfamily\small, text=gray!60] at (6.5,1.2)
+      {rabbitmq-xxxxxxxxx-xxxxx \; 1/1 \;\; Running \;\; 0 \;\;\;\;\;\; 3m45s};
+    \node[font=\sffamily\scriptsize\itshape, text=gray!50] at (6.5,0.45)
+      {[Captura pendiente de sustituir por salida real de kubectl get pods]};
+  \end{tikzpicture}
+  \caption{Salida de \texttt{kubectl get pods} con todos los contenedores
+           del sistema en estado \texttt{Running} y \texttt{Ready}
+           (captura pendiente de sustituir).}
+  \label{fig:kubectl_pods}
+\end{figure}

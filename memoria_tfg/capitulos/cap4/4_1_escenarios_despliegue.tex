@@ -1,68 +1,79 @@
-\section{Escenarios de despliegue}
+Este capítulo presenta la validación del sistema Voctomix~2.0 a lo largo de los cuatro
+escenarios de despliegue sobre los que se ha desarrollado y probado el proyecto.
+Para cada escenario se describe el entorno utilizado, los objetivos de validación y
+los resultados obtenidos. Se incluyen además pruebas de rendimiento que caracterizan
+el comportamiento del sistema bajo carga real.
 
-La validación del sistema se ha llevado a cabo en dos escenarios de despliegue que
-cubren los casos de uso más representativos: un despliegue en dos PCs en red local y
-un despliegue completamente contenerizado mediante Docker. Ambos escenarios utilizan
-la misma configuración de voctocore y la misma interfaz gráfica, diferenciándose
-únicamente en cómo se gestiona el entorno de ejecución.
+\section{Escenarios de despliegue evaluados}
+\label{sec:escenarios}
 
-\subsection{Escenario 1 --- Dos PCs en red local}
+La validación del sistema se ha llevado a cabo de forma progresiva a través de cuatro
+escenarios que cubren desde el entorno de desarrollo inicial hasta el despliegue
+orquestado en Kubernetes. Cada escenario añade una garantía de calidad que el anterior
+no podía ofrecer. La tabla~\ref{tab:escenarios} resume sus características principales.
 
-En este escenario, voctocore y las fuentes FFmpeg se ejecutan en un primer PC
-(\textit{servidor/cerebro}) mientras que voctogui se conecta desde un segundo PC
-mediante la red local. Este es el escenario que más se aproxima a una producción real
-con cámaras físicas: el servidor de procesamiento puede situarse en un rack técnico
-mientras el realizador trabaja desde otro equipo en la mesa de producción.
+\begin{table}[H]
+  \centering
+  \caption{Comparativa de los cuatro escenarios de despliegue evaluados.}
+  \label{tab:escenarios}
+  \begin{tabular}{|l|c|c|l|}
+    \hline
+    \textbf{Escenario} & \textbf{Máquinas} & \textbf{Orquestación} & \textbf{Objetivo de validación} \\
+    \hline
+    1 PC (desarrollo)   & 1 & Manual / scripts    & Funcionalidad del pipeline \\
+    2 PCs en LAN        & 2 & Manual / scripts    & Comunicación en red real \\
+    Docker Compose      & 1 & Docker Compose      & Reproducibilidad y portabilidad \\
+    Kubernetes          & 1 & Kubernetes/Minikube & Orquestación y resiliencia \\
+    \hline
+  \end{tabular}
+\end{table}
 
-\textbf{Requisitos de instalación:} ambos equipos deben tener instalado Python 3,
-las dependencias de GStreamer y sus plugins (\texttt{gstreamer1.0-plugins-base},
-\texttt{-good}, \texttt{-bad}, \texttt{-ugly}, \texttt{libav}) y FFmpeg. La instalación
-manual de estas dependencias puede ser tediosa, especialmente en distribuciones Linux
-con versiones de GStreamer distintas a las esperadas.
+\subsection{Escenario 1: un PC (entorno de desarrollo)}
 
-Los scripts de arranque se encuentran en el directorio \texttt{2pc\_escenario2/}:
-\begin{itemize}
-  \item \texttt{arrancar\_voctocore\_pc1.sh}: inicializa el servidor en el PC de
-        procesamiento, detectando la IP local y mostrándola para que el realizador
-        la configure en su equipo.
-  \item \texttt{arrancar\_voctogui\_pc2.sh}: lanza la interfaz gráfica en el PC del
-        realizador, conectándose al servidor por su dirección IP.
-\end{itemize}
+Durante las primeras semanas de desarrollo todo el sistema se ejecutó en un único
+equipo: voctocore, las cuatro fuentes FFmpeg, el stream blanker, el servicio de
+telemetría y voctogui corrían simultáneamente en la misma máquina. Este escenario
+permitió iterar rápidamente sobre el código sin necesidad de sincronizar dos equipos
+ni gestionar direcciones IP. Fue el entorno en el que se implementaron y depuraron
+la totalidad de los componentes: composites, overlays, rotulación dinámica, scripts
+de arranque y el servicio de telemetría.
 
-La GUI recibe los flujos de previsualización en formato JPEG comprimido, minimizando
-el ancho de banda requerido entre ambos equipos sobre una red local 1~GbE estándar.
+\subsection{Escenario 2: dos PCs en red local}
 
-\subsection{Escenario 2 --- Docker Compose}
+Una vez que el sistema era funcional en un único equipo, se validó su comportamiento
+en red: voctocore y las fuentes FFmpeg se ejecutaron en el PC servidor mientras que
+voctogui se conectó desde un segundo equipo mediante una red local. El objetivo de
+este escenario no era añadir nuevas funcionalidades sino confirmar que la arquitectura
+cliente-servidor funcionaba correctamente en un entorno distribuido real: que los
+cortes de cámara eran efectivos sin retardo apreciable, que las previsualizaciones
+JPEG llegaban fluidas al realizador y que el servicio de telemetría recibía los estados
+de la GUI del PC remoto mediante HTTP POST. Se verificó además la latencia de
+conmutación bajo condiciones de red WiFi y cableada.
 
-El despliegue contenerizado elimina la necesidad de instalar manualmente Python ni
-ninguna dependencia de GStreamer en el sistema anfitrión: todo el entorno de ejecución
-se encuentra empaquetado dentro de la imagen Docker. El sistema completo se despliega
-con un único comando desde el directorio \texttt{docker\_escenario3/}:
+\subsection{Escenario 3: Docker Compose}
+
+El tercer escenario eliminó la necesidad de instalar manualmente GStreamer, Python y
+sus dependencias en el equipo anfitrión. Con la imagen Docker construida a partir del
+\texttt{Dockerfile} descrito en la sección~\ref{sec:docker}, el sistema completo se
+despliega con un único comando:
 
 \begin{verbatim}
-docker compose up -d
+docker compose up
 \end{verbatim}
 
-Docker Compose levanta los diez servicios definidos en \texttt{docker-compose.yml} en
-el orden correcto, gestionando automáticamente las dependencias de arranque mediante
-los \textit{healthchecks} configurados. El realizador se conecta desde un segundo
-equipo exactamente igual que en el Escenario 1.
+Docker Compose gestiona el orden de arranque mediante \textit{healthchecks}, levanta
+los diez servicios definidos en \texttt{docker-compose.yml} y expone los puertos
+necesarios al sistema anfitrión. La GUI se conecta desde el \textit{host} exactamente
+igual que en el escenario de dos PCs, utilizando \texttt{localhost} como destino.
 
-Las ventajas de este escenario respecto al anterior son:
-\begin{itemize}
-  \item \textbf{Cero dependencias en el host:} basta con tener Docker instalado; no
-        se requiere Python ni GStreamer.
-  \item \textbf{Reproducibilidad total:} la imagen Docker garantiza que el entorno
-        de ejecución es idéntico independientemente del sistema operativo anfitrión.
-  \item \textbf{Gestión simplificada:} un único comando arranca y detiene todos los
-        servicios, incluyendo voctocore, las fuentes, RabbitMQ y el servicio de
-        telemetría.
-\end{itemize}
+\subsection{Escenario 4: Kubernetes con Minikube}
 
-% --- Figura sugerida ---
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.9\textwidth]{figuras/diagramas_escenarios.png}
-%   \caption{Diagramas de red de los dos escenarios de despliegue.}
-%   \label{fig:diagramas_escenarios}
-% \end{figure}
+El escenario más avanzado migra la orquestación de Docker Compose a Kubernetes
+ejecutándose localmente sobre Minikube. Los manifiestos YAML definen el ciclo de vida
+declarativo de cada servicio, con \textit{readiness probes} que garantizan el orden
+correcto de arranque sin depender de \texttt{sleep} ni lógica de espera en los scripts.
+El script \texttt{launch\_k8s.sh} comprueba si el clúster ya está activo antes de
+inicializarlo, establece el \textit{port-forward} necesario para que voctogui acceda
+a los puertos del pod y muestra los logs de telemetría en tiempo real. Este escenario
+valida que el sistema puede operar sobre infraestructura de orquestación estándar de
+la industria.

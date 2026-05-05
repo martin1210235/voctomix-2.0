@@ -26,6 +26,10 @@
 \usepackage{emptypage}
 \usepackage{etoolbox}
 \usepackage{parskip}
+\usepackage{tikz}
+\usetikzlibrary{babel,shapes.geometric,arrows.meta,positioning,fit,backgrounds,calc}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
 
 \makeatletter
 \definecolor{nar}{HTML}{FF8000}
@@ -92,10 +96,10 @@
 % SOLUCIÓN AL WARNING DE FANCYHDR: Aumentamos la altura de la cabecera a 32pt
 \setlength{\headheight}{32pt} 
 \fancyhf{}
-% \fancyhead[LE,RO]{\transparent{0.6}\includegraphics[width=3cm]{portada/logosportada/logoetsit.png}}
+\fancyhead[LE,RO]{\transparent{0.6}\includegraphics[width=3cm]{portada/logosportada/logoetsit.png}}
 \fancyhead[RE,LO]{\transparent{0.6}\thepage}
-\chead{\transparent{0.6}Nombre del autor}
-\fancyfoot[CE,CO]{\transparent{0.6}Título completo del TFG}
+\chead{\transparent{0.6}Martín Herranz Sánchez}
+\fancyfoot[CE,CO]{\transparent{0.6}Voctomix~2.0: sistema de producción remota de vídeo basado en software libre}
 \renewcommand{\headrulewidth}{0.4pt} % grosor de la línea de la cabecera
 \renewcommand{\footrulewidth}{0.4pt} % grosor de la línea del pie
 
@@ -111,19 +115,15 @@
 % no tienen errores de llaves y de que realmente existen en tus carpetas.
 
 % Portada
-% \input{portada/portadaNaranja.tex}
-% \empty
+\input{portada/portadaNaranja.tex}
 
 % Segunda portada
-% \input{portada/segunda.tex}
-% \empty
-% \input{portada/portadaBlanca.tex}
-% \empty
+\input{portada/segunda.tex}
+\input{portada/portadaBlanca.tex}
 
-% Resumen y agradecimientos 
-% \input{pre/resumen}
-% \newpage
-% \input{pre/greetings}
+% Resumen y agradecimientos
+\input{pre/resumen}
+\input{pre/greetings}
 
 % Indice, lista de figuras y de tablas
 \newpage
@@ -138,7 +138,7 @@
 \newpage
 
 % Lista de acrónimos
-% \input{pre/acronimos.tex}
+\input{pre/acronimos.tex}
 \newpage
 
 \mainmatter
@@ -155,25 +155,29 @@
     \import{capitulos/cap2/}{2_1_produccion_audiovisual.tex}
     \import{capitulos/cap2/}{2_2_contribucion_video.tex}
     \import{capitulos/cap2/}{2_3_distribucion_contenidos.tex}
-    \import{capitulos/cap2/}{2_4_mezclador_video.tex}
 \newpage
 
 % CAPÍTULO 3: Diseño e implementación del sistema de producción remota de vídeo
 \chapter{Diseño e implementación del sistema de producción remota de vídeo}
+\label{chap:diseno}
     \import{capitulos/cap3/}{3_1_arquitectura.tex}
     \import{capitulos/cap3/}{3_2_fuentes_camaras.tex}
     \import{capitulos/cap3/}{3_3_fuentes_auxiliares.tex}
     \import{capitulos/cap3/}{3_4_composites.tex}
     \import{capitulos/cap3/}{3_5_transiciones.tex}
     \import{capitulos/cap3/}{3_6_overlays_logos_texto.tex}
-    \import{capitulos/cap3/}{3_4_telemetria_notario.tex}
-    \import{capitulos/cap3/}{3_7_contenerizacion_docker.tex}
+    \import{capitulos/cap3/}{3_6b_senal_programa.tex}
+    \import{capitulos/cap3/}{3_7_personalizacion_gui.tex}
+    \import{capitulos/cap3/}{3_8_telemetria.tex}
+    \import{capitulos/cap3/}{3_9_docker.tex}
+    \import{capitulos/cap3/}{3_10_kubernetes.tex}
 \newpage
 
-% CAPÍTULO 4: Pruebas de validación del sistema de producción
-\chapter{Pruebas de validación del sistema de producción}
+% CAPÍTULO 4: Pruebas de validación del sistema de producción remota de vídeo
+\chapter{Pruebas de validación del sistema de producción remota de vídeo}
     \import{capitulos/cap4/}{4_1_escenarios_despliegue.tex}
     \import{capitulos/cap4/}{4_2_pruebas_validacion.tex}
+    \import{capitulos/cap4/}{4_3_resultados.tex}
 \newpage
 
 % CAPÍTULO 5: Conclusiones y líneas futuras
@@ -184,17 +188,17 @@
 
 % BIBLIOGRAFÍA
 \bibliographystyle{unsrt}
-% \bibliography{biblio}
+\bibliography{biblio}
 
 \backmatter
 
 % ANEXOS
 \chapter{Anexo A: Aspectos éticos, económicos, sociales y ambientales}
-    % \import{capitulos/anexos/}{anexoA.tex}
+    \import{capitulos/anexos/}{anexoA.tex}
 \newpage
 
 \chapter{Anexo B: Presupuesto económico}
-    % \import{capitulos/anexos/}{anexoB.tex}
+    \import{capitulos/anexos/}{anexoB.tex}
 \newpage
 
 \end{document}
