@@ -1,0 +1,27 @@
+\section{Líneas de trabajo futuro}
+\label{sec:lineas_futuras}
+
+El desarrollo de Voctomix 2.0 ha puesto de manifiesto varias áreas de mejora e
+investigación que quedan fuera del alcance de este Trabajo de Fin de Grado pero que
+constituyen líneas de trabajo futuro de interés:
+
+\begin{itemize}
+  \item \textbf{Prueba con cámaras reales:} la validación definitiva del sistema
+        consiste en conectar cámaras físicas a los puertos de entrada de voctocore
+        y realizar una retransmisión en directo completa. Este caso de uso está
+        previsto en el contexto del grupo de investigación CyberNemo de la UPM,
+        donde Voctomix 2.0 se utilizará para retransmitir seminarios y presentaciones
+        con cámaras reales conectadas mediante tarjetas de captura o directamente
+        mediante NDI. Esta prueba permitirá validar el sistema en condiciones reales
+        y detectar posibles problemas de sincronización, latencia o estabilidad que
+        no se manifiestan con fuentes sintéticas.
+
+  \item \textbf{Interfaz web de control:} sustituir voctogui por una aplicación web
+        que consuma la API REST del servicio de telemetría eliminaría la dependencia
+        de GTK y permitiría controlar el sistema desde cualquier dispositivo con
+        navegador, incluidas tabletas y teléfonos móviles.
+
+  \item \textbf{Soporte NDI nativo:} incorporar el protocolo NDI como fuente de
+        entrada alternativa a TCP/MKV facilitaría la integración con cámaras de red
+        modernas y con herramientas de producción compatibles con este protocolo.
+\end{itemize}

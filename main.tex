@@ -13,7 +13,8 @@
 \usepackage{subcaption}
 \usepackage{appendix}   
 \usepackage[pdftex]{hyperref}   
-\hypersetup{colorlinks=true,linkcolor=black,linkcolor=black,filecolor=black,urlcolor=black, citecolor=black}    \urlstyle{same} %hipervinculos en negro y sin subrayar
+\hypersetup{colorlinks=true,linkcolor=black,filecolor=black,urlcolor=black, citecolor=black}    
+\urlstyle{same} % hipervinculos en negro y sin subrayar
 \usepackage[nottoc,notlot,notlof]{tocbibind}
 \usepackage{listings}   
 \usepackage{xcolor} 
@@ -25,9 +26,10 @@
 \usepackage{emptypage}
 \usepackage{etoolbox}
 \usepackage{parskip}
-\usepackage{amssymb}
 \usepackage{tikz}
-\usetikzlibrary{babel}
+\usetikzlibrary{babel,shapes.geometric,arrows.meta,positioning,fit,backgrounds,calc}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
 
 \makeatletter
 \definecolor{nar}{HTML}{FF8000}
@@ -57,7 +59,7 @@
 
 \renewcommand{\arraystretch}{1.3}
 
-%Dimensiones
+% Dimensiones
 \textwidth = 16cm
 \textheight = 25cm
 \topmargin = 1cm
@@ -66,63 +68,61 @@
 \headsep = 1cm
 \footskip = 1.5cm
 
-%Encabezado y pie de página
-
+% Encabezado y pie de página
 \makeatletter
 \renewcommand\chapter{\if@openright\cleardoublepage\else\clearpage\fi
 \thispagestyle{fancy}% original style: plain
 \global\@topnum\z@
 \@afterindentfalse
 \secdef\@chapter\@schapter}
-%la siguiente línea es para que no haya páginas en blanco entre los capítulos
+% la siguiente línea es para que no haya páginas en blanco entre los capítulos
 \patchcmd{\chapter}{\if@openright\cleardoublepage\else\clearpage\fi}{}{}{}
-%para quitar lo de "capítulo 1"
+% para quitar lo de "capítulo 1"
 \def\@makechapterhead#1{%
   \vspace*{50\p@}%
   {\parindent \z@ \raggedright \normalfont
     \ifnum \c@secnumdepth >\m@ne
       \if@mainmatter
-        %\huge\bfseries \@chapapp\space \thechapter
         \Huge\bfseries \thechapter.\space%
-        %\par\nobreak
-        %\vskip 20\p@
       \fi
     \fi
     \interlinepenalty\@M
     \Huge \bfseries #1\par\nobreak
     \vskip 40\p@
   }}
-\makeatother %para usar lo mismo en la primera pag del capitulo
-
+\makeatother % para usar lo mismo en la primera pag del capitulo
 
 \pagestyle{fancy}
+% SOLUCIÓN AL WARNING DE FANCYHDR: Aumentamos la altura de la cabecera a 32pt
+\setlength{\headheight}{32pt} 
 \fancyhf{}
 \fancyhead[LE,RO]{\transparent{0.6}\includegraphics[width=3cm]{portada/logosportada/logoetsit.png}}
 \fancyhead[RE,LO]{\transparent{0.6}\thepage}
-\chead{\transparent{0.6}Nombre del autor}
-\fancyfoot[CE,CO]{\transparent{0.6}Título completo del TFG}
+\chead{\transparent{0.6}Martín Herranz Sánchez}
+\fancyfoot[CE,CO]{\transparent{0.6}Voctomix~2.0: sistema de producción remota de vídeo basado en software libre}
 \renewcommand{\headrulewidth}{0.4pt} % grosor de la línea de la cabecera
 \renewcommand{\footrulewidth}{0.4pt} % grosor de la línea del pie
 
 
 \begin{document}
 
-%Numeracion romana
+% Numeracion romana
 \frontmatter
 
-%Portada
+% --- NOTA DEL TUTOR ---
+% He comentado (\% ) los inputs de archivos externos. 
+% Quítales el % de uno en uno solo cuando te asegures de que esos archivos 
+% no tienen errores de llaves y de que realmente existen en tus carpetas.
+
+% Portada
 \input{portada/portadaNaranja.tex}
-\empty
 
 % Segunda portada
 \input{portada/segunda.tex}
-\empty
 \input{portada/portadaBlanca.tex}
-\empty
 
-% Resumen y agradecimientos 
+% Resumen y agradecimientos
 \input{pre/resumen}
-\newpage
 \input{pre/greetings}
 
 % Indice, lista de figuras y de tablas
@@ -138,55 +138,67 @@
 \newpage
 
 % Lista de acrónimos
-    \input{pre/acronimos.tex}
+\input{pre/acronimos.tex}
 \newpage
 
 \mainmatter
 
+% CAPÍTULO 1: Introducción y objetivos
 \chapter{Introducción y objetivos}
-    \import{capitulos/cap1/}{intro.tex}
-    \import{capitulos/cap1/}{objetivos.tex}
+    \import{capitulos/cap1/}{1_1_introduccion.tex}
+    \import{capitulos/cap1/}{1_2_objetivos.tex}
+    \import{capitulos/cap1/}{1_3_estructura.tex}
 \newpage
 
-\chapter{Estado del Arte}
-En este capítulo se presentan las bases tecnológicas sobre las que se sustenta
-Voctomix~2.0. Se analizan los tres eslabones de la cadena de producción audiovisual
-en directo: el modelo de producción y las herramientas de realización disponibles
-(Sección~\ref{sec:produccion_av}), los estándares e interfaces de contribución de señal
-(Sección~\ref{sec:contribucion_av}), y los protocolos y códecs empleados en la
-distribución del contenido al espectador final (Sección~\ref{sec:distribucion_av}). El
-objetivo es que el lector comprenda el contexto técnico en el que se enmarca el
-trabajo antes de abordar el diseño e implementación del sistema en el
-Capítulo~\ref{chap:diseno}.
-    \import{capitulos/cap2/}{ejemplo.tex}
+% CAPÍTULO 2: Estado del arte
+\chapter{Estado del arte}
+    \import{capitulos/cap2/}{2_1_produccion_audiovisual.tex}
+    \import{capitulos/cap2/}{2_2_contribucion_video.tex}
+    \import{capitulos/cap2/}{2_3_distribucion_contenidos.tex}
 \newpage
 
-\chapter{Desarrollo}
-    \import{capitulos/cap3/}{ejemploDesarrollo.tex}
+% CAPÍTULO 3: Diseño e implementación del sistema de producción remota de vídeo
+\chapter{Diseño e implementación del sistema de producción remota de vídeo}
+\label{chap:diseno}
+    \import{capitulos/cap3/}{3_1_arquitectura.tex}
+    \import{capitulos/cap3/}{3_2_fuentes_camaras.tex}
+    \import{capitulos/cap3/}{3_3_fuentes_auxiliares.tex}
+    \import{capitulos/cap3/}{3_4_composites.tex}
+    \import{capitulos/cap3/}{3_5_transiciones.tex}
+    \import{capitulos/cap3/}{3_6_overlays_logos_texto.tex}
+    \import{capitulos/cap3/}{3_6b_senal_programa.tex}
+    \import{capitulos/cap3/}{3_7_personalizacion_gui.tex}
+    \import{capitulos/cap3/}{3_8_telemetria.tex}
+    \import{capitulos/cap3/}{3_9_docker.tex}
+    \import{capitulos/cap3/}{3_10_kubernetes.tex}
 \newpage
 
-\chapter{Resultados}
-    \import{capitulos/cap4/}{ejemploResultados.tex}
+% CAPÍTULO 4: Pruebas de validación del sistema de producción remota de vídeo
+\chapter{Pruebas de validación del sistema de producción remota de vídeo}
+    \import{capitulos/cap4/}{4_1_escenarios_despliegue.tex}
+    \import{capitulos/cap4/}{4_2_pruebas_validacion.tex}
+    \import{capitulos/cap4/}{4_3_resultados.tex}
 \newpage
 
+% CAPÍTULO 5: Conclusiones y líneas futuras
 \chapter{Conclusiones y líneas futuras}
-    \import{capitulos/cap5/}{conclusiones.tex}
-    \import{capitulos/cap5/}{lineasfuturas.tex}
-
+    \import{capitulos/cap5/}{5_1_conclusiones.tex}
+    \import{capitulos/cap5/}{5_2_lineas_futuras.tex}
 \newpage
+
+% BIBLIOGRAFÍA
 \bibliographystyle{unsrt}
 \bibliography{biblio}
 
 \backmatter
+
+% ANEXOS
 \chapter{Anexo A: Aspectos éticos, económicos, sociales y ambientales}
     \import{capitulos/anexos/}{anexoA.tex}
-
-
 \newpage
+
 \chapter{Anexo B: Presupuesto económico}
     \import{capitulos/anexos/}{anexoB.tex}
 \newpage
-
-
 
 \end{document}

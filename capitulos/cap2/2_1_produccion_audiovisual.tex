@@ -1,0 +1,171 @@
+En este capítulo se presentan las bases tecnológicas sobre las que se sustenta
+Voctomix~2.0. Se analizan los tres eslabones de la cadena de producción audiovisual
+en directo: el modelo de producción y las herramientas de realización disponibles
+(Sección~\ref{sec:produccion_av}), los estándares e interfaces de contribución de señal
+(Sección~\ref{sec:contribucion_av}), y los protocolos y códecs empleados en la
+distribución del contenido al espectador final (Sección~\ref{sec:distribucion_av}). El
+objetivo es que el lector comprenda el contexto técnico en el que se enmarca el
+trabajo antes de abordar el diseño e implementación del sistema en el
+Capítulo~\ref{chap:diseno}.
+
+\section{Producción audiovisual}
+\label{sec:produccion_av}
+
+La producción audiovisual en directo engloba el conjunto de procesos técnicos y
+organizativos que permiten capturar, procesar y distribuir contenido de vídeo y audio
+en tiempo real. Históricamente anclada a infraestructuras físicas costosas y al
+desplazamiento de equipos al lugar del evento, esta disciplina ha experimentado en la
+última década una transformación radical impulsada por la convergencia entre las redes
+de datos y los flujos de media profesionales~\cite{tmbroadcast_remi}.
+
+\subsection{Producción audiovisual tradicional}
+
+El modelo de producción tradicional se basa en el despliegue físico de toda la
+infraestructura técnica y del personal en el emplazamiento del evento. El componente
+central de este modelo es el \textbf{mezclador hardware}, denominado
+\textit{switcher}, un dispositivo dedicado que selecciona en cada instante qué fuente
+de vídeo se emite a la salida de programa y gestiona las transiciones y los efectos.
+Fabricantes como Blackmagic Design (ATEM), Ross Video o Grass Valley (Kayenne) dominan
+el mercado de estos equipos, que ofrecen latencias sub-imagen, múltiples buses de
+programa y previsualización simultáneos, y redundancia hardware certificada para
+operación continua~\cite{blackmagic_atem}.
+
+En el modelo tradicional, todas las fuentes, cámaras, reproductores de vídeo y
+ordenadores de presentación, se interconectan mediante cableado \textbf{SDI}
+(\textit{Serial Digital Interface}), el estándar histórico de la industria broadcast
+para el transporte de vídeo sin comprimir. La señal resultante recorre el mezclador,
+los sistemas de rotulación y grabación, y finalmente el encoder de distribución, todo
+ello dentro del mismo emplazamiento físico.
+
+Este modelo ha demostrado su solidez durante décadas en las grandes producciones de
+televisión: retransmisiones deportivas, eventos parlamentarios y galas de premios
+emplean esta arquitectura con decenas de fuentes de cámara gestionadas en tiempo real.
+Sin embargo, su principal limitación es económica y logística: el coste de adquirir y
+transportar el equipamiento, más el personal técnico necesario para su instalación y
+operación, lo pone fuera del alcance de organizaciones de mediana escala.
+
+\subsection{Producción audiovisual remota}
+
+La producción remota, conocida en la industria por el acrónimo
+\textbf{REMI} (\textit{Remote Integration Model}), surge para resolver estas
+limitaciones permitiendo que la realización se lleve a cabo desde un centro de
+producción centralizado, mientras en el lugar del evento solo se mantiene el equipo
+técnico mínimo necesario para la captura de señal~\cite{tmbroadcast_remi}.
+
+\subsubsection*{Casos de uso reales}
+
+La adopción del modelo REMI ha crecido exponencialmente en los últimos años. Un ejemplo
+emblemático fue la producción audiovisual de los Juegos Olímpicos de Tokio 2021 por
+parte de Olympic Broadcasting Services (OBS), que produjo más de 9.500 horas de
+contenido con la realización, mezcla de señales y control de calidad realizados desde
+el International Broadcast Centre y desde centros remotos distribuidos por todo el
+mundo~\cite{obs_tokyo_2021}. En España, Telefónica Servicios Audiovisuales (TSA)
+ejecutó en 2022 la producción remota multicámara de un partido de la UEFA Champions
+League disputado en el estadio Santiago Bernabéu, realizando toda la dirección desde
+las instalaciones de Telefónica en Tres Cantos, a más de 30~km del estadio~\cite{tsa_remi_2022}.
+
+\subsubsection*{Ventajas del modelo remoto}
+
+Las ventajas del modelo REMI frente a la producción tradicional son significativas~\cite{tmbroadcast_remi}:
+
+\begin{itemize}
+  \item \textbf{Reducción de costes:} se minimiza el desplazamiento de personal y
+  equipos. Solo se requiere in situ el equipo de captura; la realización, mezcla y
+  edición se realizan de forma centralizada.
+  \item \textbf{Sostenibilidad:} la reducción de desplazamientos contribuye a disminuir
+  la huella de carbono de las producciones, un factor cada vez más valorado por
+  organizaciones y broadcasters.
+  \item \textbf{Escalabilidad:} el sistema puede adaptarse a producciones de diferente
+  escala reutilizando la misma infraestructura centralizada.
+  \item \textbf{Flexibilidad geográfica:} es posible retransmitir eventos desde
+  cualquier parte del mundo con conectividad IP, sin necesidad de desplazar el equipo
+  de producción.
+\end{itemize}
+
+\subsubsection*{Herramientas de producción remota por software}
+
+La disponibilidad de herramientas de mezclado por software ha democratizado el acceso
+al modelo remoto incluso para organizaciones sin presupuesto broadcast:
+
+\begin{itemize}
+  \item \textbf{OBS Studio}: solución de código abierto ampliamente utilizada para
+  \textit{streaming} y grabación. Su arquitectura monolítica está orientada a un único
+  operador en un único equipo, lo que la hace ideal para producciones individuales pero
+  limita su uso en entornos distribuidos.
+  \item \textbf{vMix}: solución comercial profesional para Windows con soporte NDI,
+  multiview y producción 4K. Su coste de licencia y su restricción al sistema operativo
+  Windows la excluyen de entornos \textit{open-source} sobre Linux.
+  \item \textbf{Voctomix}: herramienta de código abierto con arquitectura
+  cliente-servidor que separa el motor de mezcla (\texttt{voctocore}) de la interfaz
+  de control (\texttt{voctogui}), permitiendo que el procesamiento se realice en un
+  servidor mientras el operador trabaja desde otro equipo conectado por red. Es la
+  herramienta extendida en el presente trabajo (véase el
+  Capítulo~\ref{chap:diseno}).
+\end{itemize}
+
+El motor multimedia sobre el que se construye Voctomix es \textbf{GStreamer}, un
+\textit{framework} de código abierto cuya arquitectura de \textit{pipeline} permite
+construir cadenas de composición de vídeo arbitrariamente complejas a partir de
+elementos reutilizables~\cite{gstreamer_docs}. El elemento \texttt{compositor} de
+GStreamer 1.x actúa como mezclador de vídeo multipista: acepta $N$ fuentes de entrada
+con transformaciones geométricas independientes y produce un único flujo de salida
+modificable en tiempo real, posibilitando transiciones suaves sin interrumpir el
+procesamiento.
+
+\begin{table}[H]
+  \centering
+  \caption{Comparativa entre producción audiovisual tradicional y producción remota (REMI).}
+  \label{tab:trad_vs_remi}
+  \begin{tabular}{|l|c|c|}
+    \hline
+    \textbf{Parámetro} & \textbf{Tradicional} & \textbf{REMI / Software} \\
+    \hline
+    Infraestructura en lugar del evento & Completa          & Mínima (cámaras + encoder) \\
+    Coste de equipamiento               & Muy alto          & Bajo (hardware convencional) \\
+    Personal in situ                    & Numeroso          & Reducido \\
+    Latencia extremo a extremo          & Sub-imagen        & 1 fotograma -- varios segundos \\
+    Escalabilidad                       & Limitada          & Alta \\
+    Sostenibilidad (huella de carbono)  & Baja              & Alta \\
+    Ejemplo                             & Blackmagic ATEM   & OBS, vMix, Voctomix \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[>=latex, thick, font=\small]
+    % --- Nodos de contribución ---
+    \node[draw, rounded corners=3pt, minimum width=3cm, minimum height=0.9cm,
+          align=center, fill=gray!10] (c1) at (0, 2.4) {Cámara 1 \\ {\footnotesize SDI / NDI / IP}};
+    \node[draw, rounded corners=3pt, minimum width=3cm, minimum height=0.9cm,
+          align=center, fill=gray!10] (c2) at (0, 0)   {Cámara 2 \\ {\footnotesize SDI / NDI / IP}};
+    \node[draw, rounded corners=3pt, minimum width=3cm, minimum height=0.9cm,
+          align=center, fill=gray!10] (c3) at (0,-2.4) {Cámara 3 \\ {\footnotesize SDI / NDI / IP}};
+
+    % --- Mezclador de vídeo ---
+    \node[draw, rounded corners=3pt, minimum width=3.2cm, minimum height=6.5cm,
+          align=center, fill=orange!15] (mix) at (5.8, 0)
+          {\textbf{Mezclador} \\ \textbf{de vídeo} \\ \\ {\normalsize Voctomix} \\
+           {\footnotesize (GStreamer)}};
+
+    % --- Salida distribución ---
+    \node[draw, rounded corners=3pt, minimum width=3cm, minimum height=2.4cm,
+          align=center, fill=blue!8] (dst) at (11, 0)
+          {\textbf{Distribución} \\ \textbf{audiovisual} \\ {\footnotesize RTMP / SRT / HLS}};
+
+    % --- Flechas contribución → mezclador ---
+    \draw[->] (c1.east) -- (2.6, 2.4) -- (2.6, 1.5) -- (4.2, 1.5);
+    \draw[->] (c2.east) -- (4.2, 0);
+    \draw[->] (c3.east) -- (2.6,-2.4) -- (2.6,-1.5) -- (4.2,-1.5);
+
+    % --- Flecha mezclador → distribución ---
+    \draw[->] (mix.east) -- node[above, yshift=2pt] {Señal de programa} (dst.west);
+
+    % --- Etiquetas de grupo ---
+    \node[font=\small\bfseries] at (0, 3.6)  {Contribución audiovisual};
+    \node[font=\small\bfseries] at (11, 1.8) {Distribución audiovisual};
+  \end{tikzpicture}
+  \caption{Cadena de producción audiovisual en directo: señales de contribución, mezclador
+           de vídeo y salida de distribución.}
+  \label{fig:cadena_produccion}
+\end{figure}
