@@ -1,0 +1,73 @@
+% ===================================================================
+%  RESUMEN Y SUMMARY
+% ===================================================================
+\newpage
+\thispagestyle{fancy}
+
+\chapter*{Resumen}
+\addcontentsline{toc}{chapter}{Resumen}
+
+La producción audiovisual en directo ha evolucionado desde grandes estudios con
+equipamiento dedicado de alto coste hacia soluciones basadas en software que permiten
+desplegar un sistema profesional de realización con hardware convencional. Voctomix es
+un mezclador de vídeo de código abierto desarrollado sobre GStreamer y Python que
+posibilita esta democratización de la producción en directo.
+
+Este Trabajo Fin de Grado presenta el diseño e implementación de Voctomix~2.0, una
+versión extendida del mezclador original con nuevas capacidades orientadas a la
+producción remota. Las contribuciones principales del proyecto son: la integración de
+un sistema de gestión de composites avanzados (PIP, side-by-side, fullscreen), un módulo
+de transiciones basadas en mezcla de señales, soporte para overlays gráficos con
+animaciones de entrada y salida, gestión dinámica del audio mediante un servicio
+dedicado, y un sistema de telemetría basado en RabbitMQ que registra en tiempo real
+todos los eventos de sesión.
+
+Para facilitar el despliegue reproducible del sistema completo, se ha desarrollado una
+imagen Docker junto con un fichero Docker~Compose que orquesta voctocore, las fuentes
+de prueba FFmpeg, el broker RabbitMQ y el servicio de telemetría en una red privada
+aislada. Este despliegue permite reproducir el entorno completo en cualquier máquina
+con un único comando.
+
+El sistema ha sido validado en dos escenarios: un despliegue en dos equipos físicos
+en red local y un despliegue completo en contenedores Docker. Los resultados confirman
+una latencia de conmutación inferior a un fotograma ($<$40~ms) y el registro correcto
+de todos los eventos de sesión en RabbitMQ.
+
+\textbf{Palabras clave:} producción audiovisual en directo, mezclador de vídeo,
+GStreamer, Docker, RabbitMQ, telemetría, software libre, streaming, AMQP.
+
+\newpage
+\thispagestyle{fancy}
+
+\chapter*{Summary}
+\addcontentsline{toc}{chapter}{Summary}
+
+Live audiovisual production has evolved from large studios relying on dedicated
+high-cost hardware towards software-based solutions that allow deploying a
+professional production system on commodity hardware. Voctomix is an open-source
+video mixer built on GStreamer and Python that enables this democratisation of
+live production.
+
+This Bachelor's Thesis presents the design and implementation of Voctomix~2.0,
+an extended version of the original mixer featuring new capabilities aimed at
+remote production. The main contributions of the project are: integration of an
+advanced composite management system (PIP, side-by-side, fullscreen), a
+signal-mixing-based transitions module, support for graphical overlays with blend-in
+and blend-out animations, dynamic audio management through a dedicated service, and
+a RabbitMQ-based telemetry system that records all session events in real time.
+
+To facilitate reproducible deployment of the full system, a Docker image and a
+Docker~Compose file have been developed, orchestrating voctocore, FFmpeg test
+sources, the RabbitMQ broker, and the telemetry service in an isolated private
+network. This deployment allows reproducing the complete environment on any machine
+with a single command.
+
+The system has been validated in two scenarios: a two-physical-machine deployment
+over a local network and a full Docker container deployment. Results confirm a
+switching latency below one video frame ($<$40~ms) and correct logging of all
+session events in RabbitMQ.
+
+\textbf{Keywords:} live audiovisual production, video mixer, GStreamer, Docker,
+RabbitMQ, telemetry, free software, streaming, AMQP.
+
+\newpage

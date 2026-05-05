@@ -1,0 +1,127 @@
+\section{Overlays, logos y texto dinámico}
+\label{sec:overlays}
+
+Voctomix 2.0 incorpora un sistema completo de superposición de elementos gráficos
+sobre la señal de vídeo: logos corporativos, overlays PNG con canal alfa y texto
+dinámico renderizado en tiempo real. Todos estos elementos se gestionan desde la
+interfaz gráfica sin interrumpir el pipeline de procesamiento.
+
+\subsection{Logos}
+
+El sistema soporta hasta dos logos simultáneos, superpuestos en posiciones fijas del
+encuadre definidas mediante la configuración INI:
+
+\begin{itemize}
+  \item \textbf{logo1}: posicionado en la esquina inferior derecha del fotograma.
+  \item \textbf{logo2}: posicionado en la esquina superior izquierda del fotograma.
+\end{itemize}
+
+Los ficheros PNG de los logos se definen en las secciones \texttt{[logo1]} y
+\texttt{[logo2]} del fichero de configuración, permitiendo adaptar la identidad visual
+del evento sin modificar el código. La visibilidad de cada logo se puede activar o
+desactivar individualmente desde la interfaz gráfica.
+
+\subsection{Overlays PNG y texto dinámico}
+
+Los overlays son imágenes PNG con canal alfa que se superponen sobre la señal de vídeo
+mediante el elemento GStreamer \texttt{gdkpixbufoverlay}. El módulo
+\texttt{voctocore/lib/overlay.py} gestiona el ciclo de vida completo de un overlay:
+carga del fichero PNG, fundido de entrada (\textit{blend-in}), mantenimiento en
+pantalla y fundido de salida (\textit{blend-out}). El tiempo de fundido se controla
+mediante el parámetro \texttt{blend-time} en la sección \texttt{[overlay]} del
+fichero INI (en milisegundos).
+
+Durante el desarrollo se identificó una limitación del elemento \texttt{gdkpixbufoverlay}
+de GStreamer: está diseñado para leer archivos de imagen estáticos desde una ruta del
+sistema de ficheros, sin soporte nativo para actualizaciones en tiempo real. La solución
+adoptada consiste en regenerar el fichero PNG en disco con el nuevo texto renderizado
+mediante Cairo y forzar la recarga del elemento GStreamer mediante el comando
+\texttt{set\_overlay} del protocolo de control. Este mecanismo permite actualizar los
+rótulos en caliente durante la emisión con una latencia inferior a un fotograma.
+
+\subsection{Rotulación dinámica de ponente}
+
+El sistema de rotulación permite al operador escribir el nombre del ponente o el título
+de la sesión en un campo de texto de la interfaz gráfica y enviarlo al núcleo para su
+superposición inmediata sobre el vídeo. La cadena de procesamiento completa es la
+siguiente:
+
+\begin{enumerate}
+  \item El operador escribe el texto en el campo \texttt{GtkEntry} del panel de
+        inserciones de voctogui.
+  \item Al pulsar \textit{Enter} o el botón \textbf{INSERT}, el módulo
+        \texttt{overlay.py} de la GUI solicita a Cairo la renderización del texto sobre
+        la plantilla PNG activa.
+  \item La imagen resultante se escribe en disco y se envía al núcleo mediante el
+        comando TCP \texttt{set\_overlay <ruta\_fichero>}.
+  \item voctocore recarga \texttt{gdkpixbufoverlay} con la nueva imagen, que aparece
+        en antena con el efecto de fundido configurado.
+\end{enumerate}
+
+\subsection{Sistema de doble rotulación}
+\label{sec:doble_rotulacion}
+
+Para aumentar la versatilidad del sistema de grafismo, se implementó un segundo motor
+de rotulación independiente que permite mostrar simultáneamente dos textos en
+posiciones distintas del encuadre. Los cambios realizados abarcan las cuatro capas del
+sistema:
+
+\begin{itemize}
+  \item \textbf{Motor de vídeo (\texttt{videomix.py}):} se inyectó un segundo nodo
+        \texttt{textoverlay} en el pipeline GStreamer (\texttt{rotulo\_dinamico\_2}),
+        configurado con alineación horizontal opuesta al primero para evitar
+        solapamientos. Se implementó el método \texttt{set\_dynamic\_text\_2} para
+        actualizar sus propiedades en caliente.
+  \item \textbf{Protocolo de control (\texttt{commands.py}):} se amplió el servidor
+        TCP con el comando \texttt{set\_text2} y se configuró la notificación
+        \texttt{text2\_updated} para que cualquier cliente conectado sea informado del
+        cambio.
+  \item \textbf{Interfaz gráfica (\texttt{voctogui.ui} y \texttt{voctogui.css}):} se
+        creó un segundo contenedor \texttt{GtkBox} en el panel de inserciones, situado
+        junto al primero. Los nuevos selectores CSS (\texttt{\#tfg-entry-2},
+        \texttt{\#tfg-btn-2}) heredan la estética corporativa oscura y el efecto de
+        iluminación amarilla al activarse.
+  \item \textbf{Lógica de foco y teclado (\texttt{overlay.py}):} se perfeccionó el
+        algoritmo de intercepción de atajos de teclado a nivel de ventana. El sistema
+        evalúa dinámicamente qué campo de texto tiene el foco (\texttt{is\_focus()})
+        para procesar correctamente las teclas críticas (Espacio, Retroceso, \textit{Enter}),
+        evitando colisiones con los atajos globales del mezclador.
+\end{itemize}
+
+\subsection{Botón UPDATE: recarga dinámica de recursos}
+
+El botón \textbf{UPDATE} del panel de overlays permite recargar el directorio de
+recursos gráficos durante la emisión. Esta funcionalidad es crítica en entornos de
+directo: si el equipo de grafismo corrige un error ortográfico en una plantilla PNG o
+añade un nuevo rótulo de último minuto, el operador puede incorporarlo al sistema sin
+interrumpir la señal de vídeo ni reiniciar ningún proceso.
+
+\subsection{Auto-off de overlays}
+
+La funcionalidad \textit{auto-off} resuelve un problema frecuente en producción en
+directo: el operador realiza un corte de cámara olvidando retirar el overlay activo,
+que queda superpuesto sobre la nueva fuente de forma inapropiada (por ejemplo, el
+nombre de un ponente apareciendo sobre la imagen de otro).
+
+Cuando la opción \texttt{auto-off = true} está activa en la configuración, el módulo
+\texttt{overlay.py} registra un \textit{listener} sobre el evento \texttt{video\_status}.
+Cada vez que la fuente de vídeo activa cambia, el listener inicia automáticamente la
+secuencia de fundido de salida del overlay activo. Si hay texto dinámico superpuesto,
+éste se elimina junto al overlay gráfico, garantizando que ningún elemento de
+rotulación quede huérfano en pantalla.
+
+El comportamiento puede configurarse mediante:
+\begin{itemize}
+  \item \texttt{auto-off = true/false}: activa o desactiva la funcionalidad.
+  \item \texttt{user-auto-off = true/false}: expone un botón de alternancia en la
+        GUI para que el operador pueda activar/desactivar el auto-off en tiempo real.
+  \item \texttt{blend-time = <ms>}: tiempo de fundido de salida en milisegundos.
+\end{itemize}
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.85\textwidth]{figuras/overlay_ejemplo.png}
+%   \caption{Fotograma con overlay activo (rótulo de ponente) sobre imagen de cámara.}
+%   \label{fig:overlay_ejemplo}
+% \end{figure}

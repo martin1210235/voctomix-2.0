@@ -1,0 +1,57 @@
+import logging
+import os
+from gi.repository import Gst
+from configparser import NoOptionError
+
+from lib.config import Config
+from lib.sources.avsource import AVSource
+
+
+class ImgVSource(AVSource):
+    def __init__(self, name, outputs=None, has_audio=False, has_video=True):
+        self.log = logging.getLogger('ImgVSource[{}]'.format(name))
+        super().__init__(name, outputs, False, has_video)
+
+        if has_audio:
+            self.log.warning("Audio requested from video-only source")
+
+        section = 'source.{}'.format(name)
+        
+        try:
+            filepath = Config.get(section, 'file')
+            abs_path = os.path.abspath(filepath)
+            self.imguri = "file://" + abs_path
+            self.log.info("Image source URI: %s", self.imguri)
+        except NoOptionError:
+            self.imguri = Config.get(section, 'imguri')
+
+        self.launch_pipeline()
+
+    def __str__(self):
+        return 'ImgVSource[{name}] displaying {uri}'.format(
+            name=self.name,
+            uri=self.imguri
+        )
+
+    def launch_pipeline(self):
+        pipeline = """
+            uridecodebin uri={uri} !
+            videoconvert !
+            videoscale !
+            imagefreeze name=img
+        """.format(
+            uri=self.imguri
+        )
+        self.build_pipeline(pipeline)
+        self.pipeline.set_state(Gst.State.PLAYING)
+
+    def build_audioport(self, audiostream):
+        raise NotImplementedError(
+            'build_audioport not implemented for this source')
+
+    def build_videoport(self):
+        return 'img.'
+
+    def restart(self):
+        self.pipeline.set_state(Gst.State.NULL)
+        self.launch_pipeline()

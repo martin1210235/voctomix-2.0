@@ -1,0 +1,323 @@
+
+x-video-env: &video-env
+  WIDTH:     ${WIDTH:-1920}
+  HEIGHT:    ${HEIGHT:-1080}
+  FRAMERATE: ${FRAMERATE:-25}
+  AUDIORATE: ${AUDIORATE:-48000}
+
+# Dedicated bridge network: isolates the telemetry service from the voctocore network stack,
+# removing the single point of failure that would take down all services if voctocore crashed.
+networks:
+  voctomix_net:
+    driver: bridge
+
+services:
+  # 0. RABBITMQ (Message Broker - event decoupling)
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    networks:
+      - voctomix_net
+    ports:
+      - "5672:5672"    # AMQP (messaging protocol)
+      - "15672:15672"  # Web management panel
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-voctomix}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-voctomix123}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+
+  # 1. VOCTOCORE (Central Server)
+  voctocore:
+    build: .
+    container_name: voctocore
+    command: python3 voctocore/voctocore.py
+    volumes:
+      - ./:/opt/voctomix
+      - ./images:/opt/images
+    working_dir: /opt/voctomix
+    networks:
+      - voctomix_net
+    ports:
+      - "9998:9998"
+      - "9998:9998/udp"
+      - "9999:9999"
+      - "10000:10000"   # cam1 input
+      - "10001:10001"   # cam2 input
+      - "10002:10002"   # cam3 input
+      - "10003:10003"   # cam4 input
+      - "10004:10004"   # break input
+      - "10005:10005"
+      - "11000:11000"
+      - "12000:12000"
+      - "13000-13005:13000-13005"
+      - "14000-14005:14000-14005"
+      - "15000:15000"
+    # Real healthcheck: waits until the control port is listening
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo '' | nc -zw1 localhost 9999"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 20s
+
+  # 2. TELEMETRY SERVICE (Telemetry and JSON logging) - on an independent network from voctocore
+  telemetry:
+    image: voctomix-voctocore:latest
+    container_name: telemetry
+    command: python3 example-scripts/ffmpeg/telemetry_service.py
+    environment:
+      - TELEMETRY_USE_UDP=1
+      - HOST_IP=${HOST_IP:-192.168.0.42}
+      - VOCTOCORE_HOST=voctocore
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=${RABBITMQ_USER:-voctomix}
+      - RABBITMQ_PASS=${RABBITMQ_PASS:-voctomix123}
+      - SAVE_LOGS=${SAVE_LOGS:-false}
+    user: "1000:1000"
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    networks:
+      - voctomix_net
+    ports:
+      - "8080:8080"
+    depends_on:
+      voctocore:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  # 3. CAMERA 1
+  cam1:
+    build: .
+    container_name: cam1
+    environment:
+      <<: *video-env
+      CAM1_SOURCE: ${CAM1_SOURCE:-http://cdn.media.ccc.de/congress/31C3-sendezentrum/h264-hd/31c3-sendezentrum-1013-de-Methodisch_inkorrekt_Die_falsche_42_hd.mp4}
+      CAM1_PORT:   ${CAM1_PORT:-10000}
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin
+        -i "$$CAM1_SOURCE"
+        -ac 2
+        -filter_complex "[0:v] scale=$$WIDTH:$$HEIGHT,fps=$$FRAMERATE [v]; [0:a] aresample=$$AUDIORATE [a]"
+        -map "[v]" -map "[a]"
+        -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le
+        -f matroska tcp://localhost:$$CAM1_PORT
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 4. CAMERA 2
+  cam2:
+    build: .
+    container_name: cam2
+    environment:
+      <<: *video-env
+      CAM2_SOURCE: ${CAM2_SOURCE:-http://cdn.media.ccc.de/congress/31C3-sendezentrum/h264-hd/31c3-sendezentrum-1003-de-Freak_Show_FS147_That_Escalatored_Quickly_hd.mp4}
+      CAM2_PORT:   ${CAM2_PORT:-10001}
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin
+        -i "$$CAM2_SOURCE"
+        -ac 2
+        -filter_complex "[0:v] scale=$$WIDTH:$$HEIGHT,fps=$$FRAMERATE [v]; [0:a] aresample=$$AUDIORATE [a]"
+        -map "[v]" -map "[a]"
+        -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le
+        -f matroska tcp://localhost:$$CAM2_PORT
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 5. CAMERA 3
+  cam3:
+    build: .
+    container_name: cam3
+    environment:
+      <<: *video-env
+      CAM3_SOURCE: ${CAM3_SOURCE:-http://cdn.media.ccc.de/congress/31C3-sendezentrum/h264-hd/31c3-sendezentrum-1003-de-Freak_Show_FS147_That_Escalatored_Quickly_hd.mp4}
+      CAM3_PORT:   ${CAM3_PORT:-10002}
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin
+        -i "$$CAM3_SOURCE"
+        -ac 2
+        -filter_complex "[0:v] scale=$$WIDTH:$$HEIGHT,fps=$$FRAMERATE [v]; [0:a] aresample=$$AUDIORATE [a]"
+        -map "[v]" -map "[a]"
+        -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le
+        -f matroska tcp://localhost:$$CAM3_PORT
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 6. CAMERA 4
+  cam4:
+    build: .
+    container_name: cam4
+    environment:
+      <<: *video-env
+      CAM4_SOURCE: ${CAM4_SOURCE:-https://www.w3schools.com/html/mov_bbb.mp4}
+      CAM4_PORT:   ${CAM4_PORT:-10003}
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin -stream_loop -1
+        -i "$$CAM4_SOURCE"
+        -filter_complex "[0:v] format=yuv420p,scale=$$WIDTH:$$HEIGHT:out_range=tv,fps=$$FRAMERATE,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709 [v]; [0:a] aresample=$$AUDIORATE [a]"
+        -map "[v]" -map "[a]"
+        -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv
+        -c:v rawvideo -c:a pcm_s16le
+        -f matroska tcp://localhost:$$CAM4_PORT
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 7. BREAK
+  break:
+    build: .
+    container_name: break
+    environment:
+      <<: *video-env
+      BREAK_VIDEO: ${BREAK_VIDEO:-/opt/voctomix/videos/video_cuenta_regresiva_10s.mp4}
+      BREAK_AUDIO: ${BREAK_AUDIO:-/opt/voctomix/videos/musica_pausa.mp3}
+      BREAK_PORT:  ${BREAK_PORT:-10004}
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin -stream_loop -1
+        -i "$$BREAK_VIDEO"
+        -re -stream_loop -1 -i "$$BREAK_AUDIO"
+        -filter_complex "[0:v] format=yuv420p,scale=$$WIDTH:$$HEIGHT:out_range=tv,fps=$$FRAMERATE,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709 [v]; [1:a] aresample=$$AUDIORATE,pan=stereo|c0=c0|c1=c1 [a]"
+        -map "[v]" -map "[a]"
+        -c:v rawvideo -c:a pcm_s16le
+        -f matroska tcp://localhost:$$BREAK_PORT
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 8. INTRO - runs an ffmpeg loop to keep the intro source pre-loaded at all times
+  intro:
+    build: .
+    container_name: intro
+    environment:
+      <<: *video-env
+      INTRO_VIDEO: ${INTRO_VIDEO:-/opt/voctomix/videos/intro.mp4}
+      INTRO_PORT:  ${INTRO_PORT:-10005}
+    command:
+      - bash
+      - -c
+      - |
+        while true; do
+          ffmpeg -loglevel quiet -nostats -re \
+            -i "$$INTRO_VIDEO" \
+            -f lavfi -i anullsrc=r=$$AUDIORATE:cl=stereo \
+            -pix_fmt yuv420p -s "$${WIDTH}x$${HEIGHT}" -r "$$FRAMERATE" \
+            -c:v rawvideo -c:a pcm_s16le \
+            -map 0:v:0 -map 1:a:0 \
+            -shortest \
+            -f matroska tcp://127.0.0.1:$$INTRO_PORT 2>/dev/null
+          sleep 1
+        done
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 9. STREAM BLANKER
+  stream_blanker:
+    build: .
+    container_name: stream_blanker
+    environment:
+      <<: *video-env
+      PAUSE_VIDEO:          ${PAUSE_VIDEO:-/opt/voctomix/videos/SLIDES_video_starting_soon.mp4}
+      OFFLINE_VIDEO:        ${OFFLINE_VIDEO:-/opt/voctomix/videos/stream_offline.mp4}
+      BLANKER_PAUSE_PORT:   ${BLANKER_PAUSE_PORT:-17000}
+      BLANKER_OFFLINE_PORT: ${BLANKER_OFFLINE_PORT:-17001}
+    command:
+      - bash
+      - -c
+      - |
+        ffmpeg -nostats -loglevel warning -stream_loop -1 -re \
+          -i "$$PAUSE_VIDEO" \
+          -pix_fmt yuv420p -s "$${WIDTH}x$${HEIGHT}" -r "$$FRAMERATE" \
+          -c:v rawvideo -an -f matroska tcp://127.0.0.1:$$BLANKER_PAUSE_PORT &
+        ffmpeg -nostats -loglevel warning -stream_loop -1 -re \
+          -i "$$OFFLINE_VIDEO" \
+          -pix_fmt yuv420p -s "$${WIDTH}x$${HEIGHT}" -r "$$FRAMERATE" \
+          -c:v rawvideo -an -f matroska tcp://127.0.0.1:$$BLANKER_OFFLINE_PORT &
+        wait
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 10. DYNAMIC AUDIO CONTROLLER
+  audio_manager:
+    build: .
+    container_name: audio_manager
+    environment:
+      AUDIORATE:        ${AUDIORATE:-48000}
+      BACKGROUND_MUSIC: ${BACKGROUND_MUSIC:-/opt/voctomix/videos/musica_pausa.mp3}
+      AUDIO_PORT:       ${AUDIO_PORT:-18000}
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -nostats -loglevel warning -re -stream_loop -1
+        -i "$$BACKGROUND_MUSIC"
+        -c:a pcm_s16le -ar $$AUDIORATE -ac 2 -vn
+        -f matroska tcp://127.0.0.1:$$AUDIO_PORT
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
