@@ -435,7 +435,8 @@ def print_state(prefix="STATE"):
             f'"system_health": {json.dumps(state["system_health"], ensure_ascii=False)}, '
             f'"network": {json.dumps(state["network"], ensure_ascii=False)}'
         )
-    print(f"[{current_time_str()}] {prefix} -> {info}")
+    print(f"[{current_time_str()}] {prefix} -> {info}", flush=True)
+    print(flush=True)
 
 
 def set_mode(name):
