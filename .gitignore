@@ -61,8 +61,21 @@ target/
 /*.iml
 /.idea
 
-# --- LaTeX compiled output (memoria_tfg) ---
-memoria_tfg/*.pdf
+# --- LaTeX compiled output (raíz y memoria_tfg) ---
+/*.aux
+/*.bbl
+/*.blg
+/*.fdb_latexmk
+/*.fls
+/*.lof
+/*.log
+/*.lot
+/*.out
+/*.synctex.gz
+/*.synctex(busy)
+/*.toc
+/*.toc
+# main.pdf en raíz se conserva accesible (no ignorado)
 memoria_tfg/*.aux
 memoria_tfg/*.log
 memoria_tfg/*.toc
