@@ -106,5 +106,8 @@ notion_tfg/
 # --- Sessions ---
 sessions/
 
+# --- Kubernetes secrets (never commit real credentials) ---
+k8s/secret.yaml
+
 # --- Claude Code internal files ---
 .claude/

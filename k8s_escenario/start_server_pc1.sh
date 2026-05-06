@@ -65,7 +65,10 @@ else
     fi
 
     log "Deploying services..."
-    kubectl apply -f "$BASE_DIR/k8s/" > /dev/null
+    export VOCTOMIX_IMAGE="${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}"
+    kubectl apply -f "$BASE_DIR/k8s/configmap.yaml" -f "$BASE_DIR/k8s/secret.yaml" \
+        -f "$BASE_DIR/k8s/pvc.yaml" -f "$BASE_DIR/k8s/rabbitmq.yaml" > /dev/null
+    envsubst < "$BASE_DIR/k8s/studio.yaml" | kubectl apply -f - > /dev/null
 
     log "Waiting for RabbitMQ..."
     kubectl wait --for=condition=ready pod -l app=rabbitmq --timeout=120s > /dev/null 2>&1 \

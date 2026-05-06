@@ -22,7 +22,7 @@ spec:
 
       containers:
         - name: voctocore
-          image: martin1210235/voctomix:latest
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
           imagePullPolicy: Always
           command: ["bash", "-c", "cd /opt/voctomix/voctocore && python3 voctocore.py"]
           envFrom:
@@ -41,7 +41,7 @@ spec:
             failureThreshold: 12
 
         - name: telemetry
-          image: martin1210235/voctomix:latest
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
           imagePullPolicy: Always
           command: ["python3", "example-scripts/ffmpeg/telemetry_service.py"]
           envFrom:
@@ -54,7 +54,7 @@ spec:
               mountPath: /opt/voctomix/sessions
 
         - name: cam1
-          image: martin1210235/voctomix:latest
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
           imagePullPolicy: Always
           command:
             - sh
@@ -72,7 +72,7 @@ spec:
                 name: voctomix-config
 
         - name: cam2
-          image: martin1210235/voctomix:latest
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
           imagePullPolicy: Always
           command:
             - sh
@@ -90,7 +90,7 @@ spec:
                 name: voctomix-config
 
         - name: cam3
-          image: martin1210235/voctomix:latest
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
           imagePullPolicy: Always
           command:
             - sh
@@ -108,7 +108,7 @@ spec:
                 name: voctomix-config
 
         - name: cam4
-          image: martin1210235/voctomix:latest
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
           imagePullPolicy: Always
           command:
             - sh
@@ -126,7 +126,7 @@ spec:
                 name: voctomix-config
 
         - name: break
-          image: martin1210235/voctomix:latest
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
           imagePullPolicy: Always
           command:
             - sh
@@ -144,7 +144,7 @@ spec:
                 name: voctomix-config
 
         - name: intro
-          image: martin1210235/voctomix:latest
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
           imagePullPolicy: Always
           command:
             - bash
@@ -166,7 +166,7 @@ spec:
                 name: voctomix-config
 
         - name: stream-blanker
-          image: martin1210235/voctomix:latest
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
           imagePullPolicy: Always
           command:
             - bash
@@ -186,7 +186,7 @@ spec:
                 name: voctomix-config
 
         - name: audio-manager
-          image: martin1210235/voctomix:latest
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
           imagePullPolicy: Always
           command:
             - sh
