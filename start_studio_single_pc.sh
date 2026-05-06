@@ -65,20 +65,25 @@ if ! wait_for_port 9999; then
 fi
 log "voctocore started"
 
+WIDTH="${WIDTH:-1920}"
+HEIGHT="${HEIGHT:-1080}"
+FRAMERATE="${FRAMERATE:-25}"
+AUDIORATE="${AUDIORATE:-48000}"
+
 log "Starting continuity and VTR sources..."
 ffmpeg -hide_banner -nostdin -nostats -loglevel error -stream_loop -1 -re \
     -i "$PAUSE_VIDEO" \
-    -pix_fmt yuv420p -s 1920x1080 -r 25 -c:v rawvideo -an \
+    -pix_fmt yuv420p -s "${WIDTH}x${HEIGHT}" -r "$FRAMERATE" -c:v rawvideo -an \
     -f matroska tcp://127.0.0.1:17000 > /dev/null 2>&1 &
 
 ffmpeg -hide_banner -nostdin -nostats -loglevel error -stream_loop -1 -re \
     -i "$OFFLINE_VIDEO" \
-    -pix_fmt yuv420p -s 1920x1080 -r 25 -c:v rawvideo -an \
+    -pix_fmt yuv420p -s "${WIDTH}x${HEIGHT}" -r "$FRAMERATE" -c:v rawvideo -an \
     -f matroska tcp://127.0.0.1:17001 > /dev/null 2>&1 &
 
 ffmpeg -hide_banner -nostdin -nostats -loglevel error -re -stream_loop -1 \
     -i "$BACKGROUND_MUSIC" \
-    -c:a pcm_s16le -ar 48000 -ac 2 -vn \
+    -c:a pcm_s16le -ar "$AUDIORATE" -ac 2 -vn \
     -f matroska tcp://127.0.0.1:18000 > /dev/null 2>&1 &
 
 log "Starting camera sources..."

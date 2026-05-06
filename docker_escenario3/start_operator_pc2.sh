@@ -2,9 +2,12 @@
 set -euo pipefail
 
 BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-# IP of PC 1 (Docker server). Override if the network address changes:
-#   IP_CEREBRO=10.0.0.5 ./start_operator_pc2.sh
-IP_CEREBRO="${IP_CEREBRO:-192.168.0.42}"
+# IP of PC 1 (Docker server). Must be set before running:
+#   IP_CEREBRO=<server-ip> ./start_operator_pc2.sh
+if [[ -z "${IP_CEREBRO:-}" ]]; then
+    echo "ERROR: IP_CEREBRO is not set. Usage: IP_CEREBRO=<server-ip> $0"
+    exit 1
+fi
 
 log() {
     echo "[$(date +%H:%M:%S)] $*"

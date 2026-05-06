@@ -72,13 +72,13 @@ services:
     command: python3 example-scripts/ffmpeg/telemetry_service.py
     environment:
       - TELEMETRY_USE_UDP=1
-      - HOST_IP=${HOST_IP:-192.168.0.42}
+      - HOST_IP=${HOST_IP}
       - VOCTOCORE_HOST=voctocore
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_USER=${RABBITMQ_USER:-voctomix}
       - RABBITMQ_PASS=${RABBITMQ_PASS:-voctomix123}
       - SAVE_LOGS=${SAVE_LOGS:-false}
-    user: "1000:1000"
+    user: "${COMPOSE_UID:-1000}:${COMPOSE_GID:-1000}"
     volumes:
       - ./:/opt/voctomix
     working_dir: /opt/voctomix

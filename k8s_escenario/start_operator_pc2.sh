@@ -2,9 +2,12 @@
 set -euo pipefail
 
 BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-# IP of PC 1 (Kubernetes server). Override if the network address changes:
-#   IP_SERVIDOR=10.0.0.5 ./start_operator_pc2.sh
-IP_SERVIDOR="${IP_SERVIDOR:-192.168.0.42}"
+# IP of PC 1 (Kubernetes server). Must be set before running:
+#   IP_SERVIDOR=<server-ip> ./start_operator_pc2.sh
+if [[ -z "${IP_SERVIDOR:-}" ]]; then
+    echo "ERROR: IP_SERVIDOR is not set. Usage: IP_SERVIDOR=<server-ip> $0"
+    exit 1
+fi
 
 log() {
     echo "[$(date +%H:%M:%S)] $*"
