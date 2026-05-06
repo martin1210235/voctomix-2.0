@@ -3,9 +3,9 @@ set -euo pipefail
 
 BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 # IP of PC 1 (Kubernetes server). Must be set before running:
-#   IP_SERVIDOR=<server-ip> ./start_operator_pc2.sh
-if [[ -z "${IP_SERVIDOR:-}" ]]; then
-    echo "ERROR: IP_SERVIDOR is not set. Usage: IP_SERVIDOR=<server-ip> $0"
+#   IP_SERVER=<server-ip> ./start_operator_pc2.sh
+if [[ -z "${IP_SERVER:-}" ]]; then
+    echo "ERROR: IP_SERVER is not set. Usage: IP_SERVER=<server-ip> $0"
     exit 1
 fi
 
@@ -35,21 +35,21 @@ wait_for_connection() {
     return 1
 }
 
-echo "--- CONNECTING TO KUBERNETES SERVER ($IP_SERVIDOR) ---"
+echo "--- CONNECTING TO KUBERNETES SERVER ($IP_SERVER) ---"
 
-if ! wait_for_connection "$IP_SERVIDOR" 9999; then
-    log "Server not responding at $IP_SERVIDOR:9999. Is PC 1 running start_server_pc1.sh?"
+if ! wait_for_connection "$IP_SERVER" 9999; then
+    log "Server not responding at $IP_SERVER:9999. Is PC 1 running start_server_pc1.sh?"
     exit 1
 fi
 log "voctocore server detected."
 
 log "Opening PROGRAM monitor..."
 ffplay -hide_banner -loglevel error -window_title "PROGRAM" \
-    tcp://"$IP_SERVIDOR":15000 > /dev/null 2>&1 &
+    tcp://"$IP_SERVER":15000 > /dev/null 2>&1 &
 
 log "Opening voctogui..."
 cd "$BASE_DIR/voctogui"
 PYTHONWARNINGS="ignore::DeprecationWarning" \
     VOCTOCORE_PORT=9999 VOCTOCORE_CLOCK_PORT=9998 \
     MIX_OUT_PORT=12000 \
-    python3 voctogui.py -H "$IP_SERVIDOR" 2>/dev/null
+    python3 voctogui.py -H "$IP_SERVER" 2>/dev/null

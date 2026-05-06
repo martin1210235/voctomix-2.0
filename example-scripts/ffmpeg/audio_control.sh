@@ -9,8 +9,10 @@ echo "[AUDIO-ONLY] Injecting background music on port 18000..."
 # -re: real-time playback rate
 # -stream_loop -1: infinite loop
 # -vn: disable video (audio only)
+AUDIORATE="${AUDIORATE:-48000}"
+
 ffmpeg -nostats -loglevel warning -re -stream_loop -1 -i "$BACKGROUND_MUSIC" \
-    -c:a pcm_s16le -ar 48000 -ac 2 -vn \
+    -c:a pcm_s16le -ar "$AUDIORATE" -ac 2 -vn \
     -f matroska tcp://127.0.0.1:18000
 
 # No '&' needed: the container stays alive as long as this process runs.

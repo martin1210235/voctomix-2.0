@@ -156,15 +156,15 @@ cd 1pc_escenario1/ && ./start_studio_single_pc.sh
 
 ```bash
 # Optional: override LAN IP if auto-detection fails
-# IP_LOCAL=10.0.0.5 ./2pc_escenario2/arrancar_voctocore_pc1.sh
+# LOCAL_IP=10.0.0.5 ./2pc_escenario2/start_voctocore_pc1.sh
 
-./2pc_escenario2/arrancar_voctocore_pc1.sh
+./2pc_escenario2/start_voctocore_pc1.sh
 ```
 
 **PC 2 (operator):** runs voctogui pointing at PC 1.
 
 ```bash
-IP_CEREBRO=<IP_OF_PC1> ./2pc_escenario2/start_voctogui_pc2.sh
+IP_SERVER=<IP_OF_PC1> ./2pc_escenario2/start_voctogui_pc2.sh
 ```
 
 Both machines must be on the same LAN with the ports in the [Port Reference](#port-reference) table reachable between them.

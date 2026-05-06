@@ -3,9 +3,9 @@ set -euo pipefail
 
 BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 # IP of PC 1 (Docker server). Must be set before running:
-#   IP_CEREBRO=<server-ip> ./start_operator_pc2.sh
-if [[ -z "${IP_CEREBRO:-}" ]]; then
-    echo "ERROR: IP_CEREBRO is not set. Usage: IP_CEREBRO=<server-ip> $0"
+#   IP_SERVER=<server-ip> ./start_operator_pc2.sh
+if [[ -z "${IP_SERVER:-}" ]]; then
+    echo "ERROR: IP_SERVER is not set. Usage: IP_SERVER=<server-ip> $0"
     exit 1
 fi
 
@@ -37,19 +37,19 @@ wait_for_connection() {
     return 1
 }
 
-echo "--- CONNECTING TO SERVER ($IP_CEREBRO) ---"
+echo "--- CONNECTING TO SERVER ($IP_SERVER) ---"
 
-if ! wait_for_connection "$IP_CEREBRO" 9999; then
-    log "Docker server not responding at $IP_CEREBRO:9999. Is PC 1 running?"
+if ! wait_for_connection "$IP_SERVER" 9999; then
+    log "Docker server not responding at $IP_SERVER:9999. Is PC 1 running?"
     exit 1
 fi
 log "voctocore server detected"
 
 log "Opening PROGRAM monitor over the network..."
 ffplay -hide_banner -loglevel error -window_title "PROGRAM" \
-    tcp://"$IP_CEREBRO":15000 > /dev/null 2>&1 &
+    tcp://"$IP_SERVER":15000 > /dev/null 2>&1 &
 
 log "Opening voctogui and connecting telemetry..."
-export GUI_TARGET_IP="$IP_CEREBRO"
+export GUI_TARGET_IP="$IP_SERVER"
 cd "$BASE_DIR/voctogui"
-PYTHONWARNINGS="ignore::DeprecationWarning" python3 voctogui.py -H "$IP_CEREBRO" > /dev/null 2>&1
+PYTHONWARNINGS="ignore::DeprecationWarning" python3 voctogui.py -H "$IP_SERVER" > /dev/null 2>&1

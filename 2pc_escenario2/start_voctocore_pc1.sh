@@ -3,10 +3,10 @@ set -euo pipefail
 
 # --- LOCAL IP AUTO-DETECTION ---
 # Uses the real outgoing interface (LAN), not loopback.
-# Can be overridden: IP_LOCAL=10.0.0.5 ./arrancar_voctocore_pc1.sh
-IP_LOCAL="${IP_LOCAL:-$(ip route get 1.1.1.1 2>/dev/null | awk '{print $7; exit}')}"
-IP_LOCAL="${IP_LOCAL:-$(hostname -I 2>/dev/null | awk '{print $1}')}"
-IP_LOCAL="${IP_LOCAL:-127.0.0.1}"
+# Can be overridden: LOCAL_IP=10.0.0.5 ./start_voctocore_pc1.sh
+LOCAL_IP="${LOCAL_IP:-$(ip route get 1.1.1.1 2>/dev/null | awk '{print $7; exit}')}"
+LOCAL_IP="${LOCAL_IP:-$(hostname -I 2>/dev/null | awk '{print $1}')}"
+LOCAL_IP="${LOCAL_IP:-127.0.0.1}"
 
 # --- PATH CONFIGURATION ---
 BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
@@ -59,7 +59,7 @@ wait_for_port() {
     return 1
 }
 
-echo "--- STARTING VOCTOCORE SERVER AT $IP_LOCAL ---"
+echo "--- STARTING VOCTOCORE SERVER AT $LOCAL_IP ---"
 
 # 1. Launch voctocore
 log "Launching voctocore..."

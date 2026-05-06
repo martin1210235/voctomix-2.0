@@ -14,15 +14,20 @@ REQUISITOS
 
 --- OPCIÓN A: Kubernetes (recomendado) ---
 
-  Desde la raíz del proyecto (/home/sonda/Documentos/voctomix):
+  Todos los comandos se ejecutan desde la raíz del proyecto:
+  /home/sonda/Documentos/voctomix
 
+  1. Inicia el clúster:
+       minikube start
+
+  2. Despliega los servicios (solo la primera vez o tras cambios):
+       kubectl apply -f k8s/
+
+  3. Arranca la GUI:
        ./launch_k8s.sh
 
-  El script arranca minikube, despliega los servicios si es necesario,
-  espera a que todo esté listo y abre la GUI automáticamente.
-
-  Para parar: Ctrl+C en la terminal.
-  Para parar el clúster al terminar: MINIKUBE_IN_STYLE=false minikube stop
+  Para parar: Ctrl+C en la terminal de la GUI.
+  Para parar el clúster: minikube stop
 
 
 --- OPCIÓN B: Docker local ---
@@ -31,21 +36,8 @@ REQUISITOS
 
   Para parar: Ctrl+C.
 
-  Si se modifica algún fichero del proyecto, reconstruir antes de arrancar:
-    sudo docker compose build
 
-
---- OPCIÓN C: Servidor K8s en PC1, operador en PC2 ---
-
-  En PC1:
-    cd k8s_escenario && ./start_server_pc1.sh
-
-  En PC2:
-    cd k8s_escenario && ./start_operator_pc2.sh
-    (si la IP del PC1 no es 192.168.0.42: IP_SERVIDOR=<ip> ./start_operator_pc2.sh)
-
-
---- OPCIÓN D: Servidor Docker en PC1, operador en PC2 ---
+--- OPCIÓN C: Servidor en PC1, operador en PC2 ---
 
   En PC1:
     cd docker_escenario3 && ./start_server_pc1.sh
