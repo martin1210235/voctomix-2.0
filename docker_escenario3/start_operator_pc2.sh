@@ -2,12 +2,9 @@
 set -euo pipefail
 
 BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-# IP of PC 1 (Docker server). Must be set before running:
-#   IP_SERVER=<server-ip> ./start_operator_pc2.sh
-if [[ -z "${IP_SERVER:-}" ]]; then
-    echo "ERROR: IP_SERVER is not set. Usage: IP_SERVER=<server-ip> $0"
-    exit 1
-fi
+# IP of PC 1 (Docker server). Defaults to localhost for single-PC use.
+#   IP_SERVER=10.0.0.5 ./start_operator_pc2.sh
+IP_SERVER="${IP_SERVER:-127.0.0.1}"
 
 log() {
     echo "[$(date +%H:%M:%S)] $*"
