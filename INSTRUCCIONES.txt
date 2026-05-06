@@ -4,47 +4,58 @@
 
 REQUISITOS
 ----------
-- Docker, kubectl y minikube instalados
-- Python 3 con: python3-gi python3-gi-cairo gir1.2-gtk-3.0
+- Docker y Docker Compose instalados
+- kubectl y minikube instalados (solo para escenario Kubernetes)
+- Python 3 con paquetes: python3-gi python3-gi-cairo gir1.2-gtk-3.0
+
+
+================================================================
+  PRIMER USO: CREDENCIALES
+================================================================
+
+Antes de arrancar el sistema en Kubernetes, crea el fichero de
+credenciales copiando el ejemplo y rellenando los valores:
+
+  cp k8s/secret.yaml.example k8s/secret.yaml
+  # Editar k8s/secret.yaml y establecer RABBITMQ_PASS
 
 
 ================================================================
   ARRANCAR EL SISTEMA
 ================================================================
 
---- OPCIÓN A: Kubernetes (recomendado) ---
+Todos los comandos se ejecutan desde la raiz del proyecto.
 
-  Todos los comandos se ejecutan desde la raíz del proyecto:
-  /home/sonda/Documentos/voctomix
+--- OPCION A: Kubernetes (recomendado para produccion) ---
 
-  1. Inicia el clúster:
-       minikube start
+  ./launch_k8s.sh
 
-  2. Despliega los servicios (solo la primera vez o tras cambios):
-       kubectl apply -f k8s/
+  Para personalizar la imagen Docker:
+    VOCTOMIX_IMAGE=usuario/voctomix:tag ./launch_k8s.sh
 
-  3. Arranca la GUI:
-       ./launch_k8s.sh
-
-  Para parar: Ctrl+C en la terminal de la GUI.
-  Para parar el clúster: minikube stop
+  Para parar: Ctrl+C en la terminal.
+  Para apagar el cluster: minikube stop
 
 
---- OPCIÓN B: Docker local ---
+--- OPCION B: Docker local (1 PC) ---
 
   ./launch_docker_studio.sh
 
   Para parar: Ctrl+C.
 
 
---- OPCIÓN C: Servidor en PC1, operador en PC2 ---
+--- OPCION C: Servidor en PC1, operador en PC2 (Docker) ---
 
   En PC1:
-    cd docker_escenario3 && ./start_server_pc1.sh
+    ./docker_escenario3/start_server_pc1.sh
 
   En PC2:
-    cd docker_escenario3 && ./start_operator_pc2.sh
-    (si la IP del PC1 no es 192.168.0.42: IP_CEREBRO=<ip> ./start_operator_pc2.sh)
+    IP_SERVER=<ip-del-pc1> ./docker_escenario3/start_operator_pc2.sh
+
+
+--- OPCION D: Sin Docker (nativo, 1 PC) ---
+
+  ./start_studio_single_pc.sh
 
 
 ================================================================
@@ -54,7 +65,7 @@ REQUISITOS
 Fuentes (Canal A: F1-F6 / Canal B: botones del panel):
   F1 CAM1  F2 CAM2  F3 CAM3  F4 CAM4  F5 BREAK  F6 INTRO
 
-Modos de composición:
+Modos de composicion:
   FS = pantalla completa  |  SBS = lado a lado
   PIP = imagen sobre imagen  |  LEC = conferencia
 
@@ -62,31 +73,38 @@ Transiciones:
   CUT = corte directo  |  TRANS = fundido
 
 Stream Blanker:
-  PAUSE = pantalla "Starting soon"
+  PAUSE    = pantalla "Starting soon"
   NOSTREAM = pantalla "Stream offline"
-  LIVE = vuelve a emitir
+  LIVE     = vuelve a emitir
 
 
 ================================================================
-  CAMBIAR FUENTES DE VÍDEO
+  CAMBIAR FUENTES DE VIDEO
 ================================================================
 
-Edita k8s/configmap.yaml y cambia la URL o ruta del vídeo:
+Edita k8s/configmap.yaml y modifica las URLs o rutas:
   CAM1_SOURCE, CAM2_SOURCE, CAM3_SOURCE, CAM4_SOURCE
   BREAK_VIDEO, BREAK_AUDIO, INTRO_VIDEO
 
-Luego aplica los cambios:
+Aplica los cambios:
   kubectl apply -f k8s/configmap.yaml
   kubectl rollout restart deployment/studio
 
+Para Docker, edita las variables en docker-compose.yml o
+exportalas antes de ejecutar el script de arranque:
+  WIDTH=1280 HEIGHT=720 FRAMERATE=25 ./launch_docker_studio.sh
+
 
 ================================================================
-  SOLUCIÓN DE PROBLEMAS
+  SOLUCION DE PROBLEMAS
 ================================================================
 
-GUI no conecta:
-  kubectl get pods              ← todos deben estar Running
+Comprobar estado de los pods:
+  kubectl get pods
+
+Ver logs de un servicio concreto:
   kubectl logs deployment/studio -c voctocore
+  kubectl logs deployment/studio -c telemetry
 
 Pods en CrashLoopBackOff:
   kubectl logs deployment/studio -c <nombre-contenedor>
@@ -94,9 +112,8 @@ Pods en CrashLoopBackOff:
 Reiniciar el sistema completo:
   kubectl rollout restart deployment/studio
 
-Reconstruir y subir imagen tras cambios en el código:
-  eval $(minikube docker-env)
+Reconstruir y publicar la imagen tras cambios en el codigo:
   docker build -t voctomix:latest .
-  docker tag voctomix:latest martin1210235/voctomix:latest
-  docker push martin1210235/voctomix:latest
+  docker tag voctomix:latest <usuario>/voctomix:latest
+  docker push <usuario>/voctomix:latest
   kubectl rollout restart deployment/studio
