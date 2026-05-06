@@ -3,6 +3,11 @@ set -euo pipefail
 
 BASE_DIR="$(cd "$(dirname "$0")" && pwd)"
 
+HOST_IP="${HOST_IP:-$(ip route get 1.1.1.1 2>/dev/null | awk '{print $7; exit}')}"
+HOST_IP="${HOST_IP:-$(hostname -I 2>/dev/null | awk '{print $1}')}"
+HOST_IP="${HOST_IP:-127.0.0.1}"
+export HOST_IP
+
 log() {
     echo "[$(date +%H:%M:%S)] $*"
 }
