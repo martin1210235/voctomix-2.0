@@ -118,4 +118,4 @@ k8s/secret.yaml
 .env
 
 # --- Paper (Overleaf git repo — managed separately, not nested in voctomix git) ---
-paper/src/
+paper/
