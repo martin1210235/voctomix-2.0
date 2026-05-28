@@ -110,4 +110,12 @@ sessions/
 k8s/secret.yaml
 
 # --- Claude Code internal files ---
-.claude/
+# .claude/ is intentionally tracked (project rules, docs, templates)
+# Only exclude user-specific local settings:
+.claude/settings.local.json
+
+# --- Environment variables (may contain credentials) ---
+.env
+
+# --- Paper (Overleaf git repo — managed separately, not nested in voctomix git) ---
+paper/src/
