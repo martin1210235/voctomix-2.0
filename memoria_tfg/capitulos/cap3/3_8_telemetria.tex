@@ -24,7 +24,7 @@ mensajes del protocolo interno, filtrando los eventos de estado relevantes:
 (distribución de pantalla activa), y \texttt{stream\_status} (LIVE, PAUSE, NOSTREAM).
 
 El handshake inicial incluye el comando \texttt{get\_config}, que devuelve en un bloque
-JSON los parámetros del pipeline: resolución, framerate, formato de píxel
+JSON los parámetros del \textit{pipeline}: resolución, \textit{framerate} (frecuencia de imagen), formato de píxel
 (\texttt{yuv420p}), frecuencia de muestreo de audio y número de canales. Estos datos
 se inyectan en el campo \texttt{stream\_info} de cada entrada del log, dotando al
 registro de validez técnica para análisis de rendimiento.
@@ -170,6 +170,21 @@ La integración con RabbitMQ permite:
 Un ejemplo de consumidor de la cola RabbitMQ se encuentra en
 \texttt{rabbit\_consumer\_example.py}, que sirve como punto de partida para integrar
 Voctomix con sistemas externos.
+
+En el marco del proyecto europeo de investigación CyberNEMO (UPM), el broker RabbitMQ
+de Voctomix~2.0 fue integrado en el clúster Kubernetes de producción del proyecto, donde
+las colas \texttt{vproduction-uc-media} y \texttt{vqprobe-uc-media} recibieron los
+eventos del mezclador en tiempo real durante las pruebas reales de producción audiovisual.
+Este despliegue constituyó la primera validación del sistema de telemetría en un entorno
+de producción real, demostrando su capacidad de integración con plataformas externas de
+seguridad y monitorización.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{figuras/rabbitmq_cybernemo_queues.png}
+  \caption{Colas RabbitMQ activas durante la integración con CyberNEMO.}
+  \label{fig:rabbitmq_cybernemo}
+\end{figure}
 
 La arquitectura desacoplada del servicio de telemetría, conectado al núcleo como un
 cliente TCP ordinario sin privilegios especiales, garantiza que su eventual fallo no

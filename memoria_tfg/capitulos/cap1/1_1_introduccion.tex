@@ -2,7 +2,7 @@
 
 La producción audiovisual en directo ha experimentado en los últimos años una profunda
 transformación, impulsada por la democratización del hardware de bajo coste y el
-crecimiento exponencial del \textit{streaming} en Internet. Eventos técnicos de referencia como
+crecimiento exponencial del \textit{streaming} (transmisión en flujo) en Internet. Eventos técnicos de referencia como
 el Chaos Communication Congress (CCC), organizado por el Chaos Computer Club en Alemania,
 han puesto de manifiesto la necesidad de disponer de herramientas de realización
 profesional que sean al mismo tiempo económicas, fiables y auditables.
@@ -23,14 +23,17 @@ Docker y Docker Compose. El resultado es Voctomix 2.0, una plataforma más vers�
 desplegable y adaptada a flujos de trabajo profesionales.
 
 Un elemento diferenciador de este proyecto es su orientación hacia un \textbf{caso de uso
-real}: el sistema desarrollado está previsto para su utilización por el grupo de
-investigación \textbf{CyberNemo} de la Universidad Politécnica de Madrid (UPM). Este
-grupo necesita una solución de producción audiovisual remota que permita retransmitir
-sus actividades, seminarios y presentaciones con calidad profesional y sin depender de
-infraestructura hardware costosa. Voctomix 2.0 responde directamente a estas necesidades,
-proporcionando un entorno reproducible y fácilmente desplegable que puede ponerse en
-funcionamiento con un único comando (\texttt{docker compose up}) en cualquier equipo
-Linux estándar.
+real}: el sistema desarrollado se integra en el proyecto europeo de investigación
+\textbf{CyberNEMO}, liderado por la Universidad Politécnica de Madrid (UPM), cuyo
+objetivo es validar soluciones de ciberseguridad aplicadas a entornos de producción y
+distribución multimedia. En este marco, Voctomix~2.0 actúa como el motor de producción
+audiovisual del proyecto, mientras que el sistema de telemetría con RabbitMQ
+desarrollado en este trabajo proporciona el canal de monitorización en tiempo real del
+\textit{pipeline} (cadena de procesamiento) de producción. Voctomix~2.0 responde directamente a las necesidades de
+retransmisión de seminarios y eventos técnicos con calidad profesional sin depender de
+infraestructura hardware costosa, proporcionando un entorno reproducible que puede
+ponerse en funcionamiento con un único comando (\texttt{docker compose up}) en
+cualquier equipo Linux estándar.
 
 % --- Figura sugerida ---
 % \begin{figure}[H]

@@ -19,16 +19,11 @@ Cada fuente de cámara se conecta al puerto TCP correspondiente de voctocore:
 
 El envío de la señal puede realizarse con cualquier herramienta capaz de producir un
 flujo Matroska sobre TCP. En el entorno de desarrollo y pruebas, las fuentes de cámara
-se simulan mediante scripts FFmpeg que generan vídeo de prueba (barras de color o
-\textit{test card} con reloj en tiempo real). En un despliegue real con cámaras físicas,
-la señal se captura habitualmente mediante tarjetas de captura y se reencapsula en
-Matroska/TCP con FFmpeg.
-
-Los scripts de prueba se encuentran en el directorio
-\texttt{example-scripts/ffmpeg/source-testvideo-as-cam*.sh}. En el escenario Docker,
-cada cámara es un contenedor independiente que comparte el \textit{network namespace}
-de voctocore (directiva \texttt{network\_mode: service:voctocore}), lo que les permite
-conectarse directamente por \texttt{localhost} sin overhead de red virtual.
+se simulan mediante vídeos pregrabados de un evento real: grabaciones de distintas
+cámaras colocadas en diferentes puntos de un auditorio durante unas conferencias o
+charlas técnicas, que reproducen en bucle para emular la presencia de cámaras en
+directo. En un despliegue con cámaras físicas, la señal se encapsularía en
+Matroska/TCP mediante FFmpeg y una tarjeta de captura conectada al equipo servidor.
 
 \subsection{Previsualización en la interfaz gráfica}
 
@@ -47,6 +42,24 @@ de control. Cada miniatura incluye:
 El realizador selecciona la fuente activa haciendo clic sobre la miniatura
 correspondiente, lo que envía el comando \texttt{set\_video\_a <fuente>} o
 \texttt{set\_video\_b <fuente>} al núcleo mediante el protocolo de control TCP.
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}[t]{0.33\textwidth}
+    \subcaptionbox{Previsualizaciones y niveles de audio.\label{fig:panel_camaras_previews}}{%
+      \includegraphics[width=\textwidth]{figuras/panel_camaras1.png}}
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[t]{0.62\textwidth}
+    \subcaptionbox{Detalle de CAM1 con su medidor.\label{fig:panel_camaras_detalle}}{%
+      \includegraphics[width=0.77\textwidth]{figuras/panel_camaras2.png}}
+    \par\vspace{0pt}
+    \subcaptionbox{Selectores de canal A y canal B.\label{fig:panel_camaras_selectores}}{%
+      \includegraphics[width=0.77\textwidth]{figuras/panel_camaras3.png}}
+  \end{minipage}
+  \caption{Panel de cámaras en voctogui.}
+  \label{fig:panel_camaras}
+\end{figure}
 
 \subsection{Requisitos de formato de la señal de entrada}
 \label{sec:formato_entrada}
@@ -67,15 +80,14 @@ cumplir:
         del flujo declaren el espacio de color estándar de alta definición
         (\texttt{colorimetry=bt709}) y el rango de luz televisivo (\texttt{tv range}).
         Los archivos grabados con cámaras convencionales o editados con software de
-        consumo suelen emplear el rango \texttt{pc} (full range). Para traducirlos, se
+        consumo suelen emplear el rango \texttt{pc} (full range). Para convertirlos, se
         aplican los filtros FFmpeg \texttt{scale=out\_range=tv} y
-        \texttt{colorspace=bt709}, que recalculan los valores de píxel al vuelo sin
-        degradación visual perceptible.
+        \texttt{colorspace=bt709}, que recalculan los valores de píxel en tiempo real
+        sin degradación visual perceptible.
 \end{enumerate}
 
-Estos requisitos quedan encapsulados en los scripts de prueba
-\texttt{example-scripts/ffmpeg/source-testvideo-as-cam*.sh}, que sirven como referencia
-para la integración de cámaras físicas reales mediante tarjetas de captura.
+Estos requisitos deben tenerse en cuenta al integrar cualquier fuente de vídeo externa,
+ya sea procedente de cámaras físicas, archivos grabados o generadores de señal de prueba.
 
 % --- Figura sugerida ---
 % \begin{figure}[H]

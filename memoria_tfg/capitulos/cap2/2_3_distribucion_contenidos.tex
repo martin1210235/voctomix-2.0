@@ -10,45 +10,38 @@ de forma agresiva y a equilibrar el compromiso entre latencia, calidad y escalab
 
 \subsection{Interfaces y protocolos de distribución}
 
-\subsubsection*{RTMP (\textit{Real-Time Messaging Protocol})}
+\begin{itemize}
+  \item \textbf{RTMP (\textit{Real-Time Messaging Protocol}):} protocolo TCP de Adobe,
+  estándar de ingesta para plataformas como YouTube Live o Twitch con latencia de
+  2--5~s. Aunque obsoleto en reproducción desde la desaparición de Flash, sigue siendo
+  el protocolo de ingesta más soportado, incluyendo Voctomix mediante FFmpeg, con una
+  adopción profesional del 58\% en 2025~\cite{haivision_broadcast_report_2025}.
 
-Desarrollado por Macromedia (posteriormente Adobe) sobre TCP, RTMP fue durante más de
-una década el estándar \textit{de facto} para la ingesta de vídeo en plataformas de
-streaming como YouTube Live o Twitch. Su latencia típica oscila entre 2 y 5 segundos.
-Aunque técnicamente obsoleto en el lado del reproductor desde la desaparición de Adobe
-Flash, sigue siendo el protocolo de ingesta más soportado por encoders y mezcladores
-de software, incluido Voctomix mediante FFmpeg, y mantiene una tasa de adopción
-profesional del 58\% en 2025~\cite{haivision_broadcast_report_2025}.
+  \item \textbf{SRT (\textit{Secure Reliable Transport}):} protocolo de código abierto
+  de Haivision con latencia inferior a 1~s, corrección de errores ARQ y cifrado
+  AES-128/256, diseñado para transmisión sobre redes no
+  fiables~\cite{sharabayko2024_srt}. Es actualmente el protocolo de transporte en
+  directo más utilizado entre profesionales, con una adopción del \textbf{77\%} en
+  2025, superando a RTMP~\cite{haivision_broadcast_report_2025}.
 
-\subsubsection*{SRT (\textit{Secure Reliable Transport})}
+  \item \textbf{HLS (\textit{HTTP Live Streaming}):} protocolo de Apple que divide el
+  vídeo en segmentos servidos mediante HTTP~\cite{rfc8216}. Latencia de 10--30~s en
+  modo estándar, reducible a 2--5~s con \textit{Low-Latency HLS}. Es el protocolo de
+  reproducción más compatible, con soporte nativo en prácticamente todos los
+  dispositivos y CDN.
 
-SRT es un protocolo de código abierto desarrollado por Haivision que proporciona
-transmisión de baja latencia (inferior a 1~s) sobre redes no fiables. Incorpora
-corrección de errores ARQ (\textit{Automatic Repeat Request}) adaptativa y cifrado
-AES-128/256, lo que lo hace especialmente adecuado para contribuciones y distribuciones
-sobre Internet pública donde las pérdidas de paquetes y el \textit{jitter} son
-habituales~\cite{sharabayko2024_srt}. Según el \textit{Haivision Broadcast Transformation
-Report~2025}, SRT es actualmente el protocolo de transporte de vídeo en directo más
-utilizado entre profesionales, con una tasa de adopción del \textbf{77\%} en 2025,
-frente al 68\% del año anterior, superando ya a RTMP~\cite{haivision_broadcast_report_2025}.
+  \item \textbf{MPEG-DASH (\textit{Dynamic Adaptive Streaming over HTTP}):} estándar
+  abierto ISO/IEC~23009-1~\cite{iso_mpegdash} equivalente a HLS pero sin dependencia
+  de proveedor. Divide el contenido en segmentos HTTP con ajuste adaptativo de calidad
+  (ABR), y es empleado por plataformas como YouTube, Netflix y Amazon Prime. Puede
+  generarse con FFmpeg como alternativa abierta a HLS en el pipeline de Voctomix.
 
-\subsubsection*{HLS (\textit{HTTP Live Streaming})}
-
-Desarrollado por Apple, HLS divide el flujo de vídeo en segmentos de fichero de
-duración fija que se sirven mediante HTTP estándar~\cite{rfc8216}. Su latencia habitual
-es de 10--30 segundos en modo estándar, reducible a 2--5 segundos con la extensión
-\textit{Low-Latency HLS} (LL-HLS). Es el protocolo de reproducción más compatible en
-2025, con soporte nativo en prácticamente todos los dispositivos y redes de
-distribución de contenidos (CDN).
-
-\subsubsection*{WebRTC (\textit{Web Real-Time Communication})}
-
-Estándar del W3C para comunicación multimedia en tiempo real directamente desde el
-navegador. Proporciona latencias de 100--500~ms, lo que lo convierte en la única opción
-viable para aplicaciones verdaderamente interactivas. Su escalabilidad para audiencias
-masivas es limitada, pero resulta ideal para monitorización remota del sistema de
-producción, retornos de comunicación entre el equipo técnico y aplicaciones de
-videoconferencia integradas en el flujo de trabajo.
+  \item \textbf{WebRTC (\textit{Web Real-Time Communication}):} estándar W3C para
+  comunicación multimedia en tiempo real desde el navegador, con latencias de
+  100--500~ms. Su escalabilidad para audiencias masivas es limitada, pero resulta ideal
+  para monitorización remota del sistema de producción y retornos entre el equipo
+  técnico.
+\end{itemize}
 
 \begin{table}[H]
   \centering
@@ -58,10 +51,11 @@ videoconferencia integradas en el flujo de trabajo.
     \hline
     \textbf{Protocolo} & \textbf{Latencia} & \textbf{Transporte} & \textbf{Cifrado} & \textbf{Uso principal} \\
     \hline
-    RTMP    & 2--5~s      & TCP    & No (RTMPS sí) & Ingesta a plataformas \\
-    SRT     & $<$1~s      & UDP    & AES-128/256   & Contribución/distribución IP \\
-    HLS     & 2--30~s     & HTTP   & HTTPS         & Reproducción masiva (CDN) \\
-    WebRTC  & 100--500~ms & UDP    & DTLS/SRTP     & Monitorización, retornos \\
+    RTMP      & 2--5~s      & TCP    & No (RTMPS sí) & Ingesta a plataformas \\
+    SRT       & $<$1~s      & UDP    & AES-128/256   & Contribución/distribución IP \\
+    HLS       & 2--30~s     & HTTP   & HTTPS         & Reproducción masiva (CDN) \\
+    MPEG-DASH & 2--30~s     & HTTP   & HTTPS         & Streaming adaptativo abierto \\
+    WebRTC    & 100--500~ms & UDP    & DTLS/SRTP     & Monitorización, retornos \\
     \hline
   \end{tabular}
 \end{table}
@@ -81,7 +75,7 @@ pérdida de calidad a cambio de viabilizar el transporte:
 
   \item \textbf{H.265 / HEVC} (\textit{High Efficiency Video Coding}): sucesor de
   H.264 que aproximadamente \textbf{duplica la eficiencia de compresión}, permitiendo
-  la misma calidad perceptual a la mitad del bitrate~\cite{itu_h265}. Su codificación
+  la misma calidad perceptual a la mitad del \textit{bitrate} (tasa de bits)~\cite{itu_h265}. Su codificación
   es 5--8 veces más lenta que H.264, lo que lo hace adecuado para streaming en tiempo
   real cuando se dispone de aceleración hardware (GPU o ASIC). Los dispositivos
   fabricados tras 2015 disponen en general de soporte de decodificación por hardware.

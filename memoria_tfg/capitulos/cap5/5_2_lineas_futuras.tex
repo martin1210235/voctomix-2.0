@@ -1,27 +1,68 @@
 \section{Líneas de trabajo futuro}
 \label{sec:lineas_futuras}
 
-El desarrollo de Voctomix 2.0 ha puesto de manifiesto varias áreas de mejora e
+El desarrollo de Voctomix~2.0 ha puesto de manifiesto varias áreas de mejora e
 investigación que quedan fuera del alcance de este Trabajo de Fin de Grado pero que
-constituyen líneas de trabajo futuro de interés:
+constituyen líneas de trabajo futuro de interés.
 
 \begin{itemize}
-  \item \textbf{Prueba con cámaras reales:} la validación definitiva del sistema
-        consiste en conectar cámaras físicas a los puertos de entrada de voctocore
-        y realizar una retransmisión en directo completa. Este caso de uso está
-        previsto en el contexto del grupo de investigación CyberNemo de la UPM,
-        donde Voctomix 2.0 se utilizará para retransmitir seminarios y presentaciones
-        con cámaras reales conectadas mediante tarjetas de captura o directamente
-        mediante NDI. Esta prueba permitirá validar el sistema en condiciones reales
-        y detectar posibles problemas de sincronización, latencia o estabilidad que
-        no se manifiestan con fuentes sintéticas.
 
-  \item \textbf{Interfaz web de control:} sustituir voctogui por una aplicación web
-        que consuma la API REST del servicio de telemetría eliminaría la dependencia
-        de GTK y permitiría controlar el sistema desde cualquier dispositivo con
-        navegador, incluidas tabletas y teléfonos móviles.
+  \item \textbf{Validación con cámaras físicas en producción real.}
+  La totalidad de las pruebas descritas en este trabajo se han realizado con fuentes
+  sintéticas generadas mediante FFmpeg. La validación definitiva del sistema consiste
+  en conectar cámaras físicas mediante tarjetas de captura o NDI y realizar una
+  retransmisión en directo completa. Este escenario está previsto en el contexto del
+  grupo de investigación CyberNemo de la UPM, donde Voctomix~2.0 se utilizará para
+  retransmitir seminarios y presentaciones. Una producción real permitirá detectar
+  posibles problemas de sincronización, \textit{jitter} de red o estabilidad que no
+  se manifiestan con fuentes sintéticas de frecuencia constante.
 
-  \item \textbf{Soporte NDI nativo:} incorporar el protocolo NDI como fuente de
-        entrada alternativa a TCP/MKV facilitaría la integración con cámaras de red
-        modernas y con herramientas de producción compatibles con este protocolo.
+  \item \textbf{Soporte NDI nativo como fuente de entrada.}
+  Incorporar el protocolo NDI como tipo de fuente alternativo a TCP/MKV facilitaría
+  la integración con cámaras de red modernas, ordenadores de presentación y
+  herramientas de producción ampliamente adoptadas. La implementación requeriría
+  añadir un plugin GStreamer para NDI en el contenedor de voctocore y definir un
+  nuevo tipo de fuente en el fichero de configuración, manteniendo la compatibilidad
+  con las fuentes TCP existentes.
+
+  \item \textbf{Interfaz web de control.}
+  Sustituir o complementar \texttt{voctogui} con una aplicación web que consuma la
+  API REST del servicio de telemetría eliminaría la dependencia de GTK~3 y permitiría
+  controlar el sistema desde cualquier dispositivo con navegador, incluidas tabletas
+  y teléfonos móviles. Esta mejora resulta especialmente relevante en el modelo REMI,
+  donde el realizador puede encontrarse geográficamente separado del servidor de
+  producción.
+
+  \item \textbf{Escalado automático en Kubernetes.}
+  La arquitectura de microservicios desplegada en Kubernetes está preparada
+  conceptualmente para incorporar un \textit{Horizontal Pod Autoscaler} que escale
+  dinámicamente los servicios de transcripción o distribución en función de la carga.
+  Una línea de trabajo concreta sería integrar un transcodificador de salida (FFmpeg
+  con destino RTMP o SRT) como un microservicio escalable independiente de voctocore,
+  de forma que el número de destinos de distribución pueda aumentarse sin detener la
+  producción.
+
+  \item \textbf{Distribución de salida con SRT y HLS adaptativo.}
+  Actualmente la señal de programa se expone como flujo TCP en bruto por el puerto
+  15000. Una mejora natural sería añadir una etapa de transcodificación con FFmpeg que
+  publique simultáneamente la señal en SRT (para ingesta profesional de baja latencia)
+  y en HLS (para audiencias masivas mediante CDN), integrando ambas salidas como
+  servicios adicionales en el Docker Compose existente.
+
+  \item \textbf{Integración de subtitulación automática en tiempo real.}
+  La arquitectura de eventos del servicio de telemetría facilita la integración de
+  un módulo de reconocimiento de voz que genere subtítulos automáticos y los publique
+  como overlay de texto dinámico. Este flujo de trabajo conectaría el audio de programa
+  con un servicio de transcripción (por ejemplo, Whisper de OpenAI ejecutado de forma
+  local) y alimentaría el mecanismo de rotulación existente, añadiendo accesibilidad
+  a las retransmisiones sin intervención manual del operador.
+
+  \item \textbf{Panel de monitorización en tiempo real.}
+  Los eventos JSON publicados en RabbitMQ pueden alimentar un \textit{dashboard}
+  de monitorización basado en la pila Grafana y Prometheus. La integración consistiría
+  en añadir un consumidor RabbitMQ que transforme los eventos de telemetría en métricas
+  Prometheus, permitiendo visualizar en tiempo real el consumo de CPU, la latencia de
+  conmutación y el estado de cada fuente durante la producción, con alertas configurables
+  ante caídas de fuentes o superación de umbrales de rendimiento.
+
 \end{itemize}

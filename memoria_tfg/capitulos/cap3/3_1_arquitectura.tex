@@ -21,12 +21,7 @@ siguen, cada uno de los cuales profundiza en uno de sus bloques.
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{figuras/diagrama_sistema}
-  \caption[Arquitectura del sistema Voctomix~2.0]{Arquitectura del sistema Voctomix~2.0:
-           fuentes de señal (cámaras y auxiliares FFmpeg, entradas del stream blanker),
-           núcleo GStreamer (AVSource, VideoMix, AudioMix, overlays), salidas de mezcla
-           bruta (:11000) y streaming (:15000), capa de control y telemetría
-           (voctogui, servicio de telemetría, RabbitMQ), todo ello orquestado mediante
-           Docker Compose.}
+  \caption{Arquitectura global del sistema Voctomix~2.0.}
   \label{fig:diagrama_sistema}
 \end{figure}
 
@@ -78,14 +73,12 @@ dinámicamente la cadena GStreamer a partir de la configuración INI: crea una i
 de \texttt{AVSource} por cada fuente declarada, instancia el \texttt{VideoMix} y el
 \texttt{AudioMix}, conecta el \texttt{StreamBlanker} y abre los puertos de salida.
 
-El \texttt{ControlServer} expone el \textbf{protocolo de control} en el puerto TCP
-9999: un protocolo de texto plano en el que cada comando tiene la forma
-\texttt{<verbo>\_<objeto>~[parámetros]} (p.ej.\ \texttt{set\_video\_a~cam2} o
-\texttt{set\_composite\_mode~pip}). El servidor transmite por \textit{broadcast} cada
-cambio de estado a todos los clientes conectados simultáneamente, de forma que la
-interfaz gráfica, los scripts de automatización y el servicio de telemetría mantienen
-siempre una vista coherente del sistema sin necesidad de consultar el núcleo
-activamente.
+El \texttt{ControlServer} expone el \textbf{protocolo de control} en el puerto TCP~9999:
+comandos de texto plano del tipo \texttt{set\_video\_a~cam2} o
+\texttt{set\_composite\_mode~pip}. Cada cambio de estado se difunde por
+\textit{broadcast} a todos los clientes conectados, de forma que la interfaz gráfica,
+los scripts de automatización y el servicio de telemetría mantienen una vista coherente
+del sistema en todo momento.
 
 \subsection{voctogui: interfaz gráfica de control}
 \label{sec:voctogui}
@@ -97,3 +90,10 @@ de forma que los eventos de red no bloquean el hilo principal de GTK. La GUI rec
 los flujos de previsualización de cada fuente en formato JPEG comprimido (puertos
 14000--14005) para minimizar el consumo de ancho de banda, mientras que el monitor
 principal recibe la mezcla final en bruto (puerto 11000).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figuras/gui_completa.png}
+  \caption{Interfaz gráfica completa de Voctomix~2.0 (voctogui).}
+  \label{fig:gui_completa}
+\end{figure}
