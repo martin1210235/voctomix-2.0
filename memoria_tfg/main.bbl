@@ -1,0 +1,193 @@
+\begin{thebibliography}{10}
+
+\bibitem{tmbroadcast_remi}
+{TM Broadcast}.
+\newblock Guía para no perderse sobre la producción remota.
+\newblock \url{https://tmbroadcast.es/claves-produccion-remota/}, 2023.
+\newblock Accedido: abril 2026.
+
+\bibitem{blackmagic_atem}
+{Blackmagic Design}.
+\newblock {ATEM} production switchers.
+\newblock \url{https://www.blackmagicdesign.com/products/atem}, 2024.
+\newblock Accedido: abril 2026.
+
+\bibitem{smpte_sdi}
+{Society of Motion Picture and Television Engineers}.
+\newblock {SMPTE ST 259M / 292M / 424M}: Serial digital interface standards.
+\newblock \url{https://www.smpte.org}, 2023.
+\newblock Accedido: abril 2026.
+
+\bibitem{remi_workflow_ibc2023}
+Tom Harrison and Mark Bowyer.
+\newblock Remote production workflows: Lessons learnt from live sport at scale.
+\newblock In {\em IBC2023 Conference Proceedings}. IBC, 2023.
+\newblock \url{https://show.ibc.org/ibc2023-conference-proceedings}.
+
+\bibitem{obs_tokyo_2021}
+{Olympic Broadcasting Services}.
+\newblock {OBS} at the {Tokyo} 2020 {Olympic Games}: Remote production report.
+\newblock \url{https://www.obs.tv}, 2021.
+\newblock Accedido: abril 2026.
+
+\bibitem{tsa_remi_2022}
+{Telefónica Servicios Audiovisuales}.
+\newblock Producción remota de la {UEFA Champions League} desde el {Santiago
+  Bernabéu}.
+\newblock
+  \url{https://nrd.es/produccion-remota-broadcast-el-nuevo-estandar-operativo/},
+  2022.
+\newblock Accedido: abril 2026.
+
+\bibitem{obs_studio}
+{OBS Project}.
+\newblock {OBS Studio} --- open broadcaster software.
+\newblock \url{https://obsproject.com}, 2024.
+\newblock Accedido: abril 2026.
+
+\bibitem{vmix_software}
+{StudioCoast Pty Ltd}.
+\newblock {vMix} live production software.
+\newblock \url{https://www.vmix.com}, 2024.
+\newblock Accedido: abril 2026.
+
+\bibitem{voctomix_github}
+{C3VOC}.
+\newblock Voctomix --- {GitHub} repository.
+\newblock \url{https://github.com/voc/voctomix}, 2024.
+\newblock Accedido: abril 2026.
+
+\bibitem{gstreamer_docs}
+{GStreamer Project}.
+\newblock {GStreamer} application development manual.
+\newblock \url{https://gstreamer.freedesktop.org/documentation/}, 2024.
+\newblock Accedido: abril 2026.
+
+\bibitem{smpte_st2022_6}
+{Society of Motion Picture and Television Engineers}.
+\newblock {SMPTE ST 2022-6:2012}: Transport of high bit rate media signals over
+  {IP} networks ({HBRMT}).
+\newblock Standard, SMPTE, 2012.
+\newblock \url{https://www.smpte.org/standards/document-index/st}.
+
+\bibitem{smpte_st2110_20}
+{Society of Motion Picture and Television Engineers}.
+\newblock {SMPTE ST 2110-20:2022}: Professional media over managed {IP}
+  networks: Uncompressed active video.
+\newblock Standard, SMPTE, 2022.
+\newblock \url{https://www.smpte.org/standards/document-index/st}.
+
+\bibitem{ieee1588_ptp}
+{IEEE}.
+\newblock {IEEE Std 1588-2019}: {IEEE} standard for a precision clock
+  synchronization protocol for networked measurement and control systems.
+\newblock Ieee standard, IEEE, 2019.
+\newblock \url{https://standards.ieee.org/ieee/1588/6825/}.
+
+\bibitem{ndi_vizrt}
+{Vizrt Group}.
+\newblock {NDI} technology: {Network Device Interface}.
+\newblock \url{https://ndi.video}, 2024.
+\newblock Accedido: abril 2026.
+
+\bibitem{sharabayko2024_srt}
+Maxim~P. Sharabayko, Maria~A. Sharabayko, Jean Dube, Jeongseok Kim, and
+  Joonwoong Kim.
+\newblock {SRT}: Secure reliable transport protocol.
+\newblock Internet-Draft draft-sharabayko-srt-latest, IETF, January 2024.
+\newblock \url{https://datatracker.ietf.org/doc/draft-sharabayko-srt/}.
+
+\bibitem{apple_prores}
+{Apple Inc.}
+\newblock About {Apple ProRes}.
+\newblock \url{https://support.apple.com/en-us/102207}, 2024.
+\newblock Accedido: abril 2026.
+
+\bibitem{avid_dnxhd}
+{Avid Technology}.
+\newblock {Avid DNxHD} codec family.
+\newblock \url{https://www.avid.com/resource-center/dnxhd-and-dnxhr-codecs},
+  2023.
+\newblock Accedido: abril 2026.
+
+\bibitem{jpeg2000_iso}
+{ISO/IEC}.
+\newblock {ISO/IEC 15444-1:2019}: Information technology --- {JPEG~2000} image
+  coding system: Core coding system.
+\newblock International standard, ISO/IEC, 2019.
+\newblock \url{https://www.iso.org/standard/78321.html}.
+
+\bibitem{matroska_spec}
+{IETF / Matroska.org}.
+\newblock Matroska media container specification.
+\newblock \url{https://www.matroska.org/technical/specs/index.html}, 2024.
+\newblock Accedido: abril 2026.
+
+\bibitem{iso_mpegts}
+{ISO/IEC}.
+\newblock {ISO/IEC 13818-1:2023}: Information technology --- generic coding of
+  moving pictures and associated audio information: Systems.
+\newblock International standard, ISO/IEC, 2023.
+\newblock \url{https://www.iso.org/standard/83239.html}.
+
+\bibitem{iso_isobmff}
+{ISO/IEC}.
+\newblock {ISO/IEC 14496-12:2022}: Information technology --- coding of
+  audio-visual objects --- {ISO} base media file format.
+\newblock International standard, ISO/IEC, 2022.
+\newblock \url{https://www.iso.org/standard/83102.html}.
+
+\bibitem{rfc3550_rtp}
+Henning Schulzrinne, Stephen Casner, Ron Frederick, and Van Jacobson.
+\newblock {RTP}: A transport protocol for real-time applications.
+\newblock RFC 3550, IETF, 2003.
+\newblock \url{https://www.rfc-editor.org/rfc/rfc3550}.
+
+\bibitem{rfc7826_rtsp}
+Henning Schulzrinne, Anup Rao, Robert Lanphier, Magnus Westerlund, and Martin
+  Stiemerling.
+\newblock {Real-Time Streaming Protocol} version~2.0.
+\newblock RFC 7826, IETF, 2016.
+\newblock \url{https://www.rfc-editor.org/rfc/rfc7826}.
+
+\bibitem{haivision_broadcast_report_2025}
+{Haivision}.
+\newblock Broadcast transformation report 2025.
+\newblock \url{https://www.haivision.com}, 2025.
+\newblock Accedido: abril 2026.
+
+\bibitem{rfc8216}
+Roger Pantos and William May.
+\newblock {HTTP} live streaming.
+\newblock RFC 8216, IETF, 2017.
+\newblock \url{https://www.rfc-editor.org/rfc/rfc8216}.
+
+\bibitem{iso_mpegdash}
+{ISO/IEC}.
+\newblock {ISO/IEC 23009-1:2022}: Information technology --- dynamic adaptive
+  streaming over {HTTP} ({DASH}) --- part~1: Media presentation description and
+  segment formats.
+\newblock International standard, ISO/IEC, 2022.
+\newblock \url{https://www.iso.org/standard/83314.html}.
+
+\bibitem{itu_h264}
+{ITU-T}.
+\newblock {Recommendation ITU-T H.264}: Advanced video coding for generic
+  audiovisual services.
+\newblock Itu-t recommendation, International Telecommunication Union, 2021.
+\newblock \url{https://www.itu.int/rec/T-REC-H.264/en}.
+
+\bibitem{itu_h265}
+{ITU-T}.
+\newblock {Recommendation ITU-T H.265}: High efficiency video coding.
+\newblock Itu-t recommendation, International Telecommunication Union, 2021.
+\newblock \url{https://www.itu.int/rec/T-REC-H.265/en}.
+
+\bibitem{chen2024_codec_comparison}
+Zhuoyuan Chen, Yuxin Guo, Yao Jin, and Bo~Peng.
+\newblock Performance comparison of {VVC}, {AV1}, {HEVC}, and {AVC} for high
+  resolutions.
+\newblock {\em Electronics}, 13(5):953, 2024.
+\newblock \url{https://www.mdpi.com/2079-9292/13/5/953}.
+
+\end{thebibliography}

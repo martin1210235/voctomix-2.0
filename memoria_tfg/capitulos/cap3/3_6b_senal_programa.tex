@@ -1,0 +1,24 @@
+\section{Señal de programa final}
+\label{sec:senal_programa}
+
+Una vez procesada la mezcla — con el composite activo, las transiciones aplicadas y
+los overlays superpuestos — voctocore emite la señal de programa final de forma
+simultánea por dos puertos:
+
+\begin{itemize}
+  \item \textbf{Puerto 11000}: salida de la mezcla en bruto (vídeo sin comprimir en
+        formato I420), destinada a herramientas de grabación o encoders externos como
+        FFmpeg. Esta salida refleja siempre el estado real de la mezcla,
+        independientemente del estado del stream blanker.
+  \item \textbf{Puerto 15000}: salida de streaming, que pasa previamente por el
+        stream blanker. Cuando el estado es LIVE, esta salida es idéntica al puerto
+        11000; cuando el estado es PAUSE o NOSTREAM, emite el vídeo alternativo
+        correspondiente en lugar de la mezcla real.
+\end{itemize}
+
+El encoder de salida (típicamente FFmpeg) se conecta al puerto 15000 y produce el
+flujo H.264/AAC que se ingesta en la plataforma de distribución (RTMP/SRT hacia
+YouTube Live, Twitch u otras plataformas). La separación entre los puertos 11000 y
+15000 garantiza que la grabación local refleje siempre la mezcla real del realizador,
+mientras que la audiencia remota solo recibe la señal que el operador autoriza
+explícitamente a través del stream blanker.

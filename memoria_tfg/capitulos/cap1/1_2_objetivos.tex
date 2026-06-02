@@ -1,0 +1,44 @@
+\section{Objetivos}
+
+El objetivo principal de este trabajo es extender las capacidades de Voctomix para
+cubrir las necesidades de una producción audiovisual en directo profesional, manteniendo
+la filosofía de código abierto y la arquitectura desacoplada del proyecto original.
+
+Para alcanzar este objetivo general se definen los siguientes objetivos específicos:
+
+\begin{enumerate}
+  \item Implementar un sistema de rotulación dinámica que permita superponer gráficos
+        y textos sobre el vídeo en tiempo real, con fundido de entrada/salida configurable.
+  \item Desarrollar un mecanismo de \textit{stream blanker} (gestor de emisión) que intercale automáticamente
+        bucles de pausa y fuera de emisión, gestionando de forma independiente el audio
+        y el vídeo de cada estado.
+  \item Incorporar la funcionalidad \textit{Audio Follows Video} (audio sigue al vídeo), de modo que al
+        seleccionar una fuente de vídeo el sistema active automáticamente su canal
+        de audio asociado.
+  \item Implementar un servicio de telemetría (\textit{notario}) que exporte el estado
+        de la sesión en formato JSON y lo publique en un broker de mensajería AMQP,
+        permitiendo su integración con sistemas externos de monitorización.
+  \item Contenerizar el sistema completo mediante Docker y Docker Compose, garantizando
+        la reproducibilidad del entorno y simplificando el despliegue en producción.
+  \item Validar el sistema en tres escenarios de despliegue distintos: monopuesto,
+        cliente-servidor en red local, y arquitectura completamente contenerizada.
+\end{enumerate}
+
+% --- Tabla sugerida ---
+% \begin{table}[H]
+%   \centering
+%   \caption{Relación entre objetivos específicos y capítulos/secciones de la memoria.}
+%   \label{tab:objetivos_secciones}
+%   \begin{tabular}{|c|l|l|}
+%     \hline
+%     \textbf{Obj.} & \textbf{Descripción} & \textbf{Sección} \\
+%     \hline
+%     OE-1 & Rotulación dinámica        & \S 3.3 \\
+%     OE-2 & Stream Blanker             & \S 3.2 \\
+%     OE-3 & Audio Follows Video        & \S 3.5 \\
+%     OE-4 & Telemetría / Notario       & \S 3.4 \\
+%     OE-5 & Contenerización Docker     & \S 3.7 \\
+%     OE-6 & Validación escenarios      & Cap. 4 \\
+%     \hline
+%   \end{tabular}
+% \end{table}
