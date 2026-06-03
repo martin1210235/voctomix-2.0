@@ -1,0 +1,135 @@
+\section{Contribución Audiovisual}
+\label{sec:contribucion_av}
+
+La contribución audiovisual designa el transporte de la señal de vídeo y audio desde
+las fuentes de captura, cámaras, ordenadores de presentación y reproductores, hasta
+el mezclador o núcleo del sistema de producción. Es el primer eslabón de la cadena y
+su elección determina la calidad máxima disponible, la latencia de extremo a extremo
+y el coste de la infraestructura. En esta sección se describen las principales
+interfaces y protocolos empleados: SDI, SMPTE ST~2022-6, SMPTE ST~2110, NDI y SRT.
+
+\subsection{Interfaces y protocolos}
+
+\begin{itemize}
+  \item \textbf{SDI (\textit{Serial Digital Interface}):} estándar histórico de la
+  industria broadcast para el transporte de vídeo sin comprimir sobre cable coaxial o
+  fibra óptica~\cite{smpte_sdi}. Ofrece latencia sub-imagen y sincronismo garantizado,
+  pero está limitado a distancias de hasta 100~m sin regeneradores y requiere
+  infraestructura especializada de alto coste.
+
+  \item \textbf{SMPTE ST~2022-6 (SDI sobre IP):} encapsula la señal SDI íntegra en
+  paquetes UDP/IP, facilitando la migración de infraestructuras SDI existentes hacia
+  redes Ethernet estándar~\cite{smpte_st2022_6}. Incorpora corrección de errores FEC
+  para compensar las pérdidas propias de las redes IP.
+
+  \item \textbf{SMPTE ST~2110 (Producción IP nativa):} estándar publicado en 2017 que
+  transporta vídeo, audio y metadatos como \textbf{flujos IP independientes},
+  proporcionando mayor flexibilidad de encaminamiento que SDI~\cite{smpte_st2110_20}.
+  La sincronización entre flujos se consigue mediante \textbf{PTP} (IEEE~1588)~\cite{ieee1588_ptp},
+  con precisión de microsegundos. Logra ahorros de ancho de banda del 15--30\% respecto
+  a ST~2022-6 y está muy extendido en nuevas instalaciones broadcast profesionales.
+
+  \item \textbf{NDI (\textit{Network Device Interface}):} protocolo propietario de
+  Vizrt/NewTek~\cite{ndi_vizrt} que transporta vídeo con compresión ligera sobre redes
+  LAN Ethernet con latencia de un fotograma. Ampliamente soportado por cámaras PTZ,
+  mezcladores hardware y herramientas de software de producción.
+
+  \item \textbf{SRT (\textit{Secure Reliable Transport}) en contribución:} permite
+  transportar la señal desde el lugar del evento hasta el centro de producción remoto
+  sobre Internet pública con latencia inferior a 1~s y corrección de errores
+  adaptativa~\cite{sharabayko2024_srt}. FFmpeg lo soporta como entrada y salida, lo
+  que permite integrarlo directamente en pipelines Voctomix.
+\end{itemize}
+
+\begin{table}[H]
+  \centering
+  \caption{Comparativa de interfaces y protocolos de contribución audiovisual.}
+  \label{tab:contrib_interfaces}
+  \begin{tabular}{|l|l|c|c|l|}
+    \hline
+    \textbf{Estándar} & \textbf{Medio} & \textbf{Velocidad máx.} & \textbf{Latencia} & \textbf{Uso típico} \\
+    \hline
+    SDI (12G)       & Coaxial/fibra & 11{,}88 Gbit/s & Sub-imagen  & Estudio broadcast \\
+    SMPTE ST 2022-6 & Ethernet IP   & 3 Gbit/s       & Sub-imagen  & Migración SDI/IP \\
+    SMPTE ST 2110   & Ethernet IP   & Variable       & Sub-imagen  & Producción IP nativa \\
+    NDI             & Ethernet LAN  & $\sim$100 Mbit/s & 1 fotograma & Software, PTZ \\
+    SRT             & Internet/LAN  & Variable       & $<$1~s      & Contribución REMI IP \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsection{Códecs de contribución}
+
+En la etapa de contribución se prioriza la calidad y la ausencia de pérdidas sobre la
+eficiencia de compresión, a diferencia de la distribución al espectador final:
+
+\begin{itemize}
+  \item \textbf{Vídeo sin comprimir (RAW):} el vídeo se transporta sin ningún tipo de
+  compresión, preservando toda la información de la señal original. Los formatos más
+  utilizados son UYVY (crominancia 4:2:2 empaquetada, 2~bytes/píxel) e I420 (YUV
+  4:2:0 planar). Voctomix emplea I420 internamente para todo el procesamiento mediante
+  el motor GStreamer, transportado sobre conexiones TCP en contenedor Matroska.
+
+  \item \textbf{Apple ProRes}~\cite{apple_prores}: familia de códecs de alta calidad
+  desarrollados por Apple, diseñados para producción profesional. Utilizan
+  exclusivamente compresión intra-frame (cada fotograma es independiente), lo que
+  minimiza la degradación acumulativa en múltiples etapas de procesamiento. ProRes~422
+  HQ es el estándar en producción televisiva para postproducción.
+
+  \item \textbf{Avid DNxHD/DNxHR}~\cite{avid_dnxhd}: familia equivalente a ProRes
+  desarrollada por Avid, también basada en compresión intra-frame. Ampliamente
+  utilizada en flujos de trabajo de postproducción broadcast y en integración con
+  sistemas de edición no lineal Avid Media Composer.
+
+  \item \textbf{JPEG~2000}~\cite{jpeg2000_iso}: códec que ofrece compresión sin
+  pérdidas (\textit{lossless}) o con pérdidas mínimas y latencia muy reducida gracias
+  a su arquitectura de codificación por \textit{tiles} (bloques) independientes. Utilizado en
+  sistemas de contribución broadcast de alta calidad y en señalización digital.
+\end{itemize}
+
+\subsection{Formatos y protocolos de transporte}
+\label{sec:contrib_formatos_protocolos}
+
+El formato contenedor define cómo se encapsulan y multiplexan los flujos de vídeo y
+audio para su transporte entre dispositivos:
+
+\subsubsection*{Formatos}
+
+\begin{itemize}
+  \item \textbf{Matroska (MKV)}~\cite{matroska_spec}: contenedor flexible y extensible
+  basado en un formato binario abierto. Voctomix lo emplea como protocolo de transporte
+  interno: las fuentes envían señal I420 y audio PCM~S16LE a 48~kHz encapsulados en MKV
+  sobre conexiones TCP, lo que garantiza la sincronía audio-vídeo y permite multiplexar
+  múltiples pistas en un único flujo sin overhead significativo.
+
+  \item \textbf{MPEG-TS (\textit{Transport Stream}, ISO~13818-1)}~\cite{iso_mpegts}:
+  estándar de broadcast diseñado para transmisión con posibilidad de pérdidas. Su
+  robustez frente a errores lo hace idóneo para contribuciones sobre redes no fiables
+  y para la integración con sistemas de distribución broadcast.
+
+  \item \textbf{MP4 / ISOBMFF (\textit{ISO Base Media File Format})}~\cite{iso_isobmff}:
+  contenedor de referencia para distribución por HTTP progresivo y streaming adaptativo.
+  También utilizado como formato de grabación en cámaras profesionales y sistemas de
+  contribución modernos.
+\end{itemize}
+
+\subsubsection*{Protocolos}
+
+\begin{itemize}
+  \item \textbf{RTP (\textit{Real-time Transport Protocol})}~\cite{rfc3550_rtp}:
+  protocolo de transporte en tiempo real definido en la RFC~3550, utilizado junto con
+  RTSP para la distribución de flujos multimedia. Habitual en cámaras IP profesionales,
+  sistemas SMPTE~2110 y en la transmisión de vídeo sin comprimir sobre redes Ethernet.
+
+  \item \textbf{RTSP (\textit{Real Time Streaming Protocol})}~\cite{rfc7826_rtsp}:
+  protocolo de señalización definido en la RFC~7826 que se emplea para establecer y
+  controlar sesiones de streaming multimedia. Actúa como ``mando a distancia'' del
+  flujo RTP: permite iniciar, pausar y detener la transmisión de una fuente IP sin
+  interrumpir la conexión.
+
+  \item \textbf{SRT (\textit{Secure Reliable Transport})}~\cite{sharabayko2024_srt}:
+  protocolo de código abierto desarrollado por Haivision con corrección de errores ARQ
+  y cifrado AES-128/256. En el contexto de contribución se utiliza para transportar la
+  señal desde el lugar del evento al centro de producción remoto sobre redes no fiables
+  (véase Sección~\ref{sec:distribucion_av} para su rol en distribución).
+\end{itemize}
