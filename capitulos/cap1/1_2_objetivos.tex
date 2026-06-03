@@ -17,16 +17,15 @@ Para lograrlo, se plantean los siguientes objetivos específicos:
         formato JSON y lo publique en un broker de mensajería, de forma que se pueda
         integrar con herramientas externas sin tocar el núcleo de la aplicación.
 
-  \item Contenerizar el sistema completo con Docker y Docker Compose, de modo que
+  \item Contenerizar el sistema completo con Docker, de modo que
         cualquiera pueda desplegarlo con un único comando y sin preocuparse por
         dependencias ni configuraciones del entorno.
 
   \item Extender el despliegue a Kubernetes, validando que el sistema funciona también
-        en infraestructuras más complejas y multi-nodo, y sentando la base para
-        una futura escalabilidad en entornos cloud.
+        en infraestructuras más complejas y multi-nodo.
 
   \item Validar el funcionamiento del sistema en varios escenarios reales: desde un
-        único ordenador hasta un clúster, comprobando que todo funciona correctamente
+        único ordenador hasta un clúster de Kubernetes, comprobando que todo funciona correctamente
         en cada uno de ellos.
 
   \item Demostrar que el sistema es útil en producción real, a través de su uso en el
