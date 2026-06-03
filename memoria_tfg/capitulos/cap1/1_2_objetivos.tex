@@ -1,44 +1,57 @@
 \section{Objetivos}
 
-El objetivo principal de este trabajo es extender las capacidades de Voctomix para
-cubrir las necesidades de una producción audiovisual en directo profesional, manteniendo
-la filosofía de código abierto y la arquitectura desacoplada del proyecto original.
+El objetivo principal de este trabajo es diseñar e implementar una arquitectura de
+código abierto, modular y reproducible para la producción remota de vídeo en tiempo real,
+que resulte viable tanto en entornos de desarrollo como en producción profesional.
+Partiendo del mezclador Voctomix como base, se busca construir un sistema completo que
+democratice el acceso a herramientas de producción audiovisual de calidad profesional,
+eliminando la dependencia de hardware propietario de alto coste y permitiendo su despliegue
+mediante tecnologías de contenedores estándar.
 
-Para alcanzar este objetivo general se definen los siguientes objetivos específicos:
+Para alcanzar este objetivo principal se definen los siguientes objetivos específicos:
 
 \begin{enumerate}
-  \item Implementar un sistema de rotulación dinámica que permita superponer gráficos
-        y textos sobre el vídeo en tiempo real, con fundido de entrada/salida configurable.
-  \item Desarrollar un mecanismo de \textit{stream blanker} (gestor de emisión) que intercale automáticamente
-        bucles de pausa y fuera de emisión, gestionando de forma independiente el audio
-        y el vídeo de cada estado.
-  \item Incorporar la funcionalidad \textit{Audio Follows Video} (audio sigue al vídeo), de modo que al
-        seleccionar una fuente de vídeo el sistema active automáticamente su canal
-        de audio asociado.
-  \item Implementar un servicio de telemetría (\textit{notario}) que exporte el estado
-        de la sesión en formato JSON y lo publique en un broker de mensajería AMQP,
-        permitiendo su integración con sistemas externos de monitorización.
+  \item Extender las capacidades del mezclador Voctomix con funcionalidades propias de
+        la producción profesional: un sistema de rotulación dinámica con gráficos y
+        textos en tiempo real, un gestor de estados de emisión (\textit{stream blanker})
+        y un mecanismo de sincronización automática de audio (\textit{Audio Follows Video}).
+
+  \item Implementar un servicio de telemetría que exporte el estado completo del sistema
+        en formato JSON y lo publique en un broker de mensajería AMQP, posibilitando la
+        integración con sistemas externos de monitorización sin modificar el núcleo de
+        la aplicación.
+
   \item Contenerizar el sistema completo mediante Docker y Docker Compose, garantizando
-        la reproducibilidad del entorno y simplificando el despliegue en producción.
-  \item Validar el sistema en tres escenarios de despliegue distintos: monopuesto,
-        cliente-servidor en red local, y arquitectura completamente contenerizada.
+        la reproducibilidad del entorno de ejecución y permitiendo el despliegue íntegro
+        con un único comando.
+
+  \item Extender el despliegue a una plataforma de orquestación Kubernetes, validando
+        la viabilidad del sistema en infraestructuras multi-nodo y sentando las bases
+        para su escalabilidad en entornos cloud.
+
+  \item Validar el sistema en múltiples escenarios de despliegue, monopuesto nativo,
+        cliente-servidor en red local, Docker Compose y Kubernetes, documentando el
+        rendimiento y la cobertura funcional en cada uno.
+
+  \item Demostrar la viabilidad operativa del sistema en un caso de uso real dentro del
+        proyecto europeo CyberNEMO de la Universidad Politécnica de Madrid, validando
+        su uso más allá del entorno de laboratorio en condiciones de producción reales.
 \end{enumerate}
 
-% --- Tabla sugerida ---
-% \begin{table}[H]
-%   \centering
-%   \caption{Relación entre objetivos específicos y capítulos/secciones de la memoria.}
-%   \label{tab:objetivos_secciones}
-%   \begin{tabular}{|c|l|l|}
-%     \hline
-%     \textbf{Obj.} & \textbf{Descripción} & \textbf{Sección} \\
-%     \hline
-%     OE-1 & Rotulación dinámica        & \S 3.3 \\
-%     OE-2 & Stream Blanker             & \S 3.2 \\
-%     OE-3 & Audio Follows Video        & \S 3.5 \\
-%     OE-4 & Telemetría / Notario       & \S 3.4 \\
-%     OE-5 & Contenerización Docker     & \S 3.7 \\
-%     OE-6 & Validación escenarios      & Cap. 4 \\
-%     \hline
-%   \end{tabular}
-% \end{table}
+\begin{table}[H]
+  \centering
+  \caption{Relación entre objetivos específicos y secciones de la memoria.}
+  \label{tab:objetivos_secciones}
+  \begin{tabular}{cll}
+    \hline
+    \textbf{Obj.} & \textbf{Descripción} & \textbf{Sección} \\
+    \hline
+    OE-1 & Rotulación, stream blanker y AFV  & \S\ref{sec:overlays}, \S\ref{sec:streamblanker}, \S\ref{sec:afv} \\
+    OE-2 & Telemetría AMQP                   & \S\ref{sec:telemetria} \\
+    OE-3 & Contenerización Docker            & \S\ref{sec:docker} \\
+    OE-4 & Despliegue Kubernetes             & \S\ref{sec:kubernetes} \\
+    OE-5 & Validación escenarios             & Cap.~\ref{cap:resultados} \\
+    OE-6 & Caso de uso CyberNEMO             & \S\ref{sec:cybernemo} \\
+    \hline
+  \end{tabular}
+\end{table}
