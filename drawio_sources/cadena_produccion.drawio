@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="500" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <!-- Section labels -->
+    <mxCell id="2" value="Contribución audiovisual" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="20" y="10" width="180" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="3" value="Distribución audiovisual" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="680" y="10" width="180" height="20" as="geometry" />
+    </mxCell>
+
+    <!-- Cameras -->
+    <mxCell id="4" value="Cámara 1&lt;br/&gt;&lt;font style=&quot;font-size:9px;color:#666&quot;&gt;SDI / NDI / IP&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="30" y="70" width="160" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="5" value="Cámara 2&lt;br/&gt;&lt;font style=&quot;font-size:9px;color:#666&quot;&gt;SDI / NDI / IP&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="30" y="160" width="160" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="6" value="Cámara 3&lt;br/&gt;&lt;font style=&quot;font-size:9px;color:#666&quot;&gt;SDI / NDI / IP&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10;" vertex="1" parent="1">
+      <mxGeometry x="30" y="250" width="160" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- Mixer -->
+    <mxCell id="7" value="&lt;b&gt;Mezclador de vídeo&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;Voctomix&lt;br/&gt;&lt;font style=&quot;font-size:9px&quot;&gt;(GStreamer)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#d6b656;fontSize=11;verticalAlign=middle;" vertex="1" parent="1">
+      <mxGeometry x="320" y="60" width="190" height="250" as="geometry" />
+    </mxCell>
+
+    <!-- Distribution -->
+    <mxCell id="8" value="&lt;b&gt;Distribución audiovisual&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;&lt;font style=&quot;font-size:9px&quot;&gt;RTMP / SRT / HLS&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="640" y="120" width="180" height="130" as="geometry" />
+    </mxCell>
+
+    <!-- Arrows cameras → mixer -->
+    <mxCell id="9" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="4" target="7" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="10" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="5" target="7" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="11" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="6" target="7" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <!-- Mixer → distribution -->
+    <mxCell id="12" value="Señal de programa" style="edgeStyle=orthogonalEdgeStyle;fontSize=9;" edge="1" source="7" target="8" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+  </root>
+</mxGraphModel>
