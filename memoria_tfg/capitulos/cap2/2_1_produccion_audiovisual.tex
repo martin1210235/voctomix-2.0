@@ -1,12 +1,15 @@
 En este capítulo se presentan las bases tecnológicas sobre las que se sustenta
-Voctomix~2.0. Se analizan los tres eslabones de la cadena de producción audiovisual
-en directo: el modelo de producción y las herramientas de realización disponibles
-(Sección~\ref{sec:produccion_av}), los estándares e interfaces de contribución de señal
-(Sección~\ref{sec:contribucion_av}), y los protocolos y códecs empleados en la
-distribución del contenido al espectador final (Sección~\ref{sec:distribucion_av}). El
-objetivo es que el lector comprenda el contexto técnico en el que se enmarca el
-trabajo antes de abordar el diseño e implementación del sistema en el
-Capítulo~\ref{chap:diseno}.
+Voctomix~2.0. El capítulo se estructura en cinco secciones: el modelo de producción
+audiovisual y las herramientas de realización disponibles
+(Sección~\ref{sec:produccion_av}), los protocolos de transporte de red que subyacen
+a todos los flujos multimedia (Sección~\ref{sec:protocolos_red}), los estándares e
+interfaces de contribución de señal (Sección~\ref{sec:contribucion_av}), los protocolos
+y códecs empleados en la distribución del contenido al espectador final
+(Sección~\ref{sec:distribucion_av}), y los casos de uso reales de producción remota que
+contextualizan la adopción industrial de estas tecnologías
+(Sección~\ref{sec:casos_uso_remi}). El objetivo es que el lector comprenda el contexto
+técnico en el que se enmarca el trabajo antes de abordar el diseño e implementación del
+sistema en el Capítulo~\ref{chap:diseno}.
 
 \section{Producción audiovisual}
 \label{sec:produccion_av}
@@ -84,17 +87,10 @@ con acceso a la red, y que el centro de producción pueda atender simultáneamen
 eventos en distintas localizaciones reutilizando la misma infraestructura de
 mezclado~\cite{remi_workflow_ibc2023}.
 
-\subsubsection*{Casos de uso reales}
-
-La adopción del modelo REMI ha crecido exponencialmente en los últimos años. Un ejemplo
-emblemático fue la producción audiovisual de los Juegos Olímpicos de Tokio 2021 por
-parte de Olympic Broadcasting Services (OBS), que produjo más de 9.500 horas de
-contenido con la realización, mezcla de señales y control de calidad realizados desde
-el International Broadcast Centre y desde centros remotos distribuidos por todo el
-mundo~\cite{obs_tokyo_2021}. En España, Telefónica Servicios Audiovisuales (TSA)
-ejecutó en 2022 la producción remota multicámara de un partido de la UEFA Champions
-League disputado en el estadio Santiago Bernabéu, realizando toda la dirección desde
-las instalaciones de Telefónica en Tres Cantos, a más de 30~km del estadio~\cite{tsa_remi_2022}.
+La adopción del modelo REMI ha crecido exponencialmente en los últimos años,
+consolidándose como el estándar operativo en eventos de gran escala. Los casos de
+uso representativos, desde los Juegos Olímpicos de Tokio 2020 hasta el Chaos
+Communication Congress, se analizan en detalle en la Sección~\ref{sec:casos_uso_remi}.
 
 
 
@@ -105,8 +101,8 @@ significativas~\cite{tmbroadcast_remi,remi_workflow_ibc2023}:
 
 \begin{itemize}
   \item \textbf{Reducción de costes:} se minimiza el desplazamiento de personal y
-  equipos. Solo se requiere in situ el equipo de captura; la realización, mezcla y
-  edición se realizan de forma centralizada.
+  equipos. Solo se requiere \textit{in situ} el equipo de captura; la realización,
+  mezcla y edición se realizan de forma centralizada.
   \item \textbf{Sostenibilidad:} la reducción de desplazamientos contribuye a disminuir
   la huella de carbono de las producciones, un factor cada vez más valorado por
   organizaciones y broadcasters.
@@ -162,18 +158,17 @@ al modelo remoto incluso para organizaciones sin presupuesto broadcast:
   con soporte NDI, \textit{multiview} (vista múltiple) y producción 4K. Permite gestionar múltiples
   fuentes, aplicar \textit{chroma key} (croma) y transiciones, y emitir a varias plataformas
   simultáneamente. Su coste de licencia, que puede superar los 1.000~\euro, y su
-  restricción a Windows la excluyen de entornos \textit{open-source} sobre Linux.
+  restricción a Windows la excluyen de entornos de código abierto sobre Linux.
 
   \item \textbf{Voctomix}~\cite{voctomix_github}: herramienta de código abierto con
   arquitectura cliente-servidor que separa el motor de mezcla (\texttt{voctocore}) de
   la interfaz de control (\texttt{voctogui}), permitiendo que el procesamiento se
   realice en un servidor mientras el operador trabaja desde otro equipo conectado por
-  red. Construido sobre el \textit{framework} (entorno de software) GStreamer, proporciona composición de
-  vídeo con múltiples fuentes, transiciones animadas, overlays y un protocolo de
-  control TCP extensible. Es la herramienta extendida en el presente trabajo (véase el
-  Capítulo~\ref{chap:diseno}). Su motor interno es \textbf{GStreamer}~\cite{gstreamer_docs},
-  un \textit{framework} multimedia de código abierto que permite combinar múltiples
-  fuentes de vídeo y producir una única salida de programa en tiempo real.
+  red. Construido sobre GStreamer~\cite{gstreamer_docs}, un \textit{framework} (entorno
+  de software) multimedia de código abierto, proporciona composición de vídeo con
+  múltiples fuentes, transiciones animadas, \textit{overlays} y un protocolo de
+  control TCP extensible. Es la herramienta objeto del presente trabajo (véase el
+  Capítulo~\ref{chap:diseno}).
 \end{itemize}
 
 \begin{table}[H]
