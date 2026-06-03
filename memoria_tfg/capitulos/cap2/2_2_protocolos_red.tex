@@ -1,0 +1,96 @@
+\section{Protocolos de transporte de red}
+\label{sec:protocolos_red}
+
+Los protocolos de aplicación que gobiernan la contribución y la distribución audiovisual
+se construyen sobre un conjunto reducido de protocolos de transporte de red. Comprender
+su comportamiento es fundamental para interpretar las decisiones de diseño que subyacen
+a cada solución de producción, ya que sus propiedades determinan directamente la latencia,
+la fiabilidad y la escalabilidad del sistema.
+
+\subsection{UDP (\textit{User Datagram Protocol})}
+
+UDP es un protocolo de transporte sin conexión definido en la RFC~768~\cite{rfc768_udp}.
+Envía datagramas de forma independiente sin establecer sesión previa, sin confirmación de
+entrega, sin reordenación de paquetes y sin control de congestión. Estas características
+le confieren la mínima latencia posible dentro de la pila de red, al eliminar todo el
+overhead de fiabilidad.
+
+En producción audiovisual, UDP es el protocolo de elección cuando la latencia prima sobre
+la integridad de los datos. Un fotograma perdido es preferible a un fotograma retrasado en
+aplicaciones de tiempo real. Por este motivo, los siguientes protocolos de nivel superior
+operan sobre UDP:
+
+\begin{itemize}
+  \item \textbf{RTP} (\textit{Real-time Transport Protocol}): encapsula los flujos
+        multimedia con marcas de tiempo y números de secuencia que permiten al receptor
+        detectar y compensar pérdidas sin retransmisión.
+  \item \textbf{WebRTC}: emplea UDP con DTLS/SRTP para comunicaciones en tiempo real
+        con latencias de 100--500~ms, asumiendo pérdidas ocasionales de paquetes.
+  \item \textbf{SRT}: utiliza UDP como transporte pero añade una capa ARQ
+        (\textit{Automatic Repeat Request}) propia para recuperar paquetes perdidos
+        sin incrementar la latencia en condiciones normales de red.
+\end{itemize}
+
+\subsection{TCP (\textit{Transmission Control Protocol})}
+
+TCP es un protocolo de transporte orientado a conexión definido en la
+RFC~793~\cite{rfc793_tcp}. Garantiza la entrega ordenada de todos los bytes mediante
+confirmaciones de recepción, retransmisión automática de segmentos perdidos y control
+de flujo y congestión. Estas garantías introducen latencia variable en redes con pérdidas,
+ya que el receptor debe esperar la retransmisión antes de procesar datos posteriores.
+
+En producción audiovisual, TCP se emplea cuando la integridad de los datos no es
+negociable y la latencia adicional es aceptable:
+
+\begin{itemize}
+  \item \textbf{RTMP}: protocolo de ingesta basado en TCP que prioriza la entrega
+        completa de cada fotograma sobre plataformas como YouTube Live o Twitch.
+  \item \textbf{Voctomix interno}: el núcleo voctocore acepta las fuentes de cámara
+        mediante conexiones TCP que transportan flujos MKV con vídeo RAW~I420 y audio
+        PCM~S16LE. TCP garantiza la sincronización audio-vídeo sin pérdidas dentro
+        de la red local.
+  \item \textbf{Protocolo de control}: el servidor de comandos de voctocore escucha
+        en el puerto 9999 mediante TCP, asegurando que cada comando enviado por la
+        interfaz gráfica llega íntegramente al núcleo y que la respuesta de estado
+        retorna sin corrupción.
+\end{itemize}
+
+\subsection{HTTP / HTTPS (\textit{Hypertext Transfer Protocol})}
+
+HTTP es un protocolo de capa de aplicación definido en la RFC~9110~\cite{rfc9110_http}
+que opera sobre TCP (HTTP/1.1 y HTTP/2) o sobre QUIC/UDP (HTTP/3). Su modelo de
+petición-respuesta y su infraestructura de caché y distribución global mediante CDN
+(\textit{Content Delivery Networks}) lo convierten en el protocolo de referencia para
+la distribución de contenidos a audiencias masivas.
+
+En producción audiovisual, HTTP actúa como capa de transporte para los principales
+protocolos de distribución adaptativa:
+
+\begin{itemize}
+  \item \textbf{HLS y MPEG-DASH}: dividen el vídeo en segmentos de fichero servidos
+        como respuestas HTTP estándar. Cualquier infraestructura de servidores web
+        o CDN puede distribuir estos segmentos sin configuración específica de media.
+  \item \textbf{API REST de telemetría}: el servicio de telemetría de Voctomix~2.0
+        expone el estado de la sesión mediante HTTP en el puerto 8080, y el módulo
+        de exportación de la GUI envía actualizaciones de estado mediante
+        peticiones HTTP POST.
+\end{itemize}
+
+\begin{table}[H]
+  \centering
+  \caption{Comparativa de los protocolos de transporte en producción audiovisual.}
+  \label{tab:protocolos_red}
+  \small
+  \begin{tabular}{|l|c|c|c|l|}
+    \hline
+    \textbf{Protocolo} & \textbf{Orientado a conexión} & \textbf{Fiabilidad} & \textbf{Latencia} & \textbf{Uso en Voctomix} \\
+    \hline
+    UDP  & No  & Sin garantías & Mínima       & RTP, SRT, WebRTC \\
+    TCP  & Sí  & Garantizada   & Variable     & MKV/fuentes, RTMP, control \\
+    HTTP & Sí* & Garantizada   & Alta         & HLS, DASH, telemetría REST \\
+    \hline
+  \end{tabular}
+  \begin{flushleft}
+    \footnotesize *HTTP/1.1 y HTTP/2 operan sobre TCP; HTTP/3 opera sobre QUIC (UDP).
+  \end{flushleft}
+\end{table}
