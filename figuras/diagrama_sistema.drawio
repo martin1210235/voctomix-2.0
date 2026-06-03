@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- BORDE DOCKER COMPOSE -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <mxCell id="docker" value="Docker Compose — voctomix_net" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#6699FF;strokeWidth=2;dashed=1;fontSize=13;fontStyle=1;verticalAlign=bottom;spacingBottom=6;" vertex="1" parent="1">
+      <mxGeometry x="10" y="10" width="1060" height="560" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- COLUMNA A — FUENTES DE SEÑAL -->
+    <!-- ═══════════════════════════════════════════════════ -->
+
+    <!-- Etiqueta grupo fuentes -->
+    <mxCell id="lbl_fuentes" value="Fuentes de señal" style="text;html=1;align=center;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="30" y="20" width="160" height="20" as="geometry" />
+    </mxCell>
+
+    <!-- Cámaras -->
+    <mxCell id="cam1" value="cam1&#xa;FFmpeg :10000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="30" y="50" width="160" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="cam2" value="cam2&#xa;FFmpeg :10001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="30" y="120" width="160" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="cam3" value="cam3&#xa;FFmpeg :10002" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="30" y="190" width="160" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="cam4" value="cam4&#xa;FFmpeg :10003" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="30" y="260" width="160" height="55" as="geometry" />
+    </mxCell>
+
+    <!-- Auxiliares -->
+    <mxCell id="brk" value="break&#xa;:10004" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#666666;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="30" y="340" width="160" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="intro" value="intro&#xa;:10005" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eeeeee;strokeColor=#666666;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="30" y="410" width="160" height="55" as="geometry" />
+    </mxCell>
+
+    <!-- Stream Blanker entradas -->
+    <mxCell id="lbl_sb" value="Stream Blanker (entradas)" style="text;html=1;align=center;fontStyle=1;fontSize=11;fontColor=#CC0000;" vertex="1" parent="1">
+      <mxGeometry x="30" y="475" width="160" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="sbp" value="SB PAUSE&#xa;:17000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#CC0000;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="30" y="500" width="160" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="sbn" value="SB NOSTREAM&#xa;:17001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#CC0000;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="30" y="570" width="160" height="55" as="geometry" />
+    </mxCell>
+    <mxCell id="sba" value="audio fondo&#xa;:18000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#CC0000;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="30" y="640" width="160" height="55" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- COLUMNA B — VOCTOCORE -->
+    <!-- ═══════════════════════════════════════════════════ -->
+
+    <!-- Borde voctocore -->
+    <mxCell id="voctocore_box" value="voctocore&#xa;GStreamer pipeline" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#FF8800;strokeWidth=2;dashed=1;fontSize=12;fontStyle=1;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
+      <mxGeometry x="250" y="80" width="240" height="400" as="geometry" />
+    </mxCell>
+
+    <mxCell id="avsrc" value="AVSource ×6&#xa;entradas MKV/raw" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#FF8800;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="270" y="130" width="200" height="65" as="geometry" />
+    </mxCell>
+    <mxCell id="vmix" value="VideoMix&#xa;compositor GStreamer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#FF8800;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="270" y="230" width="200" height="65" as="geometry" />
+    </mxCell>
+    <mxCell id="amix" value="AudioMix&#xa;mezcla de audio" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#FF8800;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="270" y="320" width="200" height="65" as="geometry" />
+    </mxCell>
+    <mxCell id="ovl" value="Overlays + textoverlay ×2&#xa;gdkpixbufoverlay + Cairo" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#FF8800;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="270" y="410" width="200" height="55" as="geometry" />
+    </mxCell>
+
+    <!-- NetTimeProvider -->
+    <mxCell id="ntp" value="NetTimeProvider&#xa;UDP :9998" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#FF8800;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
+      <mxGeometry x="390" y="20" width="160" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- COLUMNA C — SALIDAS -->
+    <!-- ═══════════════════════════════════════════════════ -->
+
+    <mxCell id="lbl_salidas" value="Salidas" style="text;html=1;align=center;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="560" y="20" width="200" height="20" as="geometry" />
+    </mxCell>
+
+    <mxCell id="outraw" value="Mezcla bruta&#xa;:11000 (grabación / monitor)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="570" y="50" width="200" height="65" as="geometry" />
+    </mxCell>
+
+    <mxCell id="sb" value="Stream Blanker&#xa;LIVE / PAUSE / NOSTREAM" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#CC0000;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="570" y="250" width="200" height="80" as="geometry" />
+    </mxCell>
+
+    <mxCell id="outst" value="Salida streaming&#xa;:15000 (RTMP / SRT)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="570" y="430" width="200" height="65" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- FILA INFERIOR — CONTROL Y TELEMETRÍA -->
+    <!-- ═══════════════════════════════════════════════════ -->
+
+    <mxCell id="lbl_control" value="Capa de control y telemetría" style="text;html=1;align=center;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="200" y="750" width="480" height="20" as="geometry" />
+    </mxCell>
+
+    <mxCell id="gui" value="voctogui (GTK3)&#xa;previews JPEG :14000–14005&#xa;control TCP :9999" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="120" y="780" width="220" height="80" as="geometry" />
+    </mxCell>
+
+    <mxCell id="notario" value="Telemetría&#xa;telemetry_service.py&#xa;REST HTTP :8080" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="400" y="780" width="200" height="80" as="geometry" />
+    </mxCell>
+
+    <mxCell id="rmq" value="RabbitMQ&#xa;AMQP :5672&#xa;Mgmt :15672" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="660" y="780" width="200" height="80" as="geometry" />
+    </mxCell>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- FLECHAS — fuentes → voctocore -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <mxCell id="e_cam1" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="cam1" target="avsrc" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_cam2" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="cam2" target="avsrc" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_cam3" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="cam3" target="avsrc" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_cam4" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="cam4" target="avsrc" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_brk" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="brk" target="avsrc" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_intro" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="intro" target="avsrc" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- SB entradas → Stream Blanker -->
+    <mxCell id="e_sbp" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#CC0000;" edge="1" source="sbp" target="sb" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_sbn" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#CC0000;" edge="1" source="sbn" target="sb" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_sba" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#CC0000;" edge="1" source="sba" target="sb" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Flujo interno voctocore -->
+    <mxCell id="e_avsrc_vmix" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#FF8800;" edge="1" source="avsrc" target="vmix" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_vmix_amix" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#FF8800;" edge="1" source="vmix" target="amix" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_amix_ovl" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#FF8800;" edge="1" source="amix" target="ovl" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Overlay → salidas -->
+    <mxCell id="e_ovl_raw" value="mezcla bruta" style="edgeStyle=orthogonalEdgeStyle;fontSize=10;" edge="1" source="ovl" target="outraw" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="e_ovl_sb" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="ovl" target="sb" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Stream Blanker → salida streaming -->
+    <mxCell id="e_sb_out" value="señal de programa" style="edgeStyle=orthogonalEdgeStyle;fontSize=10;" edge="1" source="sb" target="outst" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- NTP ↔ voctocore -->
+    <mxCell id="e_ntp" value=":9998 UDP" style="edgeStyle=orthogonalEdgeStyle;dashed=1;fontSize=10;endArrow=open;startArrow=open;" edge="1" source="ntp" target="voctocore_box" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- GUI → voctocore (control) -->
+    <mxCell id="e_gui_voc" value=":9999 TCP" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#82b366;fontSize=10;" edge="1" source="gui" target="voctocore_box" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- GUI → Notario (HTTP POST) -->
+    <mxCell id="e_gui_not" value="HTTP POST" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#6c8ebf;fontSize=10;" edge="1" source="gui" target="notario" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Notario → RabbitMQ -->
+    <mxCell id="e_not_rmq" value="AMQP" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d6b656;fontSize=10;" edge="1" source="notario" target="rmq" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Notario → voctocore (control) -->
+    <mxCell id="e_not_voc" value=":9999 TCP" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#6c8ebf;fontSize=10;" edge="1" source="notario" target="voctocore_box" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- previews voctocore → GUI -->
+    <mxCell id="e_prev_gui" value=":14000–14005&#xa;JPEG" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeColor=#999999;fontSize=10;" edge="1" source="voctocore_box" target="gui" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+  </root>
+</mxGraphModel>
