@@ -94,12 +94,29 @@ intra-frame, para evitar la acumulación de artefactos en cadenas de producción
 múltiples etapas de procesamiento.
 
 \begin{itemize}
-  \item \textbf{Vídeo sin comprimir (RAW):} el vídeo se transporta sin ningún tipo de
-  compresión, preservando toda la información de la señal original. Los formatos más
-  utilizados son UYVY (crominancia 4:2:2 empaquetada) e I420 (YUV 4:2:0 planar).
-  Voctomix emplea I420 internamente para todo el procesamiento en el motor GStreamer,
-  transportado en contenedor MKV sobre TCP. Es la opción de máxima calidad a costa de
-  un ancho de banda elevado: aproximadamente 622~Mbit/s por fuente a 1080p25.
+  \item \textbf{Vídeo sin comprimir (RAW~I420):} el vídeo se transporta sin ningún tipo
+  de compresión, preservando íntegramente toda la información de la señal original. El
+  formato I420 (YUV~4:2:0 planar) organiza los datos en tres planos separados: el plano
+  de luminancia~Y a resolución completa y los dos planos de crominancia Cb y Cr a
+  resolución reducida a la mitad en ambas dimensiones. Este submuestreo de crominancia
+  aprovecha la menor sensibilidad del sistema visual humano a las variaciones de color,
+  resultando en 1{,}5~B/píxel de promedio frente a los 3~B/píxel de RGB sin comprimir.
+  El ancho de banda de un flujo I420 a 1080p25 es determinista e independiente del
+  contenido visual:
+  \[
+    622{,}1~\text{Mbit/s}
+    = \frac{1920 \times 1080 \times 1{,}5~\text{B/píxel} \times 25~\text{fps} \times 8}{10^6}
+  \]
+  Voctomix emplea I420 en todo el procesamiento interno del motor GStreamer mediante
+  cápsulas \texttt{video/x-raw,format=I420}, lo que elimina cualquier conversión de
+  formato en el camino crítico y garantiza que la latencia de mezcla dependa
+  exclusivamente del procesamiento de píxeles. Para preservar la calidad colorimétrica,
+  todos los flujos deben declarar espacio BT.709 (\texttt{colorimetry=bt709}) y rango
+  televisivo (\texttt{tv~range}), requisito que voctocore verifica en el
+  \textit{handshake} inicial con cada fuente. El coste de este enfoque es que los
+  622~Mbit/s por fuente obligan a que todo el tráfico de vídeo circule en bucle local,
+  ya sea mediante la interfaz de loopback del servidor en instalación monopuesto o a
+  través de redes Docker internas de alta velocidad en el despliegue contenerizado.
 
   \item \textbf{Apple ProRes}~\cite{apple_prores}: familia de códecs de alta calidad
   desarrollados por Apple para producción profesional. Utilizan exclusivamente compresión
