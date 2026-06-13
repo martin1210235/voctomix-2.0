@@ -1,0 +1,81 @@
+\section{Scripts de arranque}
+\label{sec:scripts_arranque}
+
+Para simplificar el despliegue y evitar errores de configuración manual, se desarrollaron
+scripts de arranque que unifican en un único comando el lanzamiento de todos los
+componentes del sistema. Cada escenario de despliegue tiene su propio script.
+
+\subsection{Escenario monopuesto (\texttt{start\_studio\_single\_pc.sh})}
+
+Este script arranca el sistema completo en un único equipo: inicia voctocore, lanza el
+servicio de telemetría, inyecta las señales de continuidad (vídeo de pausa, vídeo
+\textit{offline} y música de fondo), y finalmente abre voctogui. Antes de lanzar cada
+componente, un bucle comprueba con \texttt{ss -lnt} que el puerto 9999 está en escucha,
+evitando las condiciones de carrera que se producían con los \texttt{sleep} fijos del
+código original. Al cerrar voctogui, la instrucción \texttt{trap} captura la señal de
+salida y termina todos los procesos hijos de forma limpia.
+
+\subsection{Escenario dos PCs (\texttt{2pc\_escenario2/})}
+
+El escenario de dos equipos se gestiona con dos scripts independientes que deben
+ejecutarse en paralelo:
+
+\begin{itemize}
+  \item \textbf{\texttt{start\_voctocore\_pc1.sh}} (PC servidor): arranca voctocore,
+        las señales de continuidad y el servicio de telemetría en el equipo que actúa
+        como servidor. Detecta automáticamente la IP de la interfaz LAN mediante la
+        tabla de enrutamiento del kernel
+        (\texttt{ip route get 1.1.1.1}), de modo que no es necesario configurar la IP
+        a mano en cada despliegue.
+  \item \textbf{\texttt{start\_voctogui\_pc2.sh}} (PC realizador): lanza voctogui y
+        lo apunta a la IP del servidor mediante la variable de entorno
+        \texttt{IP\_SERVER}. Si no se especifica, el valor por defecto es
+        \texttt{127.0.0.1} para pruebas en un solo equipo.
+\end{itemize}
+
+Ejemplo de uso desde el PC realizador:
+\begin{verbatim}
+IP_SERVER=192.168.1.50 ./2pc_escenario2/start_voctogui_pc2.sh
+\end{verbatim}
+
+\subsection{Escenario Docker (\texttt{launch\_docker\_studio.sh})}
+
+Este script ejecuta \texttt{xhost +local:docker} para permitir que los contenedores
+accedan al servidor gráfico del anfitrión, exporta la IP local como variable de entorno
+(\texttt{HOST\_IP}) para que el servicio de telemetría la incluya en los registros, y
+lanza el stack con \texttt{docker compose up}. Al cerrar el terminal, la instrucción
+\texttt{trap} ejecuta \texttt{docker compose down} de forma automática.
+
+El mismo flujo está disponible a través del \texttt{Makefile}:
+\begin{verbatim}
+make docker-up      # xhost + y docker compose up
+make docker-down    # detener todos los servicios
+make docker-restart # down + up en un solo paso
+\end{verbatim}
+
+\subsection{Escenario Kubernetes (\texttt{launch\_k8s.sh})}
+
+El script de Kubernetes comprueba si Minikube y el pod principal ya están en ejecución
+antes de lanzarlos, aplica los manifiestos con \texttt{kubectl apply}, espera a que
+todos los contenedores estén listos y establece un \texttt{kubectl port-forward} que
+expone los puertos del pod en \texttt{localhost} del anfitrión. Esto permite que
+voctogui se conecte al clúster exactamente igual que en cualquier otro escenario. Al
+salir, un \texttt{trap EXIT} cierra el \textit{port-forward} de forma limpia.
+
+\begin{table}[H]
+  \centering
+  \caption{Scripts de arranque por escenario de despliegue.}
+  \label{tab:scripts_arranque}
+  \small
+  \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Escenario} & \textbf{Script} & \textbf{Comando de inicio} \\
+    \hline
+    Un PC (nativo)   & \texttt{start\_studio\_single\_pc.sh}      & \texttt{./start\_studio\_single\_pc.sh} \\
+    Dos PCs (PC1)    & \texttt{2pc\_escenario2/start\_voctocore\_pc1.sh} & \texttt{./start\_voctocore\_pc1.sh} \\
+    Dos PCs (PC2)    & \texttt{2pc\_escenario2/start\_voctogui\_pc2.sh}  & \texttt{IP\_SERVER=<IP> ./start\_voctogui\_pc2.sh} \\
+    Docker Compose   & \texttt{launch\_docker\_studio.sh}         & \texttt{make docker-up} \\
+    Kubernetes       & \texttt{launch\_k8s.sh}                    & \texttt{./launch\_k8s.sh} \\
+    \hline
+  \end{tabular}
+\end{table}

@@ -1,0 +1,99 @@
+\section{Despliegue con Docker Compose}
+\label{sec:docker}
+
+El despliegue con Docker elimina la necesidad de instalar manualmente GStreamer, Python
+y sus dependencias en el equipo anfitrión. Todo el sistema se ejecuta dentro de
+contenedores reproducibles, de modo que el comportamiento es idéntico en cualquier
+máquina con Docker instalado. El despliegue se define en dos ficheros:
+\texttt{Dockerfile} (imagen base del sistema) y \texttt{docker-compose.yml}
+(conjunto de servicios).
+
+El \texttt{Dockerfile} original del repositorio (año 2016) usaba Ubuntu~15.10 con
+dependencias ya obsoletas e imágenes de Docker Hub que ya no existen. Se reescribió
+desde cero sobre \texttt{ubuntu:22.04 LTS}.
+
+\subsection{Dockerfile}
+
+La imagen se construye sobre Ubuntu~22.04~LTS. Todas las dependencias se instalan en
+una sola capa para reducir el tamaño final:
+
+\begin{itemize}
+  \item GStreamer~1.0 con sus plugins \textit{base}, \textit{good}, \textit{bad} y
+        \textit{ugly}.
+  \item FFmpeg, para la inyección de fuentes de vídeo.
+  \item \textit{Bindings} Python de GObject (\texttt{python3-gi}), la biblioteca Cairo
+        para renderizado de \textit{overlays}, y la librería AMQP (\texttt{pika}) para
+        la integración con RabbitMQ.
+  \item Utilidades de red (\texttt{netcat}, \texttt{iproute2}) para el
+        \textit{healthcheck} y el autodescubrimiento de IP.
+  \item Bibliotecas matemáticas \texttt{scipy} y \texttt{numpy} para el cálculo de
+        curvas B-Spline en las transiciones animadas.
+\end{itemize}
+
+Un \textit{healthcheck} basado en \texttt{nc -zw1 localhost 9999} permite a Docker
+Compose saber cuándo voctocore está listo antes de lanzar los servicios que dependen
+de él.
+
+\subsection{Docker Compose y espacio de red compartido}
+\label{sec:docker_compose}
+
+Voctomix requiere que las fuentes de cámara se conecten al núcleo mediante
+\texttt{localhost}. En Docker, cada contenedor tiene su propio \texttt{localhost}
+aislado, lo que rompe todas las conexiones TCP internas.
+
+La solución adoptada es el patrón \textbf{\textit{Shared Network Namespace}}: los
+contenedores de cámara y el servicio de telemetría declaran
+\texttt{network\_mode: "service:voctocore"}, lo que hace que compartan la misma
+interfaz de red que el contenedor del núcleo. Desde el punto de vista del sistema
+operativo, todos estos procesos ven el mismo \texttt{localhost}, sin necesidad de
+modificar ninguna línea de código.
+
+El fichero \texttt{docker-compose.yml} define los siguientes servicios:
+
+\begin{table}[H]
+  \centering
+  \caption{Servicios definidos en \texttt{docker-compose.yml}.}
+  \label{tab:servicios_docker}
+  \small
+  \begin{tabular}{|l|l|c|l|}
+    \hline
+    \textbf{Servicio} & \textbf{Imagen} & \textbf{Puertos expuestos} & \textbf{Función} \\
+    \hline
+    voctocore       & local/voctomix & 9999, 11000--12000, 14000--14005, 15000 & Núcleo multimedia \\
+    cam1--cam4      & local/voctomix & (namespace compartido) & Fuentes de prueba FFmpeg \\
+    stream\_blanker & local/voctomix & 17000--17001, 18000 & Bucles pausa/\textit{offline} \\
+    rabbitmq        & rabbitmq:mgmt  & 5672, 15672 & Broker AMQP \\
+    telemetria      & local/voctomix & 8080 & Telemetría REST/AMQP \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsection{GUI nativa y volúmenes}
+
+La interfaz gráfica voctogui se ejecuta de forma nativa en el sistema anfitrión y se
+conecta al núcleo Docker a través del puerto 9999 expuesto. Virtualizar una interfaz
+GTK dentro de un contenedor introduce problemas de latencia y aceleración por
+hardware (GPU/VAAPI) que hacen inviable esa opción en producción.
+
+Los logos e imágenes de fondo que GStreamer necesita se inyectan en el contenedor
+mediante un volumen \textit{bind mount}: \texttt{./images:/opt/images}. Esto evita
+modificar el código fuente para adaptar las rutas a la estructura interna del
+contenedor.
+
+\subsection{Resiliencia al arranque}
+
+Durante las pruebas se observó que los contenedores de cámara arrancaban antes de
+que voctocore abriera los puertos TCP, produciendo fallos de conexión silenciosos. El
+problema se resolvió con dos mecanismos:
+
+\begin{itemize}
+  \item \textbf{\texttt{restart: always}:} Docker reinicia automáticamente cualquier
+        contenedor que falle, sin intervención del operador.
+  \item \textbf{Esperas activas:} en los scripts de arranque nativos, los
+        \texttt{sleep} fijos se sustituyeron por bucles que comprueban con
+        \texttt{ss -lnt} que el puerto 9999 está en escucha antes de lanzar los
+        servicios dependientes.
+\end{itemize}
+
+Además, la opción \texttt{SO\_REUSEADDR} en el servidor HTTP de telemetría evita el
+error \texttt{Errno 98} que bloqueaba el puerto 8080 tras reinicios rápidos.
