@@ -422,6 +422,20 @@ def save_event(event_type="state"):
 def print_state(prefix="STATE"):
     merge_gui_state()
     with lock:
+        health = state["system_health"]
+        sources = state["sources"]
+        cam_status = " ".join(
+            f"{s}{'✓' if v else '✗'}"
+            for s, v in sources.items()
+            if s.startswith("cam")
+        )
+        summary = (
+            f"CPU: {health['cpu_usage_percent']:5.1f}%  "
+            f"RAM: {health['ram_usage_percent']:5.1f}%  "
+            f"uptime: {health['uptime']}  "
+            f"session: {health['session_duration']}  "
+            f"[{cam_status}]"
+        )
         info = (
             f'"preview": {json.dumps(state["preview"], ensure_ascii=False)}, '
             f'"output": {json.dumps(state["output"], ensure_ascii=False)}, '
@@ -435,7 +449,8 @@ def print_state(prefix="STATE"):
             f'"system_health": {json.dumps(state["system_health"], ensure_ascii=False)}, '
             f'"network": {json.dumps(state["network"], ensure_ascii=False)}'
         )
-    print(f"[{current_time_str()}] {prefix} -> {info}", flush=True)
+    print(f"[{current_time_str()}] {prefix}  {summary}", flush=True)
+    print(f"           full → {{{info}}}", flush=True)
     print(flush=True)
 
 

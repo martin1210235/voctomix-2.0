@@ -15,6 +15,8 @@ class GuiStateExporter:
         self.interval = interval
         self.running = False
         self.thread = None
+        self._cpu_last_idle = 0.0
+        self._cpu_last_total = 0.0
 
         self.target_ip = os.environ.get("GUI_TARGET_IP")
         self.target_port = int(os.environ.get("TELEMETRY_HTTP_PORT", "8080"))
@@ -83,6 +85,38 @@ class GuiStateExporter:
 
         return result["data"]
 
+    def _collect_system_health(self):
+        result = {
+            "cpu_usage_percent": 0.0,
+            "ram_usage_percent": 0.0,
+            "ram_available_mb": 0,
+        }
+        try:
+            with open('/proc/stat', 'r') as f:
+                parts = [float(x) for x in f.readline().split()[1:]]
+            idle, total = parts[3], sum(parts)
+            delta_idle = idle - self._cpu_last_idle
+            delta_total = total - self._cpu_last_total
+            self._cpu_last_idle, self._cpu_last_total = idle, total
+            if delta_total > 0:
+                result["cpu_usage_percent"] = round(100.0 * (1.0 - delta_idle / delta_total), 1)
+        except Exception:
+            pass
+        try:
+            mem_total = mem_available = 0
+            with open('/proc/meminfo', 'r') as f:
+                for line in f:
+                    if line.startswith('MemTotal:'):
+                        mem_total = int(line.split()[1])
+                    elif line.startswith('MemAvailable:'):
+                        mem_available = int(line.split()[1])
+            if mem_total > 0:
+                result["ram_available_mb"] = mem_available // 1024
+                result["ram_usage_percent"] = round(100.0 * (mem_total - mem_available) / mem_total, 1)
+        except Exception:
+            pass
+        return result
+
     def _get_local_ip(self):
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -118,6 +152,7 @@ class GuiStateExporter:
                 "text2_value": self._get_entry_text_by_name("tfg-entry-2"),
             },
             "audio": self._collect_audio_levels(),
+            "system_health": self._collect_system_health(),
         }
 
     def _find_widget_recursive(self, parent, wanted_id):
