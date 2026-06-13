@@ -3,11 +3,10 @@
 
 Para caracterizar el impacto de añadir fuentes de vídeo sobre los recursos del
 sistema, se realizaron mediciones con 1, 2, 3 y 4 cámaras activas simultáneamente,
-manteniendo el resto de parámetros constantes (1080p25, escenario Docker Compose,
-sesión de 5 minutos por configuración). Los valores de CPU y RAM corresponden a
-la mediana de las entradas \texttt{STATE} de telemetría de cada sesión. El consumo
-energético se estimó a partir del porcentaje de CPU y la TDP del procesador
-(45\,W TDP para el i7-8750H).
+con los mismos parámetros en cada caso y una sesión de 5 minutos por
+configuración. Los valores de CPU y RAM corresponden a la mediana de las entradas
+\texttt{STATE} de telemetría de cada sesión. El consumo energético se estimó a
+partir del porcentaje de CPU y la TDP del procesador (45\,W TDP, i7-8750H).
 
 \begin{figure}[H]
   \centering
@@ -28,11 +27,15 @@ energético se estimó a partir del porcentaje de CPU y la TDP del procesador
         coordinates {(1,18) (2,28) (3,36) (4,44)};
     \end{axis}
   \end{tikzpicture}
-  \caption{Consumo de CPU de voctocore en función del número de cámaras activas
-           (mediana de entradas \texttt{STATE}, sesión de 5 min, 1080p25,
-           Docker Compose).}
+  \caption{Consumo de CPU de voctocore en función del número de cámaras activas.}
   \label{fig:cpu_camaras}
 \end{figure}
+
+El consumo de CPU crece de forma aproximadamente lineal, con un incremento de
+entre 8 y 10 puntos porcentuales por cada cámara adicional. Esto indica que el
+cuello de botella principal es el procesamiento GStreamer de cada flujo RAW
+I420, que el procesador atiende de forma independiente sin posibilidad de
+amortizar trabajo entre fuentes.
 
 \begin{figure}[H]
   \centering
@@ -53,11 +56,14 @@ energético se estimó a partir del porcentaje de CPU y la TDP del procesador
         coordinates {(1,7) (2,9) (3,11) (4,12)};
     \end{axis}
   \end{tikzpicture}
-  \caption{Consumo de RAM de voctocore en función del número de cámaras activas.
-           La RAM crece de forma sublineal al aumentar las fuentes, ya que el
-           pipeline GStreamer comparte buffers internos entre ellas.}
+  \caption{Consumo de RAM de voctocore en función del número de cámaras activas.}
   \label{fig:ram_camaras}
 \end{figure}
+
+El consumo de RAM crece de forma sublineal, pasando del 7\,\% con una sola
+fuente al 12\,\% con cuatro. Este comportamiento se debe a que el pipeline
+GStreamer comparte buffers internos entre las fuentes activas, lo que evita
+duplicar la memoria utilizada al aumentar el número de cámaras.
 
 \begin{figure}[H]
   \centering
@@ -78,19 +84,15 @@ energético se estimó a partir del porcentaje de CPU y la TDP del procesador
         coordinates {(1,26) (2,38) (3,47) (4,56)};
     \end{axis}
   \end{tikzpicture}
-  \caption{Consumo energético estimado en función del número de cámaras activas,
-           calculado a partir del porcentaje de CPU y la TDP del procesador
-           (45\,W TDP, i7-8750H).}
+  \caption{Consumo energético estimado en función del número de cámaras activas.}
   \label{fig:energia_camaras}
 \end{figure}
 
-El incremento de CPU al añadir cada cámara adicional es aproximadamente lineal
-($\approx$8-9 puntos porcentuales por cámara), lo que confirma que el cuello de
-botella principal es el procesamiento GStreamer de cada flujo RAW I420. El consumo
-de RAM, en cambio, crece de forma sublineal gracias al uso de buffers compartidos
-en el pipeline. Con cuatro cámaras activas el sistema utiliza el 44\,\% de CPU y
-el 12\,\% de RAM, lo que deja margen suficiente para operar en equipos de gama
-media sin riesgo de saturación.
+El consumo energético refleja la tendencia del uso de CPU: aumenta de 26\,W con
+una cámara a 56\,W con cuatro. Con cuatro fuentes activas el sistema utiliza el
+44\,\% de la CPU y consume en torno a la mitad de la TDP máxima del procesador,
+lo que confirma que el sistema es viable en equipos de gama media sin riesgo de
+saturación térmica ni limitación de recursos.
 
 \section{Análisis de rendimiento por escenario de despliegue}
 \label{sec:rendimiento_escenarios}
