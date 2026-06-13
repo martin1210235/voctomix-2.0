@@ -45,9 +45,14 @@ figura~\ref{fig:rabbitmq_queues} muestra la consola con mensajes en cola.
   \label{fig:rabbitmq_queues}
 \end{figure}
 
-Las capturas de la figura~\ref{fig:telemetria_eventos} corresponden a la salida
-en tiempo real del terminal durante la realización: el evento STATE y CHANGE. Toda esta información queda además registrada en un fichero .jsonl, que al finalizar la retransmisión, se guarda en un ficherocomo historial completo de la
-realización.
+Las capturas de la figura~\ref{fig:telemetria_eventos} muestran la salida en
+tiempo real del terminal durante la realización: los eventos STATE aparecen
+cada 5 segundos con el estado completo del sistema, mientras que los eventos
+CHANGE se imprimen de forma inmediata al detectar cualquier acción del
+operador, con una latencia inferior a 50\,ms. El contenido de este registro
+en tiempo real es idéntico al almacenado en el fichero \texttt{.jsonl}, que
+se genera automáticamente al finalizar la retransmisión como historial
+completo de la realización.
 
 \begin{figure}[H]
   \centering
@@ -66,24 +71,3 @@ realización.
   \caption{Salida en tiempo real del terminal: evento STATE (arriba) y evento CHANGE (abajo).}
   \label{fig:telemetria_eventos}
 \end{figure}
-
-La estructura JSON de ambos eventos es:
-
-\begin{verbatim}
-{"timestamp": "2025-03-28T20:14:27.102Z", "type": "STATE",
- "video": {"program": "cam1", "preview": "cam2"},
- "composite": "fs", "stream": "live",
- "performance": {"cpu": 38.1, "ram_pct": 9.2,
-                 "bandwidth_mbps": 622.1}}
-
-{"timestamp": "2025-03-28T20:14:32.105Z", "type": "CHANGE",
- "video": {"program": "cam2", "preview": "cam1"},
- "composite": "fs", "stream": "live",
- "performance": {"cpu": 34.2, "ram_pct": 8.7,
-                 "bandwidth_mbps": 622.1}}
-\end{verbatim}
-
-Como se puede observar en las capturas, los eventos \texttt{CHANGE} y
-\texttt{STATE} se muestran con una latencia inferior a 50\,ms, lo que permite
-al realizador consultar el estado del sistema en tiempo real durante la
-producción.
