@@ -1,7 +1,7 @@
 \section{Entorno de pruebas}
 \label{sec:entorno_pruebas}
 
-Las pruebas se ejecutaron sobre el escenario Docker Compose con señal sintética
+Las pruebas se ejecutaron sobre el escenario Docker Compose con una señal 
 generada por FFmpeg a 1920$\times$1080@25\,fps. La tabla~\ref{tab:hardware} recoge
 las especificaciones del equipo utilizado.
 
@@ -26,9 +26,9 @@ las especificaciones del equipo utilizado.
 \section{Validación del sistema de telemetría}
 \label{sec:prueba_telemetria}
 
-El sistema de telemetría registra dos tipos de eventos: \textbf{STATE}, emitido
+El sistema de telemetría registra dos tipos de eventos: STATE, emitido
 periódicamente cada 5 segundos con el estado completo del mezclador y las métricas
-de rendimiento, y \textbf{CHANGE}, emitido de forma inmediata cuando el operador
+de rendimiento, y CHANGE, emitido de forma inmediata cuando el operador
 realiza cualquier acción sobre la GUI. Para verificar el correcto funcionamiento de
 ambos se realizaron diversas acciones sobre la interfaz: cortes de cámara,
 cambios de composite, activaciones y desactivaciones de overlay, inserción de
@@ -46,11 +46,7 @@ figura~\ref{fig:rabbitmq_queues} muestra la consola con mensajes en cola.
 \end{figure}
 
 Las capturas de la figura~\ref{fig:telemetria_eventos} corresponden a la salida
-en tiempo real del terminal durante la prueba: el evento \textbf{STATE} aparece
-cada 5 segundos con el estado completo del sistema, mientras que el evento
-\textbf{CHANGE} se imprime de forma inmediata al detectar cualquier acción del
-operador. Toda esta información queda además registrada en un fichero
-\texttt{.jsonl} al finalizar la retransmisión, como historial completo de la
+en tiempo real del terminal durante la realización: el evento STATE y CHANGE. Toda esta información queda además registrada en un fichero .jsonl, que al finalizar la retransmisión, se guarda en un ficherocomo historial completo de la
 realización.
 
 \begin{figure}[H]
@@ -67,7 +63,7 @@ realización.
     \node[font=\sffamily\scriptsize\itshape, text=gray!45] at (6.5,0.7)
       {Captura pendiente de sustituir por imagen real del terminal};
   \end{tikzpicture}
-  \caption{Salida en tiempo real del terminal: evento \texttt{STATE} (arriba) y evento \texttt{CHANGE} (abajo).}
+  \caption{Salida en tiempo real del terminal: evento STATE (arriba) y evento CHANGE (abajo).}
   \label{fig:telemetria_eventos}
 \end{figure}
 
