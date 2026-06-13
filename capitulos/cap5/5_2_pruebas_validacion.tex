@@ -30,33 +30,28 @@ El sistema de telemetría registra dos tipos de eventos: \textbf{STATE}, emitido
 periódicamente cada 5 segundos con el estado completo del mezclador y las métricas
 de rendimiento, y \textbf{CHANGE}, emitido de forma inmediata cuando el operador
 realiza cualquier acción sobre la GUI. Para verificar el correcto funcionamiento de
-ambos se ejecutó la siguiente secuencia sobre el escenario Docker Compose:
-
-\begin{enumerate}
-  \item Cambio de fuente (cam1 $\rightarrow$ cam2).
-  \item Cambio de composite (fs $\rightarrow$ pip).
-  \item Activación de stream blanker PAUSE y vuelta a LIVE.
-  \item Carga y descarga de overlay.
-\end{enumerate}
-
-Se accedió a la consola de administración de RabbitMQ
+ambos se realizaron diversas acciones sobre la interfaz: cortes de cámara,
+cambios de composite, activaciones y desactivaciones de overlay, inserción de
+texto en rótulos y transiciones entre los estados del stream blanker. Se
+accedió a la consola de administración de RabbitMQ
 (\texttt{http://localhost:15672}) y se verificó que la cola
-\texttt{voctomix\_events} contenía un mensaje por cada acción. La
-figura~\ref{fig:rabbitmq_queues} muestra la consola con los mensajes en cola
-tras la secuencia de prueba.
+\texttt{voctomix\_events} acumulaba un mensaje por cada acción ejecutada. La
+figura~\ref{fig:rabbitmq_queues} muestra la consola con mensajes en cola.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{figuras/rabbitmq_cybernemo_queues.png}
-  \caption{Consola RabbitMQ Management mostrando la cola
-           \texttt{voctomix\_events} con los eventos registrados durante
-           la sesión de prueba.}
+  \caption{Cola \texttt{voctomix\_events} en la consola RabbitMQ tras la sesión de prueba.}
   \label{fig:rabbitmq_queues}
 \end{figure}
 
-A continuación se muestran dos entradas reales del fichero \texttt{.jsonl}
-generado por el servicio de telemetría: un evento \textbf{STATE} periódico y
-un evento \textbf{CHANGE} capturado al realizar un corte de cámara.
+Las capturas de la figura~\ref{fig:telemetria_eventos} corresponden a la salida
+en tiempo real del terminal durante la prueba: el evento \textbf{STATE} aparece
+cada 5 segundos con el estado completo del sistema, mientras que el evento
+\textbf{CHANGE} se imprime de forma inmediata al detectar cualquier acción del
+operador. Toda esta información queda además registrada en un fichero
+\texttt{.jsonl} al finalizar la retransmisión, como historial completo de la
+realización.
 
 \begin{figure}[H]
   \centering
@@ -72,11 +67,7 @@ un evento \textbf{CHANGE} capturado al realizar un corte de cámara.
     \node[font=\sffamily\scriptsize\itshape, text=gray!45] at (6.5,0.7)
       {Captura pendiente de sustituir por imagen real del terminal};
   \end{tikzpicture}
-  \caption{Entradas \texttt{STATE} (arriba) y \texttt{CHANGE} (abajo) del
-           registro \texttt{.jsonl} de telemetría. El evento \texttt{STATE}
-           recoge el estado completo del mezclador y las métricas de CPU, RAM
-           y ancho de banda cada 5 segundos. El evento \texttt{CHANGE} se
-           genera de forma instantánea al detectar una acción del operador.}
+  \caption{Salida en tiempo real del terminal: evento \texttt{STATE} (arriba) y evento \texttt{CHANGE} (abajo).}
   \label{fig:telemetria_eventos}
 \end{figure}
 
@@ -96,6 +87,7 @@ La estructura JSON de ambos eventos es:
                  "bandwidth_mbps": 622.1}}
 \end{verbatim}
 
-El evento \texttt{CHANGE} refleja el nuevo estado del sistema con una latencia
-de registro inferior a 50\,ms respecto al instante de la acción, confirmando
-que la telemetría en tiempo real es viable para monitorización en producción.
+Como se puede observar en las capturas, los eventos \texttt{CHANGE} y
+\texttt{STATE} se muestran con una latencia inferior a 50\,ms, lo que permite
+al realizador consultar el estado del sistema en tiempo real durante la
+producción.
