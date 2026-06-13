@@ -109,14 +109,21 @@ múltiples etapas de procesamiento.
   \]
   Voctomix emplea I420 en todo el procesamiento interno del motor GStreamer mediante
   cápsulas \texttt{video/x-raw,format=I420}, lo que elimina cualquier conversión de
-  formato en el camino crítico y garantiza que la latencia de mezcla dependa
-  exclusivamente del procesamiento de píxeles. Para preservar la calidad colorimétrica,
+  formato durante el procesamiento y garantiza que la latencia de mezcla dependa
+  únicamente del tiempo de cálculo sobre los píxeles. Para preservar la calidad colorimétrica,
   todos los flujos deben declarar espacio BT.709 (\texttt{colorimetry=bt709}) y rango
   televisivo (\texttt{tv~range}), requisito que voctocore verifica en el
   \textit{handshake} inicial con cada fuente. El coste de este enfoque es que los
   622~Mbit/s por fuente obligan a que todo el tráfico de vídeo circule en bucle local,
   ya sea mediante la interfaz de loopback del servidor en instalación monopuesto o a
   través de redes Docker internas de alta velocidad en el despliegue contenerizado.
+
+  \item \textbf{Audio PCM (\textit{Pulse-Code Modulation}):} el audio se transporta sin
+  compresión en formato PCM~S16LE (muestras enteras de 16 bits en orden
+  \textit{little-endian}) a 48~kHz estéreo. Voctomix utiliza este formato para todo el
+  procesamiento interno de audio, encapsulado junto al vídeo~I420 en el mismo contenedor
+  MKV. La ausencia de compresión garantiza la máxima calidad y elimina cualquier
+  latencia de codificación.
 
   \item \textbf{Apple ProRes}~\cite{apple_prores}: familia de códecs de alta calidad
   desarrollados por Apple para producción profesional. Utilizan exclusivamente compresión
@@ -153,7 +160,8 @@ múltiples etapas de procesamiento.
     \hline
     \textbf{Códec} & \textbf{Compresión} & \textbf{Latencia enc.} & \textbf{Uso típico} \\
     \hline
-    RAW (I420/UYVY) & Sin compresión & Nula        & Interno Voctomix / estudio \\
+    RAW (I420/UYVY) & Sin compresión & Nula        & Vídeo interno Voctomix / estudio \\
+    PCM S16LE (audio) & Sin compresión & Nula      & Audio interno Voctomix \\
     Apple ProRes    & 4:1 -- 8:1     & $<$1 fotograma & Producción TV, postproducción \\
     VC-3 / DNxHD    & 4:1 -- 7:1     & $<$1 fotograma & Broadcast, Avid workflows \\
     JPEG 2000       & 4:1 -- 20:1    & $<$5 ms     & Contribución broadcast \\
