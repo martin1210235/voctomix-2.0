@@ -7,15 +7,13 @@ El trabajo comenzó con una fase de exploración sobre Voctomix~1.0 para familia
 con la herramienta antes de abordar la versión más reciente. Durante esas primeras
 semanas se estudió en detalle el fichero de configuración \texttt{default.ini}, se
 comprendió el funcionamiento del protocolo de puertos TCP de entrada de las cámaras
-(10000, 10001, 10002), se analizaron los flujos de previsualización JPEG que
-alimentan la interfaz gráfica y se exploró la lógica de los composites disponibles.
+(10000, 10001, 10002), se analizaron los flujos de previsualización de la interfaz gráfica y se exploró el funcionamiento de los composites.
 Esta inmersión en la versión anterior resultó clave para entender los fundamentos del
-pipeline GStreamer y la comunicación cliente-servidor sobre la que descansa toda la
-arquitectura, y sirvió de base sólida para dar el salto a Voctomix~2.0 con criterio.
+pipeline GStreamer, la comunicación cliente-servidor, y la
+arquitectura del sistema, y sirvió de base sólida para dar el salto a Voctomix~2.0.
 
 La figura~\ref{fig:diagrama_sistema} ofrece una visión global del sistema completo:
-las fuentes de señal, el núcleo de procesamiento, las salidas, la interfaz de control
-y la capa de telemetría. Este diagrama sirve de hilo conductor para los apartados que
+las fuentes de señal, el núcleo de procesamiento, las salidas, la interfaz de control, la capa de telemetría, etc. Este diagrama sirve de hilo conductor para los apartados que
 siguen, cada uno de los cuales profundiza en uno de sus bloques.
 
 \begin{figure}[H]
@@ -44,9 +42,9 @@ La tabla~\ref{tab:puertos_sistema} recoge los puertos TCP/UDP del sistema y su f
     10004    & TCP  & Entrada fuente break (vídeo de pausa) \\
     10005    & TCP  & Entrada fuente intro (vídeo introductorio) \\
     11000    & TCP  & Salida mezcla principal en bruto \\
-    12000    & TCP  & Salida previsualización de mezcla (GUI) \\
-    14000--14005 & TCP & Salidas JPEG comprimidas por fuente (GUI) \\
-    15000    & TCP  & Salida de streaming (tras stream blanker) \\
+    12000    & TCP  & Salida principal de previsualización (GUI) \\
+    14000--14005 & TCP & Salidas de previsualización comprimidas (GUI) \\
+    15000    & TCP  & Salida de streaming \\
     17000    & TCP  & Entrada vídeo stream blanker PAUSE \\
     17001    & TCP  & Entrada vídeo stream blanker NOSTREAM \\
     18000    & TCP  & Entrada audio (música de fondo) \\
