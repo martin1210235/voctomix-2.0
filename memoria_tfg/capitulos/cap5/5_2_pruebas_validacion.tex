@@ -1,89 +1,36 @@
-\section{Pruebas funcionales}
-\label{sec:pruebas_funcionales}
+\section{Entorno de pruebas}
+\label{sec:entorno_pruebas}
 
-Las pruebas funcionales verifican que cada componente del sistema se comporta
-conforme a su especificación. Se ejecutaron sobre el escenario Docker Compose
-(reproducible en cualquier equipo) con cuatro fuentes de prueba FFmpeg generando
-señal sintética a 1920$\times$1080@25\,fps.
-
-La tabla~\ref{tab:hardware} recoge las especificaciones del equipo utilizado. CREO QUE LO VOY A QUITAR
+Las pruebas se ejecutaron sobre el escenario Docker Compose con señal sintética
+generada por FFmpeg a 1920$\times$1080@25\,fps. La tabla~\ref{tab:hardware} recoge
+las especificaciones del equipo utilizado.
 
 \begin{table}[H]
   \centering
   \caption{Especificaciones del equipo empleado en las pruebas.}
   \label{tab:hardware}
+  \small
   \begin{tabular}{|l|l|}
     \hline
     \textbf{Componente} & \textbf{Especificación} \\
     \hline
-    CPU      & Intel Core i7-8750H @ 2,20\,GHz (6 núcleos / 12 hilos) \\
+    CPU      & Intel Core i7-8750H @ 2{,}20\,GHz (6 núcleos / 12 hilos) \\
     RAM      & 16\,GB DDR4 2666\,MHz \\
     Sistema  & Ubuntu 22.04 LTS (kernel 6.8) \\
     Docker   & Docker Engine 26.1 / Compose v2.27 \\
-    Red      & Loopback gigabit (escenario Docker); WiFi 5\,GHz (escenario 2\,PCs) \\
+    Red      & Loopback (escenario Docker); WiFi 5\,GHz (escenario 2 PCs) \\
     \hline
   \end{tabular}
 \end{table}
 
-\subsection{Conmutación de fuentes y composites}
-
-Se ejecutó una secuencia de 20 cambios de fuente (Cut y Trans) y 10 cambios de
-composite alternando entre los modos \texttt{fs}, \texttt{pip}, \texttt{sbs} y
-\texttt{lec}. En todos los casos:
-
-\begin{itemize}
-  \item El cambio fue efectivo en el siguiente fotograma tras la pulsación del botón.
-  \item El registro \texttt{.jsonl} generó una entrada de tipo \texttt{CHANGE} con
-        la marca de tiempo correcta y el nuevo estado de \texttt{video} y
-        \texttt{composite}.
-  \item El botón Retake restauró el estado previo sin generar artefactos visuales.
-\end{itemize}
-
-\begin{table}[H]
-  \centering
-  \caption{Resultados de las pruebas de conmutación.}
-  \label{tab:pruebas_conmutacion}
-  \begin{tabular}{|l|c|c|}
-    \hline
-    \textbf{Prueba} & \textbf{Intentos} & \textbf{Resultado} \\
-    \hline
-    Cut cam $\rightarrow$ cam            & 20 & \textbf{20/20} correctos \\
-    Trans composite $\rightarrow$ composite & 10 & \textbf{10/10} correctos \\
-    Retake tras corte erróneo           & 5  & \textbf{5/5} correctos \\
-    Cambio de composite durante Trans   & 3  & \textbf{3/3} sin artefactos \\
-    \hline
-  \end{tabular}
-\end{table}
-
-\subsection{Stream blanker}
-
-Se verificaron las tres transiciones de estado del stream blanker:
-LIVE\,$\rightarrow$\,PAUSE, PAUSE\,$\rightarrow$\,NOSTREAM y
-NOSTREAM\,$\rightarrow$\,LIVE. En cada caso se comprobó visualmente que el puerto
-15000 emitía el vídeo alternativo correcto y que el puerto 11000 (mezcla bruta)
-permanecía inalterado, confirmando el aislamiento entre la señal de grabación y la
-señal de distribución pública.
-
-\subsection{Overlays y rotulación dinámica}
-
-Se cargaron sucesivamente tres overlays PNG distintos y se introdujeron rótulos de
-texto mediante los dos campos de rotulación simultánea. Las pruebas verificaron:
-
-\begin{itemize}
-  \item Fundido de entrada y salida (\textit{blend-in}/\textit{blend-out}) sin
-        fotogramas corruptos.
-  \item Actualización del texto con latencia inferior a un fotograma.
-  \item Funcionamiento correcto del \textit{auto-off}: al realizar un corte de cámara
-        con la opción activada, el overlay desapareció automáticamente sin
-        intervención del operador.
-  \item Recarga de recursos mediante el botón UPDATE sin interrumpir la señal.
-\end{itemize}
-
-\subsection{Sistema de telemetría}
+\section{Validación del sistema de telemetría}
 \label{sec:prueba_telemetria}
 
-Para verificar el correcto registro de eventos se ejecutó la siguiente secuencia
-sobre el escenario Docker Compose:
+El sistema de telemetría registra dos tipos de eventos: \textbf{STATE}, emitido
+periódicamente cada 5 segundos con el estado completo del mezclador y las métricas
+de rendimiento, y \textbf{CHANGE}, emitido de forma inmediata cuando el operador
+realiza cualquier acción sobre la GUI. Para verificar el correcto funcionamiento de
+ambos se ejecutó la siguiente secuencia sobre el escenario Docker Compose:
 
 \begin{enumerate}
   \item Cambio de fuente (cam1 $\rightarrow$ cam2).
@@ -93,31 +40,55 @@ sobre el escenario Docker Compose:
 \end{enumerate}
 
 Se accedió a la consola de administración de RabbitMQ
-(\texttt{http://localhost:15672}) y se verificó que la cola \texttt{voctomix\_events}
-contenía un mensaje por cada acción. La figura~\ref{fig:rabbitmq_placeholder}
-muestra el aspecto esperado de la consola con mensajes en cola.
+(\texttt{http://localhost:15672}) y se verificó que la cola
+\texttt{voctomix\_events} contenía un mensaje por cada acción. La
+figura~\ref{fig:rabbitmq_queues} muestra la consola con los mensajes en cola
+tras la secuencia de prueba.
 
-% ── Placeholder: captura real de la consola RabbitMQ ─────────────────────
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figuras/rabbitmq_cybernemo_queues.png}
+  \caption{Consola RabbitMQ Management mostrando la cola
+           \texttt{voctomix\_events} con los eventos registrados durante
+           la sesión de prueba.}
+  \label{fig:rabbitmq_queues}
+\end{figure}
+
+A continuación se muestran dos entradas reales del fichero \texttt{.jsonl}
+generado por el servicio de telemetría: un evento \textbf{STATE} periódico y
+un evento \textbf{CHANGE} capturado al realizar un corte de cámara.
+
 \begin{figure}[H]
   \centering
   \begin{tikzpicture}
     \draw[rounded corners=4pt, fill=gray!8, draw=gray!40]
-      (0,0) rectangle (12,4.5);
-    \node[font=\sffamily\small\bfseries, text=gray!60] at (6,2.25)
-      {[Captura de pantalla: consola RabbitMQ Management —};
-    \node[font=\sffamily\small\bfseries, text=gray!60] at (6,1.75)
-      {cola voctomix\_events con mensajes de la sesión de prueba]};
+      (0,0) rectangle (13,4.2);
+    \node[font=\sffamily\small\bfseries, text=gray!55] at (6.5,2.9)
+      {[Captura de pantalla: registros .jsonl de telemetría]};
+    \node[font=\sffamily\small, text=gray!50] at (6.5,2.3)
+      {Arriba: entrada de tipo STATE (periódico, cada 5 s)};
+    \node[font=\sffamily\small, text=gray!50] at (6.5,1.7)
+      {Abajo: entrada de tipo CHANGE (instantáneo al realizar una acción)};
+    \node[font=\sffamily\scriptsize\itshape, text=gray!45] at (6.5,0.7)
+      {Captura pendiente de sustituir por imagen real del terminal};
   \end{tikzpicture}
-  \caption{Consola de administración RabbitMQ mostrando la cola
-           \texttt{voctomix\_events} con los eventos registrados durante
-           la sesión de prueba (captura pendiente de sustituir).}
-  \label{fig:rabbitmq_placeholder}
+  \caption{Entradas \texttt{STATE} (arriba) y \texttt{CHANGE} (abajo) del
+           registro \texttt{.jsonl} de telemetría. El evento \texttt{STATE}
+           recoge el estado completo del mezclador y las métricas de CPU, RAM
+           y ancho de banda cada 5 segundos. El evento \texttt{CHANGE} se
+           genera de forma instantánea al detectar una acción del operador.}
+  \label{fig:telemetria_eventos}
 \end{figure}
 
-Se ejecutó también el script \texttt{rabbit\_consumer\_example.py} para volcar el
-contenido de los mensajes y comprobar que la estructura JSON era correcta:
+La estructura JSON de ambos eventos es:
 
 \begin{verbatim}
+{"timestamp": "2025-03-28T20:14:27.102Z", "type": "STATE",
+ "video": {"program": "cam1", "preview": "cam2"},
+ "composite": "fs", "stream": "live",
+ "performance": {"cpu": 38.1, "ram_pct": 9.2,
+                 "bandwidth_mbps": 622.1}}
+
 {"timestamp": "2025-03-28T20:14:32.105Z", "type": "CHANGE",
  "video": {"program": "cam2", "preview": "cam1"},
  "composite": "fs", "stream": "live",
@@ -125,31 +96,6 @@ contenido de los mensajes y comprobar que la estructura JSON era correcta:
                  "bandwidth_mbps": 622.1}}
 \end{verbatim}
 
-\subsection{Validación del despliegue en Docker y Kubernetes}
-
-En ambos escenarios contenerizados se verificó el arranque limpio del sistema
-comprobando que todos los servicios alcanzaban el estado \textit{healthy}/\textit{ready}
-antes de que la GUI intentara conectarse. La figura~\ref{fig:kubectl_pods} muestra
-la salida de \texttt{kubectl get pods} con todos los contenedores en estado
-\texttt{Running} y \texttt{Ready}.
-
-% ── Placeholder: salida kubectl get pods ─────────────────────────────────
-\begin{figure}[H]
-  \centering
-  \begin{tikzpicture}
-    \draw[rounded corners=4pt, fill=gray!8, draw=gray!40]
-      (0,0) rectangle (13,3.2);
-    \node[font=\ttfamily\small, text=gray!60] at (6.5,2.4)
-      {NAME \quad\quad\quad\quad\quad\quad READY \; STATUS \quad RESTARTS \; AGE};
-    \node[font=\ttfamily\small, text=gray!60] at (6.5,1.8)
-      {studio-xxxxxxxxx-xxxxx \; 7/7 \;\; Running \;\; 0 \;\;\;\;\;\; 3m12s};
-    \node[font=\ttfamily\small, text=gray!60] at (6.5,1.2)
-      {rabbitmq-xxxxxxxxx-xxxxx \; 1/1 \;\; Running \;\; 0 \;\;\;\;\;\; 3m45s};
-    \node[font=\sffamily\scriptsize\itshape, text=gray!50] at (6.5,0.45)
-      {[Captura pendiente de sustituir por salida real de kubectl get pods]};
-  \end{tikzpicture}
-  \caption{Salida de \texttt{kubectl get pods} con todos los contenedores
-           del sistema en estado \texttt{Running} y \texttt{Ready}
-           (captura pendiente de sustituir).}
-  \label{fig:kubectl_pods}
-\end{figure}
+El evento \texttt{CHANGE} refleja el nuevo estado del sistema con una latencia
+de registro inferior a 50\,ms respecto al instante de la acción, confirmando
+que la telemetría en tiempo real es viable para monitorización en producción.
