@@ -46,13 +46,10 @@ figura~\ref{fig:rabbitmq_queues} muestra la consola con mensajes en cola.
 \end{figure}
 
 Las capturas de la figura~\ref{fig:telemetria_eventos} muestran la salida en
-tiempo real del terminal durante la realización: los eventos STATE aparecen
-cada 5 segundos con el estado completo del sistema, mientras que los eventos
-CHANGE se imprimen de forma inmediata al detectar cualquier acción del
-operador, con una latencia inferior a 50\,ms. El contenido de este registro
-en tiempo real es idéntico al almacenado en el fichero \texttt{.jsonl}, que
-se genera automáticamente al finalizar la retransmisión como historial
-completo de la realización.
+tiempo real del terminal durante la realización, con una latencia inferior a
+50\,ms. El contenido de este registro es idéntico al almacenado en el fichero
+\texttt{.jsonl}, que se genera automáticamente al finalizar la retransmisión
+como historial completo de la realización.
 
 \begin{figure}[H]
   \centering
@@ -68,6 +65,6 @@ completo de la realización.
     \node[font=\sffamily\scriptsize\itshape, text=gray!45] at (6.5,0.7)
       {Captura pendiente de sustituir por imagen real del terminal};
   \end{tikzpicture}
-  \caption{Salida en tiempo real del terminal: evento STATE (arriba) y evento CHANGE (abajo).}
+  \caption{Salida en tiempo real del terminal: evento STATE y CHANGE.}
   \label{fig:telemetria_eventos}
 \end{figure}
