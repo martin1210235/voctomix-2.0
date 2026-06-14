@@ -8,42 +8,21 @@ independiente para música de fondo.
 
 \subsection{Fuente break e intro}
 
-\texttt{break} e \texttt{intro} son fuentes de vídeo pregrabadas que el núcleo trata
-exactamente igual que una cámara adicional: se conectan a los puertos 10004 y 10005
-respectivamente mediante procesos FFmpeg, y aparecen en el mezclador como dos entradas
-más. Sin embargo, dado que no aportan información relevante al realizador durante la
-producción en directo, se ha optado por ocultarlas en la interfaz gráfica, manteniendo
-su funcionalidad completa en el núcleo sin ocupar espacio en el panel de previsualizaciones.
+\texttt{break} e \texttt{intro} son fuentes de vídeo pregrabadas que voctocore trata
+como dos entradas adicionales en los puertos 10004 y 10005. Al no aportar información
+relevante durante la producción, se ocultan en la interfaz gráfica sin perder
+funcionalidad en el núcleo.
 
 \begin{itemize}
-  \item \textbf{break}: vídeo en bucle empleado como pantalla de pausa animada durante
-  los descansos del evento. FFmpeg lo envía con la opción \texttt{-stream\_loop -1}
-  para que la fuente nunca quede en negro, independientemente de la duración del
-  archivo. El realizador puede seleccionarlo directamente como fuente activa del
-  mezclador, igual que las cámaras 1 a 4.
-  \item \textbf{intro}: vídeo introductorio que se reproduce al inicio del evento o
-  entre sesiones. A diferencia del break, la intro \emph{no} se reproduce en bucle
-  continuo, sino que se dispara una sola vez cuando el realizador selecciona esa fuente
-  en la interfaz gráfica.
+  \item \textbf{break}: vídeo en bucle continuo (\texttt{-stream\_loop -1}) empleado
+        como pantalla animada durante los descansos. El realizador puede seleccionarlo
+        directamente en el mezclador, al igual que cualquier cámara.
+  \item \textbf{intro}: vídeo de reproducción única. Al seleccionarlo, voctogui
+        invoca \texttt{launch\_intro.sh}, que finaliza el proceso FFmpeg anterior,
+        inicia uno nuevo desde el primer fotograma sin bucle y, tras una breve
+        espera de sincronización (500\,ms en arranque limpio, 1300\,ms si ya había
+        un proceso activo), envía el comando de corte al núcleo.
 \end{itemize}
-
-\subsubsection{Mecanismo de disparo de la intro (\textit{vigilante})}
-
-El comportamiento de disparo único de la intro plantea un reto arquitectónico: la GUI
-de voctogui no puede ejecutar comandos externos sin bloquear el hilo principal de GTK.
-Para resolverlo sin modificar el núcleo del sistema, se implementó un proceso
-independiente denominado \texttt{vigilante\_intro.py}.
-
-Este script actúa como un cliente silencioso del puerto de control TCP (9999): escucha
-el flujo de notificaciones de estado que voctocore difunde por \textit{broadcast} y,
-cuando detecta el mensaje \texttt{video\_status intro} (el realizador ha seleccionado
-la fuente intro), ejecuta inmediatamente el script \texttt{lanzar\_intro.sh} mediante
-\texttt{subprocess.Popen} sin buffering para garantizar una reacción instantánea.
-
-Esta arquitectura sigue la filosofía de separación de responsabilidades de Voctomix:
-el núcleo solo sabe mezclar señales; los automatismos de producción se implementan
-como clientes externos que reaccionan a su protocolo de estado. Si el vigilante fallara,
-el sistema de mezcla continuaría operando con plena normalidad.
 
 \subsection{Entrada de audio}
 
