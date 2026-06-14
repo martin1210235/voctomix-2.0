@@ -1,22 +1,16 @@
 \section{Rendimiento en función del número de cámaras}
 \label{sec:rendimiento_camaras}
 
-Para caracterizar el impacto de añadir fuentes de vídeo sobre los recursos del
-sistema se ejecutaron cuatro sesiones de cinco minutos cada una, con 1, 2, 3 y 4
-cámaras activas respectivamente, manteniendo idénticos parámetros de vídeo en
-todos los casos (1920$\times$1080, I420, 25\,fps). Las fuentes se generaron
-localmente mediante el filtro sintético \texttt{testsrc2} de FFmpeg, lo que
-elimina la variabilidad de red exterior y garantiza un flujo RAW continuo de
-formato idéntico al de producción real.
-
-El consumo de CPU y RAM corresponde a la mediana de las entradas \texttt{STATE}
-de telemetría de cada sesión, descartando los primeros 30\,s de estabilización.
-El consumo energético se obtuvo mediante el sensor \textbf{RAPL}
-(\textit{Running Average Power Limit}) del procesador, que mide la energía
-consumida por el paquete CPU a nivel hardware a través del contador
-\texttt{intel-rapl:0/energy\_uj}; el valor publicado es el consumo neto
-atribuible a Voctomix\,2.0, restando el baseline del sistema en reposo
-(17{,}70\,W, promedio de tres mediciones de 30\,s con el stack detenido).
+Se ejecutaron cuatro sesiones de cinco minutos con 1, 2, 3 y 4 cámaras activas
+en el escenario Docker Compose, manteniendo los mismos parámetros de vídeo en
+todos los casos (1920$\times$1080, I420, 25\,fps). Las fuentes se generaron con
+el filtro sintético \texttt{testsrc2} de FFmpeg, eliminando la variabilidad de red
+exterior y asegurando un flujo RAW idéntico al de producción. Los valores de CPU
+y RAM son la mediana de 63 muestras del sistema de telemetría (una cada 5\,s,
+descartando los primeros 30\,s de arranque). La energía se midió con el sensor
+RAPL (\textit{Running Average Power Limit}), que obtiene el consumo real del
+paquete CPU por hardware; el valor mostrado descuenta el baseline del sistema en
+reposo (17{,}70\,W), por lo que refleja únicamente el consumo de Voctomix\,2.0.
 
 \begin{figure}[H]
   \centering
@@ -24,7 +18,7 @@ atribuible a Voctomix\,2.0, restando el baseline del sistema en reposo
     \begin{axis}[
       width=13cm, height=6cm,
       xlabel={Número de cámaras activas},
-      ylabel={Uso de CPU del sistema (\%)},
+      ylabel={Uso de CPU (\%)},
       xtick={1,2,3,4},
       xmin=0.5, xmax=4.5,
       ymin=0, ymax=60,
@@ -37,18 +31,15 @@ atribuible a Voctomix\,2.0, restando el baseline del sistema en reposo
         coordinates {(1,33.5) (2,35.2) (3,35.8) (4,38.8)};
     \end{axis}
   \end{tikzpicture}
-  \caption{Uso de CPU del sistema en función del número de cámaras activas
-           (escenario Docker Compose, mediana de 63\,muestras por configuración).}
+  \caption{Uso de CPU en función del número de cámaras activas.}
   \label{fig:cpu_camaras}
 \end{figure}
 
-El uso de CPU crece de forma sub-lineal a lo largo de las cuatro configuraciones:
-el incremento total al pasar de una a cuatro cámaras es de tan solo 5{,}3 puntos
-porcentuales (de 33{,}5\,\% a 38{,}8\,\%). Este comportamiento difiere del
-escalado lineal que cabría esperar si cada fuente fuese atendida de forma
-independiente, y refleja la capacidad del compositor de GStreamer para amortizar
-el coste fijo del grafo de procesamiento, los búferes internos y el planificador
-entre todas las fuentes activas.
+El incremento de CPU al pasar de una a cuatro cámaras es de solo 5{,}3 puntos
+porcentuales (de 33{,}5\,\% a 38{,}8\,\%), un crecimiento claramente sub-lineal.
+GStreamer comparte internamente los recursos del pipeline entre todas las fuentes
+activas, lo que evita que el coste de procesamiento se multiplique al añadir
+nuevas cámaras.
 
 \begin{figure}[H]
   \centering
@@ -56,7 +47,7 @@ entre todas las fuentes activas.
     \begin{axis}[
       width=13cm, height=6cm,
       xlabel={Número de cámaras activas},
-      ylabel={Uso de RAM del sistema (\%)},
+      ylabel={Uso de RAM (\%)},
       xtick={1,2,3,4},
       xmin=0.5, xmax=4.5,
       ymin=0, ymax=20,
@@ -69,18 +60,15 @@ entre todas las fuentes activas.
         coordinates {(1,9.7) (2,9.9) (3,9.9) (4,10.1)};
     \end{axis}
   \end{tikzpicture}
-  \caption{Uso de RAM del sistema en función del número de cámaras activas
-           (escenario Docker Compose, mediana de 63\,muestras por configuración).}
+  \caption{Uso de RAM en función del número de cámaras activas.}
   \label{fig:ram_camaras}
 \end{figure}
 
-El uso de memoria permanece prácticamente constante en todas las configuraciones:
-el incremento entre una y cuatro cámaras es de apenas 0{,}4 puntos porcentuales
-(de 9{,}7\,\% a 10{,}1\,\%). Este resultado confirma que el pipeline de
-GStreamer reutiliza los búferes de procesamiento entre las distintas fuentes
-activas, sin duplicar el espacio de memoria al aumentar el número de entradas.
-La estabilidad de la RAM es relevante para la planificación de despliegues en
-equipos con memoria limitada.
+El uso de memoria es prácticamente constante: el incremento entre una y cuatro
+cámaras es de apenas 0{,}4 puntos porcentuales (de 9{,}7\,\% a 10{,}1\,\%).
+GStreamer reutiliza los búferes internos entre las fuentes, por lo que añadir
+más cámaras no duplica el espacio de memoria utilizado. Esto es relevante para
+despliegues en equipos con poca memoria disponible.
 
 \begin{figure}[H]
   \centering
@@ -101,36 +89,28 @@ equipos con memoria limitada.
         coordinates {(1,25.1) (2,27.6) (3,27.6) (4,32.2)};
     \end{axis}
   \end{tikzpicture}
-  \caption{Consumo energético neto medido mediante RAPL en función del número de
-           cámaras activas. El valor neto descuenta el baseline del sistema en
-           reposo (17{,}70\,W).}
+  \caption{Consumo energético neto medido por RAPL en función del número de
+           cámaras activas.}
   \label{fig:energia_camaras}
 \end{figure}
 
-El consumo energético neto atribuible a Voctomix\,2.0 oscila entre 25{,}1\,W
-con una cámara activa y 32{,}2\,W con cuatro, lo que supone un incremento total
-de 7{,}1\,W. El valor absoluto del paquete CPU durante la ejecución del sistema
-completo con cuatro fuentes es de aproximadamente 49{,}9\,W, es decir, el
-\textbf{71\,\% del TDP} del procesador (45\,W por núcleo físico). Este margen
-confirma que el sistema es viable en equipos de gama media sin riesgo de
-saturación térmica ni de limitación de recursos bajo carga sostenida. Nótese que
-el incremento de la segunda a la tercera cámara es prácticamente nulo, lo que
-sugiere que el compositor GStreamer procesa la tercera fuente sin incurrir en
-coste energético adicional apreciable, aprovechando la capacidad de procesamiento
-ya comprometida para la segunda.
+El consumo neto de Voctomix\,2.0 va de 25{,}1\,W con una cámara a 32{,}2\,W
+con cuatro. Con el baseline del sistema incluido, el consumo total con cuatro
+fuentes activas es de unos 49{,}9\,W, equivalente al 71\,\% del TDP del
+procesador (45\,W). Esto confirma que el sistema funciona con margen suficiente
+en equipos de gama media, sin riesgo de saturación térmica. Destaca que el paso
+de dos a tres cámaras no añade consumo apreciable, lo que indica que el pipeline
+de GStreamer aprovecha capacidad de cómputo ya activa en esa configuración.
 
 \section{Análisis de rendimiento en el escenario Docker}
 \label{sec:rendimiento_escenarios}
 
-La tabla~\ref{tab:rendimiento_docker} consolida las métricas de rendimiento
-obtenidas en el escenario Docker Compose para cada número de fuentes activas,
-permitiendo comparar de forma conjunta el uso de CPU, el uso de RAM y el consumo
-energético real.
+La tabla~\ref{tab:rendimiento_docker} resume todas las métricas obtenidas en el
+escenario Docker Compose para cada número de fuentes activas.
 
 \begin{table}[H]
   \centering
-  \caption{Métricas de rendimiento en el escenario Docker Compose por número de
-           fuentes activas (mediana de sesiones de 5\,min; energía medida por RAPL).}
+  \caption{Métricas de rendimiento en el escenario Docker Compose.}
   \label{tab:rendimiento_docker}
   \small
   \begin{tabular}{|c|c|c|c|c|}
@@ -149,65 +129,24 @@ energético real.
   \end{tabular}
 \end{table}
 
-Los datos evidencian que la contenerización mediante Docker Compose introduce
-una sobrecarga mínima sobre el procesamiento multimedia: la totalidad del tráfico
-RAW circula sobre la red interna de Docker sin atravesar ninguna interfaz física,
-y el aislamiento de procesos no penaliza de forma significativa el rendimiento del
-pipeline GStreamer. El escalado del consumo de recursos al aumentar el número de
-fuentes es moderado y predecible, lo que facilita la planificación de la
-capacidad del sistema antes de un despliegue en producción.
-
-\subsection{Ancho de banda interno}
-\label{sec:ancho_banda}
-
-Cada fuente de vídeo RAW I420 a 1080p25 genera un flujo de datos de ancho de
-banda constante e independiente del contenido, determinado únicamente por la
-resolución, la frecuencia de imagen y el formato de píxel:
-
-\[
-  B = \frac{W \times H \times f_\text{px} \times fps}{10^6}
-    = \frac{1920 \times 1080 \times 12\,\text{b/px} \times 25\,\text{fps}}{10^6}
-    \approx 77{,}8\ \text{MB/s}\ (622\ \text{Mbps})
-\]
-
-donde $f_\text{px} = 12$\,bits por píxel corresponde al formato I420
-(plano Y completo más planos U y V a resolución mitad en cada dimensión).
-
-\begin{table}[H]
-  \centering
-  \caption{Ancho de banda interno según número de fuentes activas.}
-  \label{tab:bandwidth}
-  \begin{tabular}{|c|c|c|}
-    \hline
-    \textbf{Fuentes activas} & \textbf{Por fuente (Mbps)} & \textbf{Total (Gbps)} \\
-    \hline
-    1 & 622 & 0{,}62 \\
-    2 & 622 & 1{,}24 \\
-    3 & 622 & 1{,}87 \\
-    4 & 622 & 2{,}49 \\
-    \hline
-  \end{tabular}
-\end{table}
-
-Con cuatro fuentes activas el tráfico interno total asciende a 2{,}49\,Gbps,
-circulando íntegramente sobre la interfaz de \textit{loopback} o la red interna
-de Docker sin atravesar ninguna interfaz física. Esta cifra supera la capacidad
-de un enlace Gigabit Ethernet convencional (1\,Gbps), lo que hace inviable un
-despliegue en red de área local estándar con vídeo sin comprimir; la topología
-de red compartida de Docker (\texttt{network\_mode: service:voctocore}) resuelve
-este cuello de botella al mantener todo el tráfico en memoria, sin copia de
-datos entre interfaces.
+La contenerización con Docker Compose introduce una sobrecarga mínima: todo el
+tráfico RAW circula sobre la red interna de Docker sin pasar por ninguna
+interfaz física. Cada fuente de vídeo RAW I420 a 1080p25 genera unos
+622\,Mbps, lo que con cuatro fuentes simultáneas suma 2{,}49\,Gbps. Esta cifra
+supera la capacidad de un enlace Gigabit Ethernet estándar (1\,Gbps), por lo que
+un despliegue con vídeo sin comprimir en red física convencional no sería viable;
+la topología de red compartida de Docker resuelve este problema manteniendo todo
+el tráfico en memoria.
 
 \subsection{Latencia de conmutación}
 \label{sec:latencia_conmutacion}
 
 La latencia de conmutación se midió automatizando 30 cambios de fuente mediante
 el protocolo de control TCP de voctocore. Para cada medición se registró el
-instante de envío del comando \texttt{set\_video\_a} y el instante de recepción
-de la respuesta \texttt{video\_status}, obteniendo el tiempo de procesamiento
-del protocolo de control como cota inferior de la latencia perceptual real. La
-latencia perceptual máxima es la suma de este tiempo y el período de un fotograma
-a 25\,fps (40\,ms).
+tiempo entre el envío del comando \texttt{set\_video\_a} y la recepción de la
+respuesta \texttt{video\_status}. Este tiempo es la cota inferior de la latencia
+perceptual real: en el peor caso, sumando la duración de un fotograma a 25\,fps
+(40\,ms), la latencia perceptual máxima es inferior a 43\,ms.
 
 \begin{figure}[H]
   \centering
@@ -228,19 +167,13 @@ a 25\,fps (40\,ms).
       \addplot coordinates {(1.0,13) (1.5,15) (2.0,1) (2.5,1) (3.0,0) (3.5,0)};
     \end{axis}
   \end{tikzpicture}
-  \caption{Distribución de latencias de conmutación en el escenario Docker
-           Compose, $n=30$ mediciones automatizadas. Mediana: 1{,}5\,ms;
-           percentil\,95: 2{,}3\,ms; máximo: 2{,}7\,ms.}
+  \caption{Distribución de latencias de conmutación ($n=30$ mediciones).}
   \label{fig:latencia}
 \end{figure}
 
-La tabla~\ref{tab:latencia_stats} recoge los principales estadísticos de la
-distribución.
-
 \begin{table}[H]
   \centering
-  \caption{Estadísticos de la distribución de latencias de conmutación
-           ($n = 30$ mediciones, escenario Docker Compose).}
+  \caption{Estadísticos de la distribución de latencias de conmutación.}
   \label{tab:latencia_stats}
   \begin{tabular}{|l|c|}
     \hline
@@ -250,21 +183,14 @@ distribución.
     Mediana (p50)  & 1{,}5\,ms \\
     Percentil\,95  & 2{,}3\,ms \\
     Máximo         & 2{,}7\,ms \\
-    Mediciones $<$ 10\,ms & 30\,/\,30 (100\,\%) \\
-    Mediciones $<$ 40\,ms & 30\,/\,30 (100\,\%) \\
+    Mediciones $<$ 40\,ms (1 fotograma) & 30\,/\,30 (100\,\%) \\
     \hline
   \end{tabular}
 \end{table}
 
-La totalidad de las mediciones se sitúa por debajo de 3\,ms, con una mediana de
-1{,}5\,ms y un percentil\,95 de 2{,}3\,ms. Voctocore procesa y confirma el
-cambio de fuente en menos de 2\,ms en la mitad de los casos, y en menos de
-2{,}3\,ms en el 95\,\% de ellos. Sumando el tiempo máximo medido (2{,}7\,ms) al
-período de un fotograma a 25\,fps (40\,ms), la latencia perceptual máxima es
-inferior a 43\,ms, equivalente a poco más de un fotograma. Este resultado
-confirma que el sistema cumple el requisito de conmutación imperceptible en
-producción en directo: un operador de realización no puede distinguir
-visualmente una conmutación inferior a dos fotogramas consecutivos.
+Todas las mediciones se sitúan por debajo de 3\,ms, con una mediana de 1{,}5\,ms.
+El 100\,\% de los cortes de cámara se resuelve en menos de un fotograma,
+cumpliendo el requisito de conmutación imperceptible en producción en directo.
 
 \section{Matriz de funcionalidades por escenario}
 \label{sec:matriz_funcionalidades}
@@ -274,7 +200,7 @@ y su estado de validación en cada uno de los cuatro escenarios de despliegue.
 
 \begin{table}[H]
   \centering
-  \caption{Validación de funcionalidades del sistema por escenario de despliegue.}
+  \caption{Validación de funcionalidades por escenario de despliegue.}
   \label{tab:matriz_funcionalidades}
   \small
   \begin{tabular}{|l|c|c|c|c|}
@@ -295,8 +221,7 @@ y su estado de validación en cada uno de los cuatro escenarios de despliegue.
   \end{tabular}
 \end{table}
 
-Los resultados confirman que Voctomix~2.0 cumple el conjunto completo de
-funcionalidades en todos los escenarios evaluados. Las características de
-portabilidad y resiliencia, exclusivas de los escenarios contenerizados, validan
-la decisión de adoptar Docker Compose y Kubernetes como mecanismos de despliegue
-para entornos de producción real.
+Voctomix~2.0 cumple el conjunto completo de funcionalidades en todos los
+escenarios evaluados. Las características de portabilidad y resiliencia,
+exclusivas de los escenarios contenerizados, refuerzan la decisión de adoptar
+Docker Compose y Kubernetes para entornos de producción real.
