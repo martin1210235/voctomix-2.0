@@ -2,7 +2,7 @@
 set -euo pipefail
 
 DURATION=300   # seconds per run (5 min → ~60 STATE samples)
-WARMUP=15      # seconds before starting to count
+WARMUP=20      # seconds before starting to count (longer: testsrc2 connects fast)
 
 usage() {
     echo "Usage: $0 <num_cameras>"
@@ -22,14 +22,26 @@ cd "$ROOT"
 
 echo "=================================================="
 echo " Camera experiment — N=$N cams — duration=${DURATION}s"
+echo " Source: testsrc2 (local synthetic, infinite loop)"
 echo "=================================================="
 
-echo "[1/4] Bringing stack up..."
+echo "[1/5] Bringing stack up with experiment override (SAVE_LOGS=true)..."
 xhost + >/dev/null 2>&1 || true
-docker compose up -d --remove-orphans
+export SAVE_LOGS=true
+docker compose \
+    -f docker-compose.yml \
+    -f docker-compose.experiments.yml \
+    up -d --remove-orphans
 
-echo "[2/4] Waiting ${WARMUP}s for services to stabilise..."
+echo "[2/5] Waiting ${WARMUP}s for services to stabilise..."
 sleep "$WARMUP"
+
+# Verify voctocore is healthy before proceeding
+until docker exec voctocore bash -c "echo '' | nc -zw1 localhost 9999" >/dev/null 2>&1; do
+    echo "  ... waiting for voctocore port 9999"
+    sleep 3
+done
+echo "  voctocore ready."
 
 # Stop cameras that should not be active
 ALL_CAMS=(cam1 cam2 cam3 cam4)
@@ -42,19 +54,43 @@ for i in "${!ALL_CAMS[@]}"; do
 done
 
 if [[ ${#CAMS_TO_STOP[@]} -gt 0 ]]; then
-    echo "[3/4] Stopping unused cameras: ${CAMS_TO_STOP[*]}"
-    docker compose stop "${CAMS_TO_STOP[@]}"
+    echo "[3/5] Stopping unused cameras: ${CAMS_TO_STOP[*]}"
+    docker compose \
+        -f docker-compose.yml \
+        -f docker-compose.experiments.yml \
+        stop "${CAMS_TO_STOP[@]}"
+    echo "  Waiting 5s for voctocore to detect disconnections..."
+    sleep 5
 else
-    echo "[3/4] All 4 cameras active."
+    echo "[3/5] All 4 cameras active."
 fi
 
 # Find the session file that will be written during this run
 mkdir -p "$SESSIONS_DIR"
-SESSION_BEFORE=$(ls -1 "$SESSIONS_DIR"/session*.jsonl 2>/dev/null | wc -l)
-EXPECTED_SESSION=$((SESSION_BEFORE + 1))
+SESSION_INDEX=1
+while [[ -f "$SESSIONS_DIR/session${SESSION_INDEX}.jsonl" ]]; do
+    SESSION_INDEX=$((SESSION_INDEX + 1))
+done
 
-echo "[4/4] Collecting telemetry for ${DURATION}s (approx $((DURATION / 5)) STATE samples)..."
-echo "      Session file will be: sessions/session${EXPECTED_SESSION}.jsonl"
+# Give telemetry a moment to create the file after the stack is fully up
+sleep 5
+SESSION_FILE="$SESSIONS_DIR/session${SESSION_INDEX}.jsonl"
+echo "  Session file: sessions/session${SESSION_INDEX}.jsonl"
+
+# For N=4: launch latency measurement in parallel
+LATENCY_PID=""
+if [[ "$N" -eq 4 ]]; then
+    echo "[4/5] N=4: launching parallel latency measurement (30 switches × 4s)..."
+    # Wait for telemetry to write at least one STATE before starting latency
+    until grep -q '"type": "state"' "$SESSION_FILE" 2>/dev/null; do sleep 2; done
+    python3 "$SCRIPT_DIR/measure_latency.py" "$SESSION_FILE" localhost 9999 &
+    LATENCY_PID=$!
+    echo "  Latency measurement PID: $LATENCY_PID"
+else
+    echo "[4/5] Collecting telemetry for ${DURATION}s (approx $((DURATION / 5)) STATE samples)..."
+fi
+
+echo "[5/5] Collecting telemetry for ${DURATION}s..."
 echo "      Press Ctrl+C to abort early."
 echo ""
 
@@ -64,24 +100,36 @@ while [[ $ELAPSED -lt $DURATION ]]; do
     sleep $INTERVAL
     ELAPSED=$((ELAPSED + INTERVAL))
     REMAINING=$((DURATION - ELAPSED))
-    SAMPLES=$(grep -c '"type": "state"' "$SESSIONS_DIR/session${EXPECTED_SESSION}.jsonl" 2>/dev/null || echo 0)
-    printf "  t=%3ds  remaining=%3ds  STATE samples so far: %s\n" "$ELAPSED" "$REMAINING" "$SAMPLES"
+    STATE_N=$(grep -c '"type": "state"' "$SESSION_FILE" 2>/dev/null || echo 0)
+    LAT_N=$(grep -c '"type": "latency"' "$SESSION_FILE" 2>/dev/null || echo 0)
+    # Quick cam connectivity check
+    CAMS=$(docker ps --format "{{.Names}}" | grep "^cam" | sort | tr '\n' ' ')
+    printf "  t=%3ds  rem=%3ds  STATE:%s  latency:%s  cams:[%s]\n" \
+        "$ELAPSED" "$REMAINING" "$STATE_N" "$LAT_N" "${CAMS:-none}"
 done
+
+# Wait for latency process to finish if still running
+if [[ -n "$LATENCY_PID" ]] && kill -0 "$LATENCY_PID" 2>/dev/null; then
+    echo ""
+    echo "Waiting for latency measurement to complete..."
+    wait "$LATENCY_PID" || true
+fi
 
 echo ""
 echo "Done. Bringing stack down..."
-docker compose down
+docker compose \
+    -f docker-compose.yml \
+    -f docker-compose.experiments.yml \
+    down
 
-FINAL_FILE="$SESSIONS_DIR/session${EXPECTED_SESSION}.jsonl"
-if [[ -f "$FINAL_FILE" ]]; then
-    TOTAL=$(grep -c '"type": "state"' "$FINAL_FILE" || echo 0)
-    echo ""
-    echo "=================================================="
-    echo " Results written to: sessions/session${EXPECTED_SESSION}.jsonl"
-    echo " Total STATE samples: $TOTAL"
-    echo " Run analysis with:"
-    echo "   python3 experiments/analyze_cameras.py sessions/session${EXPECTED_SESSION}.jsonl $N"
-    echo "=================================================="
-else
-    echo "Warning: session file not found at $FINAL_FILE"
-fi
+STATE_TOTAL=$(grep -c '"type": "state"' "$SESSION_FILE" 2>/dev/null || echo 0)
+LAT_TOTAL=$(grep -c '"type": "latency"' "$SESSION_FILE" 2>/dev/null || echo 0)
+
+echo ""
+echo "=================================================="
+echo " Results: sessions/session${SESSION_INDEX}.jsonl"
+echo " STATE samples : $STATE_TOTAL"
+echo " Latency events: $LAT_TOTAL"
+echo " Run analysis  :"
+echo "   python3 experiments/analyze_cameras.py sessions/session${SESSION_INDEX}.jsonl $N"
+echo "=================================================="
