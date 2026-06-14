@@ -2,19 +2,19 @@
 """
 Parses session .jsonl files and computes all metrics needed for TFG cap5:
   - Median CPU% and RAM% per camera count  (5.3.1 / 5.3.2)
-  - Estimated energy in W using TDP        (5.3.2)
+  - Real energy in W via RAPL              (5.3.2)
   - Internal bandwidth per N sources       (5.4 — theoretical)
   - Switching latency distribution         (5.3.3)
 
-Usage — single session:
-    python3 experiments/analyze_cameras.py <session.jsonl> <num_cameras>
+Usage — single session (with optional baseline):
+    python3 experiments/analyze_cameras.py <session.jsonl> <num_cameras> [baseline.json]
 
 Usage — multiple sessions at once:
     python3 experiments/analyze_cameras.py \\
-        sessions/session31.jsonl 1 \\
-        sessions/session32.jsonl 2 \\
-        sessions/session33.jsonl 3 \\
-        sessions/session34.jsonl 4
+        sessions/session31.jsonl 1 sessions/session31_baseline.json \\
+        sessions/session32.jsonl 2 sessions/session32_baseline.json \\
+        sessions/session33.jsonl 3 sessions/session33_baseline.json \\
+        sessions/session34.jsonl 4 sessions/session34_baseline.json
 """
 import json
 import sys
@@ -140,26 +140,73 @@ def analyse(jsonl_path: str, n_cams: int) -> dict:
 
 # ── main ──────────────────────────────────────────────────────────────────────
 
+def load_baseline(path: str) -> dict:
+    try:
+        with open(path) as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+
 def main():
     args = sys.argv[1:]
-    if not args or len(args) % 2 != 0:
+    if not args:
         print(__doc__)
         sys.exit(1)
 
-    pairs   = [(args[i], int(args[i + 1])) for i in range(0, len(args), 2)]
-    results = sorted([analyse(p, n) for p, n in pairs], key=lambda r: r["n"])
+    # Parse args: each group is jsonl + N (+ optional baseline.json)
+    pairs = []
+    i = 0
+    while i < len(args):
+        jsonl = args[i]
+        n = int(args[i + 1])
+        baseline_path = None
+        if i + 2 < len(args) and args[i + 2].endswith(".json"):
+            baseline_path = args[i + 2]
+            i += 3
+        else:
+            i += 2
+        pairs.append((jsonl, n, baseline_path))
+
+    results = sorted([analyse(p, n) for p, n, _ in pairs], key=lambda r: r["n"])
+
+    # Load baselines and subtract
+    for r, (_, _, bp) in zip(results, pairs):
+        if bp:
+            bl = load_baseline(bp)
+            r["baseline_cpu"]  = bl.get("cpu_pct",   0.0)
+            r["baseline_ram"]  = bl.get("ram_pct",   0.0)
+            r["baseline_rapl"] = bl.get("rapl_watts", 0.0)
+            if r["cpu_med"] is not None:
+                r["cpu_net"]  = round(r["cpu_med"]  - r["baseline_cpu"],  1)
+                r["ram_net"]  = round(r["ram_med"]  - r["baseline_ram"],  1)
+            if r["rapl_med"] is not None:
+                r["rapl_net"] = round(r["rapl_med"] - r["baseline_rapl"], 1)
+                r["energy_w"] = r["rapl_net"]
+        else:
+            r["baseline_cpu"] = r["baseline_ram"] = r["baseline_rapl"] = None
+            r["cpu_net"] = r["ram_net"] = r["rapl_net"] = None
 
     # ── CPU / RAM table ────────────────────────────────────────────────────────
+    has_baseline = any(r.get("baseline_cpu") is not None for r in results)
     print("\n════ CPU / RAM per camera count ════")
-    print(f"{'N':>3}  {'CPU med':>8}  {'CPU min':>7}  {'CPU max':>7}  "
-          f"{'RAM med':>8}  {'RAM min':>7}  {'RAM max':>7}  {'Samples':>7}")
-    print("─" * 68)
-    for r in results:
-        if r["cpu_med"] is None:
-            print(f"{r['n']:>3}  {'NO DATA':>8}")
-            continue
-        print(f"{r['n']:>3}  {r['cpu_med']:>8}  {r['cpu_min']:>7}  {r['cpu_max']:>7}  "
-              f"{r['ram_med']:>8}  {r['ram_min']:>7}  {r['ram_max']:>7}  {r['samples']:>7}")
+    if has_baseline:
+        print(f"{'N':>3}  {'CPU raw':>8}  {'CPU net':>8}  {'RAM raw':>8}  {'RAM net':>8}  {'Samples':>7}")
+        print("─" * 55)
+        for r in results:
+            if r["cpu_med"] is None:
+                print(f"{r['n']:>3}  {'NO DATA':>8}"); continue
+            print(f"{r['n']:>3}  {r['cpu_med']:>8}  {r['cpu_net']:>8}  "
+                  f"{r['ram_med']:>8}  {r['ram_net']:>8}  {r['samples']:>7}")
+    else:
+        print(f"{'N':>3}  {'CPU med':>8}  {'CPU min':>7}  {'CPU max':>7}  "
+              f"{'RAM med':>8}  {'Samples':>7}")
+        print("─" * 52)
+        for r in results:
+            if r["cpu_med"] is None:
+                print(f"{r['n']:>3}  {'NO DATA':>8}"); continue
+            print(f"{r['n']:>3}  {r['cpu_med']:>8}  {r['cpu_min']:>7}  {r['cpu_max']:>7}  "
+                  f"{r['ram_med']:>8}  {r['samples']:>7}")
 
     valid = [r for r in results if r["cpu_med"] is not None]
     if not valid:

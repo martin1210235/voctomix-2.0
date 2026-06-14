@@ -21,7 +21,7 @@ HOST   = "localhost"
 PORT   = 9999
 REPS   = 30
 INTERVAL = 4.0   # seconds between switches
-TIMEOUT  = 2.0   # seconds to wait for video_status response
+TIMEOUT  = 3.0   # seconds to wait for video_status response
 
 SOURCES = ["cam1", "cam2", "cam3", "cam4"]
 
