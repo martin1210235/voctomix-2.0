@@ -17,11 +17,11 @@ funcionalidad en el núcleo.
   \item \textbf{break}: vídeo en bucle continuo (\texttt{-stream\_loop -1}) empleado
         como pantalla animada durante los descansos. El realizador puede seleccionarlo
         directamente en el mezclador, al igual que cualquier cámara.
-  \item \textbf{intro}: vídeo de reproducción única. Al seleccionarlo, voctogui
-        invoca \texttt{launch\_intro.sh}, que finaliza el proceso FFmpeg anterior,
-        inicia uno nuevo desde el primer fotograma sin bucle y, tras una breve
-        espera de sincronización (500\,ms en arranque limpio, 1300\,ms si ya había
-        un proceso activo), envía el comando de corte al núcleo.
+  \item \textbf{intro}: vídeo de reproducción única. Al pulsar el botón de intro,
+        voctogui detiene el proceso FFmpeg que alimenta esa entrada y lanza uno nuevo
+        que reproduce el vídeo desde el principio sin bucle. Una vez que la nueva
+        señal está estabilizada, la interfaz envía el comando de corte al núcleo para
+        que la intro comience a emitirse desde el primer fotograma.
 \end{itemize}
 
 \subsection{Entrada de audio}
