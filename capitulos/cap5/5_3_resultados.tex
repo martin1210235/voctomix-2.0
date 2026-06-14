@@ -11,10 +11,8 @@ formato idéntico al de producción real.
 
 El consumo de CPU y RAM corresponde a la mediana de las entradas \texttt{STATE}
 de telemetría de cada sesión, descartando los primeros 30\,s de estabilización.
-El consumo energético se obtuvo mediante el sensor \textbf{RAPL}
-(\textit{Running Average Power Limit}) del procesador, que mide la energía
-consumida por el paquete CPU a nivel hardware a través del contador
-\texttt{intel-rapl:0/energy\_uj}; el valor publicado es el consumo neto
+El consumo energético se obtuvo mediante el sensor RAPL (\textit{Running Average Power Limit}) del procesador, que mide la energía
+consumida por el paquete CPU a nivel hardware; el valor publicado es el consumo neto
 atribuible a Voctomix\,2.0, restando el baseline del sistema en reposo
 (17{,}70\,W, promedio de tres mediciones de 30\,s con el stack detenido).
 
@@ -37,8 +35,7 @@ atribuible a Voctomix\,2.0, restando el baseline del sistema en reposo
         coordinates {(1,33.5) (2,35.2) (3,35.8) (4,38.8)};
     \end{axis}
   \end{tikzpicture}
-  \caption{Uso de CPU del sistema en función del número de cámaras activas
-           (escenario Docker Compose, mediana de 63\,muestras por configuración).}
+  \caption{Uso de CPU del sistema en función del número de cámaras activas.}
   \label{fig:cpu_camaras}
 \end{figure}
 
@@ -69,8 +66,7 @@ entre todas las fuentes activas.
         coordinates {(1,9.7) (2,9.9) (3,9.9) (4,10.1)};
     \end{axis}
   \end{tikzpicture}
-  \caption{Uso de RAM del sistema en función del número de cámaras activas
-           (escenario Docker Compose, mediana de 63\,muestras por configuración).}
+  \caption{Uso de RAM del sistema en función del número de cámaras activas.}
   \label{fig:ram_camaras}
 \end{figure}
 
@@ -102,16 +98,14 @@ equipos con memoria limitada.
     \end{axis}
   \end{tikzpicture}
   \caption{Consumo energético neto medido mediante RAPL en función del número de
-           cámaras activas. El valor neto descuenta el baseline del sistema en
-           reposo (17{,}70\,W).}
+           cámaras activas.}
   \label{fig:energia_camaras}
 \end{figure}
 
 El consumo energético neto atribuible a Voctomix\,2.0 oscila entre 25{,}1\,W
 con una cámara activa y 32{,}2\,W con cuatro, lo que supone un incremento total
 de 7{,}1\,W. El valor absoluto del paquete CPU durante la ejecución del sistema
-completo con cuatro fuentes es de aproximadamente 49{,}9\,W, es decir, el
-\textbf{71\,\% del TDP} del procesador (45\,W por núcleo físico). Este margen
+completo con cuatro fuentes es de aproximadamente 49{,}9\,W, es decir, el 71\,\% del TDP del procesador (45\,W por núcleo físico). Este margen
 confirma que el sistema es viable en equipos de gama media sin riesgo de
 saturación térmica ni de limitación de recursos bajo carga sostenida. Nótese que
 el incremento de la segunda a la tercera cámara es prácticamente nulo, lo que
@@ -130,7 +124,7 @@ energético real.
 \begin{table}[H]
   \centering
   \caption{Métricas de rendimiento en el escenario Docker Compose por número de
-           fuentes activas (mediana de sesiones de 5\,min; energía medida por RAPL).}
+           fuentes activas.}
   \label{tab:rendimiento_docker}
   \small
   \begin{tabular}{|c|c|c|c|c|}
