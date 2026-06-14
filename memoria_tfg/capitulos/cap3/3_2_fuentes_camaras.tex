@@ -45,17 +45,18 @@ correspondiente, lo que envía el comando \texttt{set\_video\_a <fuente>} o
 
 \begin{figure}[H]
   \centering
+  \savebox{\panelcambox}{\includegraphics[width=0.33\textwidth]{figuras/panel_camaras1.png}}%
   \begin{minipage}[t]{0.33\textwidth}
     \vspace{0pt}
     \subcaptionbox{Previsualizaciones y niveles de audio.\label{fig:panel_camaras_previews}}{%
-      \includegraphics[width=\textwidth]{figuras/panel_camaras1.png}}
+      \usebox{\panelcambox}}
   \end{minipage}%
   \hfill
-  \begin{minipage}[t]{0.62\textwidth}
+  \begin{minipage}[t][\ht\panelcambox][s]{0.62\textwidth}
     \vspace{0pt}
     \subcaptionbox{Detalle de CAM1 con su medidor.\label{fig:panel_camaras_detalle}}{%
       \includegraphics[width=0.8\textwidth]{figuras/panel_camaras2.png}}
-    \par\vspace{4pt}
+    \vfill
     \subcaptionbox{Selectores de canal A y canal B.\label{fig:panel_camaras_selectores}}{%
       \includegraphics[width=0.8\textwidth]{figuras/panel_camaras3.png}}
   \end{minipage}
