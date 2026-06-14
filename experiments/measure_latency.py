@@ -86,15 +86,15 @@ def main():
     buf = []
     results = []
 
-    # Drain initial state messages
-    sock.settimeout(2.0)
-    try:
-        while True:
-            data = sock.recv(4096)
-            if not data:
-                break
-    except socket.timeout:
-        pass
+    # Drain initial state messages with a fixed deadline (voctocore broadcasts
+    # continuously so a simple timeout loop never exits)
+    sock.settimeout(0.3)
+    drain_deadline = time.time() + 2.0
+    while time.time() < drain_deadline:
+        try:
+            sock.recv(4096)
+        except socket.timeout:
+            break
 
     sock.settimeout(TIMEOUT)
 
