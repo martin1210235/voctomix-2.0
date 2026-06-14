@@ -2,15 +2,13 @@
 \label{sec:rendimiento_camaras}
 
 Se ejecutaron cuatro sesiones de cinco minutos con 1, 2, 3 y 4 cámaras activas
-en el escenario Docker Compose, manteniendo los mismos parámetros de vídeo en
-todos los casos (1920$\times$1080, I420, 25\,fps). Las fuentes se generaron con
-el filtro sintético \texttt{testsrc2} de FFmpeg, eliminando la variabilidad de red
-exterior y asegurando un flujo RAW idéntico al de producción. Los valores de CPU
-y RAM son la mediana de 63 muestras del sistema de telemetría (una cada 5\,s,
-descartando los primeros 30\,s de arranque). La energía se midió con el sensor
-RAPL (\textit{Running Average Power Limit}), que obtiene el consumo real del
-paquete CPU por hardware; el valor mostrado descuenta el baseline del sistema en
-reposo (17{,}70\,W), por lo que refleja únicamente el consumo de Voctomix\,2.0.
+en los escenarios Docker Compose y Kubernetes con Minikube. Las fuentes se
+generaron con el filtro sintético \texttt{testsrc2} de FFmpeg, sin depender de
+ninguna fuente de red exterior. Los valores de CPU y RAM son la mediana de las
+muestras de telemetría recogidas durante cada sesión (una cada 5\,s). La energía
+se midió con el sensor RAPL del procesador, que devuelve el consumo real del
+paquete CPU; el valor mostrado descuenta el baseline de cada entorno en reposo
+(17{,}70\,W en Docker, 62{,}06\,W en Kubernetes con el plano de control activo).
 
 \begin{figure}[H]
   \centering
@@ -21,25 +19,30 @@ reposo (17{,}70\,W), por lo que refleja únicamente el consumo de Voctomix\,2.0.
       ylabel={Uso de CPU (\%)},
       xtick={1,2,3,4},
       xmin=0.5, xmax=4.5,
-      ymin=0, ymax=60,
+      ymin=0, ymax=70,
       ymajorgrids=true, grid style=dashed,
       mark size=3pt,
       nodes near coords,
       every node near coord/.append style={font=\small, anchor=south},
+      legend style={at={(0.97,0.97)}, anchor=north east},
     ]
       \addplot[color=orange!80!black, mark=*, thick]
         coordinates {(1,33.5) (2,35.2) (3,35.8) (4,38.8)};
+      \addplot[color=violet!80!black, mark=square*, thick]
+        coordinates {(1,50.2) (2,49.4) (3,50.8) (4,51.2)};
+      \legend{Docker Compose, Kubernetes}
     \end{axis}
   \end{tikzpicture}
   \caption{Uso de CPU en función del número de cámaras activas.}
   \label{fig:cpu_camaras}
 \end{figure}
 
-El incremento de CPU al pasar de una a cuatro cámaras es de solo 5{,}3 puntos
-porcentuales (de 33{,}5\,\% a 38{,}8\,\%), un crecimiento claramente sub-lineal.
-GStreamer comparte internamente los recursos del pipeline entre todas las fuentes
-activas, lo que evita que el coste de procesamiento se multiplique al añadir
-nuevas cámaras.
+En Docker, la CPU crece ligeramente con el número de cámaras (de 33{,}5\,\% a
+38{,}8\,\%, +5{,}3 puntos en total), confirmando que GStreamer comparte recursos
+entre las fuentes activas. En Kubernetes la CPU se mantiene prácticamente plana
+en torno al 50\,\%, porque el plano de control de Minikube ya ocupa alrededor
+del 40\,\% de base; el procesamiento de voctomix supone en ambos casos un coste
+similar, pero queda enmascarado por la infraestructura de orquestación.
 
 \begin{figure}[H]
   \centering
@@ -50,25 +53,31 @@ nuevas cámaras.
       ylabel={Uso de RAM (\%)},
       xtick={1,2,3,4},
       xmin=0.5, xmax=4.5,
-      ymin=0, ymax=20,
+      ymin=0, ymax=25,
       ymajorgrids=true, grid style=dashed,
       mark size=3pt,
       nodes near coords,
       every node near coord/.append style={font=\small, anchor=south},
+      legend style={at={(0.97,0.97)}, anchor=north east},
     ]
-      \addplot[color=blue!70!black, mark=square*, thick]
+      \addplot[color=blue!70!black, mark=*, thick]
         coordinates {(1,9.7) (2,9.9) (3,9.9) (4,10.1)};
+      \addplot[color=teal!80!black, mark=square*, thick]
+        coordinates {(1,12.8) (2,13.0) (3,13.2) (4,13.4)};
+      \legend{Docker Compose, Kubernetes}
     \end{axis}
   \end{tikzpicture}
   \caption{Uso de RAM en función del número de cámaras activas.}
   \label{fig:ram_camaras}
 \end{figure}
 
-El uso de memoria es prácticamente constante: el incremento entre una y cuatro
-cámaras es de apenas 0{,}4 puntos porcentuales (de 9{,}7\,\% a 10{,}1\,\%).
-GStreamer reutiliza los búferes internos entre las fuentes, por lo que añadir
-más cámaras no duplica el espacio de memoria utilizado. Esto es relevante para
-despliegues en equipos con poca memoria disponible.
+El uso de memoria es prácticamente constante en los dos entornos: Docker sube de
+9{,}7\,\% a 10{,}1\,\% (+0{,}4 puntos) y Kubernetes de 12{,}8\,\% a 13{,}4\,\%
+(+0{,}6 puntos) al pasar de una a cuatro cámaras. La diferencia entre entornos,
+de unos 3 puntos porcentuales, corresponde a la memoria que ocupa la capa de
+orquestación de Kubernetes. En ambos casos, añadir cámaras apenas incrementa la
+memoria, lo que confirma que GStreamer reutiliza los búferes internos entre
+fuentes.
 
 \begin{figure}[H]
   \centering
@@ -84,76 +93,77 @@ despliegues en equipos con poca memoria disponible.
       mark size=3pt,
       nodes near coords,
       every node near coord/.append style={font=\small, anchor=south},
+      legend style={at={(0.97,0.97)}, anchor=north east},
     ]
       \addplot[color=green!60!black, mark=triangle*, thick]
         coordinates {(1,25.1) (2,27.6) (3,27.6) (4,32.2)};
+      \addplot[color=red!70!black, mark=triangle*, thick, dashed]
+        coordinates {(1,25.2) (2,25.3) (3,36.1) (4,27.1)};
+      \legend{Docker Compose, Kubernetes}
     \end{axis}
   \end{tikzpicture}
   \caption{Consumo energético neto medido por RAPL en función del número de
-           cámaras activas.}
+           cámaras activas (descontado el baseline de cada entorno).}
   \label{fig:energia_camaras}
 \end{figure}
 
-El consumo neto de Voctomix\,2.0 va de 25{,}1\,W con una cámara a 32{,}2\,W
-con cuatro. Con el baseline del sistema incluido, el consumo total con cuatro
-fuentes activas es de unos 49{,}9\,W, equivalente al 71\,\% del TDP del
-procesador (45\,W). Esto confirma que el sistema funciona con margen suficiente
-en equipos de gama media, sin riesgo de saturación térmica. Destaca que el paso
-de dos a tres cámaras no añade consumo apreciable, lo que indica que el pipeline
-de GStreamer aprovecha capacidad de cómputo ya activa en esa configuración.
+El consumo neto atribuible a Voctomix\,2.0 es similar en ambos entornos, entre
+25 y 32\,W, lo que indica que el trabajo real de procesamiento multimedia es
+equivalente con independencia del orquestador. La mayor dispersión observada en
+Kubernetes se debe a la varianza del baseline del plano de control, que oscila
+entre 59 y 63\,W según el estado del sistema. En términos de consumo total, el
+escenario Docker consume alrededor de 50\,W con cuatro cámaras (71\,\% del TDP
+del procesador), mientras que Kubernetes supera los 90\,W al incluir la
+infraestructura de orquestación.
 
-\section{Análisis de rendimiento en el escenario Docker}
+\section{Análisis comparativo Docker vs.\ Kubernetes}
 \label{sec:rendimiento_escenarios}
 
-La tabla~\ref{tab:rendimiento_docker} resume todas las métricas obtenidas en el
-escenario Docker Compose para cada número de fuentes activas.
+La tabla~\ref{tab:rendimiento_docker} resume las métricas obtenidas con cuatro
+fuentes activas en cada escenario.
 
 \begin{table}[H]
   \centering
-  \caption{Métricas de rendimiento en el escenario Docker Compose.}
+  \caption{Métricas de rendimiento con cuatro cámaras activas.}
   \label{tab:rendimiento_docker}
   \small
-  \begin{tabular}{|c|c|c|c|c|}
+  \begin{tabular}{|l|c|c|}
     \hline
-    \textbf{Fuentes} & \textbf{CPU (\%)} & \textbf{RAM (\%)} &
-    \textbf{RAPL bruto (W)} & \textbf{RAPL neto (W)} \\
+    \textbf{Métrica} & \textbf{Docker Compose} & \textbf{Kubernetes} \\
     \hline
-    1 & 33{,}5 & 9{,}7 & 42{,}8 & 25{,}1 \\
-    2 & 35{,}2 & 9{,}9 & 45{,}3 & 27{,}6 \\
-    3 & 35{,}8 & 9{,}9 & 45{,}3 & 27{,}6 \\
-    4 & 38{,}8 & 10{,}1 & 49{,}9 & 32{,}2 \\
-    \hline
-    \multicolumn{3}{|l|}{\textit{Baseline sistema en reposo}} &
-    17{,}70 & — \\
+    CPU sistema (\%)         & 38{,}8 & 51{,}2 \\
+    RAM sistema (\%)         & 10{,}1 & 13{,}4 \\
+    RAPL bruto (W)           & 49{,}9 & $\approx$90 \\
+    RAPL baseline (W)        & 17{,}70 & $\approx$62 \\
+    RAPL neto voctomix (W)   & 32{,}2 & $\approx$28 \\
+    Latencia mediana (ms)    & 1{,}5 & 1{,}8 \\
+    Latencia p95 (ms)        & 2{,}3 & 2{,}6 \\
     \hline
   \end{tabular}
 \end{table}
 
-La contenerización con Docker Compose introduce una sobrecarga mínima: todo el
-tráfico RAW circula sobre la red interna de Docker sin pasar por ninguna
-interfaz física. Cada fuente de vídeo RAW I420 a 1080p25 genera unos
-622\,Mbps, lo que con cuatro fuentes simultáneas suma 2{,}49\,Gbps. Esta cifra
-supera la capacidad de un enlace Gigabit Ethernet estándar (1\,Gbps), por lo que
-un despliegue con vídeo sin comprimir en red física convencional no sería viable;
-la topología de red compartida de Docker resuelve este problema manteniendo todo
-el tráfico en memoria.
+El overhead de Kubernetes frente a Docker es de unos 12 puntos porcentuales de
+CPU y 3 puntos de RAM con cuatro cámaras activas. Este coste adicional proviene
+exclusivamente del plano de control de Minikube (kube-apiserver, etcd y
+scheduler), no del procesamiento multimedia. Desde el punto de vista del ancho de
+banda, cada fuente RAW I420 a 1080p25 genera 622\,Mbps, lo que con cuatro fuentes
+suma 2{,}49\,Gbps íntegramente sobre la red interna, tanto en Docker como en
+Kubernetes, sin atravesar ninguna interfaz física.
 
 \subsection{Latencia de conmutación}
 \label{sec:latencia_conmutacion}
 
-La latencia de conmutación se midió automatizando 30 cambios de fuente mediante
-el protocolo de control TCP de voctocore. Para cada medición se registró el
-tiempo entre el envío del comando \texttt{set\_video\_a} y la recepción de la
-respuesta \texttt{video\_status}. Este tiempo es la cota inferior de la latencia
-perceptual real: en el peor caso, sumando la duración de un fotograma a 25\,fps
-(40\,ms), la latencia perceptual máxima es inferior a 43\,ms.
+La latencia de conmutación se midió automatizando 30 cambios de fuente en cada
+entorno mediante el protocolo de control TCP de voctocore, registrando el tiempo
+entre el envío del comando \texttt{set\_video\_a} y la recepción de la respuesta
+\texttt{video\_status}.
 
 \begin{figure}[H]
   \centering
   \begin{tikzpicture}
     \begin{axis}[
       ybar interval,
-      width=11cm, height=5.5cm,
+      width=12cm, height=5.5cm,
       xlabel={Latencia de conmutación (ms)},
       ylabel={Frecuencia},
       xtick={1.0,1.5,2.0,2.5,3.0,3.5},
@@ -161,36 +171,43 @@ perceptual real: en el peor caso, sumando la duración de un fotograma a 25\,fps
       xmin=0.8, xmax=3.5,
       ymin=0, ymax=18,
       ymajorgrids=true, grid style=dashed,
-      fill=blue!30, draw=blue!60,
       bar width=0.5,
+      legend style={at={(0.97,0.97)}, anchor=north east},
     ]
-      \addplot coordinates {(1.0,13) (1.5,15) (2.0,1) (2.5,1) (3.0,0) (3.5,0)};
+      \addplot[fill=blue!30, draw=blue!60]
+        coordinates {(1.0,13) (1.5,15) (2.0,1) (2.5,1) (3.0,0) (3.5,0)};
+      \addplot[fill=violet!30, draw=violet!60]
+        coordinates {(1.0,4) (1.5,16) (2.0,7) (2.5,2) (3.0,1) (3.5,0)};
+      \legend{Docker Compose, Kubernetes}
     \end{axis}
   \end{tikzpicture}
-  \caption{Distribución de latencias de conmutación ($n=30$ mediciones).}
+  \caption{Distribución de latencias de conmutación ($n=30$ mediciones por entorno).}
   \label{fig:latencia}
 \end{figure}
 
 \begin{table}[H]
   \centering
-  \caption{Estadísticos de la distribución de latencias de conmutación.}
+  \caption{Estadísticos de latencia de conmutación.}
   \label{tab:latencia_stats}
-  \begin{tabular}{|l|c|}
+  \begin{tabular}{|l|c|c|}
     \hline
-    \textbf{Estadístico} & \textbf{Valor} \\
+    \textbf{Estadístico} & \textbf{Docker} & \textbf{Kubernetes} \\
     \hline
-    Mínimo         & 1{,}0\,ms \\
-    Mediana (p50)  & 1{,}5\,ms \\
-    Percentil\,95  & 2{,}3\,ms \\
-    Máximo         & 2{,}7\,ms \\
-    Mediciones $<$ 40\,ms (1 fotograma) & 30\,/\,30 (100\,\%) \\
+    Mínimo         & 1{,}0\,ms  & 1{,}4\,ms \\
+    Mediana (p50)  & 1{,}5\,ms  & 1{,}8\,ms \\
+    Percentil\,95  & 2{,}3\,ms  & 2{,}6\,ms \\
+    Máximo         & 2{,}7\,ms  & 4{,}7\,ms \\
+    $<$ 40\,ms     & 30\,/\,30  & 30\,/\,30 \\
     \hline
   \end{tabular}
 \end{table}
 
-Todas las mediciones se sitúan por debajo de 3\,ms, con una mediana de 1{,}5\,ms.
-El 100\,\% de los cortes de cámara se resuelve en menos de un fotograma,
-cumpliendo el requisito de conmutación imperceptible en producción en directo.
+En los dos entornos, el 100\,\% de las conmutaciones se resuelve en menos de
+5\,ms, muy por debajo del umbral de un fotograma a 25\,fps (40\,ms). Kubernetes
+presenta una mediana de 1{,}8\,ms frente a 1{,}5\,ms en Docker, diferencia
+apenas perceptible que se debe al salto adicional del port-forward de kubectl.
+Ambos entornos cumplen el requisito de conmutación imperceptible en producción
+en directo.
 
 \section{Matriz de funcionalidades por escenario}
 \label{sec:matriz_funcionalidades}
@@ -223,5 +240,6 @@ y su estado de validación en cada uno de los cuatro escenarios de despliegue.
 
 Voctomix~2.0 cumple el conjunto completo de funcionalidades en todos los
 escenarios evaluados. Las características de portabilidad y resiliencia,
-exclusivas de los escenarios contenerizados, refuerzan la decisión de adoptar
-Docker Compose y Kubernetes para entornos de producción real.
+exclusivas de los escenarios contenerizados, justifican la adopción de Docker
+Compose para entornos de desarrollo y Kubernetes para despliegues en producción
+que requieran orquestación y alta disponibilidad.
