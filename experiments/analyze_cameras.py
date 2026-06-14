@@ -21,14 +21,14 @@ import sys
 import statistics
 
 WARMUP_ENTRIES  = 6      # skip first 30 s of warm-up (6 × 5 s STATE interval)
-TDP_WATTS       = 45.0   # Intel i7-8750H TDP
+TDP_WATTS       = 45.0   # Intel i7-8750H TDP (fallback only if RAPL unavailable)
 BW_PER_CAM_MBPS = 622.08 # 1920×1080×1.5×25×8/1e6
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
 def parse_jsonl(path: str):
-    entries = {"state": [], "latency": []}
+    entries = {"state": [], "latency": [], "power": []}
     with open(path, encoding="utf-8") as f:
         for line in f:
             line = line.strip()
@@ -63,8 +63,9 @@ def percentile(values, p):
 
 def analyse(jsonl_path: str, n_cams: int) -> dict:
     entries = parse_jsonl(jsonl_path)
-    states   = entries["state"][WARMUP_ENTRIES:]
+    states    = entries["state"][WARMUP_ENTRIES:]
     latencies = entries["latency"]
+    power_entries = entries["power"][WARMUP_ENTRIES:]  # skip warm-up same as STATE
 
     # ── CPU / RAM ──────────────────────────────────────────────────────────────
     cpu_vals = [e["system_health"]["cpu_usage_percent"] for e in states
@@ -75,7 +76,19 @@ def analyse(jsonl_path: str, n_cams: int) -> dict:
     cpu_med, cpu_min, cpu_max = median_and_range(cpu_vals)
     ram_med, ram_min, ram_max = median_and_range(ram_vals)
 
-    energy_w = round(TDP_WATTS * cpu_med / 100.0, 1) if cpu_med else None
+    # ── Energy: RAPL preferred, TDP×CPU% as fallback ──────────────────────────
+    rapl_vals = [e["watts_rapl"] for e in power_entries if "watts_rapl" in e]
+    rapl_med, rapl_min, rapl_max = median_and_range(rapl_vals)
+
+    if rapl_med is not None:
+        energy_w      = rapl_med
+        energy_source = "RAPL"
+    elif cpu_med is not None:
+        energy_w      = round(TDP_WATTS * cpu_med / 100.0, 1)
+        energy_source = "TDP_estimate"
+    else:
+        energy_w      = None
+        energy_source = "unavailable"
 
     # ── Bandwidth (theoretical) ────────────────────────────────────────────────
     bw_total_mbps = round(n_cams * BW_PER_CAM_MBPS, 1)
@@ -108,7 +121,12 @@ def analyse(jsonl_path: str, n_cams: int) -> dict:
         "ram_med":      ram_med,
         "ram_min":      ram_min,
         "ram_max":      ram_max,
-        "energy_w":     energy_w,
+        "energy_w":       energy_w,
+        "energy_source":  energy_source,
+        "rapl_med":       rapl_med,
+        "rapl_min":       rapl_min,
+        "rapl_max":       rapl_max,
+        "rapl_n":         len(rapl_vals),
         "bw_mbps":      bw_total_mbps,
         "bw_gbps":      bw_total_gbps,
         "lat_n":        len(lat_vals),
@@ -158,9 +176,14 @@ def main():
     print(f"Energy : {enrg_c}")
 
     # ── Energy table ──────────────────────────────────────────────────────────
-    print("\n════ Energy estimate (TDP={:.0f} W, i7-8750H) ════".format(TDP_WATTS))
+    print("\n════ Energy consumption ════")
     for r in valid:
-        print(f"  N={r['n']}  CPU={r['cpu_med']}%  → {r['energy_w']} W")
+        src = r["energy_source"]
+        if src == "RAPL":
+            detail = f"RAPL measured  min={r['rapl_min']} W  max={r['rapl_max']} W  n={r['rapl_n']}"
+        else:
+            detail = f"TDP estimate ({TDP_WATTS}W × CPU%)"
+        print(f"  N={r['n']}  {r['energy_w']} W  [{detail}]")
 
     # ── Bandwidth table ────────────────────────────────────────────────────────
     print("\n════ Internal bandwidth (theoretical) ════")
