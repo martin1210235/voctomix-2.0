@@ -21,9 +21,13 @@ paquete CPU; el valor mostrado descuenta el baseline de cada entorno en reposo.
       mark size=3pt,
       legend style={at={(0.03,0.97)}, anchor=north west, font=\scriptsize},
     ]
-      \addplot[color=orange!80!black, mark=*, thick]
+      \addplot[color=orange!80!black, mark=*, thick,
+               nodes near coords,
+               every node near coord/.style={font=\small, anchor=north}]
         coordinates {(1,33.5) (2,35.2) (3,35.8) (4,38.8)};
-      \addplot[color=violet!80!black, mark=square*, thick]
+      \addplot[color=violet!80!black, mark=square*, thick,
+               nodes near coords,
+               every node near coord/.style={font=\small, anchor=south}]
         coordinates {(1,50.2) (2,49.4) (3,50.8) (4,51.2)};
       \legend{Docker Compose, Kubernetes}
     \end{axis}
@@ -53,9 +57,13 @@ similar, pero queda enmascarado por la infraestructura de orquestación.
       mark size=3pt,
       legend style={at={(0.03,0.97)}, anchor=north west, font=\scriptsize},
     ]
-      \addplot[color=blue!70!black, mark=*, thick]
+      \addplot[color=blue!70!black, mark=*, thick,
+               nodes near coords,
+               every node near coord/.style={font=\small, anchor=north}]
         coordinates {(1,9.7) (2,9.9) (3,9.9) (4,10.1)};
-      \addplot[color=teal!80!black, mark=square*, thick]
+      \addplot[color=teal!80!black, mark=square*, thick,
+               nodes near coords,
+               every node near coord/.style={font=\small, anchor=south}]
         coordinates {(1,12.8) (2,13.0) (3,13.2) (4,13.4)};
       \legend{Docker Compose, Kubernetes}
     \end{axis}
@@ -86,9 +94,13 @@ fuentes.
       mark size=3pt,
       legend style={at={(0.03,0.97)}, anchor=north west, font=\scriptsize},
     ]
-      \addplot[color=green!60!black, mark=triangle*, thick]
+      \addplot[color=green!60!black, mark=triangle*, thick,
+               nodes near coords,
+               every node near coord/.style={font=\small, anchor=east, xshift=-3pt}]
         coordinates {(1,25.1) (2,27.6) (3,27.6) (4,32.2)};
-      \addplot[color=red!70!black, mark=triangle*, thick, dashed]
+      \addplot[color=red!70!black, mark=triangle*, thick, dashed,
+               nodes near coords,
+               every node near coord/.style={font=\small, anchor=west, xshift=3pt}]
         coordinates {(1,25.2) (2,25.3) (3,36.1) (4,27.1)};
       \legend{Docker Compose, Kubernetes}
     \end{axis}
@@ -200,7 +212,7 @@ apenas perceptible atribuible al salto adicional del port-forward de kubectl.
 Ambos entornos cumplen el requisito de conmutación imperceptible en producción
 en directo.
 
-\section{Matriz de funcionalidades por escenario}
+\section{Matriz de funcionalidades por escenario (NO ME GUSTA)}
 \label{sec:matriz_funcionalidades}
 
 La tabla~\ref{tab:matriz_funcionalidades} recoge las funcionalidades del sistema
