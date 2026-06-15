@@ -52,19 +52,17 @@ El sistema completo se ha empaquetado en una pila de diez contenedores Docker or
 con Docker Compose, incluyendo voctocore, cuatro fuentes de cámara sintéticas, el stream
 blanker, el gestor de audio, el broker RabbitMQ y el servicio de telemetría. El despliegue
 completo se realiza con un único comando (\texttt{docker compose up}), eliminando la
-principal barrera de adopción que representaba la instalación manual de dependencias
-GStreamer y Python. La sobrecarga de virtualización medida es inferior a 6 puntos
-porcentuales de CPU respecto al despliegue nativo.
+principal barrera de adopción del sistema.
 
 \vspace{0.2cm}
 \noindent\textbf{OE-6 — Validación en múltiples escenarios.}
-El sistema ha sido validado en cuatro escenarios de despliegue: monopuesto nativo,
-cliente-servidor en red local, contenerizado con Docker Compose y
-orquestado con Kubernetes. En todos los escenarios se superaron con éxito las nueve
-categorías de pruebas funcionales definidas. La latencia de conmutación medida en
-el escenario más exigente (dos PCs por WiFi) fue inferior a 40~ms en el 100\,\% de las
-mediciones, con una mediana de 22~ms, cumpliendo el requisito de conmutación
-imperceptible a 25 fotogramas por segundo.
+El sistema ha sido validado funcionalmente en cuatro escenarios de despliegue
+(monopuesto nativo, dos PCs en red local, Docker Compose y Kubernetes), superando
+en todos ellos las nueve categorías de pruebas funcionales definidas. La latencia
+de conmutación medida en los escenarios contenerizados fue inferior a 5\,ms en
+el 100\,\% de las mediciones, con una mediana de 1{,}5\,ms en Docker y 1{,}8\,ms
+en Kubernetes, cumpliendo con amplio margen el requisito de conmutación
+imperceptible a 25 fotogramas por segundo (40\,ms por fotograma).
 
 \vspace{0.4cm}
 La tabla~\ref{tab:objetivos_cumplidos} resume el grado de consecución de los objetivos
