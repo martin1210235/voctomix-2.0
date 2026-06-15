@@ -13,19 +13,18 @@ con funcionalidades de nivel profesional. A continuación se evalúa el grado de
 consecución de cada uno de los seis objetivos específicos planteados.
 
 \vspace{0.3cm}
-\noindent\textbf{OE-1 — Funcionalidades de producción profesional.}
+\noindent\textbf{OE-1: Funcionalidades de producción profesional.}
 Se han implementado las tres funcionalidades broadcast que el sistema requería. La
 rotulación dinámica permite superponer gráficos PNG y texto en tiempo real, con
 fundido de entrada y salida configurable y desactivación automática en cada corte de
-cámara. El gestor de estados de emisión (stream blanker) ofrece tres modos —LIVE,
-PAUSE y NOSTREAM— que permiten interrumpir la señal de salida sin detener el
+cámara. El gestor de estados de emisión (stream blanker) ofrece tres modos (LIVE, PAUSE y NOSTREAM) que permiten interrumpir la señal de salida sin detener el
 procesamiento interno. La sincronización automática de audio con el vídeo (Audio
 Follows Video) hace que el sistema ajuste los volúmenes de forma automática en cada
 cambio de fuente, lo que elimina la necesidad de gestión manual del audio y reduce
 la carga de trabajo del realizador durante la producción.
 
 \vspace{0.2cm}
-\noindent\textbf{OE-2 — Servicio de telemetría.}
+\noindent\textbf{OE-2: Servicio de telemetría.}
 El servicio de telemetría registra en tiempo real los eventos de operación del
 mezclador: el tipo CHANGE, emitido de forma inmediata al realizar cualquier acción
 sobre la interfaz, y el tipo STATE, que envía el estado completo del sistema cada
@@ -35,7 +34,7 @@ el sistema con herramientas externas de monitorización o análisis sin modifica
 ninguna parte del núcleo de la aplicación.
 
 \vspace{0.2cm}
-\noindent\textbf{OE-3 — Contenerización con Docker.}
+\noindent\textbf{OE-3: Contenerización con Docker.}
 El sistema completo se ha empaquetado en una pila de diez contenedores Docker
 orquestada con Docker Compose: voctocore, cuatro fuentes de cámara sintéticas, el
 stream blanker, el gestor de audio, el broker RabbitMQ y el servicio de telemetría.
@@ -44,7 +43,7 @@ lo que elimina la principal barrera de adopción que suponía la instalación ma
 de dependencias de GStreamer y Python.
 
 \vspace{0.2cm}
-\noindent\textbf{OE-4 — Despliegue en Kubernetes.}
+\noindent\textbf{OE-4: Despliegue en Kubernetes.}
 El sistema se ha desplegado sobre un clúster local Minikube, con manifiestos
 declarativos que reproducen la misma funcionalidad que el escenario Docker Compose
 pero en una infraestructura orquestada. La arquitectura del sistema escala de forma
@@ -52,7 +51,7 @@ natural desde Docker Compose hacia Kubernetes sin necesidad de modificar el cód
 del núcleo ni de la interfaz gráfica.
 
 \vspace{0.2cm}
-\noindent\textbf{OE-5 — Validación en múltiples escenarios.}
+\noindent\textbf{OE-5: Validación en múltiples escenarios.}
 El sistema ha sido validado funcionalmente en cuatro escenarios de despliegue: un
 único PC, dos PCs en red local, Docker Compose y Kubernetes con Minikube. En los
 escenarios contenerizados, la latencia de conmutación medida fue inferior a 3\,ms
@@ -63,7 +62,7 @@ con un crecimiento sub-lineal al añadir nuevas fuentes, lo que confirma que el
 sistema tiene margen de operación suficiente en equipos de gama media.
 
 \vspace{0.2cm}
-\noindent\textbf{OE-6 — Despliegue en producción real.}
+\noindent\textbf{OE-6: Despliegue en producción real.}
 El sistema fue desplegado en un entorno de producción real dentro del proyecto
 europeo de investigación \textbf{CyberNEMO} (UPM), donde operó como motor de
 producción audiovisual integrado en la infraestructura Kubernetes de la
