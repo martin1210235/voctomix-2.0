@@ -6,12 +6,10 @@ eventos que ocurren durante una sesión de producción: cambios de fuente activa
 de composite, activaciones del stream blanker, carga y descarga de overlays, niveles de
 audio, y métricas de rendimiento del servidor. Esta información resulta valiosa tanto
 para la monitorización durante el directo como para la auditoría posterior de la sesión.
-El módulo
-de todo lo que ocurre en la mesa de mezclas.
 
 \subsection{Arquitectura del servicio de telemetría}
 
-El servicio de telemetría (\texttt{example-scripts/ffmpeg/telemetry\_service.py}) es un proceso Python
+El servicio de telemetría (\texttt{telemetry\_service.py}) es un proceso Python
 independiente que no requiere privilegios especiales sobre el núcleo. Su arquitectura se
 articula en cinco capas funcionales:
 
