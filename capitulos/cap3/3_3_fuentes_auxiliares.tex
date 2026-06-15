@@ -35,7 +35,7 @@ nivel de salida puede controlarse desde el protocolo de control.
 
 El stream blanker es el mecanismo que permite interrumpir la señal de programa hacia el
 exterior sin interrumpir el flujo de trabajo interno del realizador. Se implementa en
-\texttt{voctocore/lib/streamblanker.py} como un elemento GStreamer adicional interpuesto
+\texttt{streamblanker.py} como un elemento GStreamer adicional interpuesto
 entre la mezcla y el puerto de salida de streaming (puerto 15000).
 
 El sistema define tres estados de emisión, controlables desde la barra de herramientas
@@ -45,7 +45,7 @@ de voctogui:
   \item \textbf{LIVE:} se emite la mezcla activa producida por voctocore. El realizador
         controla en todo momento lo que ve el espectador.
   \item \textbf{PAUSE:} se emite el vídeo de pausa procedente del puerto 17000,
-        acompañado de la música de fondo del puerto 18000.
+        acompañado de la señal de audio del puerto 18000.
         Se usa durante los descansos del evento para que los espectadores vean una pantalla
         animada mientras el equipo de producción prepara la siguiente sesión.
   \item \textbf{NOSTREAM:} se emite un vídeo de ``fuera de emisión'' procedente del
