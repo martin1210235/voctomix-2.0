@@ -1,81 +1,80 @@
-\section{Scripts de arranque}
-\label{sec:scripts_arranque}
+El sistema puede desplegarse en cuatro escenarios distintos según el contexto de uso:
+desde un único ordenador para desarrollo y pruebas hasta un clúster Kubernetes para
+producción en la nube. La tabla~\ref{tab:escenarios_despliegue} resume cada opción.
 
-Para simplificar el despliegue y evitar errores de configuración manual, se desarrollaron
-scripts de arranque que unifican en un único comando el lanzamiento de todos los
-componentes del sistema. Cada escenario de despliegue tiene su propio script.
+\begin{table}[H]
+  \centering
+  \caption{Escenarios de despliegue de Voctomix~2.0.}
+  \label{tab:escenarios_despliegue}
+  \small
+  \begin{tabular}{|l|l|l|l|}
+    \hline
+    \textbf{Escenario} & \textbf{Requisito} & \textbf{Caso de uso} & \textbf{Arranque} \\
+    \hline
+    Un PC (nativo)  & Linux + GStreamer + Python
+                    & Pruebas y desarrollo
+                    & \texttt{./start\_studio\_single\_pc.sh} \\
+    Dos PCs (nativo)& Dos equipos Linux en red local
+                    & Eventos con hardware dedicado
+                    & \texttt{./start\_voctocore\_pc1.sh} \\
+    Docker Compose  & Docker instalado
+                    & Despliegue reproducible
+                    & \texttt{make docker-up} \\
+    Kubernetes      & Minikube o clúster externo
+                    & Producción y nube
+                    & \texttt{./launch\_k8s.sh} \\
+    \hline
+  \end{tabular}
+\end{table}
 
-\subsection{Escenario monopuesto (\texttt{start\_studio\_single\_pc.sh})}
+Los dos primeros se denominan escenarios nativos porque ejecutan los procesos directamente
+sobre el sistema operativo del equipo, sin virtualización. Los dos siguientes emplean
+contenedores, lo que elimina la necesidad de instalar GStreamer, Python o sus dependencias
+en la máquina anfitriona y garantiza un comportamiento idéntico en cualquier equipo.
 
-Este script arranca el sistema completo en un único equipo: inicia voctocore, lanza el
-servicio de telemetría, inyecta las señales de continuidad (vídeo de pausa, vídeo
-\textit{offline} y música de fondo), y finalmente abre voctogui. Antes de lanzar cada
-componente, un bucle comprueba con \texttt{ss -lnt} que el puerto 9999 está en escucha,
-evitando las condiciones de carrera que se producían con los \texttt{sleep} fijos del
-código original. Al cerrar voctogui, la instrucción \texttt{trap} captura la señal de
-salida y termina todos los procesos hijos de forma limpia.
+\section{Despliegue nativo: un PC y dos PCs}
+\label{sec:despliegue_nativo}
 
-\subsection{Escenario dos PCs (\texttt{2pc\_escenario2/})}
+El despliegue nativo es la forma más directa de arrancar el sistema: los procesos
+de voctocore y voctogui se ejecutan como programas normales sobre Linux, sin ninguna
+capa intermedia. Es el escenario habitual durante el desarrollo y para eventos en los
+que el equipo técnico dispone de una máquina preparada con todas las dependencias
+instaladas.
 
-El escenario de dos equipos se gestiona con dos scripts independientes que deben
-ejecutarse en paralelo:
+\subsection{Escenario de un PC}
 
-\begin{itemize}
-  \item \textbf{\texttt{start\_voctocore\_pc1.sh}} (PC servidor): arranca voctocore,
-        las señales de continuidad y el servicio de telemetría en el equipo que actúa
-        como servidor. Detecta automáticamente la IP de la interfaz LAN mediante la
-        tabla de enrutamiento del kernel
-        (\texttt{ip route get 1.1.1.1}), de modo que no es necesario configurar la IP
-        a mano en cada despliegue.
-  \item \textbf{\texttt{start\_voctogui\_pc2.sh}} (PC realizador): lanza voctogui y
-        lo apunta a la IP del servidor mediante la variable de entorno
-        \texttt{IP\_SERVER}. Si no se especifica, el valor por defecto es
-        \texttt{127.0.0.1} para pruebas en un solo equipo.
-\end{itemize}
+El script \texttt{start\_studio\_single\_pc.sh} arranca todos los componentes del
+sistema con un único comando: primero inicia voctocore, después inyecta las señales
+de continuidad (vídeo de pausa, vídeo sin señal y audio de fondo) y por último
+abre voctogui. Antes de lanzar cada componente, el script comprueba que el puerto
+9999 está activo y aceptando conexiones, deteniendo el proceso de arranque hasta que
+voctocore esté listo.
 
-Ejemplo de uso desde el PC realizador:
+Esta comprobación resolvió un problema que aparecía en el código original: los
+componentes intentaban conectarse a voctocore antes de que este hubiera terminado de
+arrancar, produciendo fallos silenciosos. La solución con \texttt{sleep} fijo que usaba
+el proyecto era frágil porque el tiempo real de arranque varía según el hardware. Al
+usar una espera activa por puerto se elimina esa dependencia.
+
+Al cerrar voctogui, una instrucción \texttt{trap} captura la señal de salida y termina
+todos los procesos hijos de forma limpia, evitando que queden procesos huérfanos
+ejecutándose en segundo plano.
+
+\subsection{Escenario de dos PCs}
+
+En este escenario, la carga de trabajo se reparte entre dos equipos conectados por
+red local. El PC servidor ejecuta voctocore y todos los servicios de apoyo; el PC del
+realizador ejecuta únicamente voctogui.
+
+El script del servidor (\texttt{start\_voctocore\_pc1.sh}) detecta automáticamente la
+IP de la interfaz de red consultando la tabla de enrutamiento del sistema, de modo que
+no es necesario configurar la IP manualmente en cada despliegue. El script del
+realizador (\texttt{start\_voctogui\_pc2.sh}) solo necesita conocer la IP del servidor
+a través de la variable de entorno \texttt{IP\_SERVER}:
+
 \begin{verbatim}
 IP_SERVER=192.168.1.50 ./2pc_escenario2/start_voctogui_pc2.sh
 \end{verbatim}
 
-\subsection{Escenario Docker (\texttt{launch\_docker\_studio.sh})}
-
-Este script ejecuta \texttt{xhost +local:docker} para permitir que los contenedores
-accedan al servidor gráfico del anfitrión, exporta la IP local como variable de entorno
-(\texttt{HOST\_IP}) para que el servicio de telemetría la incluya en los registros, y
-lanza el stack con \texttt{docker compose up}. Al cerrar el terminal, la instrucción
-\texttt{trap} ejecuta \texttt{docker compose down} de forma automática.
-
-El mismo flujo está disponible a través del \texttt{Makefile}:
-\begin{verbatim}
-make docker-up      # xhost + y docker compose up
-make docker-down    # detener todos los servicios
-make docker-restart # down + up en un solo paso
-\end{verbatim}
-
-\subsection{Escenario Kubernetes (\texttt{launch\_k8s.sh})}
-
-El script de Kubernetes comprueba si Minikube y el pod principal ya están en ejecución
-antes de lanzarlos, aplica los manifiestos con \texttt{kubectl apply}, espera a que
-todos los contenedores estén listos y establece un \texttt{kubectl port-forward} que
-expone los puertos del pod en \texttt{localhost} del anfitrión. Esto permite que
-voctogui se conecte al clúster exactamente igual que en cualquier otro escenario. Al
-salir, un \texttt{trap EXIT} cierra el \textit{port-forward} de forma limpia.
-
-\begin{table}[H]
-  \centering
-  \caption{Scripts de arranque por escenario de despliegue.}
-  \label{tab:scripts_arranque}
-  \small
-  \begin{tabular}{|l|l|l|}
-    \hline
-    \textbf{Escenario} & \textbf{Script} & \textbf{Comando de inicio} \\
-    \hline
-    Un PC (nativo)   & \texttt{start\_studio\_single\_pc.sh}      & \texttt{./start\_studio\_single\_pc.sh} \\
-    Dos PCs (PC1)    & \texttt{2pc\_escenario2/start\_voctocore\_pc1.sh} & \texttt{./start\_voctocore\_pc1.sh} \\
-    Dos PCs (PC2)    & \texttt{2pc\_escenario2/start\_voctogui\_pc2.sh}  & \texttt{IP\_SERVER=<IP> ./start\_voctogui\_pc2.sh} \\
-    Docker Compose   & \texttt{launch\_docker\_studio.sh}         & \texttt{make docker-up} \\
-    Kubernetes       & \texttt{launch\_k8s.sh}                    & \texttt{./launch\_k8s.sh} \\
-    \hline
-  \end{tabular}
-\end{table}
+Si no se especifica \texttt{IP\_SERVER}, el valor por defecto es \texttt{127.0.0.1},
+lo que permite probar el escenario de dos PCs en un único equipo sin modificar nada.

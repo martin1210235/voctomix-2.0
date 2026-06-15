@@ -81,7 +81,7 @@ protocolos de distribución adaptativa:
   \caption{Comparativa de los protocolos de transporte en producción audiovisual.}
   \label{tab:protocolos_red}
   \small
-  \begin{tabularx}{\linewidth}{|l|c|c|c|X|}
+  \begin{tabular}{|l|c|c|c|l|}
     \hline
     \textbf{Protocolo} & \textbf{Orientado a conexión} & \textbf{Fiabilidad} & \textbf{Latencia} & \textbf{Uso en Voctomix} \\
     \hline
@@ -89,7 +89,7 @@ protocolos de distribución adaptativa:
     TCP  & Sí  & Garantizada   & Variable     & MKV/fuentes, RTMP, control \\
     HTTP & Sí* & Garantizada   & Alta         & HLS, DASH, telemetría REST \\
     \hline
-  \end{tabularx}
+  \end{tabular}
   \begin{flushleft}
     \footnotesize *HTTP/1.1 y HTTP/2 operan sobre TCP; HTTP/3 opera sobre QUIC (UDP).
   \end{flushleft}
