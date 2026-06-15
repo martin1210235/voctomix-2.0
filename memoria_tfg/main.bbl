@@ -24,21 +24,6 @@ Tom Harrison and Mark Bowyer.
 \newblock In {\em IBC2023 Conference Proceedings}. IBC, 2023.
 \newblock \url{https://show.ibc.org/ibc2023-conference-proceedings}.
 
-\bibitem{obs_tokyo_2021}
-{Olympic Broadcasting Services}.
-\newblock {OBS} at the {Tokyo} 2020 {Olympic Games}: Remote production report.
-\newblock \url{https://www.obs.tv}, 2021.
-\newblock Accedido: abril 2026.
-
-\bibitem{tsa_remi_2022}
-{Telefónica Servicios Audiovisuales}.
-\newblock Producción remota de la {UEFA Champions League} desde el {Santiago
-  Bernabéu}.
-\newblock
-  \url{https://nrd.es/produccion-remota-broadcast-el-nuevo-estandar-operativo/},
-  2022.
-\newblock Accedido: abril 2026.
-
 \bibitem{obs_studio}
 {OBS Project}.
 \newblock {OBS Studio} --- open broadcaster software.
@@ -62,6 +47,24 @@ Tom Harrison and Mark Bowyer.
 \newblock {GStreamer} application development manual.
 \newblock \url{https://gstreamer.freedesktop.org/documentation/}, 2024.
 \newblock Accedido: abril 2026.
+
+\bibitem{rfc768_udp}
+Jon Postel.
+\newblock {User Datagram Protocol}.
+\newblock RFC 768, IETF, 1980.
+\newblock \url{https://www.rfc-editor.org/rfc/rfc768}.
+
+\bibitem{rfc793_tcp}
+Jon Postel.
+\newblock {Transmission Control Protocol}.
+\newblock RFC 793, IETF, 1981.
+\newblock \url{https://www.rfc-editor.org/rfc/rfc793}.
+
+\bibitem{rfc9110_http}
+Roy~T. Fielding, Mark Nottingham, and Julian Reschke.
+\newblock {HTTP} semantics.
+\newblock RFC 9110, IETF, 2022.
+\newblock \url{https://www.rfc-editor.org/rfc/rfc9110}.
 
 \bibitem{smpte_st2022_6}
 {Society of Motion Picture and Television Engineers}.
@@ -97,11 +100,36 @@ Maxim~P. Sharabayko, Maria~A. Sharabayko, Jean Dube, Jeongseok Kim, and
 \newblock Internet-Draft draft-sharabayko-srt-latest, IETF, January 2024.
 \newblock \url{https://datatracker.ietf.org/doc/draft-sharabayko-srt/}.
 
+\bibitem{rfc3550_rtp}
+Henning Schulzrinne, Stephen Casner, Ron Frederick, and Van Jacobson.
+\newblock {RTP}: A transport protocol for real-time applications.
+\newblock RFC 3550, IETF, 2003.
+\newblock \url{https://www.rfc-editor.org/rfc/rfc3550}.
+
+\bibitem{rfc7826_rtsp}
+Henning Schulzrinne, Anup Rao, Robert Lanphier, Magnus Westerlund, and Martin
+  Stiemerling.
+\newblock {Real-Time Streaming Protocol} version~2.0.
+\newblock RFC 7826, IETF, 2016.
+\newblock \url{https://www.rfc-editor.org/rfc/rfc7826}.
+
+\bibitem{matroska_spec}
+{IETF / Matroska.org}.
+\newblock Matroska media container specification.
+\newblock \url{https://www.matroska.org/technical/specs/index.html}, 2024.
+\newblock Accedido: abril 2026.
+
 \bibitem{apple_prores}
 {Apple Inc.}
 \newblock About {Apple ProRes}.
 \newblock \url{https://support.apple.com/en-us/102207}, 2024.
 \newblock Accedido: abril 2026.
+
+\bibitem{smpte_vc3}
+{Society of Motion Picture and Television Engineers}.
+\newblock {SMPTE ST 2019}: {VC-3} intra-frame video coding.
+\newblock SMPTE Standard ST 2019, Society of Motion Picture and Television
+  Engineers, 2016.
 
 \bibitem{avid_dnxhd}
 {Avid Technology}.
@@ -117,38 +145,12 @@ Maxim~P. Sharabayko, Maria~A. Sharabayko, Jean Dube, Jeongseok Kim, and
 \newblock International standard, ISO/IEC, 2019.
 \newblock \url{https://www.iso.org/standard/78321.html}.
 
-\bibitem{matroska_spec}
-{IETF / Matroska.org}.
-\newblock Matroska media container specification.
-\newblock \url{https://www.matroska.org/technical/specs/index.html}, 2024.
-\newblock Accedido: abril 2026.
-
-\bibitem{iso_mpegts}
+\bibitem{jpeg_xs_iso}
 {ISO/IEC}.
-\newblock {ISO/IEC 13818-1:2023}: Information technology --- generic coding of
-  moving pictures and associated audio information: Systems.
-\newblock International standard, ISO/IEC, 2023.
-\newblock \url{https://www.iso.org/standard/83239.html}.
-
-\bibitem{iso_isobmff}
-{ISO/IEC}.
-\newblock {ISO/IEC 14496-12:2022}: Information technology --- coding of
-  audio-visual objects --- {ISO} base media file format.
-\newblock International standard, ISO/IEC, 2022.
-\newblock \url{https://www.iso.org/standard/83102.html}.
-
-\bibitem{rfc3550_rtp}
-Henning Schulzrinne, Stephen Casner, Ron Frederick, and Van Jacobson.
-\newblock {RTP}: A transport protocol for real-time applications.
-\newblock RFC 3550, IETF, 2003.
-\newblock \url{https://www.rfc-editor.org/rfc/rfc3550}.
-
-\bibitem{rfc7826_rtsp}
-Henning Schulzrinne, Anup Rao, Robert Lanphier, Magnus Westerlund, and Martin
-  Stiemerling.
-\newblock {Real-Time Streaming Protocol} version~2.0.
-\newblock RFC 7826, IETF, 2016.
-\newblock \url{https://www.rfc-editor.org/rfc/rfc7826}.
+\newblock {ISO/IEC 21122}: Information technology --- {JPEG XS} low-latency
+  lightweight image coding system.
+\newblock International Standard ISO/IEC 21122, International Organization for
+  Standardization, Geneva, Switzerland, 2022.
 
 \bibitem{haivision_broadcast_report_2025}
 {Haivision}.
@@ -170,6 +172,25 @@ Roger Pantos and William May.
 \newblock International standard, ISO/IEC, 2022.
 \newblock \url{https://www.iso.org/standard/83314.html}.
 
+\bibitem{iso_mpegts}
+{ISO/IEC}.
+\newblock {ISO/IEC 13818-1:2023}: Information technology --- generic coding of
+  moving pictures and associated audio information: Systems.
+\newblock International standard, ISO/IEC, 2023.
+\newblock \url{https://www.iso.org/standard/83239.html}.
+
+\bibitem{iso_isobmff}
+{ISO/IEC}.
+\newblock {ISO/IEC 14496-12:2022}: Information technology --- coding of
+  audio-visual objects --- {ISO} base media file format.
+\newblock International standard, ISO/IEC, 2022.
+\newblock \url{https://www.iso.org/standard/83102.html}.
+
+\bibitem{apple_quicktime}
+{Apple Inc.}
+\newblock {\em {QuickTime} File Format Specification}, 2016.
+\newblock Accedido: junio 2026.
+
 \bibitem{itu_h264}
 {ITU-T}.
 \newblock {Recommendation ITU-T H.264}: Advanced video coding for generic
@@ -189,5 +210,46 @@ Zhuoyuan Chen, Yuxin Guo, Yao Jin, and Bo~Peng.
   resolutions.
 \newblock {\em Electronics}, 13(5):953, 2024.
 \newblock \url{https://www.mdpi.com/2079-9292/13/5/953}.
+
+\bibitem{obs_tokyo_2021}
+{Olympic Broadcasting Services}.
+\newblock {OBS} at the {Tokyo} 2020 {Olympic Games}: Remote production report.
+\newblock \url{https://www.obs.tv}, 2021.
+\newblock Accedido: abril 2026.
+
+\bibitem{tsa_remi_2022}
+{Telefónica Servicios Audiovisuales}.
+\newblock Producción remota de la {UEFA Champions League} desde el {Santiago
+  Bernabéu}.
+\newblock
+  \url{https://nrd.es/produccion-remota-broadcast-el-nuevo-estandar-operativo/},
+  2022.
+\newblock Accedido: abril 2026.
+
+\bibitem{acemoglu2019automation}
+Daron Acemoglu and Pascual Restrepo.
+\newblock Automation and new tasks: How technology displaces and reinstates
+  labor.
+\newblock {\em Journal of Economic Perspectives}, 33(2):3--30, 2019.
+
+\bibitem{nist_csf2}
+{National Institute of Standards and Technology}.
+\newblock {NIST} cybersecurity framework 2.0.
+\newblock NIST Special Publication CSWP 29, U.S. Department of Commerce, 2024.
+
+\bibitem{khan2018rapl}
+Kashif~Nizam Khan, Mikael Hirki, Timo Niemi, Jukka~K. Nurminen, and Zhonghong
+  Ou.
+\newblock {RAPL} in action: Experiences in using {RAPL} for power measurements.
+\newblock {\em {ACM} Transactions on Modeling and Performance Evaluation of
+  Computing Systems}, 3(2):9:1--9:26, 2018.
+
+\bibitem{iea_datacentres_2023}
+{International Energy Agency}.
+\newblock Data centres and data transmission networks.
+\newblock
+  \url{https://www.iea.org/energy-system/buildings/data-centres-and-data-transmission-networks},
+  2023.
+\newblock Accedido: junio 2026.
 
 \end{thebibliography}

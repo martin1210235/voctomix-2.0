@@ -57,15 +57,18 @@ Sin embargo, el modelo de producción remota plantea dos consideraciones éticas
 reconocerse explícitamente. En primer lugar, la automatización y deslocalización de parte del
 proceso de realización puede reducir la demanda de personal técnico presencial —operadores de
 cámara, técnicos de mezcla, personal de sala— en eventos que anteriormente requerían equipos
-completos in situ. Esta sustitución debe gestionarse de forma responsable, garantizando la
-reconversión profesional y la no precarización del sector.
+completos in situ. La literatura económica muestra que la automatización desplaza tareas
+rutinarias pero también genera nuevas, aunque la transición exige políticas activas de
+reconversión~\cite{acemoglu2019automation}. Esta sustitución debe gestionarse de forma
+responsable, garantizando la no precarización del sector.
 
 En segundo lugar, al exponer los puertos de control del sistema (puerto~9999 de voctocore,
 consola RabbitMQ, API de telemetría) a través de una red local o remota, el sistema amplía su
 superficie de ataque. Un acceso no autorizado al protocolo de control TCP podría interferir con
 una retransmisión en directo. Es responsabilidad del ingeniero que despliega el sistema aplicar
 autenticación en el broker RabbitMQ, restringir el acceso a los puertos de control mediante
-cortafuegos y no exponer el sistema directamente a Internet sin una capa de seguridad adicional.
+cortafuegos y no exponer el sistema directamente a Internet sin una capa de seguridad adicional,
+siguiendo las directrices del NIST Cybersecurity Framework~\cite{nist_csf2}.
 
 Desde el punto de vista de la privacidad, la telemetría registra únicamente eventos de operación
 del mezclador en ficheros locales, sin recopilar datos personales de operadores ni audiencia. El
@@ -112,10 +115,11 @@ prolonga la vida útil del equipamiento existente.
 
 No obstante, es necesario reconocer el impacto negativo: el servidor que ejecuta voctocore opera
 con una carga de CPU sostenida durante toda la retransmisión. Las mediciones realizadas en este
-trabajo muestran un consumo de entre 42,8~W y 49,9~W (RAPL) con cuatro cámaras activas,
-significativamente superior al consumo en reposo del sistema (17,7~W). El procesamiento de vídeo
-RAW en tiempo real, con múltiples pipelines GStreamer activos, implica un mayor consumo eléctrico
-que una solución basada en hardware dedicado de bajo consumo.
+trabajo muestran un consumo de entre 42,8~W y 49,9~W medido con el sensor RAPL~\cite{khan2018rapl}
+con cuatro cámaras activas, significativamente superior al consumo en reposo del sistema (17,7~W).
+El procesamiento de vídeo RAW en tiempo real implica un mayor consumo eléctrico que una solución
+basada en hardware dedicado de bajo consumo, un patrón coherente con las tendencias de consumo
+energético creciente en infraestructuras de servidores~\cite{iea_datacentres_2023}.
 
 El balance global es, no obstante, positivo: el ahorro en emisiones por la reducción de
 desplazamientos de personal y equipos supera con creces el incremento en consumo eléctrico del
