@@ -5,7 +5,7 @@ Los composites definen cómo se combinan visualmente las dos fuentes de vídeo a
 (bus A y bus B) en el fotograma de salida. Voctomix implementa los composites mediante
 el elemento GStreamer \texttt{compositor}, que sitúa y escala cada fuente de acuerdo
 con los parámetros geométricos definidos en la sección \texttt{[composites]} del
-fichero de configuración INI. La modificación de estos parámetros en tiempo real
+fichero de configuración. La modificación de estos parámetros en tiempo real
 permite transiciones suaves entre composites sin generar fotogramas corruptos.
 
 Los composites disponibles en Voctomix 2.0 son los siguientes:
@@ -38,9 +38,8 @@ La fuente A se muestra a pantalla completa mientras la fuente B aparece reducida
 una esquina del encuadre (tipicamente la esquina inferior derecha), a una escala
 aproximada del 27\% del ancho del fotograma. Es el composite clásico de ``ponente con
 presentación'': la cámara del ponente ocupa la pantalla completa y las diapositivas
-aparecen en la esquina, o viceversa. Puede configurarse con \texttt{mirror=true} para
-que la fuente A se invierta horizontalmente, útil cuando la cámara tiene la imagen
-especular por la disposición del equipo.
+aparecen en la esquina, o viceversa. El parámetro \texttt{mirror=true} permite invertir horizontalmente la imagen de la
+cámara cuando ésta llega girada especularmente.
 
 \subsection{Side by Side (sbs)}
 
@@ -57,14 +56,11 @@ diseñado para retransmisiones de ponencias o clases: las diapositivas (fuente A
 dominan el encuadre y la cámara del ponente (fuente B) aparece en un recuadro lateral
 de menor tamaño, manteniendo siempre la legibilidad del contenido proyectado.
 
-La variante \texttt{lec\_43} está concebida para acomodar contenido con relación de
-aspecto 4:3 (como proyectores antiguos o capturas de escritorio con resolución
-1024\texttimes{}768) en un encuadre 16:9. En la versión original del repositorio, esta
-variante aplicaba un recorte del 31\% mediante el parámetro \texttt{crop-a=0.125/0}
-que destruía el encuadre completo cuando la fuente era nativa 16:9. Se corrigió
-redefiniendo los parámetros de posición y escala en la sección \texttt{[composites]}
-del fichero INI para eliminar el recorte y ajustar la ventana secundaria de forma que
-encaje perfectamente a la derecha sin desbordarse del fotograma.
+La variante \texttt{lec\_43} comparte la misma disposición geométrica que \texttt{lec},
+fuente A al 75\% y fuente B al 23\% a la derecha, con la diferencia de que incluye
+explícitamente el parámetro \texttt{crop-a=0/0}, lo que garantiza que la fuente A no
+sufre ningún recorte independientemente de su relación de aspecto. Resulta adecuado
+cuando la señal de entrada puede provenir de una fuente 4:3 o 16:9 indistintamente.
 
 \subsection{Mirror}
 
