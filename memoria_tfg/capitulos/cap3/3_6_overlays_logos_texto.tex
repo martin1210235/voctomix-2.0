@@ -37,6 +37,7 @@ el comando \texttt{set\_overlay} del protocolo de control, lo que fuerza la reca
 nuevo fichero PNG sin interrumpir el pipeline.
 
 \subsection{Rotulación dinámica}
+\label{sec:doble_rotulacion}
 
 El sistema de rotulación permite al operador escribir el nombre del ponente o el título
 de la sesión en el panel de la interfaz gráfica. Al confirmar el texto, la interfaz lo
@@ -44,35 +45,13 @@ envía al núcleo a través del protocolo de control, donde voctocore actualiza
 directamente el elemento \texttt{textoverlay} del pipeline GStreamer. El rótulo aparece
 en antena en el siguiente fotograma, sin escritura a disco ni procesamiento externo.
 
-\subsection{Sistema de doble rotulación}
-\label{sec:doble_rotulacion}
-
-Para aumentar la versatilidad del sistema de grafismo, se implementó un segundo motor
-de rotulación independiente que permite mostrar simultáneamente dos textos en
-posiciones distintas del encuadre. Los cambios realizados abarcan las cuatro capas del
-sistema:
-
-\begin{itemize}
-  \item \textbf{Motor de vídeo (\texttt{videomix.py}):} se inyectó un segundo nodo
-        \texttt{textoverlay} en el pipeline GStreamer (\texttt{rotulo\_dinamico\_2}),
-        configurado con alineación horizontal opuesta al primero para evitar
-        solapamientos. Se implementó el método \texttt{set\_dynamic\_text\_2} para
-        actualizar sus propiedades en caliente.
-  \item \textbf{Protocolo de control (\texttt{commands.py}):} se amplió el servidor
-        TCP con el comando \texttt{set\_text2} y se configuró la notificación
-        \texttt{text2\_updated} para que cualquier cliente conectado sea informado del
-        cambio.
-  \item \textbf{Interfaz gráfica (\texttt{voctogui.ui} y \texttt{voctogui.css}):} se
-        creó un segundo contenedor \texttt{GtkBox} en el panel de inserciones, situado
-        junto al primero. Los nuevos selectores CSS (\texttt{\#tfg-entry-2},
-        \texttt{\#tfg-btn-2}) heredan la estética corporativa oscura y el efecto de
-        iluminación amarilla al activarse.
-  \item \textbf{Lógica de foco y teclado (\texttt{overlay.py}):} se perfeccionó el
-        algoritmo de intercepción de atajos de teclado a nivel de ventana. El sistema
-        evalúa dinámicamente qué campo de texto tiene el foco (\texttt{is\_focus()})
-        para procesar correctamente las teclas críticas (Espacio, Retroceso, \textit{Enter}),
-        evitando colisiones con los atajos globales del mezclador.
-\end{itemize}
+El sistema dispone de dos canales de rotulación independientes, lo que permite mostrar
+simultáneamente dos textos en posiciones distintas del encuadre sin solapamientos. Cada
+canal tiene su propio campo de texto en la interfaz, con gestión de foco de teclado
+independiente para evitar colisiones con los atajos del mezclador. Su implementación
+requirió extender el pipeline con un segundo elemento \texttt{textoverlay}, ampliar el
+protocolo de control con un segundo comando de texto y añadir el campo correspondiente
+en la interfaz gráfica.
 
 \subsection{Botón UPDATE: recarga dinámica de recursos}
 
