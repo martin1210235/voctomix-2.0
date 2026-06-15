@@ -38,7 +38,7 @@ accedió a la consola de administración de RabbitMQ
 \texttt{voctomix\_events} acumulaba un mensaje por cada acción ejecutada. La
 figura~\ref{fig:rabbitmq_queues} muestra la consola con mensajes en cola.
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{figuras/rabbitmq_cybernemo_queues.png}
   \caption{Cola \texttt{voctomix\_events} en la consola RabbitMQ tras la sesión de prueba.}
@@ -53,18 +53,9 @@ como historial completo de la realización.
 
 \begin{figure}[H]
   \centering
-  \begin{tikzpicture}
-    \draw[rounded corners=4pt, fill=gray!8, draw=gray!40]
-      (0,0) rectangle (13,4.2);
-    \node[font=\sffamily\small\bfseries, text=gray!55] at (6.5,2.9)
-      {[Captura de pantalla: registros .jsonl de telemetría]};
-    \node[font=\sffamily\small, text=gray!50] at (6.5,2.3)
-      {Arriba: entrada de tipo STATE (periódico, cada 5 s)};
-    \node[font=\sffamily\small, text=gray!50] at (6.5,1.7)
-      {Abajo: entrada de tipo CHANGE (instantáneo al realizar una acción)};
-    \node[font=\sffamily\scriptsize\itshape, text=gray!45] at (6.5,0.7)
-      {Captura pendiente de sustituir por imagen real del terminal};
-  \end{tikzpicture}
-  \caption{Salida en tiempo real del terminal: evento STATE y CHANGE.}
+  \includegraphics[width=\textwidth]{figuras/telemetria_state_change.png}
+  \caption{Salida del terminal de telemetría: evento STATE (arriba) y evento
+           CHANGE (abajo), con el estado completo del mezclador y las métricas
+           de rendimiento.}
   \label{fig:telemetria_eventos}
 \end{figure}
