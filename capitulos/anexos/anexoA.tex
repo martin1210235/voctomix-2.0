@@ -17,9 +17,8 @@ Este anexo obligatorio del TFT tendrá un carácter sintético con los siguiente
 \normalsize{Este Trabajo de Fin de Grado desarrolla y optimiza Voctomix~2.0, un sistema modular de
 código abierto para la producción remota de vídeo en tiempo real. El proyecto extiende la
 herramienta Voctomix con nuevas capacidades de composición de vídeo, overlays dinámicos, un sistema
-de telemetría basado en RabbitMQ y un despliegue contenerizado con Docker y Kubernetes, todo ello
-con el objetivo de democratizar el acceso a herramientas de producción audiovisual profesional
-multicámara.
+de telemetría basado en RabbitMQ y un despliegue contenerizado con Docker y Kubernetes, con el
+objetivo de democratizar el acceso a herramientas de producción audiovisual profesional multicámara.
 
 El sistema responde a una necesidad real identificada en el entorno académico y asociativo: la
 realización de retransmisiones en directo de calidad profesional sin depender de hardware dedicado
@@ -27,12 +26,8 @@ de alto coste. Al construirse íntegramente sobre tecnologías libres —GStream
 RabbitMQ, Kubernetes— el proyecto garantiza su auditabilidad, redistribuibilidad y continuidad más
 allá del trabajo individual, alineándose con los principios de ingeniería responsable y abierta.
 
-Es fundamental considerar los aspectos éticos, sociales, económicos y ambientales implicados en el
-desarrollo y despliegue de un sistema de producción audiovisual en directo. La retransmisión de
-eventos en tiempo real involucra la captación de imágenes de personas, la transmisión de contenidos
-potencialmente protegidos y el procesamiento de datos de telemetría, lo que impone
-responsabilidades de distinta naturaleza al ingeniero que diseña y opera el sistema. Este anexo
-analiza dichos aspectos de forma estructurada.}
+Este anexo analiza de forma estructurada los aspectos éticos, económicos, sociales y ambientales
+implicados en el desarrollo y despliegue del sistema.}
 \vspace{0.3cm}
 
 % ── A2. Impactos relevantes ──────────────────────────────────────────
@@ -49,36 +44,53 @@ audiovisual sin presupuesto broadcast: grupos de investigación universitarios c
 asociaciones estudiantiles, organismos públicos y entidades sin ánimo de lucro. El sistema
 permite a estas organizaciones ofrecer retransmisiones multicámara de calidad profesional —con
 transiciones animadas, overlays, rotulación dinámica y grabación simultánea— sin necesidad de
-hardware dedicado. Esto amplía el alcance de la divulgación científica, la formación en línea y la
-cobertura de eventos institucionales.}
+hardware dedicado, ampliando el alcance de la divulgación científica y la cobertura de eventos
+institucionales.}
 
 \vspace{0.15cm}
 \noindent\underline{Aspectos éticos:}
-\normalsize{ El sistema se construye íntegramente sobre software libre publicado bajo licencias
-GPL y Apache~2.0. Esto garantiza que cualquier organización pueda auditar, modificar y redistribuir
-el código sin restricciones comerciales, evitando dependencias de proveedores propietarios. Desde
-el punto de vista de la privacidad, el sistema de telemetría registra únicamente eventos de
-operación del mezclador (cambios de composición, activaciones de overlay, transiciones) en ficheros
-\texttt{.jsonl} locales; no se recopilan datos personales de los operadores ni de la audiencia.
-No obstante, el uso del sistema para retransmitir imágenes de personas obliga al operador a
-cumplir el Reglamento General de Protección de Datos (RGPD) y la Ley Orgánica de Protección de
-Datos (LOPD), así como a respetar los derechos de imagen de las personas grabadas y los derechos
-de propiedad intelectual sobre el contenido audiovisual emitido.}
+\normalsize{ El sistema se construye sobre software libre publicado bajo licencias GPL y
+Apache~2.0, lo que garantiza la transparencia del código, su auditabilidad y la independencia de
+proveedores propietarios.
+
+Sin embargo, el modelo de producción remota plantea dos consideraciones éticas que deben
+reconocerse explícitamente. En primer lugar, la automatización y deslocalización de parte del
+proceso de realización puede reducir la demanda de personal técnico presencial —operadores de
+cámara, técnicos de mezcla, personal de sala— en eventos que anteriormente requerían equipos
+completos in situ. Esta sustitución debe gestionarse de forma responsable, garantizando la
+reconversión profesional y la no precarización del sector.
+
+En segundo lugar, al exponer los puertos de control del sistema (puerto~9999 de voctocore,
+consola RabbitMQ, API de telemetría) a través de una red local o remota, el sistema amplía su
+superficie de ataque. Un acceso no autorizado al protocolo de control TCP podría interferir con
+una retransmisión en directo. Es responsabilidad del ingeniero que despliega el sistema aplicar
+autenticación en el broker RabbitMQ, restringir el acceso a los puertos de control mediante
+cortafuegos y no exponer el sistema directamente a Internet sin una capa de seguridad adicional.
+
+Desde el punto de vista de la privacidad, la telemetría registra únicamente eventos de operación
+del mezclador en ficheros locales, sin recopilar datos personales de operadores ni audiencia. El
+uso del sistema para retransmitir imágenes de personas obliga al operador a cumplir el RGPD y la
+LOPD, así como a respetar los derechos de imagen y de propiedad intelectual sobre el contenido
+emitido.}
 
 \vspace{0.15cm}
 \noindent\underline{Aspectos económicos:}
-\normalsize{ El impacto económico más relevante del proyecto es la reducción de costes de
-infraestructura audiovisual. Una instalación multicámara profesional basada en hardware dedicado
-(mezclador Blackmagic ATEM, matrices de vídeo SDI, sistemas de grabación profesional) tiene un
-coste de adquisición que puede superar los 5.000~\euro\ y conlleva gastos de mantenimiento y
-formación asociados. Voctomix~2.0 replica estas funcionalidades sobre hardware convencional con
-un coste de despliegue prácticamente nulo, ya que todo el software es libre y el despliegue se
-realiza con un único comando (\texttt{docker compose up}).
+\normalsize{ La principal ventaja económica de Voctomix~2.0 deriva del modelo de producción
+remota (REMI) que habilita: al desplazar el núcleo de procesamiento a un servidor centralizado,
+se elimina la necesidad de trasladar al lugar del evento a todo el equipo técnico de realización.
+Esto se traduce en una reducción directa de los gastos de desplazamiento, alojamiento y
+logística del personal, que en producciones de varios días o localizaciones lejanas pueden
+suponer el coste dominante de la producción.
 
-Adicionalmente, la arquitectura cliente-servidor del sistema —con \texttt{voctocore} en un servidor
-y \texttt{voctogui} en el equipo del realizador— permite reutilizar la misma infraestructura
-para múltiples eventos sin duplicar el equipamiento, lo que reduce el coste por producción a medida
-que aumenta el volumen de retransmisiones.}
+A esto se añade la reducción de infraestructura hardware: una instalación multicámara profesional
+basada en hardware dedicado (mezclador Blackmagic ATEM, matrices de vídeo SDI, sistemas de
+grabación profesional) puede superar los 5.000~\euro\ en adquisición, más gastos de mantenimiento
+y formación. Voctomix~2.0 replica estas funcionalidades sobre hardware convencional con un coste
+de despliegue prácticamente nulo, ya que todo el software es libre y el sistema arranca con un
+único comando (\texttt{docker compose up}).
+
+La arquitectura cliente-servidor permite además reutilizar la misma infraestructura para múltiples
+eventos, reduciendo el coste por producción a medida que aumenta el volumen de retransmisiones.}
 
 \vspace{0.15cm}
 \noindent\underline{Aspectos sociales:}
@@ -86,72 +98,85 @@ que aumenta el volumen de retransmisiones.}
 a la producción audiovisual profesional}. Al eliminar la barrera económica y técnica que supone el
 hardware dedicado, el sistema permite que entidades sin presupuesto broadcast —conferencias
 académicas, jornadas de puertas abiertas, actos culturales, organismos públicos— ofrezcan
-retransmisiones de calidad a sus audiencias. Este impacto es especialmente relevante en el contexto
-universitario, donde la divulgación científica y la formación en línea han ganado protagonismo
-tras la pandemia de COVID-19.
-
-Asimismo, al publicar el código bajo licencia libre, el proyecto fomenta la colaboración en
-comunidad, permite que otros grupos reproduzcan y extiendan el sistema, y contribuye al ecosistema
-de software libre en el ámbito de la producción audiovisual.}
+retransmisiones de calidad a sus audiencias. Al publicar el código bajo licencia libre, el proyecto
+fomenta la colaboración en comunidad y contribuye al ecosistema de software libre en el ámbito de
+la producción audiovisual.}
 
 \vspace{0.15cm}
 \noindent\underline{Aspectos medioambientales:}
-\normalsize{ El modelo REMI en el que se enmarca Voctomix~2.0 reduce significativamente la huella
-de carbono de las producciones audiovisuales al minimizar los desplazamientos de personal y
-equipos. La sustitución de hardware especializado por software sobre equipos de propósito general
-reduce la fabricación de dispositivos dedicados y prolonga la vida útil de los equipos existentes.
-El despliegue en contenedores Docker permite además reutilizar infraestructura compartida y
-facilita el apagado selectivo de servicios cuando no están en uso, reduciendo el consumo
-energético del sistema en periodos de inactividad. El despliegue en Kubernetes añade la capacidad
-de escalar los recursos computacionales de forma elástica, evitando el sobreaprovisionamiento de
-hardware.}
+\normalsize{ El modelo REMI que habilita Voctomix~2.0 tiene un impacto ambiental positivo
+significativo: al reducir los desplazamientos de personal y equipos, disminuye directamente las
+emisiones de CO\textsubscript{2} asociadas al transporte. La sustitución de hardware especializado
+por software sobre equipos de propósito general reduce la fabricación de dispositivos dedicados y
+prolonga la vida útil del equipamiento existente.
+
+No obstante, es necesario reconocer el impacto negativo: el servidor que ejecuta voctocore opera
+con una carga de CPU sostenida durante toda la retransmisión. Las mediciones realizadas en este
+trabajo muestran un consumo de entre 42,8~W y 49,9~W (RAPL) con cuatro cámaras activas,
+significativamente superior al consumo en reposo del sistema (17,7~W). El procesamiento de vídeo
+RAW en tiempo real, con múltiples pipelines GStreamer activos, implica un mayor consumo eléctrico
+que una solución basada en hardware dedicado de bajo consumo.
+
+El balance global es, no obstante, positivo: el ahorro en emisiones por la reducción de
+desplazamientos de personal y equipos supera con creces el incremento en consumo eléctrico del
+servidor, especialmente en producciones con equipos numerosos o localizaciones geográficamente
+dispersas.}
 \vspace{0.3cm}
 
 % ── A3. Análisis detallado ───────────────────────────────────────────
 \Large{\textsc{\textcolor{nar}{A3. Análisis detallado de alguno de los impactos}}}
 \vspace{0.2cm}
 
-\normalsize{El impacto social más significativo del proyecto es la \textbf{democratización del
-acceso a la producción audiovisual profesional}, que se analiza a continuación en detalle.}
+\normalsize{Se analizan en detalle los dos impactos más relevantes del proyecto: el económico,
+por ser la principal ventaja diferencial del modelo REMI, y el ético, por plantear riesgos que
+deben gestionarse activamente.}
 
 \vspace{0.15cm}
-\textbf{Beneficios para organizaciones académicas y sin ánimo de lucro:}
+\textbf{Impacto económico: reducción de costes en producción remota}
 
 \begin{enumerate}
-  \item \underline{Accesibilidad económica:} El coste de despliegue de Voctomix~2.0 es
-  prácticamente nulo. Cualquier organización con un ordenador convencional y conexión a red puede
-  desplegar el sistema completo —mezclador, telemetría, broker de mensajería— en cuestión de
-  minutos. Esto contrasta con los miles de euros necesarios para una solución equivalente basada
-  en hardware dedicado.
+  \item \underline{Reducción de personal desplazado:} En una producción multicámara convencional,
+  el equipo técnico de realización debe estar presente en el lugar del evento. El modelo REMI
+  permite que el realizador, el técnico de mezcla de audio y el operador de gráficos trabajen
+  desde una sala de control centralizada, reduciendo el personal desplazado a los mínimos
+  operadores de cámara in situ.
 
-  \item \underline{Reducción de la dependencia tecnológica:} Al construirse sobre estándares
-  abiertos (GStreamer, Docker, RabbitMQ, Kubernetes), el sistema no crea dependencia de ningún
-  proveedor específico. Las organizaciones pueden modificar, sustituir o ampliar cualquier
-  componente sin restricciones comerciales.
+  \item \underline{Eliminación de hardware dedicado:} Voctomix~2.0 sustituye mezcladores,
+  matrices de vídeo y sistemas de grabación profesional por software ejecutado en hardware
+  convencional. El coste de adquisición pasa de varios miles de euros a prácticamente cero,
+  con la única inversión en equipos de red y ordenadores de propósito general.
 
-  \item \underline{Formación técnica:} El código del sistema, al ser completamente abierto y
-  documentado, sirve como material de aprendizaje para estudiantes de ingeniería interesados en
-  producción multimedia, arquitecturas de microservicios y sistemas distribuidos en tiempo real.
+  \item \underline{Escalabilidad sin sobrecoste:} La arquitectura contenerizada permite desplegar
+  el sistema completo —incluyendo telemetría y broker de mensajería— con un único comando,
+  sin licencias adicionales ni infraestructura propietaria. El mismo despliegue puede reutilizarse
+  para todos los eventos de una organización.
 \end{enumerate}
 
 \vspace{0.15cm}
-\textbf{Beneficios para la comunidad open-source:}
+\textbf{Impacto ético: ciberseguridad y responsabilidad profesional}
 
 \begin{enumerate}
-  \item \underline{Extensibilidad:} La arquitectura modular del sistema —con \texttt{voctocore}
-  como núcleo de procesamiento y \texttt{voctogui} como interfaz de control desacoplada— facilita
-  que la comunidad añada nuevas funcionalidades sin modificar el núcleo. Las extensiones
-  desarrolladas en este TFG (telemetría, Kubernetes, overlays dinámicos, composites avanzados)
-  son contribuciones directas al repositorio original de Voctomix.
+  \item \underline{Superficie de ataque en red:} El sistema expone múltiples puertos TCP
+  (control en 9999, entradas de cámara en 10000--10005, salidas en 11000--15000, consola
+  RabbitMQ en 15672, API de telemetría en 8080). En un entorno de red no controlado, cada
+  puerto accesible es un vector de ataque potencial. El ingeniero que despliega el sistema
+  tiene la responsabilidad de aplicar reglas de cortafuegos que limiten el acceso a estos
+  puertos a los equipos autorizados.
 
-  \item \underline{Reproducibilidad:} El uso de Docker Compose y manifiestos de Kubernetes
-  garantiza que cualquier organización pueda reproducir exactamente el entorno de producción
-  descrito en este TFG, eliminando el problema del ``funciona en mi máquina'' habitual en
-  proyectos de software multimedia.
+  \item \underline{Autenticación y control de acceso:} El protocolo de control TCP de voctocore
+  no implementa autenticación en la capa de aplicación; cualquier cliente que alcance el
+  puerto~9999 puede emitir comandos al mezclador. En despliegues en red local controlada esto
+  es aceptable, pero en entornos con acceso remoto debe añadirse una capa de túnel cifrado
+  (VPN, SSH port forwarding) para proteger el canal de control.
+
+  \item \underline{Responsabilidad ante el desplazamiento laboral:} La adopción de sistemas
+  de producción remota debe ir acompañada de políticas de formación y reconversión para el
+  personal técnico afectado, evitando que la eficiencia económica se consiga a costa de la
+  precariedad laboral en el sector audiovisual.
 \end{enumerate}
 
 \vspace{0.15cm}
-\textbf{Consideraciones sobre privacidad y uso responsable:}
+\textbf{Consideraciones sobre privacidad:}
 
 El sistema de telemetría registra los eventos de operación del mezclador en ficheros locales y
 los publica en un broker RabbitMQ interno. Es responsabilidad del operador asegurar que:
@@ -166,20 +191,25 @@ modificaciones adicionales.
 \Large{\textsc{\textcolor{nar}{A4. Conclusiones}}}
 \vspace{0.2cm}
 
-\normalsize{Desde un punto de vista ético, social, económico y ambiental, Voctomix~2.0 es un
-proyecto con un balance altamente positivo. Éticamente, el uso de software libre como base
-tecnológica garantiza la transparencia, la auditabilidad del código y la independencia de
-proveedores propietarios; la telemetría local preserva la privacidad de los usuarios al no
-transmitir datos a servicios externos. Socialmente, el sistema democratiza el acceso a la
-producción audiovisual profesional, permitiendo que comunidades académicas y organizaciones sin
-presupuesto broadcast ofrezcan retransmisiones de calidad. Económicamente, sustituye equipos
-hardware de alto coste por software ejecutado en hardware convencional, reduciendo drásticamente
-la inversión necesaria para producir eventos en directo. Medioambientalmente, el modelo de
-producción remota reduce los desplazamientos de personal y equipos, disminuyendo la huella de
-carbono de las producciones, mientras que la contenerización Docker y el escalado elástico de
-Kubernetes optimizan el consumo energético del sistema en función de la carga real.
+\normalsize{Desde un punto de vista ético, social, económico y ambiental, Voctomix~2.0 presenta
+un balance global positivo, sin perjuicio de los riesgos que deben gestionarse activamente.
 
-La integración de criterios de sostenibilidad y responsabilidad ética en el diseño del sistema
-—licencias libres, telemetría local, despliegue contenerizado, arquitectura cliente-servidor—
-aporta un valor añadido que va más allá de las funcionalidades técnicas, haciendo del proyecto
-una contribución responsable y reutilizable para la comunidad.}
+Éticamente, el uso de software libre garantiza la transparencia y la independencia de proveedores
+propietarios, y la telemetría local preserva la privacidad de los usuarios. Sin embargo, la
+adopción del modelo remoto plantea dos responsabilidades que el ingeniero no puede ignorar: la
+gestión adecuada de la ciberseguridad en los puertos de red expuestos, y la consideración del
+posible impacto sobre el empleo presencial en el sector audiovisual.
+
+Económicamente, la principal ventaja del proyecto es la reducción de los costes de desplazamiento
+de personal y logística que el modelo REMI hace posible, complementada por la eliminación del
+hardware dedicado de alto coste. Esta combinación hace que el sistema sea especialmente relevante
+para organizaciones con presupuestos limitados.
+
+Socialmente, el proyecto democratiza el acceso a la producción audiovisual profesional,
+permitiendo que comunidades académicas y organizaciones sin recursos broadcast ofrezcan
+retransmisiones de calidad.
+
+Medioambientalmente, la reducción de desplazamientos de personal y equipos implica una disminución
+real de emisiones de CO\textsubscript{2}, cuyo beneficio supera el incremento en consumo eléctrico
+del servidor de procesamiento. El balance ambiental es positivo, siendo el ahorro en transporte
+el factor determinante.}
