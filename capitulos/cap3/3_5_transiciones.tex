@@ -7,7 +7,7 @@ activa desde la barra de herramientas de la interfaz gráfica.
 
 \subsection{Cut (corte instantáneo)}
 
-El botón \textbf{Cut} realiza una transición instantánea: en el siguiente fotograma
+El botón Cut realiza una transición instantánea: en el siguiente fotograma
 tras la pulsación, la fuente de programa pasa a ser la fuente de preview. No existe
 ningún efecto intermedio. Es la transición estándar en producción broadcast: el
 corte imita el montaje cinematográfico y resulta imperceptible cuando el
@@ -15,10 +15,10 @@ corte imita el montaje cinematográfico y resulta imperceptible cuando el
 
 \subsection{Trans (transición suave)}
 
-El botón \textbf{Trans} realiza una transición animada entre el estado actual y el
+El botón Trans realiza una transición animada entre el estado actual y el
 nuevo estado de composite o fuente, interpolando los parámetros geométricos y de
 transparencia durante un tiempo configurable (por defecto 750~ms, definido en la
-sección \texttt{[transitions]} del fichero INI). La transición se implementa
+sección \texttt{[transitions]} del fichero de configuración). La transición se implementa
 modificando progresivamente los valores de los pads del compositor de GStreamer.
 
 Voctomix 2.0 define múltiples trayectorias de transición según el estado de origen y
@@ -28,7 +28,7 @@ animación sea visualmente coherente independientemente del cambio solicitado.
 
 \subsection{Retake}
 
-El botón \textbf{Retake} permite al realizador deshacer el último cambio de fuente o
+El botón Retake permite al realizador deshacer el último cambio de fuente o
 composite y volver al estado inmediatamente anterior sin interrumpir la señal de
 programa. Su funcionamiento es equivalente a un Cut inverso: en el siguiente fotograma,
 el sistema intercambia programa y preview, restaurando la fuente que estaba en antena
