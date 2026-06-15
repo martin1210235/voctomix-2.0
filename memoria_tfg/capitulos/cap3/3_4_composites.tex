@@ -87,3 +87,22 @@ necesario cuando la señal de cámara llega especularmente invertida, como puede
 con ciertos modelos de cámaras web o cuando la cámara está orientada de forma atípica.
 Al activar el mirror desde el fichero de configuración, el núcleo aplica la inversión
 directamente en el compositor de GStreamer sin coste adicional.
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figuras/mirror_pip}
+    \subcaption{Mirror activo en Picture in Picture.}
+    \label{fig:mirror_pip}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figuras/mirror_lec}
+    \subcaption{Mirror activo en Lecture.}
+    \label{fig:mirror_lec}
+  \end{minipage}
+  \caption{Efecto espejo aplicado a los composites Picture in Picture y Lecture.}
+  \label{fig:mirror}
+\end{figure}
