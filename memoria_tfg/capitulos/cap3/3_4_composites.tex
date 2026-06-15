@@ -1,90 +1,160 @@
 \section{Composites}
 \label{sec:composites}
 
-Los composites definen cómo se combinan visualmente las dos fuentes de vídeo activas
-(bus A y bus B) en el fotograma de salida. Voctomix implementa los composites mediante
-el elemento GStreamer \texttt{compositor}, que sitúa y escala cada fuente de acuerdo
-con los parámetros geométricos definidos en la sección \texttt{[composites]} del
-fichero de configuración INI. La modificación de estos parámetros en tiempo real
-permite transiciones suaves entre composites sin generar fotogramas corruptos.
+Los composites determinan cómo se combinan visualmente las dos fuentes de vídeo
+activas (bus~A y bus~B) en el fotograma de salida. Voctomix implementa esta
+combinación mediante el elemento GStreamer \texttt{compositor}, que sitúa y escala
+cada fuente según los parámetros geométricos definidos en la sección
+\texttt{[composites]} del fichero de configuración INI. El cambio entre composites
+se aplica en tiempo real sin generar fotogramas corruptos, lo que permite al
+realizador alternar modos durante la emisión en directo.
 
-Los composites disponibles en Voctomix 2.0 son los siguientes:
-
-La figura~\ref{fig:composites_diagrama} ilustra la disposición visual de las dos
-fuentes (A en naranja, B en azul) en cada uno de los composites principales.
+La figura~\ref{fig:composites_diagrama} ofrece una vista conjunta de los cuatro
+modos principales: en todos ellos la fuente A se representa en naranja y la fuente
+B en azul, evidenciando que la diferencia entre composites es exclusivamente
+geométrica, sin alterar el contenido de las señales.
 
 \begin{figure}[H]
   \centering
-  % W=3.2, H=1.8, gap=0.7 → offsets: 0, 3.9, 7.8, 11.7
   \includegraphics[width=\textwidth]{figuras/composites_diagrama}
-  \caption{Disposición visual de las fuentes A y B en los cuatro composites
-           principales de Voctomix~2.0: pantalla completa (\texttt{fs}),
-           imagen en imagen (\texttt{pip}), lado a lado (\texttt{sbs}) y
-           conferencia (\texttt{lec}).}
+  \caption{Disposición geométrica de las fuentes A (naranja) y B (azul) en los
+           cuatro composites principales de Voctomix~2.0: pantalla completa
+           (\texttt{fs}), imagen en imagen (\texttt{pip}), lado a lado
+           (\texttt{sbs}) y conferencia (\texttt{lec}).}
   \label{fig:composites_diagrama}
 \end{figure}
 
-\subsection{Full Screen (fs)}
+Las siguientes subsecciones describen cada modo e ilustran, mediante la disposición
+geométrica y una captura real de la interfaz, cómo se ve el resultado en producción.
 
-La fuente A ocupa toda la pantalla y la fuente B queda oculta (alpha = 0). Es el modo
-por defecto de una realización convencional: el realizador selecciona una fuente y la
-emite a pantalla completa. Resulta adecuado para la emisión de una ponencia individual,
-una demostración en pantalla o cualquier situación en la que una única fuente deba
-ocupar todo el encuadre.
+% ────────────────────────────────────────────────────────────────────────────
+\subsection{Full Screen (\texttt{fs})}
+\label{sec:composite_fs}
 
-\subsection{Picture in Picture (pip)}
-
-La fuente A se muestra a pantalla completa mientras la fuente B aparece reducida en
-una esquina del encuadre (tipicamente la esquina inferior derecha), a una escala
-aproximada del 27\% del ancho del fotograma. Es el composite clásico de ``ponente con
-presentación'': la cámara del ponente ocupa la pantalla completa y las diapositivas
-aparecen en la esquina, o viceversa. Puede configurarse con \texttt{mirror=true} para
-que la fuente A se invierta horizontalmente, útil cuando la cámara tiene la imagen
-especular por la disposición del equipo.
-
-\subsection{Side by Side (sbs)}
-
-Ambas fuentes se muestran a igual tamaño, situadas una junto a la otra y ocupando
-cada una aproximadamente la mitad del fotograma. Es útil para comparaciones visuales,
-debates con dos participantes o para mostrar simultáneamente la cámara del ponente y
-sus diapositivas con el mismo peso visual.
-
-\subsection{Lecture (lec)}
-
-La fuente A ocupa la mayor parte del encuadre (aproximadamente el 75\%) mientras que
-la fuente B aparece reducida en la parte derecha. Este composite está específicamente
-diseñado para retransmisiones de ponencias o clases: las diapositivas (fuente A)
-dominan el encuadre y la cámara del ponente (fuente B) aparece en un recuadro lateral
-de menor tamaño, manteniendo siempre la legibilidad del contenido proyectado.
-
-La variante \texttt{lec\_43} está concebida para acomodar contenido con relación de
-aspecto 4:3 (como proyectores antiguos o capturas de escritorio con resolución
-1024\texttimes{}768) en un encuadre 16:9. En la versión original del repositorio, esta
-variante aplicaba un recorte del 31\% mediante el parámetro \texttt{crop-a=0.125/0}
-que destruía el encuadre completo cuando la fuente era nativa 16:9. Se corrigió
-redefiniendo los parámetros de posición y escala en la sección \texttt{[composites]}
-del fichero INI para eliminar el recorte y ajustar la ventana secundaria de forma que
-encaje perfectamente a la derecha sin desbordarse del fotograma.
-
-\subsection{Mirror}
-
-Aunque no es un composite independiente sino una propiedad disponible en varios de
-los anteriores (\texttt{mirror=true} en \texttt{pip}, \texttt{lec} y \texttt{fs-pip}),
-el efecto espejo permite invertir horizontalmente la fuente A o B en el composite. Esto
-es necesario cuando la señal de cámara llega especularmente invertida, como puede
-ocurrir con ciertos modelos de cámaras web o cuando la cámara está orientada de forma
-atípica. Al activar el mirror desde el fichero de configuración, el núcleo aplica la
-inversión directamente en el compositor de GStreamer sin coste adicional.
+La fuente A ocupa todo el fotograma y la fuente B queda completamente oculta
+(alpha = 0). Es el modo por defecto de cualquier realización convencional:
+el realizador selecciona una fuente y la emite a pantalla completa. Resulta
+adecuado para la emisión de una ponencia individual, una demostración en pantalla
+compartida o cualquier situación en la que una única fuente deba dominar el encuadre.
 
 \begin{figure}[H]
   \centering
-  \fbox{\begin{minipage}{0.85\textwidth}\centering\vspace{1.2cm}
-    \textit{[IMAGEN PENDIENTE: captura del selector de composites en voctogui,}\\
-    \textit{mostrando los botones FULL SCREEN, PIP, SIDE BY SIDE y LECTURE]}\\
-    \textit{con el composite activo resaltado.}\\[4pt]
-    \textit{Guardar como \texttt{figuras/panel\_composites.png} y enviar.}
-    \vspace{1.2cm}
-  \end{minipage}}
-  \caption{Selector de modos de composite en la interfaz de Voctomix~2.0.}
-  \label{fig:panel_composites}
+  \subcaptionbox{Disposición geométrica: fuente A a pantalla completa, B oculta.%
+    \label{fig:diag_fs}}{%
+    \includegraphics[width=\textwidth,
+      trim={0pt 0pt 641pt 0pt},clip]{figuras/composites_diagrama}}
+  \par\vspace{0.5cm}
+  \subcaptionbox{Interfaz de Voctomix~2.0 con el modo \texttt{fs} activo.%
+    \label{fig:screen_fs}}{%
+    \fbox{\begin{minipage}[c][3.5cm][c]{\textwidth}\centering
+      \textit{[CAPTURA PENDIENTE]}\\[4pt]
+      \texttt{figuras/screenshot\_fs.png}
+    \end{minipage}}}
+  \caption{Composite Full Screen: disposición geométrica (arriba) e interfaz
+           real con el modo activo (abajo).}
+  \label{fig:composite_fs}
 \end{figure}
+
+% ────────────────────────────────────────────────────────────────────────────
+\subsection{Picture in Picture (\texttt{pip})}
+\label{sec:composite_pip}
+
+La fuente A se muestra a pantalla completa mientras la fuente B aparece reducida
+en la esquina inferior derecha del encuadre, a una escala aproximada del 27\,\%
+del ancho del fotograma. Es el composite clásico de ponente con presentación:
+la cámara ocupa toda la pantalla y las diapositivas aparecen en la esquina, o
+viceversa. El parámetro \texttt{mirror=true} permite invertir horizontalmente la
+fuente A cuando la señal de cámara llega especularmente girada.
+
+\begin{figure}[H]
+  \centering
+  \subcaptionbox{Disposición geométrica: fuente A a pantalla completa, B reducida
+    en esquina inferior derecha.\label{fig:diag_pip}}{%
+    \includegraphics[width=\textwidth,
+      trim={200pt 0pt 421pt 0pt},clip]{figuras/composites_diagrama}}
+  \par\vspace{0.5cm}
+  \subcaptionbox{Interfaz de Voctomix~2.0 con el modo \texttt{pip} activo.%
+    \label{fig:screen_pip}}{%
+    \fbox{\begin{minipage}[c][3.5cm][c]{\textwidth}\centering
+      \textit{[CAPTURA PENDIENTE]}\\[4pt]
+      \texttt{figuras/screenshot\_pip.png}
+    \end{minipage}}}
+  \caption{Composite Picture in Picture: disposición geométrica (arriba) e interfaz
+           real con el modo activo (abajo).}
+  \label{fig:composite_pip}
+\end{figure}
+
+% ────────────────────────────────────────────────────────────────────────────
+\subsection{Side by Side (\texttt{sbs})}
+\label{sec:composite_sbs}
+
+Ambas fuentes se muestran a igual tamaño, situadas una junto a la otra y ocupando
+cada una aproximadamente la mitad del fotograma. Es útil para comparaciones
+visuales, debates con dos participantes o para mostrar simultáneamente la cámara
+del ponente y sus diapositivas con el mismo peso visual.
+
+\begin{figure}[H]
+  \centering
+  \subcaptionbox{Disposición geométrica: fuentes A y B a igual tamaño, lado a lado.%
+    \label{fig:diag_sbs}}{%
+    \includegraphics[width=\textwidth,
+      trim={421pt 0pt 200pt 0pt},clip]{figuras/composites_diagrama}}
+  \par\vspace{0.5cm}
+  \subcaptionbox{Interfaz de Voctomix~2.0 con el modo \texttt{sbs} activo.%
+    \label{fig:screen_sbs}}{%
+    \fbox{\begin{minipage}[c][3.5cm][c]{\textwidth}\centering
+      \textit{[CAPTURA PENDIENTE]}\\[4pt]
+      \texttt{figuras/screenshot\_sbs.png}
+    \end{minipage}}}
+  \caption{Composite Side by Side: disposición geométrica (arriba) e interfaz
+           real con el modo activo (abajo).}
+  \label{fig:composite_sbs}
+\end{figure}
+
+% ────────────────────────────────────────────────────────────────────────────
+\subsection{Lecture (\texttt{lec})}
+\label{sec:composite_lec}
+
+La fuente A ocupa aproximadamente el 75\,\% del encuadre mientras la fuente B
+aparece reducida a la derecha. Este composite está diseñado para retransmisiones
+de ponencias o clases: las diapositivas (fuente A) dominan el encuadre y la
+cámara del ponente (fuente B) se muestra en un recuadro lateral, manteniendo
+siempre la legibilidad del contenido proyectado.
+
+La variante \texttt{lec\_43} acomoda contenido con relación de aspecto 4:3
+(proyectores antiguos o capturas de escritorio a 1024\texttimes{}768) en un
+encuadre 16:9. En la versión original del repositorio, esta variante aplicaba
+un recorte del 31\,\% mediante el parámetro \texttt{crop-a=0.125/0} que
+destruía el encuadre cuando la fuente era nativa 16:9. Se corrigió redefiniendo
+los parámetros de posición y escala en el fichero INI para eliminar el recorte
+y ajustar la ventana secundaria sin desbordar el fotograma.
+
+\begin{figure}[H]
+  \centering
+  \subcaptionbox{Disposición geométrica: fuente A domina el encuadre, B reducida
+    a la derecha.\label{fig:diag_lec}}{%
+    \includegraphics[width=\textwidth,
+      trim={641pt 0pt 0pt 0pt},clip]{figuras/composites_diagrama}}
+  \par\vspace{0.5cm}
+  \subcaptionbox{Interfaz de Voctomix~2.0 con el modo \texttt{lec} activo.%
+    \label{fig:screen_lec}}{%
+    \fbox{\begin{minipage}[c][3.5cm][c]{\textwidth}\centering
+      \textit{[CAPTURA PENDIENTE]}\\[4pt]
+      \texttt{figuras/screenshot\_lec.png}
+    \end{minipage}}}
+  \caption{Composite Lecture: disposición geométrica (arriba) e interfaz real
+           con el modo activo (abajo).}
+  \label{fig:composite_lec}
+\end{figure}
+
+% ────────────────────────────────────────────────────────────────────────────
+\subsection{Mirror}
+\label{sec:composite_mirror}
+
+El efecto espejo no es un composite independiente sino una propiedad disponible en
+varios de los modos anteriores (\texttt{mirror=true} en \texttt{pip}, \texttt{lec}
+y \texttt{fs-pip}). Permite invertir horizontalmente la fuente A o B directamente
+en el compositor de GStreamer, sin coste computacional adicional. Resulta necesario
+cuando la señal de cámara llega especularmente invertida, como ocurre con ciertos
+modelos de cámara web o cuando la cámara está orientada de forma atípica respecto
+al eje de la escena.
