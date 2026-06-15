@@ -8,19 +8,14 @@ con los parámetros geométricos definidos en la sección \texttt{[composites]} 
 fichero de configuración. La modificación de estos parámetros en tiempo real
 permite transiciones suaves entre composites sin generar fotogramas corruptos.
 
-Los composites disponibles en Voctomix 2.0 son los siguientes:
-
 La figura~\ref{fig:composites_diagrama} ilustra la disposición visual de las dos
 fuentes (A en naranja, B en azul) en cada uno de los composites principales.
 
 \begin{figure}[H]
   \centering
-  % W=3.2, H=1.8, gap=0.7 → offsets: 0, 3.9, 7.8, 11.7
   \includegraphics[width=\textwidth]{figuras/composites_diagrama}
-  \caption{Disposición visual de las fuentes A y B en los cuatro composites
-           principales de Voctomix~2.0: pantalla completa (\texttt{fs}),
-           imagen en imagen (\texttt{pip}), lado a lado (\texttt{sbs}) y
-           conferencia (\texttt{lec}).}
+  \caption{Disposición geométrica de las fuentes A (naranja) y B (azul) en los
+           cuatro composites principales de Voctomix~2.0.}
   \label{fig:composites_diagrama}
 \end{figure}
 
@@ -32,14 +27,28 @@ emite a pantalla completa. Resulta adecuado para la emisión de una ponencia ind
 una demostración en pantalla o cualquier situación en la que una única fuente deba
 ocupar todo el encuadre.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.72\textwidth]{figuras/fullscreen}
+  \caption{Interfaz de Voctomix~2.0 con el composite Full Screen activo.}
+  \label{fig:screen_fs}
+\end{figure}
+
 \subsection{Picture in Picture (pip)}
 
 La fuente A se muestra a pantalla completa mientras la fuente B aparece reducida en
-una esquina del encuadre (tipicamente la esquina inferior derecha), a una escala
-aproximada del 27\% del ancho del fotograma. Es el composite clásico de ``ponente con
-presentación'': la cámara del ponente ocupa la pantalla completa y las diapositivas
-aparecen en la esquina, o viceversa. El parámetro \texttt{mirror=true} permite invertir horizontalmente la imagen de la
-cámara cuando ésta llega girada especularmente.
+una esquina del encuadre (típicamente la esquina inferior derecha), a una escala
+aproximada del 27\,\% del ancho del fotograma. Es el composite clásico de ponente con
+presentación: la cámara del ponente ocupa la pantalla completa y las diapositivas
+aparecen en la esquina, o viceversa. El parámetro \texttt{mirror=true} permite invertir
+horizontalmente la imagen de la cámara cuando ésta llega girada especularmente.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.72\textwidth]{figuras/picture_in_picture}
+  \caption{Interfaz de Voctomix~2.0 con el composite Picture in Picture activo.}
+  \label{fig:screen_pip}
+\end{figure}
 
 \subsection{Side by Side (sbs)}
 
@@ -48,39 +57,40 @@ cada una aproximadamente la mitad del fotograma. Es útil para comparaciones vis
 debates con dos participantes o para mostrar simultáneamente la cámara del ponente y
 sus diapositivas con el mismo peso visual.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.72\textwidth]{figuras/side_by_side}
+  \caption{Interfaz de Voctomix~2.0 con el composite Side by Side activo.}
+  \label{fig:screen_sbs}
+\end{figure}
+
 \subsection{Lecture (lec)}
 
-La fuente A ocupa la mayor parte del encuadre (aproximadamente el 75\%) mientras que
+La fuente A ocupa la mayor parte del encuadre (aproximadamente el 75\,\%) mientras que
 la fuente B aparece reducida en la parte derecha. Este composite está específicamente
 diseñado para retransmisiones de ponencias o clases: las diapositivas (fuente A)
 dominan el encuadre y la cámara del ponente (fuente B) aparece en un recuadro lateral
 de menor tamaño, manteniendo siempre la legibilidad del contenido proyectado.
 
 La variante \texttt{lec\_43} comparte la misma disposición geométrica que \texttt{lec},
-fuente A al 75\% y fuente B al 23\% a la derecha, con la diferencia de que incluye
+fuente A al 75\,\% y fuente B al 23\,\% a la derecha, con la diferencia de que incluye
 explícitamente el parámetro \texttt{crop-a=0/0}, lo que garantiza que la fuente A no
 sufre ningún recorte independientemente de su relación de aspecto. Resulta adecuado
 cuando la señal de entrada puede provenir de una fuente 4:3 o 16:9 indistintamente.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.72\textwidth]{figuras/lecture}
+  \caption{Interfaz de Voctomix~2.0 con el composite Lecture activo.}
+  \label{fig:screen_lec}
+\end{figure}
 
 \subsection{Mirror}
 
 Aunque no es un composite independiente sino una propiedad disponible en varios de
 los anteriores (\texttt{mirror=true} en \texttt{pip}, \texttt{lec} y \texttt{fs-pip}),
-el efecto espejo permite invertir horizontalmente la fuente A o B en el composite. Esto
-es necesario cuando la señal de cámara llega especularmente invertida, como puede
-ocurrir con ciertos modelos de cámaras web o cuando la cámara está orientada de forma
-atípica. Al activar el mirror desde el fichero de configuración, el núcleo aplica la
-inversión directamente en el compositor de GStreamer sin coste adicional.
-
-\begin{figure}[H]
-  \centering
-  \fbox{\begin{minipage}{0.85\textwidth}\centering\vspace{1.2cm}
-    \textit{[IMAGEN PENDIENTE: captura del selector de composites en voctogui,}\\
-    \textit{mostrando los botones FULL SCREEN, PIP, SIDE BY SIDE y LECTURE]}\\
-    \textit{con el composite activo resaltado.}\\[4pt]
-    \textit{Guardar como \texttt{figuras/panel\_composites.png} y enviar.}
-    \vspace{1.2cm}
-  \end{minipage}}
-  \caption{Selector de modos de composite en la interfaz de Voctomix~2.0.}
-  \label{fig:panel_composites}
-\end{figure}
+el efecto espejo permite invertir horizontalmente la fuente A o B en el composite. Es
+necesario cuando la señal de cámara llega especularmente invertida, como puede ocurrir
+con ciertos modelos de cámaras web o cuando la cámara está orientada de forma atípica.
+Al activar el mirror desde el fichero de configuración, el núcleo aplica la inversión
+directamente en el compositor de GStreamer sin coste adicional.
