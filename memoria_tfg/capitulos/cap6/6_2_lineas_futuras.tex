@@ -34,19 +34,20 @@ constituyen líneas de trabajo futuro de interés.
   producción.
 
   \item \textbf{Escalado automático en Kubernetes.}
-  La arquitectura de microservicios desplegada en Kubernetes está preparada
-  conceptualmente para incorporar un \textit{Horizontal Pod Autoscaler} que escale
-  dinámicamente los servicios de transcripción o distribución en función de la carga.
-  Una línea de trabajo concreta sería integrar un transcodificador de salida (FFmpeg
-  con destino RTMP o SRT) como un microservicio escalable independiente de voctocore,
-  de forma que el número de destinos de distribución pueda aumentarse sin detener la
-  producción.
+  Kubernetes puede arrancar automáticamente nuevas instancias de un servicio cuando
+  la demanda sube, mediante el mecanismo \textit{Horizontal Pod Autoscaler} (HPA).
+  Una aplicación directa sería convertir la transcodificación de salida en un
+  microservicio independiente: un contenedor FFmpeg que reciba la mezcla de voctocore
+  y la reenvíe hacia plataformas de distribución (RTMP, SRT). Si el evento crece y
+  hay que emitir a más destinos simultáneamente, Kubernetes podría lanzar nuevas
+  copias de ese transcodificador de forma automática, sin interrumpir la producción
+  en curso ni tocar el núcleo del mezclador.
 
   \item \textbf{Distribución de salida con SRT y HLS adaptativo.}
   Actualmente la señal de programa se expone como flujo TCP en bruto por el puerto
   15000. Una mejora natural sería añadir una etapa de transcodificación con FFmpeg que
-  publique simultáneamente la señal en SRT (para ingesta profesional de baja latencia)
-  y en HLS (para audiencias masivas mediante CDN), integrando ambas salidas como
+  publique simultáneamente la señal en SRT para ingesta profesional de baja latencia
+  y en HLS para audiencias masivas mediante CDN, integrando ambas salidas como
   servicios adicionales en el Docker Compose existente.
 
   \item \textbf{Integración de subtitulación automática en tiempo real.}
@@ -58,11 +59,13 @@ constituyen líneas de trabajo futuro de interés.
   a las retransmisiones sin intervención manual del operador.
 
   \item \textbf{Panel de monitorización en tiempo real.}
-  Los eventos JSON publicados en RabbitMQ pueden alimentar un \textit{dashboard}
-  de monitorización basado en la pila Grafana y Prometheus. La integración consistiría
-  en añadir un consumidor RabbitMQ que transforme los eventos de telemetría en métricas
-  Prometheus, permitiendo visualizar en tiempo real el consumo de CPU, la latencia de
-  conmutación y el estado de cada fuente durante la producción, con alertas configurables
-  ante caídas de fuentes o superación de umbrales de rendimiento.
+  El sistema ya publica todos los eventos de producción en RabbitMQ en formato JSON.
+  A partir de ahí, un consumidor intermedio podría traducir esos eventos en métricas
+  numéricas y enviarlas a Prometheus, una herramienta de monitorización ampliamente
+  utilizada en infraestructuras cloud~\cite{prometheus_docs}. Sobre esas métricas,
+  Grafana permitiría construir un panel visual con el consumo de CPU, la latencia de
+  conmutación y el estado de cada cámara en tiempo real, y configurar alertas
+  automáticas que avisen al equipo si una fuente cae o el sistema supera un umbral
+  de rendimiento durante la retransmisión.
 
 \end{itemize}
