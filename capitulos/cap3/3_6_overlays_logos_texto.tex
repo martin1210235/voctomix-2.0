@@ -68,20 +68,11 @@ directo: el operador realiza un corte de cámara olvidando retirar el overlay ac
 que queda superpuesto sobre la nueva fuente de forma inapropiada (por ejemplo, el
 nombre de un ponente apareciendo sobre la imagen de otro).
 
-Cuando la opción \texttt{auto-off=true} está activa en la configuración, el módulo
-\texttt{overlay.py} registra un \textit{listener} sobre el evento \texttt{video\_status}.
-Cada vez que la fuente de vídeo activa cambia, el listener inicia automáticamente la
-secuencia de fundido de salida del overlay activo. Si hay texto dinámico superpuesto,
-éste se elimina junto al overlay gráfico, garantizando que ningún elemento de
-rotulación quede huérfano en pantalla.
-
-El comportamiento puede configurarse mediante:
-\begin{itemize}
-  \item \texttt{auto-off = true/false}: activa o desactiva la funcionalidad.
-  \item \texttt{user-auto-off = true/false}: expone un botón de alternancia en la
-        GUI para que el operador pueda activar/desactivar el auto-off en tiempo real.
-  \item \texttt{blend-time = <ms>}: tiempo de fundido de salida en milisegundos.
-\end{itemize}
+Con esta opción activa, cada vez que el realizador realiza un corte de cámara el
+sistema retira automáticamente el overlay y el texto dinámico con un fundido de salida,
+sin que el operador tenga que hacerlo manualmente. La funcionalidad puede activarse de
+forma permanente en la configuración o exponerse como un botón de alternancia en la
+interfaz para que el operador decida en tiempo real si la quiere habilitada.
 
 \begin{figure}[H]
   \centering
