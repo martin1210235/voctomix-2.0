@@ -22,8 +22,8 @@ objetivo de democratizar el acceso a herramientas de producción audiovisual pro
 
 El sistema responde a una necesidad real identificada en el entorno académico y asociativo: la
 realización de retransmisiones en directo de calidad profesional sin depender de hardware dedicado
-de alto coste. Al construirse íntegramente sobre tecnologías libres —GStreamer, Python, Docker,
-RabbitMQ, Kubernetes— el proyecto garantiza su auditabilidad, redistribuibilidad y continuidad más
+de alto coste. Al construirse íntegramente sobre tecnologías libres GStreamer, Python, Docker,
+RabbitMQ y Kubernetes, el proyecto garantiza su auditabilidad, redistribuibilidad y continuidad más
 allá del trabajo individual, alineándose con los principios de ingeniería responsable y abierta.
 
 Este anexo analiza de forma estructurada los aspectos éticos, económicos, sociales y ambientales
@@ -42,21 +42,21 @@ agrupados por dimensión:}
 \normalsize{ Voctomix~2.0 tiene un impacto directo en comunidades con necesidades de producción
 audiovisual sin presupuesto broadcast: grupos de investigación universitarios como CyberNemo (UPM),
 asociaciones estudiantiles, organismos públicos y entidades sin ánimo de lucro. El sistema
-permite a estas organizaciones ofrecer retransmisiones multicámara de calidad profesional —con
-transiciones animadas, overlays, rotulación dinámica y grabación simultánea— sin necesidad de
+permite a estas organizaciones ofrecer retransmisiones multicámara de calidad profesional con
+transiciones animadas, overlays, rotulación dinámica y grabación simultánea, sin necesidad de
 hardware dedicado, ampliando el alcance de la divulgación científica y la cobertura de eventos
 institucionales.}
 
 \vspace{0.15cm}
 \noindent\underline{Aspectos éticos:}
-\normalsize{ El sistema se construye sobre software libre publicado bajo licencias GPL y
-Apache~2.0, lo que garantiza la transparencia del código, su auditabilidad y la independencia de
+\normalsize{ El sistema se construye sobre software libre publicado bajo licencias GPL~\cite{gpl_v2} y
+Apache~2.0~\cite{apache2_license}, lo que garantiza la transparencia del código, su auditabilidad y la independencia de
 proveedores propietarios.
 
 Sin embargo, el modelo de producción remota plantea dos consideraciones éticas que deben
 reconocerse explícitamente. En primer lugar, la automatización y deslocalización de parte del
-proceso de realización puede reducir la demanda de personal técnico presencial —operadores de
-cámara, técnicos de mezcla, personal de sala— en eventos que anteriormente requerían equipos
+proceso de realización puede reducir la demanda de personal técnico presencial: operadores de
+cámara, técnicos de mezcla, personal de sala, en eventos que anteriormente requerían equipos
 completos in situ. La literatura económica muestra que la automatización desplaza tareas
 rutinarias pero también genera nuevas, aunque la transición exige políticas activas de
 reconversión~\cite{acemoglu2019automation}. Esta sustitución debe gestionarse de forma
@@ -89,16 +89,17 @@ A esto se añade la reducción de infraestructura hardware: una instalación mul
 basada en hardware dedicado (mezclador Blackmagic ATEM, matrices de vídeo SDI, sistemas de
 grabación profesional) puede superar los 5.000~\euro\ en adquisición, más gastos de mantenimiento
 y formación. Voctomix~2.0 replica estas funcionalidades sobre hardware convencional con un coste
-de despliegue prácticamente nulo, ya que todo el software es libre y el sistema arranca con un
-único comando (\texttt{docker compose up}).
+de despliegue prácticamente nulo, ya que todo el software es libre y el sistema puede
+ponerse en marcha de forma inmediata sin configuraciones complejas ni conocimientos previos
+de administración de sistemas.
 
 La arquitectura cliente-servidor permite además reutilizar la misma infraestructura para múltiples
 eventos, reduciendo el coste por producción a medida que aumenta el volumen de retransmisiones.}
 
 \vspace{0.15cm}
 \noindent\underline{Aspectos sociales:}
-\normalsize{ La principal contribución social del proyecto es la \textbf{democratización del acceso
-a la producción audiovisual profesional}. Al eliminar la barrera económica y técnica que supone el
+\normalsize{ La principal contribución social del proyecto es la democratización del acceso
+a la producción audiovisual profesional. Al eliminar la barrera económica y técnica que supone el
 hardware dedicado, el sistema permite que entidades sin presupuesto broadcast —conferencias
 académicas, jornadas de puertas abiertas, actos culturales, organismos públicos— ofrezcan
 retransmisiones de calidad a sus audiencias. Al publicar el código bajo licencia libre, el proyecto

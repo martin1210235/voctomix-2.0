@@ -42,9 +42,9 @@ Simply update the relevant .md file immediately—**no approval needed** for doc
 
 **Run (Docker — recommended):**
 ```bash
-xhost +local:$(id -un)
-./launch_docker_studio.sh
-docker compose down   # stop
+make docker-up      # xhost + launch_docker_studio.sh
+make docker-down    # stop all services
+make docker-restart # down + up in one step
 ```
 
 **Run (single PC, native):**
@@ -77,7 +77,7 @@ make thesis-watch  # watch mode (latexmk -pvc)
 make thesis-clean  # remove build artifacts
 ```
 
-**Other `make` targets:** `docker-build`, `docker-logs`, `docker-ps`.
+**Other `make` targets:** `docker-build`, `docker-logs`, `docker-ps`; see `make help` for the full list.
 
 # Architecture
 
@@ -102,6 +102,8 @@ make thesis-clean  # remove build artifacts
 **Docker stack** (`docker-compose.yml`, 10 services): voctocore, rabbitmq (5672/15672), telemetry (8080), cam1-4, stream_blanker, intro, audio_manager. Camera containers use `network_mode: service:voctocore` (shared namespace, zero-overhead localhost communication).
 
 **Key config files:** `voctocore/default-config.ini` (video: 1920×1080 I420 25fps; audio: 48kHz S16LE stereo), `voctogui/default-config.ini` (GUI layout).
+
+**`paper/`** (MDPI Electronics journal submission): `template.tex` is the main file; `references.bib` holds all citations; `figures/` holds all artwork; `Definitions/` holds custom LaTeX macros. Always read `.claude/paper_guide.md` before editing anything here.
 
 ---
 
@@ -133,8 +135,32 @@ make thesis-clean  # remove build artifacts
 3. Síntesis Extrema: A diferencia del TFG, el paper exige eliminar cualquier explicación redundante. Ve directo a los datos técnicos, la arquitectura de microservicios y los resultados empíricos obtenidos en las pruebas (ej. consumo de red, latencias sub-segundo con SRT).
 
 # 🤖 Reglas de Comportamiento y Flujo de Trabajo
+0. **Sync automático al inicio de CADA mensaje (OBLIGATORIO):** Antes de responder cualquier mensaje del usuario, ejecutar siempre:
+   ```bash
+   git fetch overleaf
+   git log HEAD..overleaf/master --oneline
+   ```
+   Si hay commits nuevos en `overleaf/master`, sincronizarlos a `memoria_tfg/` local inmediatamente (usando `git show overleaf/master:<fichero>` para cada fichero cambiado) y hacer commit local antes de proceder. El usuario no tiene que avisar — se comprueba automáticamente en cada turno.
+
 1. Rol: Actúa como mi Tutor Técnico, Arquitecto de Software Senior y Revisor Académico.
 2. Archivos Completos: Salvo cambios triviales de una línea, devuelve SIEMPRE el archivo COMPLETO modificado, listo para sobreescribir, sin omitir bloques de código.
 3. Justificación de Ingeniería: Explica brevemente el "porqué" de cada decisión arquitectónica para la defensa de mi TFG.
 4. Paso a paso: Si una tarea afecta a varios archivos, propón un plan numerado, modifica el primero y espera mi confirmación.
 5. Autonomía Máxima: Ejecuta la mayor cantidad de pasos posible de forma independiente, encadena comandos y herramientas para procesar el flujo automáticamente y solo detente si falta información crítica o permisos, para retomar la ejecución autónoma inmediatamente después de mi respuesta.
+6. **Overleaf sync (OBLIGATORIO — memoria TFG):** Tras cualquier commit que toque ficheros bajo `memoria_tfg/`, usar SIEMPRE el patrón completo de rama temporal:
+   ```bash
+   git stash && git checkout -b sync-ol overleaf/master
+   git rm -r --cached . >/dev/null 2>&1
+   git checkout main -- memoria_tfg/ && cp -r memoria_tfg/. .
+   git rm -r --cached memoria_tfg/ >/dev/null 2>&1
+   git add main.tex biblio.bib capitulos/ figuras/ portada/ pre/   # SIEMPRE TODOS, nunca parcial
+   git commit -m "docs: sync" && git push overleaf sync-ol:master
+   git checkout -f main && git stash pop && git branch -D sync-ol
+   ```
+   ⚠️ NUNCA hacer `git add` solo de los ficheros modificados — siempre añadir TODOS. Si se hace parcial, Overleaf pierde los ficheros no añadidos y la memoria desaparece (incidente real 2026-06-03).
+
+7. **Overleaf sync (OBLIGATORIO — paper científico):** Tras cualquier commit que toque ficheros bajo `paper/`, ejecutar desde dentro de `paper/`:
+   ```bash
+   cd /home/sonda/Documentos/voctomix/paper && git add -A && git commit -m "docs: ..." && git push
+   ```
+   El directorio `paper/` tiene su propio `.git` con Overleaf como único remote.

@@ -15,6 +15,7 @@ log() {
 cleanup() {
     log "Shutting down studio..."
     pkill -f "python3 voctogui.py" 2>/dev/null || true
+    pkill -f "ffplay.*15000" 2>/dev/null || true
     cd "$BASE_DIR"
     sudo docker compose down > /dev/null 2>&1 || true
     log "Studio closed."
@@ -55,6 +56,9 @@ log "voctocore is operational"
 log "Opening voctogui..."
 cd "$BASE_DIR/voctogui"
 PYTHONWARNINGS="ignore::DeprecationWarning" python3 voctogui.py 2>/dev/null &
+
+log "Opening program monitor (port 15000)..."
+ffplay -hide_banner -loglevel error -window_title "PROGRAM" tcp://127.0.0.1:15000 &
 
 log "System live and ready."
 echo "--------------------------------------------------------"

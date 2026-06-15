@@ -98,7 +98,7 @@ services:
     container_name: cam1
     environment:
       <<: *video-env
-      CAM1_SOURCE: ${CAM1_SOURCE:-http://cdn.media.ccc.de/congress/31C3-sendezentrum/h264-hd/31c3-sendezentrum-1013-de-Methodisch_inkorrekt_Die_falsche_42_hd.mp4}
+      CAM1_SOURCE: ${CAM1_SOURCE:-https://ffmuc.media.ccc.de/events/MCH2022/h264-hd/mch2022-109-eng-May_Contain_Hackers_2022_Opening_hd.mp4}
       CAM1_PORT:   ${CAM1_PORT:-10000}
     command:
       - sh
@@ -126,7 +126,7 @@ services:
     container_name: cam2
     environment:
       <<: *video-env
-      CAM2_SOURCE: ${CAM2_SOURCE:-http://cdn.media.ccc.de/congress/31C3-sendezentrum/h264-hd/31c3-sendezentrum-1003-de-Freak_Show_FS147_That_Escalatored_Quickly_hd.mp4}
+      CAM2_SOURCE: ${CAM2_SOURCE:-https://ffmuc.media.ccc.de/events/MCH2022/h264-hd/mch2022-64-eng-Ethics_does_not_belong_on_the_wall_Ethical_framework_for_the_use_of_location_data_hd.mp4}
       CAM2_PORT:   ${CAM2_PORT:-10001}
     command:
       - sh
@@ -154,7 +154,7 @@ services:
     container_name: cam3
     environment:
       <<: *video-env
-      CAM3_SOURCE: ${CAM3_SOURCE:-http://cdn.media.ccc.de/congress/31C3-sendezentrum/h264-hd/31c3-sendezentrum-1003-de-Freak_Show_FS147_That_Escalatored_Quickly_hd.mp4}
+      CAM3_SOURCE: ${CAM3_SOURCE:-https://ffmuc.media.ccc.de/events/MCH2022/h264-hd/mch2022-151-eng-Infrastructure_review_hd.mp4}
       CAM3_PORT:   ${CAM3_PORT:-10002}
     command:
       - sh
@@ -182,7 +182,7 @@ services:
     container_name: cam4
     environment:
       <<: *video-env
-      CAM4_SOURCE: ${CAM4_SOURCE:-https://www.w3schools.com/html/mov_bbb.mp4}
+      CAM4_SOURCE: ${CAM4_SOURCE:-https://ffmuc.media.ccc.de/events/MCH2022/h264-hd/mch2022-319-eng-Lightning_Talks_Tuesday_hd.mp4}
       CAM4_PORT:   ${CAM4_PORT:-10003}
     command:
       - sh

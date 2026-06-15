@@ -29,7 +29,7 @@ Voctomix 2.0 is an evolution of the open-source live video mixing system origina
 |---|---|
 | **Stream Blanker — LIVE / PAUSE / NOSTREAM** | `voctocore/lib/streamblanker.py`, `voctogui/lib/toolbar/streamblank.py` |
 | **Dynamic on-air titling (lower-thirds)** | `voctogui/lib/toolbar/overlay.py`, `voctogui/ui/` |
-| **Telemetry service (Notario)** | `voctogui/lib/gui_state_exporter.py`, `example-scripts/ffmpeg/telemetry_service.py` |
+| **Telemetry service** | `voctogui/lib/gui_state_exporter.py`, `example-scripts/ffmpeg/telemetry_service.py` |
 | **Audio Follows Video (AFV)** | `voctocore/lib/audiomix.py` |
 | **Auto-Off Overlays** | `voctogui/lib/toolbar/overlay.py` |
 | **Full Docker containerization** | `Dockerfile`, `docker-compose.yml`, `launch_docker_studio.sh` |
@@ -41,7 +41,7 @@ Three-state output control replaces the original binary on/off switch. The opera
 ### Dynamic On-Air Titling
 Two independent text layers (lower-thirds, speaker names, event titles) can be typed in the GUI and applied to the live program in real time. Text is composited directly over the output mix.
 
-### Telemetry Service (Notario)
+### Telemetry Service
 A background thread in voctogui exports the complete mixer state — active sources, composite mode, stream blanker status, overlay text, audio levels — as a structured JSON document every second. In single-machine setups it writes to `registros/gui_state.json`; in multi-machine or Docker setups it pushes via HTTP POST to the telemetry container, which exposes an HTTP endpoint on port 8080 and publishes events to RabbitMQ.
 
 ### Audio Follows Video
@@ -229,7 +229,7 @@ voctomix2.0/
 │   ├── voctogui.py                 # Entry point
 │   ├── default-config.ini          # GUI configuration
 │   └── lib/
-│       ├── gui_state_exporter.py   # [NEW] Telemetry / Notario
+│       ├── gui_state_exporter.py   # [NEW] Telemetry JSON exporter
 │       └── toolbar/
 │           ├── streamblank.py      # [NEW] Stream status toolbar
 │           └── overlay.py          # [NEW] Dynamic titling + auto-off
@@ -256,6 +256,10 @@ voctomix2.0/
 ├── launch_docker_studio.sh         # [Scenario 3] One-command Docker launcher
 ├── start_studio_single_pc.sh       # [Scenario 1] Single-PC native launcher
 ├── start_server.sh                 # [Scenario 2] Server-only launcher
+├── .env.example                    # Environment variable template (copy to .env)
+├── .github/workflows/              # CI: tests, lint, Docker build on push
+├── docs/                           # Project documentation (architecture, API, deployment)
+├── .claude/                        # Claude Code context (rules, memory, templates)
 └── memoria_tfg/                    # LaTeX source of the Bachelor's Thesis
 ```
 
