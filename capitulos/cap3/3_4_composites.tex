@@ -65,17 +65,13 @@ sus diapositivas con el mismo peso visual.
 
 \subsection{Lecture (lec)}
 
-La fuente A ocupa la mayor parte del encuadre (aproximadamente el 75\,\%) mientras que
-la fuente B aparece reducida en la parte derecha. Este composite está específicamente
-diseñado para retransmisiones de ponencias o clases: las diapositivas (fuente A)
-dominan el encuadre y la cámara del ponente (fuente B) aparece en un recuadro lateral
-de menor tamaño, manteniendo siempre la legibilidad del contenido proyectado.
-
-La variante \texttt{lec\_43} comparte la misma disposición geométrica que \texttt{lec},
-fuente A al 75\,\% y fuente B al 23\,\% a la derecha, con la diferencia de que incluye
-explícitamente el parámetro \texttt{crop-a=0/0}, lo que garantiza que la fuente A no
-sufre ningún recorte independientemente de su relación de aspecto. Resulta adecuado
-cuando la señal de entrada puede provenir de una fuente 4:3 o 16:9 indistintamente.
+La fuente A ocupa el 75\,\% del encuadre 16:9 y la fuente B aparece reducida al 23\,\%
+en la parte derecha, ambas en relación de aspecto 16:9. Este composite está diseñado
+para retransmisiones de ponencias o clases: las diapositivas (fuente A) dominan el
+encuadre y la cámara del ponente (fuente B) aparece en un recuadro lateral, manteniendo
+la legibilidad del contenido proyectado. La variante \texttt{lec\_43} añade el parámetro
+\texttt{crop-a=0/0} para garantizar que la fuente A no sufre ningún recorte,
+lo que la hace adecuada cuando la señal de entrada puede ser 4:3 o 16:9 indistintamente.
 
 \begin{figure}[H]
   \centering
