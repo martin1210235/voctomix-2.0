@@ -16,12 +16,10 @@ paquete CPU; el valor mostrado descuenta el baseline de cada entorno en reposo.
       ylabel={Uso de CPU (\%)},
       xtick={1,2,3,4},
       xmin=0.5, xmax=4.5,
-      ymin=0, ymax=70,
+      ymin=20, ymax=65,
       ymajorgrids=true, grid style=dashed,
       mark size=3pt,
-      nodes near coords,
-      every node near coord/.append style={font=\small, anchor=south},
-      legend style={at={(0.97,0.97)}, anchor=north east},
+      legend style={at={(0.03,0.97)}, anchor=north west, font=\scriptsize},
     ]
       \addplot[color=orange!80!black, mark=*, thick]
         coordinates {(1,33.5) (2,35.2) (3,35.8) (4,38.8)};
@@ -50,12 +48,10 @@ similar, pero queda enmascarado por la infraestructura de orquestación.
       ylabel={Uso de RAM (\%)},
       xtick={1,2,3,4},
       xmin=0.5, xmax=4.5,
-      ymin=0, ymax=25,
+      ymin=6, ymax=18,
       ymajorgrids=true, grid style=dashed,
       mark size=3pt,
-      nodes near coords,
-      every node near coord/.append style={font=\small, anchor=south},
-      legend style={at={(0.97,0.97)}, anchor=north east},
+      legend style={at={(0.03,0.97)}, anchor=north west, font=\scriptsize},
     ]
       \addplot[color=blue!70!black, mark=*, thick]
         coordinates {(1,9.7) (2,9.9) (3,9.9) (4,10.1)};
@@ -85,12 +81,10 @@ fuentes.
       ylabel={Consumo energético neto (W)},
       xtick={1,2,3,4},
       xmin=0.5, xmax=4.5,
-      ymin=0, ymax=50,
+      ymin=15, ymax=45,
       ymajorgrids=true, grid style=dashed,
       mark size=3pt,
-      nodes near coords,
-      every node near coord/.append style={font=\small, anchor=south},
-      legend style={at={(0.97,0.97)}, anchor=north east},
+      legend style={at={(0.03,0.97)}, anchor=north west, font=\scriptsize},
     ]
       \addplot[color=green!60!black, mark=triangle*, thick]
         coordinates {(1,25.1) (2,27.6) (3,27.6) (4,32.2)};
@@ -108,10 +102,11 @@ El consumo neto atribuible a Voctomix\,2.0 es similar en ambos entornos, entre
 25 y 32\,W, lo que indica que el trabajo real de procesamiento multimedia es
 equivalente con independencia del orquestador. La mayor dispersión observada en
 Kubernetes se debe a la varianza del baseline del plano de control, que oscila
-entre 59 y 63\,W según el estado del sistema. En términos de consumo total, el
-escenario Docker consume alrededor de 50\,W con cuatro cámaras (71\,\% del TDP
-del procesador), mientras que Kubernetes supera los 90\,W al incluir la
-infraestructura de orquestación.
+entre 59 y 63\,W según el estado del sistema. En términos de consumo total, el escenario Docker alcanza unos 50\,W con cuatro
+cámaras, lo que representa aproximadamente el 30\,\% del TDP del procesador
+(165\,W, Intel Core i9-10900X), dejando un margen amplio para no saturar el
+sistema. Kubernetes supera los 90\,W al incluir la infraestructura de
+orquestación.
 
 \section{Análisis comparativo Docker vs.\ Kubernetes}
 \label{sec:rendimiento_escenarios}
@@ -169,7 +164,7 @@ entre el envío del comando \texttt{set\_video\_a} y la recepción de la respues
       ymin=0, ymax=18,
       ymajorgrids=true, grid style=dashed,
       bar width=0.5,
-      legend style={at={(0.97,0.97)}, anchor=north east},
+      legend style={at={(0.97,0.97)}, anchor=north east, font=\scriptsize},
     ]
       \addplot[fill=blue!30, draw=blue!60]
         coordinates {(1.0,13) (1.5,15) (2.0,1) (2.5,1) (3.0,0) (3.5,0)};
