@@ -186,8 +186,7 @@ entre el envío del comando \texttt{set\_video\_a} y la recepción de la respues
     \textbf{Estadístico} & \textbf{Docker} & \textbf{Kubernetes} \\
     \hline
     Mínimo         & 1{,}0\,ms  & 1{,}4\,ms \\
-    Mediana (p50)  & 1{,}5\,ms  & 1{,}8\,ms \\
-    Percentil\,95  & 2{,}3\,ms  & 2{,}6\,ms \\
+    Mediana        & 1{,}5\,ms  & 1{,}8\,ms \\
     Máximo         & 2{,}7\,ms  & 4{,}7\,ms \\
     $<$ 40\,ms     & 30\,/\,30  & 30\,/\,30 \\
     \hline
@@ -197,7 +196,7 @@ entre el envío del comando \texttt{set\_video\_a} y la recepción de la respues
 En los dos entornos, el 100\,\% de las conmutaciones se resuelve en menos de
 5\,ms, muy por debajo del umbral de un fotograma a 25\,fps (40\,ms). Kubernetes
 presenta una mediana de 1{,}8\,ms frente a 1{,}5\,ms en Docker, diferencia
-apenas perceptible que se debe al salto adicional del port-forward de kubectl.
+apenas perceptible atribuible al salto adicional del port-forward de kubectl.
 Ambos entornos cumplen el requisito de conmutación imperceptible en producción
 en directo.
 
