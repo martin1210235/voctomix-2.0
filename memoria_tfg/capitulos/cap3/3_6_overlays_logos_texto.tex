@@ -22,9 +22,9 @@ desactivar individualmente desde la interfaz gráfica.
 
 \subsection{Overlays PNG y texto dinámico}
 
-Los overlays son imágenes PNG con canal alfa que se superponen sobre la señal de vídeo
+Los overlays son imágenes PNG que se superponen sobre la señal de vídeo
 mediante el elemento GStreamer \texttt{gdkpixbufoverlay}. El módulo
-\texttt{voctocore/lib/overlay.py} gestiona el ciclo de vida completo de un overlay:
+\texttt{overlay.py} gestiona el ciclo de vida completo de un overlay:
 carga del fichero PNG, fundido de entrada (\textit{blend-in}), mantenimiento en
 pantalla y fundido de salida (\textit{blend-out}). El tiempo de fundido se controla
 mediante el parámetro \texttt{blend-time} en la sección \texttt{[overlay]} del
