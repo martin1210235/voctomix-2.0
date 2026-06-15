@@ -1,73 +1,79 @@
 En este capítulo se sintetizan las principales aportaciones del trabajo y se evalúa el
 grado de consecución de los objetivos planteados en el Capítulo~1. La
-Sección~\ref{sec:conclusiones} recoge las conclusiones extraídas del desarrollo e
-implementación del sistema. La Sección~\ref{sec:lineas_futuras} identifica las líneas
-de trabajo futuro que podrían ampliar las capacidades de Voctomix~2.0 o adaptar la
-plataforma a nuevos casos de uso.
+Sección~\ref{sec:conclusiones} recoge las conclusiones del desarrollo e implementación
+del sistema. La Sección~\ref{sec:lineas_futuras} identifica líneas de trabajo futuro
+que podrían ampliar las capacidades de Voctomix~2.0 o adaptarla a nuevos contextos.
 
 \section{Conclusiones}
 \label{sec:conclusiones}
 
 Este trabajo ha desarrollado y validado Voctomix~2.0, un sistema modular de producción
-audiovisual en directo de código abierto que extiende la herramienta Voctomix original
+audiovisual en directo de código abierto que amplía la herramienta Voctomix original
 con funcionalidades de nivel profesional. A continuación se evalúa el grado de
 consecución de cada uno de los seis objetivos específicos planteados.
 
 \vspace{0.3cm}
-\noindent\textbf{OE-1 — Rotulación dinámica.}
-Se ha implementado un sistema de overlays que permite superponer gráficos PNG y texto
-dinámico sobre el vídeo en tiempo real, con fundido de entrada y salida configurable.
-La lógica de auto-desactivación en cada corte de cámara garantiza que ningún rótulo
-permanezca visible de forma involuntaria durante las transiciones, reproduciendo el
-comportamiento de las soluciones broadcast comerciales.
+\noindent\textbf{OE-1 — Funcionalidades de producción profesional.}
+Se han implementado las tres funcionalidades broadcast que el sistema requería. La
+rotulación dinámica permite superponer gráficos PNG y texto en tiempo real, con
+fundido de entrada y salida configurable y desactivación automática en cada corte de
+cámara. El gestor de estados de emisión (stream blanker) ofrece tres modos —LIVE,
+PAUSE y NOSTREAM— que permiten interrumpir la señal de salida sin detener el
+procesamiento interno. La sincronización automática de audio con el vídeo (Audio
+Follows Video) hace que el sistema ajuste los volúmenes de forma automática en cada
+cambio de fuente, lo que elimina la necesidad de gestión manual del audio y reduce
+la carga de trabajo del realizador durante la producción.
 
 \vspace{0.2cm}
-\noindent\textbf{OE-2 — \textit{Stream blanker}.}
-El mecanismo de tres estados (LIVE, PAUSE, NOSTREAM) gestiona de forma independiente
-el audio y el vídeo de cada estado, intercalando bucles de vídeo pregrabado cuando la
-emisión está pausada y silenciando la salida de audio en el estado de fuera de emisión.
-Su integración como módulo dentro del pipeline GStreamer permite operar el sistema sin
-interrumpir el procesamiento interno de la mezcla.
+\noindent\textbf{OE-2 — Servicio de telemetría.}
+El servicio de telemetría registra en tiempo real los eventos de operación del
+mezclador: el tipo CHANGE, emitido de forma inmediata al realizar cualquier acción
+sobre la interfaz, y el tipo STATE, que envía el estado completo del sistema cada
+5 segundos. Todos los eventos se almacenan localmente en formato JSON Lines y se
+publican en un broker RabbitMQ mediante el protocolo AMQP. Esto permite integrar
+el sistema con herramientas externas de monitorización o análisis sin modificar
+ninguna parte del núcleo de la aplicación.
 
 \vspace{0.2cm}
-\noindent\textbf{OE-3 — \textit{Audio Follows Video}.}
-La funcionalidad AFV se integró en el módulo \texttt{audiomix.py} mediante fundidos
-automáticos de volumen en cada conmutación de fuente de vídeo. El resultado es una
-sincronía audio-vídeo natural que elimina la necesidad de gestión manual del audio
-durante la realización, reduciendo significativamente la carga cognitiva del operador.
+\noindent\textbf{OE-3 — Contenerización con Docker.}
+El sistema completo se ha empaquetado en una pila de diez contenedores Docker
+orquestada con Docker Compose: voctocore, cuatro fuentes de cámara sintéticas, el
+stream blanker, el gestor de audio, el broker RabbitMQ y el servicio de telemetría.
+El despliegue completo se realiza con un único comando (\texttt{docker compose up}),
+lo que elimina la principal barrera de adopción que suponía la instalación manual
+de dependencias de GStreamer y Python.
 
 \vspace{0.2cm}
-\noindent\textbf{OE-4 — Servicio de telemetría.}
-El servicio de telemetría registra en tiempo real los eventos de operación del mezclador
-(tipo CHANGE) y el estado periódico del sistema (tipo STATE, cada 5 segundos) en
-formato JSON Lines. Los eventos se publican simultáneamente en un broker RabbitMQ
-mediante AMQP, lo que permite su integración con sistemas externos de monitorización
-o análisis sin modificar el núcleo de la aplicación. Los datos de rendimiento
-obtenidos a través de este sistema han permitido caracterizar cuantitativamente el
-comportamiento del sistema en los cuatro escenarios de despliegue.
+\noindent\textbf{OE-4 — Despliegue en Kubernetes.}
+El sistema se ha desplegado sobre un clúster local Minikube, con manifiestos
+declarativos que reproducen la misma funcionalidad que el escenario Docker Compose
+pero en una infraestructura orquestada. La arquitectura del sistema escala de forma
+natural desde Docker Compose hacia Kubernetes sin necesidad de modificar el código
+del núcleo ni de la interfaz gráfica.
 
 \vspace{0.2cm}
-\noindent\textbf{OE-5 — Contenerización Docker.}
-El sistema completo se ha empaquetado en una pila de diez contenedores Docker orquestada
-con Docker Compose, incluyendo voctocore, cuatro fuentes de cámara sintéticas, el stream
-blanker, el gestor de audio, el broker RabbitMQ y el servicio de telemetría. El despliegue
-completo se realiza con un único comando (\texttt{docker compose up}), eliminando la
-principal barrera de adopción que representaba la instalación manual de dependencias
-GStreamer y Python. La sobrecarga de virtualización medida es inferior a 6 puntos
-porcentuales de CPU respecto al despliegue nativo.
+\noindent\textbf{OE-5 — Validación en múltiples escenarios.}
+El sistema ha sido validado funcionalmente en cuatro escenarios de despliegue: un
+único PC, dos PCs en red local, Docker Compose y Kubernetes con Minikube. En los
+escenarios contenerizados, la latencia de conmutación medida fue inferior a 3\,ms
+en el 100\,\% de las mediciones (mediana de 1{,}5\,ms en Docker y 1{,}8\,ms en
+Kubernetes), muy por debajo del umbral de un fotograma a 25\,fps (40\,ms).
+El consumo de CPU con cuatro cámaras activas se mantiene por debajo del 40\,\%,
+con un crecimiento sub-lineal al añadir nuevas fuentes, lo que confirma que el
+sistema tiene margen de operación suficiente en equipos de gama media.
 
 \vspace{0.2cm}
-\noindent\textbf{OE-6 — Validación en múltiples escenarios.}
-El sistema ha sido validado funcionalmente en cuatro escenarios de despliegue, y
-analizado en detalle en los dos escenarios contenerizados: Docker Compose y
-Kubernetes con Minikube. La latencia de conmutación medida en ambos entornos fue
-inferior a 5\,ms en el 100\,\% de las mediciones (mediana de 1{,}5\,ms en Docker
-y 1{,}8\,ms en Kubernetes), cumpliendo con margen el requisito de conmutación
-imperceptible a 25 fotogramas por segundo (40\,ms por fotograma).
+\noindent\textbf{OE-6 — Despliegue en producción real.}
+El sistema fue desplegado en un entorno de producción real dentro del proyecto
+europeo de investigación \textbf{CyberNEMO} (UPM), donde operó como motor de
+producción audiovisual integrado en la infraestructura Kubernetes de la
+universidad. Este despliegue demuestra que Voctomix~2.0 va más allá del prototipo
+académico y es directamente aplicable a infraestructuras de investigación y
+producción audiovisual profesional.
 
 \vspace{0.4cm}
-La tabla~\ref{tab:objetivos_cumplidos} resume el grado de consecución de los objetivos
-y las secciones de la memoria donde se documentan.
+La tabla~\ref{tab:objetivos_cumplidos} resume el grado de consecución de los
+objetivos y las secciones donde se documentan.
 
 \begin{table}[H]
   \centering
@@ -77,40 +83,33 @@ y las secciones de la memoria donde se documentan.
     \hline
     \textbf{Obj.} & \textbf{Descripción} & \textbf{Estado} & \textbf{Sección} \\
     \hline
-    OE-1 & Rotulación dinámica y overlays   & Cumplido & \S\ref{sec:overlays} \\
-    OE-2 & \textit{Stream blanker} (3 estados) & Cumplido & \S\ref{sec:fuentes_auxiliares} \\
-    OE-3 & \textit{Audio Follows Video}     & Cumplido & \S\ref{sec:transiciones} \\
-    OE-4 & Telemetría JSON + RabbitMQ       & Cumplido & \S\ref{sec:telemetria} \\
-    OE-5 & Contenerización Docker Compose   & Cumplido & \S\ref{sec:docker} \\
-    OE-6 & Validación Docker y Kubernetes     & Cumplido & Cap.~\ref{chap:diseno} \\
+    OE-1 & Rotulación, stream blanker y AFV  & Cumplido & \S\ref{sec:overlays}, \S\ref{sec:fuentes_auxiliares} \\
+    OE-2 & Telemetría JSON + RabbitMQ        & Cumplido & \S\ref{sec:telemetria} \\
+    OE-3 & Contenerización Docker Compose    & Cumplido & \S\ref{sec:docker} \\
+    OE-4 & Despliegue en Kubernetes          & Cumplido & \S\ref{sec:kubernetes} \\
+    OE-5 & Validación multi-escenario        & Cumplido & Cap.~\ref{chap:pruebas} \\
+    OE-6 & Despliegue real en CyberNEMO      & Cumplido & \S\ref{sec:escenarios_despliegue} \\
     \hline
   \end{tabular}
 \end{table}
 
 \vspace{0.3cm}
 
-Más allá de la consecución individual de los objetivos, el trabajo ha demostrado que
-es viable construir una plataforma de producción audiovisual profesional íntegramente
-sobre software libre. La elección de GStreamer como motor multimedia ha resultado
-especialmente acertada: su modelo de \textit{pipeline} modular ha permitido integrar
-cada nueva funcionalidad como un módulo independiente sin necesidad de alterar el
-núcleo original del sistema, lo que facilita el mantenimiento futuro y la contribución
-por parte de terceros.
+Más allá de los objetivos concretos, el trabajo ha demostrado que es posible
+construir una plataforma de producción audiovisual profesional íntegramente sobre
+software libre. GStreamer ha sido la elección central: su modelo de pipeline
+modular ha permitido integrar cada nueva funcionalidad como un módulo independiente
+sin necesidad de modificar el núcleo original, lo que facilita el mantenimiento
+y la extensión del sistema por parte de terceros.
 
-La arquitectura cliente-servidor desacoplada, en la que \texttt{voctocore} actúa como
-servidor multimedia y \texttt{voctogui} como cliente ligero de control, ha demostrado
-ser robusta en entornos contenerizados y orquestados, y escala de forma natural
-desde Docker Compose hacia Kubernetes. El protocolo de control TCP de texto
-plano sobre el puerto 9999 se ha revelado suficientemente flexible para ser consumido
-simultáneamente por la interfaz gráfica, los scripts de automatización y el servicio
-de telemetría sin mecanismos de sincronización adicionales.
+La separación entre \texttt{voctocore} como servidor multimedia y \texttt{voctogui}
+como cliente ligero de control ha resultado robusta tanto en entornos contenerizados
+como en red física. El protocolo de control TCP de texto plano sobre el puerto~9999
+ha sido suficientemente flexible para ser consumido simultáneamente por la interfaz
+gráfica, los scripts de automatización y el servicio de telemetría, sin necesidad
+de mecanismos de sincronización adicionales.
 
-En conjunto, Voctomix~2.0 constituye una plataforma de producción audiovisual en
-directo robusta, reproducible y extensible. Su validación no se ha limitado a entornos
-de laboratorio: el sistema fue desplegado en un entorno de producción real dentro del
-proyecto europeo de investigación \textbf{CyberNEMO} (UPM), donde actuó como motor de
-producción audiovisual integrado en la infraestructura Kubernetes de la universidad y
-operó junto a componentes de ciberseguridad avanzados. Este despliegue real acredita
-la madurez del sistema más allá del prototipo académico y lo posiciona como una
-contribución directamente aplicable a infraestructuras de investigación y producción
-audiovisual profesional de código abierto.
+En conjunto, Voctomix~2.0 es una plataforma de producción audiovisual en directo
+robusta, reproducible y extensible, validada tanto en entorno de laboratorio como
+en producción real, y con capacidad demostrada para operar en infraestructuras
+de investigación de nivel universitario.
