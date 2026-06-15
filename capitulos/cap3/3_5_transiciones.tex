@@ -18,7 +18,7 @@ corte imita el montaje cinematográfico y resulta imperceptible cuando el
 El botón Trans realiza una transición animada entre el estado actual y el
 nuevo estado de composite o fuente, interpolando los parámetros geométricos y de
 transparencia durante un tiempo configurable (por defecto 750~ms, definido en la
-sección \texttt{[transitions]} del fichero de configuración). La transición se implementa
+sección \texttt{[transitions]} del fichero INI). La transición se implementa
 modificando progresivamente los valores de los pads del compositor de GStreamer.
 
 Voctomix 2.0 define múltiples trayectorias de transición según el estado de origen y
@@ -28,13 +28,20 @@ animación sea visualmente coherente independientemente del cambio solicitado.
 
 \subsection{Retake}
 
-El botón Retake permite al realizador deshacer el último cambio de fuente o
-composite y volver al estado inmediatamente anterior sin interrumpir la señal de
-programa. Su funcionamiento es equivalente a un Cut inverso: en el siguiente fotograma,
-el sistema intercambia programa y preview, restaurando la fuente que estaba en antena
-antes del cambio. Esta función resulta especialmente útil cuando el realizador realiza
-un corte erróneo y necesita corregirlo de inmediato sin generar un segundo corte
-visible en la emisión.
+El botón Retake permite al realizador deshacer el último cambio de fuente o composite y
+volver al estado inmediatamente anterior sin interrumpir la señal de programa. Su
+funcionamiento es equivalente a un Cut inverso: en el siguiente fotograma, el sistema
+intercambia programa y preview, restaurando la fuente que estaba en antena antes del
+cambio.
+
+En la práctica de la producción en directo, el flujo de trabajo más habitual consiste
+en alternar entre dos fuentes o dos composites, como ocurre en una retransmisión de
+ponencia donde el realizador conmuta continuamente entre la cámara del ponente y sus
+diapositivas. En este contexto, el estado anterior es siempre la opción más probable
+para el siguiente corte, lo que convierte al Retake en un atajo eficaz para ese patrón
+de trabajo. Adicionalmente, la función resulta útil cuando el realizador realiza un
+corte erróneo y necesita corregirlo de inmediato sin generar un segundo corte visible
+en la emisión.
 
 \begin{figure}[H]
   \centering
