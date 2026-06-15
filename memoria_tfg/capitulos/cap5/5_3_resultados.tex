@@ -16,7 +16,7 @@ paquete CPU; el valor mostrado descuenta el baseline de cada entorno en reposo.
       ylabel={Uso de CPU (\%)},
       xtick={1,2,3,4},
       xmin=0.5, xmax=4.5,
-      ymin=20, ymax=65,
+      ymin=20, ymax=70,
       ymajorgrids=true, grid style=dashed,
       mark size=3pt,
       legend style={at={(0.03,0.97)}, anchor=north west, font=\scriptsize},
@@ -96,11 +96,11 @@ fuentes.
     ]
       \addplot[color=green!60!black, mark=triangle*, thick,
                nodes near coords,
-               every node near coord/.style={font=\small, anchor=east, xshift=-3pt}]
+               every node near coord/.style={font=\small, anchor=south}]
         coordinates {(1,25.1) (2,27.6) (3,27.6) (4,32.2)};
       \addplot[color=red!70!black, mark=triangle*, thick, dashed,
                nodes near coords,
-               every node near coord/.style={font=\small, anchor=west, xshift=3pt}]
+               every node near coord/.style={font=\small, anchor=north}]
         coordinates {(1,25.2) (2,25.3) (3,36.1) (4,27.1)};
       \legend{Docker Compose, Kubernetes}
     \end{axis}
