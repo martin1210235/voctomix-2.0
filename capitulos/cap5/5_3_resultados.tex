@@ -218,26 +218,26 @@ y su estado de validación en cada uno de los cuatro escenarios de despliegue.
   \caption{Validación de funcionalidades por escenario de despliegue.}
   \label{tab:matriz_funcionalidades}
   \small
-  \begin{tabular}{|l|c|c|c|c|}
+  \begin{tabular}{|l|c|c|}
     \hline
-    \textbf{Funcionalidad} & \textbf{1 PC} & \textbf{2 PCs} & \textbf{Docker} & \textbf{K8s} \\
+    \textbf{Funcionalidad} & \textbf{Docker Compose} & \textbf{Kubernetes} \\
     \hline
-    Conmutación Cut / Trans / Retake      & \checkmark & \checkmark & \checkmark & \checkmark \\
-    Composites (fs / pip / sbs / lec)     & \checkmark & \checkmark & \checkmark & \checkmark \\
-    Stream blanker (LIVE / PAUSE / NOSTR) & \checkmark & \checkmark & \checkmark & \checkmark \\
-    Overlays PNG + rotulación dinámica    & \checkmark & \checkmark & \checkmark & \checkmark \\
-    Telemetría CHANGE + STATE (AMQP)      & \checkmark & \checkmark & \checkmark & \checkmark \\
-    Latencia de conmutación $<$ 40\,ms    & \checkmark & \checkmark & \checkmark & \checkmark \\
-    Arranque limpio sin condición de carrera & \checkmark & \checkmark & \checkmark & \checkmark \\
-    Comunicación GUI-núcleo en red real   & -- & \checkmark & \checkmark & \checkmark \\
-    Despliegue con un único comando       & -- & -- & \checkmark & \checkmark \\
-    Resiliencia ante reinicios de servicio & -- & -- & \checkmark & \checkmark \\
+    Conmutación Cut / Trans / Retake      & \checkmark & \checkmark \\
+    Composites (fs / pip / sbs / lec)     & \checkmark & \checkmark \\
+    Stream blanker (LIVE / PAUSE / NOSTR) & \checkmark & \checkmark \\
+    Overlays PNG + rotulación dinámica    & \checkmark & \checkmark \\
+    Telemetría CHANGE + STATE (AMQP)      & \checkmark & \checkmark \\
+    Latencia de conmutación $<$ 5\,ms     & \checkmark & \checkmark \\
+    Arranque limpio sin condición de carrera & \checkmark & \checkmark \\
+    Despliegue con un único comando       & \checkmark & \checkmark \\
+    Resiliencia ante reinicios de servicio & \checkmark & \checkmark \\
     \hline
   \end{tabular}
 \end{table}
 
-Voctomix~2.0 cumple el conjunto completo de funcionalidades en todos los
-escenarios evaluados. Las características de portabilidad y resiliencia,
-exclusivas de los escenarios contenerizados, justifican la adopción de Docker
-Compose para entornos de desarrollo y Kubernetes para despliegues en producción
-que requieran orquestación y alta disponibilidad.
+Voctomix~2.0 cumple el conjunto completo de funcionalidades en los dos escenarios
+analizados. La latencia real medida (mediana de 1{,}5\,ms en Docker y 1{,}8\,ms
+en Kubernetes) mejora con creces el umbral de 40\,ms exigido para conmutación
+imperceptible en directo. Docker Compose resulta más eficiente en recursos para
+entornos de desarrollo, mientras que Kubernetes ofrece orquestación y resiliencia
+para despliegues en producción.
