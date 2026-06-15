@@ -14,30 +14,18 @@ con funcionalidades de nivel profesional. A continuación se evalúa el grado de
 consecución de cada uno de los seis objetivos específicos planteados.
 
 \vspace{0.3cm}
-\noindent\textbf{OE-1 — Rotulación dinámica.}
-Se ha implementado un sistema de overlays que permite superponer gráficos PNG y texto
-dinámico sobre el vídeo en tiempo real, con fundido de entrada y salida configurable.
-La lógica de auto-desactivación en cada corte de cámara garantiza que ningún rótulo
-permanezca visible de forma involuntaria durante las transiciones, reproduciendo el
-comportamiento de las soluciones broadcast comerciales.
+\noindent\textbf{OE-1 — Funcionalidades de producción profesional.}
+Se han implementado las tres funcionalidades broadcast que el sistema requería. La
+rotulación dinámica permite superponer gráficos PNG y texto en tiempo real, con
+fundido de entrada y salida configurable y desactivación automática en cada corte de
+cámara. El gestor de estados de emisión (\textit{stream blanker}) ofrece tres modos
+(LIVE, PAUSE y NOSTREAM) que permiten interrumpir la señal de salida sin detener el
+procesamiento interno de la mezcla. La funcionalidad \textit{Audio Follows Video}
+ajusta automáticamente los volúmenes en cada cambio de fuente, eliminando la gestión
+manual del audio y reduciendo la carga cognitiva del operador durante la producción.
 
 \vspace{0.2cm}
-\noindent\textbf{OE-2 — \textit{Stream blanker}.}
-El mecanismo de tres estados (LIVE, PAUSE, NOSTREAM) gestiona de forma independiente
-el audio y el vídeo de cada estado, intercalando bucles de vídeo pregrabado cuando la
-emisión está pausada y silenciando la salida de audio en el estado de fuera de emisión.
-Su integración como módulo dentro del pipeline GStreamer permite operar el sistema sin
-interrumpir el procesamiento interno de la mezcla.
-
-\vspace{0.2cm}
-\noindent\textbf{OE-3 — \textit{Audio Follows Video}.}
-La funcionalidad AFV se integró en el módulo \texttt{audiomix.py} mediante fundidos
-automáticos de volumen en cada conmutación de fuente de vídeo. El resultado es una
-sincronía audio-vídeo natural que elimina la necesidad de gestión manual del audio
-durante la realización, reduciendo significativamente la carga cognitiva del operador.
-
-\vspace{0.2cm}
-\noindent\textbf{OE-4 — Servicio de telemetría.}
+\noindent\textbf{OE-2 — Servicio de telemetría.}
 El servicio de telemetría registra en tiempo real los eventos de operación del mezclador
 (tipo CHANGE) y el estado periódico del sistema (tipo STATE, cada 5 segundos) en
 formato JSON Lines. Los eventos se publican simultáneamente en un broker RabbitMQ
@@ -47,7 +35,7 @@ obtenidos a través de este sistema han permitido caracterizar cuantitativamente
 comportamiento del sistema en los cuatro escenarios de despliegue.
 
 \vspace{0.2cm}
-\noindent\textbf{OE-5 — Contenerización Docker.}
+\noindent\textbf{OE-3 — Contenerización con Docker.}
 El sistema completo se ha empaquetado en una pila de diez contenedores Docker orquestada
 con Docker Compose, incluyendo voctocore, cuatro fuentes de cámara sintéticas, el stream
 blanker, el gestor de audio, el broker RabbitMQ y el servicio de telemetría. El despliegue
@@ -55,7 +43,16 @@ completo se realiza con un único comando (\texttt{docker compose up}), eliminan
 principal barrera de adopción del sistema.
 
 \vspace{0.2cm}
-\noindent\textbf{OE-6 — Validación en múltiples escenarios.}
+\noindent\textbf{OE-4 — Despliegue en Kubernetes.}
+El sistema se desplegó sobre un clúster local Minikube mediante manifiestos declarativos
+que reproducen la misma funcionalidad que el escenario Docker Compose en una
+infraestructura orquestada. El orden de arranque controlado y las sondas de preparación
+garantizan que las dependencias entre servicios se respetan automáticamente. La
+arquitectura del sistema escala de forma natural desde Docker Compose hacia Kubernetes
+sin necesidad de modificar el código del núcleo ni de la interfaz gráfica.
+
+\vspace{0.2cm}
+\noindent\textbf{OE-5 — Validación en múltiples escenarios.}
 El sistema ha sido validado funcionalmente en cuatro escenarios de despliegue
 (monopuesto nativo, dos PCs en red local, Docker Compose y Kubernetes), superando
 en todos ellos las nueve categorías de pruebas funcionales definidas. La latencia
@@ -63,6 +60,14 @@ de conmutación medida en los escenarios contenerizados fue inferior a 5\,ms en
 el 100\,\% de las mediciones, con una mediana de 1{,}5\,ms en Docker y 1{,}8\,ms
 en Kubernetes, cumpliendo con amplio margen el requisito de conmutación
 imperceptible a 25 fotogramas por segundo (40\,ms por fotograma).
+
+\vspace{0.2cm}
+\noindent\textbf{OE-6 — Despliegue en producción real.}
+El sistema fue desplegado en un entorno de producción real dentro del proyecto
+europeo de investigación \textbf{CyberNEMO} (UPM), donde actuó como motor de
+producción audiovisual. Este despliegue acredita la madurez del sistema más allá
+del prototipo académico y lo posiciona como una contribución directamente aplicable
+a infraestructuras de investigación y producción audiovisual profesional.
 
 \vspace{0.4cm}
 La tabla~\ref{tab:objetivos_cumplidos} resume el grado de consecución de los objetivos
@@ -76,12 +81,12 @@ y las secciones de la memoria donde se documentan.
     \hline
     \textbf{Obj.} & \textbf{Descripción} & \textbf{Estado} & \textbf{Sección} \\
     \hline
-    OE-1 & Rotulación dinámica y overlays   & Cumplido & \S\ref{sec:overlays} \\
-    OE-2 & \textit{Stream blanker} (3 estados) & Cumplido & \S\ref{sec:fuentes_auxiliares} \\
-    OE-3 & \textit{Audio Follows Video}     & Cumplido & \S\ref{sec:transiciones} \\
-    OE-4 & Telemetría JSON + RabbitMQ       & Cumplido & \S\ref{sec:telemetria} \\
-    OE-5 & Contenerización Docker Compose   & Cumplido & \S\ref{sec:docker} \\
-    OE-6 & Validación 4 escenarios          & Cumplido & Cap.~\ref{chap:diseno} \\
+    OE-1 & Rotulación, stream blanker y AFV  & Cumplido & \S\ref{sec:overlays}, \S\ref{sec:fuentes_auxiliares} \\
+    OE-2 & Telemetría JSON + RabbitMQ        & Cumplido & \S\ref{sec:telemetria} \\
+    OE-3 & Contenerización Docker Compose    & Cumplido & \S\ref{sec:docker} \\
+    OE-4 & Despliegue en Kubernetes          & Cumplido & \S\ref{sec:kubernetes} \\
+    OE-5 & Validación multi-escenario        & Cumplido & Cap.~\ref{chap:pruebas} \\
+    OE-6 & Despliegue real en CyberNEMO      & Cumplido & \S\ref{sec:casos_uso_remi} \\
     \hline
   \end{tabular}
 \end{table}
@@ -99,11 +104,3 @@ por parte de terceros.
 La separación entre \texttt{voctocore} y \texttt{voctogui} ha demostrado ser robusta
 en todos los entornos probados y escala de forma natural desde una red local hasta
 una infraestructura contenerizada y orquestada.
-
-En conjunto, Voctomix~2.0 constituye una plataforma de producción audiovisual en
-directo robusta, reproducible y extensible. Su validación no se ha limitado a entornos
-de laboratorio: el sistema fue desplegado en un entorno de producción real dentro del
-proyecto europeo de investigación \textbf{CyberNEMO} (UPM), donde actuó como motor
-de producción audiovisual. Este despliegue real acredita la madurez del sistema más
-allá del prototipo académico y lo posiciona como una contribución directamente
-aplicable a infraestructuras de investigación y producción audiovisual profesional.
