@@ -1,82 +1,67 @@
 \section{Sistema de telemetría}
 \label{sec:telemetria}
 
-El sistema de telemetría registra en tiempo real todos los eventos de una sesión de
-producción: cambios de fuente activa, cambios de composite, activaciones del stream
-blanker, estado de overlays y rótulos, niveles de audio y métricas de rendimiento del
-servidor. Esta información permite tanto la monitorización durante el directo como la
-auditoría posterior de la sesión.
+El sistema de telemetría registra en tiempo real todo lo que ocurre durante una sesión
+de producción: cambios de fuente activa, transiciones de composite, activaciones del
+stream blanker, estado de overlays y niveles de audio. Esta información permite tanto
+monitorizar la sesión mientras está en curso como auditarla en detalle una vez terminada
+la emisión.
 
-\subsection{Arquitectura del servicio}
+\subsection{Cómo funciona}
 
-El servicio (\texttt{telemetry\_service.py}) es un proceso Python independiente que
-se conecta al puerto 9999 de voctocore como un cliente TCP ordinario, sin requerir
-privilegios especiales. Al conectarse, envía el comando \texttt{get\_config} para
-obtener los parámetros del pipeline: resolución, framerate, formato de píxel y
-configuración de audio. Estos datos se incluyen en el campo \texttt{stream\_info} de
-cada entrada del log, dotando al registro de validez técnica para análisis de rendimiento.
+El servicio (\texttt{telemetry\_service.py}) es un proceso independiente que no forma
+parte del núcleo de procesamiento. Se conecta a voctocore en el puerto~9999 como un
+cliente TCP ordinario y consulta su estado cada segundo. Sin embargo, voctocore solo
+conoce lo que ocurre en el mezclador: qué fuente está en programa, qué composite está
+activo o cuál es el estado del stream blanker. Todo lo que gestiona la interfaz gráfica,
+como las fuentes seleccionadas en preview, los niveles de audio o los overlays activos,
+queda fuera de su alcance.
 
-A continuación, el servicio escucha continuamente los mensajes del protocolo interno
-de voctocore, filtrando los eventos relevantes: \texttt{video\_status} (fuentes activas
-en programa y preview), \texttt{composite\_mode} (distribución de pantalla activa) y
-\texttt{stream\_status} (LIVE, PAUSE, NOSTREAM).
+Para capturar también este segundo bloque de información, el módulo
+\texttt{gui\_state\_exporter.py} de voctogui exporta el estado completo de la interfaz
+gráfica cada segundo. En el escenario de un PC lo escribe en un fichero local
+(\texttt{sessions/gui\_state.json}); en escenarios con red (Docker o dos PCs) lo envía
+directamente al servicio mediante una petición HTTP POST al puerto~8080. Esta última
+opción, basada en HTTP, sustituyó a una implementación inicial con UDP que presentaba
+problemas de pérdida de paquetes y bloqueos de puerto al reiniciar los scripts durante
+el desarrollo.
 
-Voctocore desconoce el estado de los elementos gestionados exclusivamente en la
-interfaz gráfica, como los rótulos dinámicos o los niveles de los faders de audio.
-Para capturar esta información sin modificar el núcleo, el módulo
-\texttt{gui\_state\_exporter.py} de voctogui recorre el árbol de widgets GTK de forma
-segura para hilos y exporta periódicamente el estado completo de la interfaz. En modo
-local, escribe el fichero \texttt{sessions/gui\_state.json}; en modo red (Docker o dos
-PCs), lo envía mediante HTTP POST al servicio de telemetría. El servicio fusiona ambas
-fuentes de datos, protegidas por cerrojos de hilo, para construir una vista unificada
-del sistema.
+El servicio fusiona las dos fuentes de información y construye una vista unificada de la
+sesión, que guarda en formato \textit{JSON Lines}
+(\texttt{sessions/session\_N.jsonl}): un objeto JSON completo por línea, con numeración
+automática por sesión. Este formato permite analizar el log de forma incremental con
+herramientas estándar como \texttt{jq} o Python, sin necesidad de cargar el fichero
+completo en memoria.
 
-Para identificar el origen de los comandos en escenarios distribuidos, el servicio
-determina la IP de red de forma automática: en entornos Docker lee la variable de
-entorno \texttt{HOST\_IP} inyectada por Docker Compose; en modo nativo, abre un socket
-UDP hacia \texttt{8.8.8.8} sin llegar a establecer conexión efectiva, lo que permite
-consultar la tabla de enrutamiento del kernel y obtener la IP real de la interfaz de
-salida.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figuras/telemetria_state_change.png}
+  \caption{Salida del servicio de telemetría mostrando un evento STATE y un evento
+           CHANGE consecutivos durante una sesión real.}
+  \label{fig:telemetria_state_change}
+\end{figure}
 
-\subsection{Eventos Change y State}
+\subsection{Tipos de entrada: Change y State}
 
-El registro sigue una doble vía temporal:
-
-\begin{itemize}
-  \item \textbf{Evento Change (\texttt{CHANGE}):} cuando se detecta cualquier variación
-        de estado, la entrada se escribe inmediatamente con su marca de tiempo,
-        capturando cada corte o cambio de composite en el instante exacto en que ocurre.
-  \item \textbf{Evento State (\texttt{STATE}):} un hilo paralelo escribe el estado
-        completo del sistema cada 5~segundos de forma periódica, como medida de
-        redundancia, independientemente de que haya habido cambios.
-\end{itemize}
-
-Cada entrada incluye un bloque \texttt{system\_health} con las siguientes métricas del
-servidor:
+El registro combina dos tipos de entrada:
 
 \begin{itemize}
-  \item \textbf{CPU (\texttt{cpu\_usage\_percent}):} calculado a partir de
-        \texttt{/proc/stat}. Si supera el 80\,\%, GStreamer comienza a descartar
-        fotogramas, degradando la emisión.
-  \item \textbf{Memoria (\texttt{ram\_usage\_percent}, \texttt{ram\_available\_mb}):}
-        leído de \texttt{/proc/meminfo}. Un valor bajo y estable confirma que los
-        pipelines GStreamer procesan y liberan fotogramas en tiempo real sin acumular
-        búferes.
-  \item \textbf{Ancho de banda por cámara:} calculado como
-        $\text{Mbps} = \frac{W \times H \times \text{FPS} \times 12}{1\,000\,000}$,
-        donde 12 bits es la profundidad de color del formato I420 (YUV420p). Para
-        1080p25 el resultado es aproximadamente 622~Mbps por fuente, lo que confirma
-        que todo el tráfico de vídeo debe circular en bucle local sin atravesar
-        interfaces físicas convencionales.
-  \item \textbf{Tiempos (\texttt{uptime}, \texttt{session\_duration}):} permiten
-        correlacionar los cortes del log con el código de tiempo del archivo de
-        grabación final.
+  \item \textbf{Evento Change (\texttt{CHANGE}):} se escribe inmediatamente cuando se
+        detecta cualquier variación de estado, como un corte de cámara o un cambio de
+        composite. Captura el instante exacto en que ocurre el cambio.
+  \item \textbf{Evento State (\texttt{STATE}):} un hilo independiente escribe el estado
+        completo del sistema cada 5~segundos, con independencia de que haya habido
+        cambios. Sirve como mecanismo de redundancia para poder reconstruir la sesión
+        aunque se pierda algún evento.
 \end{itemize}
 
-Las entradas se escriben en formato \textit{JSON Lines} (\texttt{session\_N.jsonl}):
-un objeto JSON completo por línea, con numeración automática por sesión. Este formato
-permite leer el log de forma incremental con herramientas estándar (\texttt{jq},
-Python) sin necesidad de cargar el fichero completo en memoria.
+Cada entrada incluye la marca de tiempo, el estado de todas las fuentes, el composite
+activo, el modo de stream (LIVE, PAUSE o NOSTREAM), los overlays y los niveles de audio
+en decibelios. Se añade además un bloque \texttt{system\_health} con el uso de CPU y RAM
+del servidor, lo que permite relacionar eventuales degradaciones de la señal con picos
+de carga del sistema. El campo \texttt{stream\_info} almacena los parámetros técnicos
+del pipeline: resolución, framerate, formato de píxel y el ancho de banda calculado por
+fuente (622~Mbps para 1080p25 en I420).
 
 Un ejemplo de entrada de tipo CHANGE tras un corte de cámara:
 
@@ -94,40 +79,28 @@ Un ejemplo de entrada de tipo CHANGE tras un corte de cámara:
                  "video_pix_fmt": "I420"}}
 \end{verbatim}
 
-\subsection{API REST y mensajería AMQP}
-
-El servicio expone los datos de telemetría en dos canales complementarios:
-
-\begin{itemize}
-  \item \textbf{API REST HTTP (puerto 8080):} implementada con la librería estándar de
-        Python sin dependencias externas. Devuelve el estado actual completo en formato
-        JSON. La opción \texttt{allow\_reuse\_address} evita bloqueos de puerto en
-        reinicios rápidos del servicio.
-  \item \textbf{Mensajería AMQP~\cite{oasis_amqp10} (RabbitMQ~\cite{rabbitmq_docs}):} cada cambio de estado se publica en el
-        exchange \texttt{voctomix\_events} (tipo fanout), de forma que cualquier
-        consumidor externo puede suscribirse a los eventos sin acoplarse directamente
-        al servicio de telemetría ni a voctocore.
-\end{itemize}
-
-\subsection{RabbitMQ como broker de mensajería}
+\subsection{API HTTP y publicación en RabbitMQ}
 \label{sec:rabbitmq}
 
-RabbitMQ es el broker AMQP que centraliza los eventos de telemetría. En el despliegue
-Docker se ejecuta como un contenedor independiente en los puertos 5672 (AMQP) y 15672
-(consola web de administración).
+Además del fichero de log local, el servicio expone una API HTTP en el puerto~8080 que
+devuelve el estado actual completo en formato JSON. Esto permite que otros procesos del
+sistema consulten el estado de la sesión en cualquier momento sin acceder directamente
+al log.
 
-La integración con RabbitMQ permite mantener un registro persistente de todos los
-eventos con marca de tiempo para análisis posterior, conectar Voctomix con sistemas
-externos de monitorización o automatización (ELK Stack, Grafana), y verificar durante
-las pruebas que cada acción del realizador genera el evento correspondiente.
+Opcionalmente, el servicio puede publicar cada evento en un broker
+RabbitMQ~\cite{rabbitmq_docs} mediante el protocolo AMQP~\cite{oasis_amqp10}. Cada
+cambio de estado se publica en el exchange \texttt{voctomix\_events} (tipo fanout), de
+forma que cualquier consumidor externo puede suscribirse a los eventos sin acoplarse
+directamente al servicio de telemetría ni a voctocore. Si RabbitMQ no está disponible,
+el servicio continúa funcionando con el log local y la API HTTP sin interrupción alguna.
 
-En el marco del proyecto europeo de investigación CyberNEMO (UPM), el broker RabbitMQ
-de Voctomix~2.0 fue integrado en el clúster Kubernetes del proyecto, donde las colas
+En el marco del proyecto europeo CyberNEMO (UPM), el broker RabbitMQ de Voctomix~2.0
+fue integrado en el clúster Kubernetes del proyecto, donde las colas
 \texttt{vproduction-uc-media} y \texttt{vqprobe-uc-media} recibieron los eventos del
 mezclador en tiempo real durante las pruebas de producción audiovisual. Este despliegue
 constituyó la primera validación del sistema de telemetría en un entorno real.
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{figuras/rabbitmq_cybernemo_queues.png}
   \caption{Colas RabbitMQ activas durante la integración con CyberNEMO.}
@@ -135,27 +108,5 @@ constituyó la primera validación del sistema de telemetría en un entorno real
 \end{figure}
 
 La arquitectura desacoplada del servicio, conectado al núcleo como un cliente TCP
-ordinario sin privilegios especiales, garantiza que su eventual fallo no afecte al
-procesamiento multimedia principal.
-
-\subsection{Evolución del protocolo: de UDP a HTTP}
-\label{sec:evolucion_telemetria}
-
-En el escenario de dos PCs, el servicio de telemetría necesita recibir el estado de la
-GUI desde el PC del realizador a través de la red. La implementación inicial utilizó
-UDP, que presentó dos problemas críticos:
-
-\begin{itemize}
-  \item \textbf{Falta de fiabilidad:} UDP es \textit{fire-and-forget}; los paquetes
-        de estado podían perderse sin que el emisor lo detectara, dejando el servicio
-        y la GUI desincronizados.
-  \item \textbf{Bloqueos de puerto (\texttt{Errno 98}):} al reiniciar los scripts
-        rápidamente durante el desarrollo, el kernel mantenía el puerto en estado
-        \texttt{TIME\_WAIT}, impidiendo el rearranque inmediato del servicio.
-\end{itemize}
-
-La solución fue migrar a HTTP/TCP: el servicio actúa como servidor HTTP en el puerto
-8080, y \texttt{gui\_state\_exporter.py} envía los datos mediante peticiones HTTP POST
-con cuerpo JSON. TCP garantiza la entrega ordenada de los datos, y se estableció un
-\textit{timeout} de 1~segundo en el cliente para que la GUI nunca se bloquee si el
-servidor no está disponible.
+ordinario sin privilegios especiales, garantiza que un eventual fallo del servicio de
+telemetría no afecte al procesamiento multimedia principal.
