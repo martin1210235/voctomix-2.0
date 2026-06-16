@@ -147,17 +147,12 @@ make thesis-clean  # remove build artifacts
 3. Justificación de Ingeniería: Explica brevemente el "porqué" de cada decisión arquitectónica para la defensa de mi TFG.
 4. Paso a paso: Si una tarea afecta a varios archivos, propón un plan numerado, modifica el primero y espera mi confirmación.
 5. Autonomía Máxima: Ejecuta la mayor cantidad de pasos posible de forma independiente, encadena comandos y herramientas para procesar el flujo automáticamente y solo detente si falta información crítica o permisos, para retomar la ejecución autónoma inmediatamente después de mi respuesta.
-6. **Overleaf sync (OBLIGATORIO — memoria TFG):** Tras cualquier commit que toque ficheros bajo `memoria_tfg/`, usar SIEMPRE el patrón completo de rama temporal:
+6. **Overleaf sync (OBLIGATORIO — memoria TFG):** Tras cualquier commit que toque ficheros bajo `memoria_tfg/`, ejecutar SIEMPRE y únicamente:
    ```bash
-   git stash && git checkout -b sync-ol overleaf/master
-   git rm -r --cached . >/dev/null 2>&1
-   git checkout main -- memoria_tfg/ && cp -r memoria_tfg/. .
-   git rm -r --cached memoria_tfg/ >/dev/null 2>&1
-   git add main.tex biblio.bib capitulos/ figuras/ portada/ pre/   # SIEMPRE TODOS, nunca parcial
-   git commit -m "docs: sync" && git push overleaf sync-ol:master
-   git checkout -f main && git stash pop && git branch -D sync-ol
+   bash /home/sonda/Documentos/voctomix/push_overleaf.sh
    ```
-   ⚠️ NUNCA hacer `git add` solo de los ficheros modificados — siempre añadir TODOS. Si se hace parcial, Overleaf pierde los ficheros no añadidos y la memoria desaparece (incidente real 2026-06-03).
+   Este script usa `git commit-tree` para empujar SOLO el contenido de `memoria_tfg/` como raíz de Overleaf, sin tocar el resto del repositorio. Overleaf ve únicamente los ficheros de la tesis (main.tex, biblio.bib, capitulos/, figuras/, portada/, pre/) — nunca el código ni Docker ni nada más.
+   ⚠️ NUNCA hacer `git push overleaf HEAD:master` directamente — eso empujaría TODO el repo al completo.
 
 7. **Overleaf sync (OBLIGATORIO — paper científico):** Tras cualquier commit que toque ficheros bajo `paper/`, ejecutar desde dentro de `paper/`:
    ```bash
