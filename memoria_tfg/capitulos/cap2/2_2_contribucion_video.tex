@@ -134,17 +134,39 @@ negociable y la latencia adicional es aceptable:
   \end{flushleft}
 \end{table}
 
-\subsection{Contenedor multimedia de contribución}
+\subsection{Contenedores multimedia de contribución}
 
-El contenedor multimedia agrupa y sincroniza los flujos de vídeo y audio durante el
-transporte entre fuente y mezclador.
+En producción broadcast profesional, el contenedor multimedia no solo encapsula los
+flujos de vídeo y audio, sino que transporta también metadatos de producción, timecode
+y descriptores técnicos de cada pista. Los formatos más empleados en la etapa de
+contribución son:
 
 \begin{itemize}
-  \item \textbf{Matroska (MKV)}~\cite{matroska_spec}: contenedor flexible y extensible
-  basado en un formato binario abierto. Voctomix lo emplea como formato de transporte
-  interno: las fuentes envían señal I420 y audio PCM~S16LE a 48~kHz encapsulados en MKV
-  sobre conexiones TCP, garantizando sincronía audio-vídeo y permitiendo multiplexar
-  múltiples pistas sin \textit{overhead} significativo.
+  \item \textbf{MXF (\textit{Material eXchange Format}, SMPTE ST~377-1)}~\cite{smpte_mxf}:
+  estándar de la industria broadcast definido por la SMPTE y adoptado por la EBU y la
+  mayoría de fabricantes de cámaras y sistemas de archivo profesionales. Encapsula
+  vídeo comprimido (MPEG-2, AVC-Intra, ProRes), audio multicanal y metadatos de
+  producción en un único fichero con soporte de \textit{timecode} \textit{frame-accurate}.
+  Fabricantes como Sony (XDCAM), Panasonic~(P2) y Grass Valley utilizan MXF como
+  formato de grabación y contribución nativo, convirtiéndolo en el contenedor de
+  intercambio estándar entre el lugar del evento y el centro de producción.
+
+  \item \textbf{Canon XF-AVC (MXF-OP1a)}~\cite{canon_xf_avc}: formato de grabación de
+  las cámaras de producción Canon de las series XF y Cinema~EOS, basado en el
+  contenedor MXF con perfil OP1a. Emplea compresión H.264/AVC con muestreo de color
+  4:2:2 a 10~bits y admite grabación hasta 4K~DCI/UHD con compresión intra-frame
+  (\textit{All-I}), lo que minimiza la acumulación de artefactos en cadenas de
+  contribución de múltiples etapas. Su compatibilidad nativa con los entornos de edición
+  profesional más extendidos simplifica los flujos de trabajo desde la captura en campo
+  hasta el mezclador.
+
+  \item \textbf{Matroska (MKV)}~\cite{matroska_spec}: contenedor de código abierto
+  empleado por Voctomix como formato de transporte interno para señal RAW. Las fuentes
+  envían vídeo~I420 y audio PCM~S16LE a 48~kHz encapsulados en MKV sobre conexiones
+  TCP, garantizando sincronía audio-vídeo sin compresión intermedia. A diferencia de
+  MXF, no es un estándar broadcast certificado, pero su nula sobrecarga de codificación
+  lo hace idóneo para la contribución de señal sin comprimir en redes locales de alta
+  velocidad.
 \end{itemize}
 
 \subsection{Códecs de contribución}

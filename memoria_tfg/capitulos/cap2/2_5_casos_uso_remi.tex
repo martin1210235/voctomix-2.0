@@ -97,18 +97,6 @@ aplicada a entornos multimedia distribuidos:
         telemetría de Voctomix~2.0 en un entorno real.
 \end{itemize}
 
-En el marco del proyecto europeo de investigación CyberNEMO de la UPM, Voctomix~2.0 fue
-desplegado en un clúster Kubernetes de producción para validar la arquitectura de
-telemetría en condiciones reales. El broker RabbitMQ del sistema fue integrado con las
-colas del clúster (\texttt{vproduction-uc-media} y \texttt{vqprobe-uc-media}), y los
-eventos de mezclador, cambios de fuente activa, activaciones del stream blanker y
-métricas de rendimiento del servidor se publicaron en tiempo real durante sesiones de
-producción audiovisual técnica.
-
-Este despliegue fue la primera validación del sistema en un entorno académico real,
-y demostró que Voctomix~2.0 puede integrarse con plataformas externas de
-monitorización sin necesidad de modificar el núcleo de procesamiento multimedia.
-
 \begin{table}[H]
   \centering
   \caption{Casos de uso representativos de producción remota audiovisual.}
