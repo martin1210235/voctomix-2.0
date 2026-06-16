@@ -38,17 +38,17 @@ UDP hacia \texttt{8.8.8.8} sin llegar a establecer conexión efectiva, lo que pe
 consultar la tabla de enrutamiento del kernel y obtener la IP real de la interfaz de
 salida.
 
-\subsection{Registro y métricas}
+\subsection{Eventos Change y State}
 
 El registro sigue una doble vía temporal:
 
 \begin{itemize}
-  \item \textbf{Por evento (\texttt{CHANGE}):} cuando se detecta cualquier variación
+  \item \textbf{Evento Change (\texttt{CHANGE}):} cuando se detecta cualquier variación
         de estado, la entrada se escribe inmediatamente con su marca de tiempo,
         capturando cada corte o cambio de composite en el instante exacto en que ocurre.
-  \item \textbf{Por latido (\texttt{STATE}):} un hilo paralelo escribe el estado
-        completo del sistema cada 5~segundos como medida de redundancia, independientemente
-        de que haya habido cambios.
+  \item \textbf{Evento State (\texttt{STATE}):} un hilo paralelo escribe el estado
+        completo del sistema cada 5~segundos de forma periódica, como medida de
+        redundancia, independientemente de que haya habido cambios.
 \end{itemize}
 
 Cada entrada incluye un bloque \texttt{system\_health} con las siguientes métricas del

@@ -42,10 +42,10 @@ Marcar cada uno como completado al terminar.
 
 ## CAPÍTULO 3 — DISEÑO E IMPLEMENTACIÓN
 
-- [ ] **3.4 — Ocultar subsecciones del índice (solo 2 niveles de profundidad en TOC)**
+- [x] **3.4 — Ocultar subsecciones del índice (solo 2 niveles de profundidad en TOC)**
   > Las subsecciones de 3.4 (3.4.1, 3.4.2...) no deben aparecer en el índice general. Limitar la profundidad del TOC a dos niveles en este capítulo, o usar `\subsubsection*` para las subsecciones internas.
 
-- [ ] **3.9.2 — Ajustar terminología de los tipos de eventos**
+- [x] **3.9.2 — Ajustar terminología de los tipos de eventos**
   > Cambiar "por latido" por "periódico" o "por intervalos de tiempo". Revisar también el título del tipo CHANGE para que sea más formal (evitar "por evento" si suena coloquial).
 
 ---
