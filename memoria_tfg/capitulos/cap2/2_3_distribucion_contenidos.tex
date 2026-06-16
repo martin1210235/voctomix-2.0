@@ -17,10 +17,11 @@ espectador.
 \begin{itemize}
   \item \textbf{RTMP (\textit{Real-Time Messaging Protocol}):} protocolo TCP de Adobe,
   estándar de ingesta para plataformas como YouTube Live o Twitch con latencia de
-  2--5~s. Aunque obsoleto en reproducción desde la desaparición de Flash, sigue siendo
-  el protocolo de ingesta más soportado, con una adopción del 58\% en
-  2025~\cite{haivision_broadcast_report_2025}. Voctomix lo soporta como salida mediante
-  FFmpeg.
+  2--5~s. Aunque obsoleto en reproducción desde la retirada de Adobe Flash en 2020,
+  mantiene una adopción del 58\,\% entre profesionales broadcast en
+  2025~\cite{haivision_broadcast_report_2025}, solo por detrás de SRT (77\,\%), lo que
+  lo convierte en el protocolo de ingesta hacia plataformas CDN más implantado.
+  Voctomix lo soporta como salida mediante FFmpeg.
 
   \item \textbf{HLS (\textit{HTTP Live Streaming}):} protocolo de Apple que divide el
   vídeo en segmentos servidos mediante HTTP~\cite{rfc8216}. Latencia de 10--30~s en
