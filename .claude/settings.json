@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(./voctocore/test.sh)",
+      "Bash(./check_pep8.sh)",
+      "Bash(make test)",
+      "Bash(make lint)",
+      "Bash(make thesis)",
+      "Bash(make docker-ps)",
+      "Bash(docker compose ps)",
+      "Bash(docker compose logs*)",
+      "Bash(git status)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(echo*|nc localhost 9999)",
+      "Bash(claude mcp:*)",
+      "Bash(npx --version)"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(rm -rf*)",
+      "Bash(kubectl delete pod*)",
+      "Bash(kubectl delete secret*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /home/sonda/Documentos/voctomix && git diff --name-only 2>/dev/null | grep -q '\\.py$' && ./check_pep8.sh 2>&1 | tail -3 || true"
+          }
+        ]
+      }
+    ]
+  }
+}

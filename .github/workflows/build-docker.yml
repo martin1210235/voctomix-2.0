@@ -1,0 +1,26 @@
+name: Docker Build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - 'voctocore/**'
+      - 'voctogui/**'
+      - 'example-scripts/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: docker build -t voctomix:ci .
+
+      - name: Verify image
+        run: docker run --rm voctomix:ci python3 -c "print('Image OK')"

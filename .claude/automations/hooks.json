@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /home/sonda/Documentos/voctomix && if git diff --name-only HEAD 2>/dev/null | grep -q '\\.py$'; then ./check_pep8.sh 2>&1 | tail -5; fi"
+          }
+        ]
+      }
+    ]
+  }
+}

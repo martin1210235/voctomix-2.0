@@ -1,0 +1,199 @@
+En este capítulo se presentan las bases tecnológicas sobre las que se sustenta
+Voctomix~2.0. El capítulo se estructura en cinco secciones: el modelo de producción
+audiovisual y las herramientas de realización disponibles
+(Sección~\ref{sec:produccion_av}), los protocolos de transporte de red que subyacen
+a todos los flujos multimedia (Sección~\ref{sec:protocolos_red}), los estándares e
+interfaces de contribución de señal (Sección~\ref{sec:contribucion_av}), los protocolos
+y códecs empleados en la distribución del contenido al espectador final
+(Sección~\ref{sec:distribucion_av}), y los casos de uso reales de producción remota que
+contextualizan la adopción industrial de estas tecnologías
+(Sección~\ref{sec:casos_uso_remi}). El objetivo es que el lector comprenda el contexto
+técnico en el que se enmarca el trabajo antes de abordar el diseño e implementación del
+sistema en el Capítulo~\ref{chap:diseno}.
+
+\section{Producción audiovisual}
+\label{sec:produccion_av}
+
+La producción audiovisual en directo engloba el conjunto de procesos técnicos y
+organizativos que permiten capturar, procesar y distribuir contenido de vídeo y audio
+en tiempo real. Históricamente ligada a infraestructuras físicas costosas y al desplazamiento de
+equipos al lugar del evento, esta disciplina ha cambiado profundamente en la última
+década gracias a la integración de las redes IP en los flujos de producción
+profesional~\cite{tmbroadcast_remi}.
+
+\subsection{Producción audiovisual tradicional}
+
+El modelo de producción tradicional se basa en el despliegue físico de toda la
+infraestructura técnica y del personal en el emplazamiento del evento. El componente
+central de este modelo es el \textbf{mezclador hardware}, denominado
+\textit{switcher} (conmutador de vídeo), un dispositivo dedicado que selecciona en cada instante qué fuente
+de vídeo se emite a la salida de programa y gestiona las transiciones y los efectos.
+Fabricantes como Blackmagic Design (ATEM), Ross Video o Grass Valley (Kayenne) dominan
+el mercado de estos equipos, que ofrecen latencias sub-imagen, múltiples buses de
+programa y previsualización simultáneos, y redundancia hardware certificada para
+operación continua~\cite{blackmagic_atem}.
+
+En el modelo tradicional, todas las fuentes, cámaras, reproductores de vídeo y
+ordenadores de presentación, se interconectan mediante cableado \textbf{SDI}
+(\textit{Serial Digital Interface}), el estándar histórico de la industria \textit{broadcast} (radiodifusión)
+para el transporte de vídeo sin comprimir~\cite{smpte_sdi}. La señal resultante recorre
+el mezclador, los sistemas de rotulación y grabación, y finalmente el encoder de
+distribución, todo ello dentro del mismo emplazamiento físico.
+
+Este modelo ha demostrado su solidez durante décadas en las grandes producciones de
+televisión: retransmisiones deportivas, eventos parlamentarios y galas de premios
+emplean esta arquitectura con decenas de fuentes de cámara gestionadas en tiempo real.
+Sin embargo, su principal limitación es económica y logística: el coste de adquirir y
+transportar el equipamiento, más el personal técnico necesario para su instalación y
+operación, lo pone fuera del alcance de organizaciones de mediana escala.
+
+Un caso ilustrativo es la retransmisión de un partido de La Liga de fútbol profesional
+en España. Este tipo de producción moviliza habitualmente entre 20 y 30 cámaras SDI,
+varias unidades móviles de producción equipadas con mezcladores hardware de gama alta
+y un equipo técnico de entre 50 y 100 personas desplazadas al estadio~\cite{blackmagic_atem}.
+El coste de una unidad móvil de estas características puede superar los 2 millones de
+euros, cifra a la que se suma el gasto recurrente en desplazamientos, montaje y
+operación. Este modelo queda así reservado a grandes cadenas de televisión y
+organizaciones con infraestructura broadcast consolidada, resultando inaccesible para
+entidades académicas, asociaciones o eventos de mediana escala.
+
+\subsection{Producción audiovisual remota}
+
+La producción remota, conocida en la industria por el acrónimo
+\textbf{REMI} (\textit{Remote Integration Model}), surge para resolver estas
+limitaciones permitiendo que la realización se lleve a cabo desde un centro de
+producción centralizado, mientras en el lugar del evento solo se mantiene el equipo
+técnico mínimo necesario para la captura de
+señal~\cite{tmbroadcast_remi,remi_workflow_ibc2023}.
+
+\subsubsection*{Arquitectura técnica del modelo REMI}
+
+La figura~\ref{fig:remi_arquitectura} ilustra la separación funcional entre el lugar
+del evento y el centro de producción remoto. En el emplazamiento solo permanecen las
+cámaras, los micrófonos y un sistema de contribución IP que codifica y transmite la
+señal hacia el centro remoto. El procesamiento completo, mezcla de fuentes, inserción
+de gráficos, control de audio, gestión de overlays y distribución al espectador,
+se realiza de forma centralizada.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figuras/remi_arquitectura}
+  \caption{Arquitectura del modelo REMI.}
+  \label{fig:remi_arquitectura}
+\end{figure}
+
+Esta separación permite que el realizador opere el sistema desde cualquier ubicación
+con acceso a la red, y que el centro de producción pueda atender simultáneamente
+eventos en distintas localizaciones reutilizando la misma infraestructura de
+mezclado~\cite{remi_workflow_ibc2023}.
+
+El modelo REMI se ha consolidado en los últimos años como referencia en eventos de
+gran escala. Los casos representativos, desde los Juegos Olímpicos de Tokio 2020
+hasta el Chaos Communication Congress, se analizan en la
+Sección~\ref{sec:casos_uso_remi}.
+
+
+
+\subsubsection*{Ventajas del modelo remoto}
+
+Las ventajas del modelo REMI frente a la producción tradicional son
+significativas~\cite{tmbroadcast_remi,remi_workflow_ibc2023}:
+
+\begin{itemize}
+  \item \textbf{Reducción de costes:} se minimiza el desplazamiento de personal y
+  equipos. Solo se requiere \textit{in situ} el equipo de captura; la realización,
+  mezcla y edición se realizan de forma centralizada.
+  \item \textbf{Sostenibilidad:} la reducción de desplazamientos contribuye a disminuir
+  la huella de carbono de las producciones, un factor cada vez más valorado por
+  organizaciones y broadcasters.
+  \item \textbf{Escalabilidad:} el sistema puede adaptarse a producciones de diferente
+  escala reutilizando la misma infraestructura centralizada.
+  \item \textbf{Flexibilidad geográfica:} es posible retransmitir eventos desde
+  cualquier parte del mundo con conectividad IP, sin necesidad de desplazar el equipo
+  de producción.
+\end{itemize}
+
+La adopción del modelo REMI no está exenta de retos. La Tabla~\ref{tab:remi_beneficios_desafios}
+resume los principales beneficios y desafíos identificados en entornos de producción
+reales~\cite{tmbroadcast_remi,remi_workflow_ibc2023}.
+
+\begin{table}[H]
+  \centering
+  \caption{Beneficios y desafíos de la producción audiovisual remota (REMI).}
+  \label{tab:remi_beneficios_desafios}
+  \small
+  \begin{tabular}{|p{2.4cm}|p{5.5cm}|p{5.5cm}|}
+    \hline
+    \textbf{Dimensión} & \textbf{Beneficio} & \textbf{Desafío / Dificultad} \\
+    \hline
+    Coste           & Reducción de desplazamientos y equipos    & Inversión inicial en red y software \\
+    Latencia        & Viable con SRT ($<$1~s en WAN)            & Coordinación realizador--cámaras difícil \\
+    Escalabilidad   & Un centro atiende múltiples eventos       & Riesgo de sobrecarga del servidor \\
+    Red             & Producción desde cualquier ubicación IP   & Corte de red detiene la producción \\
+    Calidad         & Hardware ilimitado en el centro remoto    & Artefactos con ancho de banda insuficiente \\
+    Sincronía A/V   & MKV + SRT garantizan sincronía            & \textit{jitter} (fluctuación) puede desincronizar fuentes \\
+    Seguridad       & Cifrado AES-256 extremo a extremo         & Mayor superficie de ataque expuesta \\
+    Complejidad     & Herramientas maduras (Voctomix, FFmpeg)   & Diagnóstico de pipelines distribuidos \\
+    Sostenibilidad  & Menor huella de carbono                   & Consumo energético del centro permanente \\
+    \hline
+  \end{tabular}
+\end{table}
+
+
+\subsubsection*{Herramientas de producción remota por software}
+
+La disponibilidad de herramientas de mezclado por software ha democratizado el acceso
+al modelo remoto incluso para organizaciones sin presupuesto broadcast:
+
+\begin{itemize}
+  \item \textbf{OBS Studio}~\cite{obs_studio}: solución de código abierto ampliamente
+  utilizada para \textit{streaming} y grabación. Su diseño todo en uno concentra
+  captura, composición y emisión en una única aplicación para un único operador.
+  Soporta fuentes de entrada variadas, como cámaras USB, captura de pantalla o fuentes
+  IP, con soporte para transiciones y filtros. Es la opción más utilizada por
+  \textit{streamers} independientes, aunque su diseño centralizado limita su uso en
+  entornos distribuidos.
+
+  \item \textbf{vMix}~\cite{vmix_software}: solución comercial profesional para Windows
+  con soporte NDI, \textit{multiview} (vista múltiple) y producción 4K. Permite gestionar múltiples
+  fuentes, aplicar \textit{chroma key} (croma) y transiciones, y emitir a varias plataformas
+  simultáneamente. Su coste de licencia, que puede superar los 1.000~\euro, y su
+  restricción a Windows la excluyen de entornos de código abierto sobre Linux.
+
+  \item \textbf{Voctomix}~\cite{voctomix_github}: herramienta de código abierto con
+  arquitectura cliente-servidor que separa el motor de mezcla (\texttt{voctocore}) de
+  la interfaz de control (\texttt{voctogui}), permitiendo que el procesamiento se
+  realice en un servidor mientras el operador trabaja desde otro equipo conectado por
+  red. Construido sobre GStreamer~\cite{gstreamer_docs}, un \textit{framework} (entorno
+  de software) multimedia de código abierto, proporciona composición de vídeo con
+  múltiples fuentes, transiciones animadas, \textit{overlays} y un protocolo de
+  control TCP extensible. Es la herramienta objeto del presente trabajo (véase el
+  Capítulo~\ref{chap:diseno}).
+\end{itemize}
+
+\begin{table}[H]
+  \centering
+  \caption{Comparativa entre producción audiovisual tradicional y producción remota (REMI).}
+  \label{tab:trad_vs_remi}
+  \begin{tabular}{|l|c|c|}
+    \hline
+    \textbf{Parámetro} & \textbf{Tradicional} & \textbf{REMI / Software} \\
+    \hline
+    Infraestructura en lugar del evento & Completa          & Mínima (cámaras + encoder) \\
+    Coste de equipamiento               & Muy alto          & Bajo (hardware convencional) \\
+    Personal \textit{in situ}           & Numeroso          & Reducido \\
+    Latencia extremo a extremo          & Sub-imagen        & 1 fotograma -- varios segundos \\
+    Escalabilidad                       & Limitada          & Alta \\
+    Sostenibilidad (huella de carbono)  & Baja              & Alta \\
+    Ejemplo                             & Blackmagic ATEM   & OBS, vMix, Voctomix \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figuras/cadena_produccion}
+  \caption{Cadena de producción audiovisual en directo: señales de contribución,
+           mezclador de vídeo y salida de distribución.}
+  \label{fig:cadena_produccion}
+\end{figure}
