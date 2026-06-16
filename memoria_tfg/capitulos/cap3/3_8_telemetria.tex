@@ -2,7 +2,7 @@
 \label{sec:telemetria}
 
 El sistema de telemetría registra en tiempo real todo lo que ocurre durante una sesión
-de producción: cambios de fuente activa, transiciones de composite, activaciones del
+de producción: cambios de fuente activa, cambios de composite, activaciones del
 stream blanker, estado de overlays y niveles de audio. Esta información permite tanto
 monitorizar la sesión mientras está en curso como auditarla en detalle una vez terminada
 la emisión.
@@ -81,20 +81,15 @@ entrada de tipo CHANGE completa tras un corte de cámara:
  "network": {"core_ip": "172.19.0.4", "gui_local_ip": "192.168.0.42"}}
 \end{verbatim}
 
-\subsection{API HTTP y publicación en RabbitMQ}
+\subsection{Publicación en RabbitMQ}
 \label{sec:rabbitmq}
-
-Además del fichero de log local, el servicio expone una API HTTP en el puerto~8080 que
-devuelve el estado actual completo en formato JSON. Esto permite que otros procesos del
-sistema consulten el estado de la sesión en cualquier momento sin acceder directamente
-al log.
 
 Opcionalmente, el servicio puede publicar cada evento en un broker
 RabbitMQ~\cite{rabbitmq_docs} mediante el protocolo AMQP~\cite{oasis_amqp10}. Cada
 cambio de estado se publica en el exchange \texttt{voctomix\_events} (tipo fanout), de
 forma que cualquier consumidor externo puede suscribirse a los eventos sin acoplarse
 directamente al servicio de telemetría ni a voctocore. Si RabbitMQ no está disponible,
-el servicio continúa funcionando con el log local y la API HTTP sin interrupción alguna.
+el servicio continúa funcionando con el log local sin interrupción alguna.
 
 En el marco del proyecto europeo CyberNEMO (UPM), el broker RabbitMQ de Voctomix~2.0
 fue integrado en el clúster Kubernetes, donde las colas
