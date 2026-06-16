@@ -14,7 +14,7 @@ Marcar cada uno como completado al terminar.
 
 ## CAPÍTULO 2 — ESTADO DEL ARTE
 
-- [ ] **2.1 — Ampliar con estudios académicos sobre producción audiovisual remota**
+- [x] **2.1 — Ampliar con estudios académicos sobre producción audiovisual remota**
   > Buscar y añadir más referencias académicas (Google Scholar, IEEE) sobre producción audiovisual remota. El apartado está demasiado escaso de citas de peso.
 
 - [ ] **2.1.2 — Extender un ~20% e integrar Docker/Kubernetes**
