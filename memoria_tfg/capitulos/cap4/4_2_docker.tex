@@ -13,7 +13,7 @@ El \texttt{Dockerfile} original del repositorio databa de 2016 y usaba Ubuntu~15
 imágenes que ya no existen. Se reescribió desde cero sobre Ubuntu~22.04~LTS. Las
 dependencias se instalan en una sola capa para reducir el tamaño de la imagen: GStreamer~1.0
 con todos sus plugins, FFmpeg~\cite{ffmpeg_project} para la inyección de fuentes de vídeo,
-los bindings Python de GObject y la librería AMQP para la integración con RabbitMQ.
+las bibliotecas Python de GObject y la librería AMQP para la integración con RabbitMQ.
 El fichero Compose define un \textit{healthcheck} que comprueba si voctocore acepta
 conexiones en el puerto~9999, de forma que Docker Compose espera a que el núcleo esté
 listo antes de arrancar los servicios que dependen de él.
@@ -21,7 +21,7 @@ listo antes de arrancar los servicios que dependen de él.
 El principal desafío técnico de la contenedorización fue el aislamiento de red. En Docker,
 cada contenedor tiene su propia interfaz de red, de modo que cuando un proceso se conecta
 a \texttt{localhost} solo alcanza a los procesos de ese mismo contenedor. Esto supone un
-problema para Voctomix porque las cámaras se conectan a voctocore mediante
+problema para Voctomix porque las fuentes de vídeo se conectan a voctocore mediante
 \texttt{localhost:10000}. La solución adoptada es el \textbf{espacio de red compartido}:
 todos los contenedores del sistema (cámaras, break, intro, stream blanker, audio manager
 y telemetría) se configuran con \texttt{network\_mode: "service:voctocore"} en el fichero
@@ -35,7 +35,7 @@ del puerto~9999. Ejecutar una interfaz gráfica dentro de un contenedor no es vi
 servidor gráfico del sistema (X11 o Wayland), por lo que esta parte del sistema queda fuera de Docker. Los
 recursos gráficos como logos e imágenes de fondo se comparten con el contenedor de
 voctocore mediante un volumen, lo que permite modificarlos sin necesidad de reconstruir
-la imagen.
+la imagen (figura~\ref{fig:escenario_docker}).
 
 \begin{figure}[H]
   \centering
@@ -44,7 +44,7 @@ la imagen.
   \label{fig:escenario_docker}
 \end{figure}
 
-Durante las pruebas se detectó un problema de arranque: las cámaras intentaban conectarse
+Durante las pruebas se detectó un problema de arranque: los contenedores de fuente intentaban conectarse
 a voctocore antes de que este estuviera listo, lo que producía fallos. La solución combina
 dos medidas: si un contenedor falla, Docker lo reinicia automáticamente mediante
 \texttt{restart: on-failure}; y antes de lanzar cada servicio, el sistema comprueba que el

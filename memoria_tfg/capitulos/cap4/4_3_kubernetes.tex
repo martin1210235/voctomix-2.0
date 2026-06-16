@@ -17,7 +17,7 @@ problema de aislamiento de red que en Docker se solucionó con el espacio de red
 El pod principal, llamado \texttt{studio}, agrupa voctocore, todas las fuentes de vídeo
 (cam1--4, break, intro, stream blanker y audio manager) y el servicio de telemetría. Al compartir pod, todas las conexiones
 TCP internas funcionan sin modificar una sola línea de código. RabbitMQ se despliega en un
-pod independiente y se comunica con la telemetría mediante AMQP.
+pod independiente; la telemetría le publica sus eventos mediante AMQP.
 
 El despliegue se define en cuatro ficheros YAML:
 \texttt{studio.yaml} define el pod principal con todos sus contenedores y los puertos
@@ -45,7 +45,7 @@ los puertos de voctocore (control, previews, salida de programa). En PC2, el ope
 lanza voctogui apuntando a la IP de PC1, exactamente igual que en el escenario de dos PCs
 nativo. Para detener el sistema basta con cerrar el terminal de PC1, lo que cierra
 automáticamente el reenvío de puertos; el clúster y los pods permanecen activos y pueden
-retomarse en cualquier momento sin necesidad de volver a desplegarlos.
+retomarse en cualquier momento sin necesidad de volver a desplegarlos (figura~\ref{fig:escenario_kubernetes}).
 
 \begin{figure}[H]
   \centering
