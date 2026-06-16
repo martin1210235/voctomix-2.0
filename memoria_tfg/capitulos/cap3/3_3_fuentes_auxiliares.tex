@@ -1,0 +1,87 @@
+\section{Fuentes de señal auxiliares}
+\label{sec:fuentes_auxiliares}
+
+Además de las cuatro fuentes de cámara, el sistema incorpora varias fuentes de señal
+auxiliares que permiten gestionar el estado de la emisión en momentos en los que la
+mezcla principal no debe ser visible para el espectador, así como una entrada de audio
+independiente para música de fondo.
+
+\subsection{Fuente break e intro}
+
+\texttt{break} e \texttt{intro} son fuentes de vídeo pregrabadas que voctocore trata
+como dos entradas adicionales en los puertos 10004 y 10005. Al no aportar información
+relevante durante la producción, se ocultan en la interfaz gráfica sin perder
+funcionalidad en el núcleo.
+
+\begin{itemize}
+  \item \textbf{break}: vídeo en bucle continuo (\texttt{-stream\_loop -1}) empleado
+        como pantalla animada durante los descansos. El realizador puede seleccionarlo
+        directamente en el mezclador, al igual que cualquier cámara.
+  \item \textbf{intro}: vídeo de reproducción única. Al pulsar el botón de intro,
+        voctogui detiene el proceso FFmpeg que alimenta esa entrada y lanza uno nuevo
+        que reproduce el vídeo desde el principio sin bucle. Una vez que la nueva
+        señal está estabilizada, la interfaz envía el comando de corte al núcleo para
+        que la intro comience a emitirse desde el primer fotograma.
+\end{itemize}
+
+\subsection{Entrada de audio}
+
+El sistema incorpora una entrada de audio independiente en el puerto 18000, pensada
+para inyectar música de fondo durante los estados de pausa o fuera de emisión. Esta
+entrada acepta un flujo Matroska de sólo audio (PCM S16LE, 48~kHz, estéreo) y su
+nivel de salida puede controlarse desde el protocolo de control.
+
+\subsection{Stream Blanker: estados de emisión}
+
+El stream blanker es el mecanismo que permite interrumpir la señal de programa hacia el
+exterior sin interrumpir el flujo de trabajo interno del realizador. Se implementa en
+\texttt{streamblanker.py} como un elemento GStreamer adicional interpuesto
+entre la mezcla y el puerto de salida de streaming (puerto 15000).
+
+El sistema define tres estados de emisión, controlables desde la barra de herramientas
+de voctogui:
+
+\begin{itemize}
+  \item \textbf{LIVE:} se emite la mezcla activa producida por voctocore. El realizador
+        controla en todo momento lo que ve el espectador.
+  \item \textbf{PAUSE:} se emite el vídeo de pausa procedente del puerto 17000,
+        acompañado de la música de fondo del puerto 18000.
+        Se usa durante los descansos del evento para que los espectadores vean una pantalla
+        animada mientras el equipo de producción prepara la siguiente sesión.
+  \item \textbf{NOSTREAM:} se emite un vídeo de ``fuera de emisión'' procedente del
+        puerto 17001, indicando al espectador
+        que la transmisión ha finalizado o aún no ha comenzado.
+\end{itemize}
+
+El cambio entre estados se aplica sobre la señal de salida.
+Desde la interfaz gráfica, el realizador dispone de tres botones (LIVE, PAUSE,
+NOSTREAM) en la barra de herramientas.
+
+La figura~\ref{fig:streamblanker_estados} muestra la interfaz del realizador y la
+señal vista por el espectador en los estados NOSTREAM y PAUSE.
+
+\begin{figure}[H]
+  \centering
+  % ── Columna izquierda: NOSTREAM ──────────────────────────────────────
+  \begin{minipage}[t]{0.47\textwidth}
+    \subcaptionbox{GUI en estado NOSTREAM.\label{fig:gui_nostream}}{%
+      \includegraphics[width=\textwidth]{figuras/gui_nostream.png}}
+    \par\vspace{0.3cm}
+    \subcaptionbox{Señal del espectador en NOSTREAM.\label{fig:port_nostream}}{%
+      \includegraphics[width=\textwidth]{figuras/port_15000_nostream.png}}
+  \end{minipage}
+  \hfill
+  % ── Columna derecha: PAUSE ───────────────────────────────────────────
+  \begin{minipage}[t]{0.47\textwidth}
+    \subcaptionbox{GUI en estado PAUSE.\label{fig:gui_pause}}{%
+      \includegraphics[width=\textwidth]{figuras/gui_pause.png}}
+    \par\vspace{0.3cm}
+    \subcaptionbox{Señal del espectador en PAUSE.\label{fig:port_pause}}{%
+      \includegraphics[width=\textwidth]{figuras/port_15000_pause.png}}
+  \end{minipage}
+  \caption{Estados NOSTREAM y PAUSE del stream blanker: vista del realizador (arriba)
+           y señal recibida por el espectador (abajo).}
+  \label{fig:streamblanker_estados}
+\end{figure}
+%   \label{fig:fsm_stream_blanker}
+% \end{figure}

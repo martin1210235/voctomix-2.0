@@ -1,0 +1,53 @@
+\section{Introducción}
+
+La producción audiovisual en directo ha experimentado en los últimos años una profunda
+transformación, impulsada por la democratización del hardware de bajo coste y el
+crecimiento exponencial del \textit{streaming} (transmisión en flujo) en Internet. Eventos técnicos de referencia como
+el Chaos Communication Congress (CCC), organizado por el Chaos Computer Club en Alemania,
+han puesto de manifiesto la necesidad de disponer de herramientas de realización
+profesional que sean al mismo tiempo económicas, fiables y auditables.
+
+En este contexto surge Voctomix~\cite{voctomix_github,delRio2025ugc}, desarrollado por el equipo C3VOC (\textit{Chaos Communication
+Congress Video Operations Crew}). Frente a soluciones previas como \textit{dvswitch}~\cite{dvswitch_project}, limitada
+en resolución y escalabilidad, o herramientas comerciales como vMix o OBS Studio,
+diseñadas para un único operador en un único equipo, Voctomix adopta una arquitectura
+cliente-servidor desacoplada que separa el motor de mezcla multimedia de la interfaz
+de control, permitiendo distribuir la carga de procesamiento en distintos nodos de red.
+
+El presente Trabajo de Fin de Grado toma como punto de partida la versión original
+de Voctomix y propone una serie de extensiones orientadas a su uso en producciones
+en directo de mediana escala: rotulación dinámica sobre el vídeo, gestión avanzada
+del blanking de stream, composites avanzados de vídeo, telemetría en tiempo real
+mediante un broker de mensajería, y la contenerización completa del sistema mediante
+Docker y Docker Compose. El resultado es Voctomix 2.0, una plataforma más versátil,
+desplegable y adaptada a flujos de trabajo profesionales.
+
+Un elemento diferenciador de este proyecto es su orientación hacia un \textbf{caso de uso
+real}: el sistema desarrollado se integra en el proyecto europeo de investigación
+\textbf{CyberNEMO}, liderado por la Universidad Politécnica de Madrid (UPM), cuyo
+objetivo es validar soluciones de ciberseguridad aplicadas a entornos de producción y
+distribución multimedia. Este trabajo se ha llevado a cabo en el marco de una beca de
+investigación en la Cátedra de Radiotelevisión Española (RTVE) de la UPM. En este marco, Voctomix~2.0 actúa como el motor de producción
+audiovisual del proyecto, mientras que el sistema de telemetría con RabbitMQ
+desarrollado en este trabajo proporciona el canal de monitorización en tiempo real del
+\textit{pipeline} (cadena de procesamiento) de producción. Voctomix~2.0 responde directamente a las necesidades de
+retransmisión de seminarios y eventos técnicos con calidad profesional sin depender de
+infraestructura hardware costosa, proporcionando un entorno reproducible que puede
+ponerse en funcionamiento con un único comando (\texttt{docker compose up}) en
+cualquier equipo Linux estándar.
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.85\textwidth]{figuras/gui_voctomix2.png}
+%   \caption{Interfaz gráfica de Voctomix 2.0 en funcionamiento.}
+%   \label{fig:gui_voctomix2}
+% \end{figure}
+
+% --- Figura sugerida ---
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.85\textwidth]{figuras/diagrama_contexto.png}
+%   \caption{Diagrama de contexto: Voctomix 2.0 en el entorno de producción del grupo CyberNemo (UPM).}
+%   \label{fig:diagrama_contexto}
+% \end{figure}
