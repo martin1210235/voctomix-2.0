@@ -35,7 +35,7 @@ espera hasta que RabbitMQ responde; solo entonces arranca el resto del pod. Del 
 una comprobación periódica sobre el puerto~9999 confirma que voctocore está operativo antes
 de que el sistema empiece a aceptar conexiones externas.
 
-Para arrancar el sistema, el operador ejecuta el script de servidor en PC1. Este comprueba
+Para arrancar el sistema, el operador lanza en PC1 un comando que primero comprueba
 si Minikube ya está en marcha y, si no, lo inicia. A continuación aplica todos los
 manifiestos YAML al clúster y espera a que los pods estén completamente listos. Una vez
 que el sistema está operativo, establece un reenvío de puertos
