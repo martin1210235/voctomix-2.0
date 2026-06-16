@@ -2,76 +2,49 @@
 \label{sec:kubernetes}
 
 Kubernetes~\cite{kubernetes_burns2016} es un sistema de orquestación de contenedores que gestiona de forma
-declarativa el ciclo de vida de los servicios: arranque, reinicio ante fallos,
-actualizaciones y escalado. A diferencia de Docker Compose, que está pensado para un
-único equipo, Kubernetes puede ejecutarse sobre infraestructura en la nube sin modificar
-el código de la aplicación.
+declarativa el ciclo de vida de los servicios: arranque, reinicio ante fallos y escalado.
+A diferencia de Docker Compose, que está pensado para un único equipo, Kubernetes puede
+ejecutarse sobre infraestructura en la nube sin modificar el código de la aplicación,
+lo que lo convierte en el entorno de producción natural para proyectos de investigación
+como CyberNEMO. Para las pruebas locales se utilizó Minikube~\cite{minikube_docs}, que levanta un
+clúster Kubernetes completo en el propio equipo de desarrollo sin necesidad de
+infraestructura en la nube.
 
-Para las pruebas locales se utilizó Minikube~\cite{minikube_docs}, que levanta un clúster Kubernetes
-completo dentro de una máquina virtual en el propio equipo de desarrollo, eliminando
-la necesidad de disponer de infraestructura en la nube durante el desarrollo.
+La unidad mínima de despliegue en Kubernetes es el \textit{pod}. Cuando varios contenedores
+se agrupan en el mismo pod, comparten automáticamente la interfaz de red, es decir, todos
+ven el mismo \texttt{localhost}. Este comportamiento resuelve de forma nativa el mismo
+problema de aislamiento de red que en Docker se solucionó con el espacio de red compartido.
+El pod principal, llamado \texttt{studio}, agrupa voctocore, las fuentes de vídeo (cam1--4,
+stream blanker e intro) y el servicio de telemetría. Al compartir pod, todas las conexiones
+TCP internas funcionan sin modificar una sola línea de código. RabbitMQ se despliega en un
+pod independiente y se comunica con la telemetría mediante AMQP.
 
-\subsection{Arquitectura: contenedores en el mismo pod}
+El despliegue se define en cuatro ficheros YAML en el directorio \texttt{k8s/}:
+\texttt{studio.yaml} define el pod principal con todos sus contenedores y los puertos
+expuestos; \texttt{rabbitmq.yaml} despliega RabbitMQ como pod independiente;
+\texttt{configmap.yaml} centraliza todos los parámetros de configuración (resolución,
+puertos, fuentes de vídeo) como variables de entorno accesibles por todos los contenedores,
+de forma que un solo cambio aquí se aplica a todo el clúster; y \texttt{pvc.yaml} reserva
+1~GiB de almacenamiento persistente para los registros de telemetría, que así sobreviven
+al reinicio del pod.
 
-En Kubernetes, la unidad mínima de despliegue es el \textit{pod}. Cuando varios
-contenedores se agrupan dentro del mismo pod, comparten automáticamente la red, es
-decir, todos ven el mismo \texttt{localhost}. Este comportamiento resuelve de forma
-nativa el mismo problema de red que en Docker se solucionó con el espacio de red
-compartido.
+Kubernetes no garantiza por defecto que un pod esté listo cuando otro lo necesita. Para
+gestionar el orden de arranque se emplean dos mecanismos: antes de que arranque el pod
+\texttt{studio}, un contenedor de inicialización espera a que RabbitMQ esté disponible;
+y una sonda de preparación comprueba periódicamente el puerto~9999 de voctocore y evita
+que Kubernetes enrute tráfico hacia el pod hasta que el núcleo esté listo.
 
-El pod principal (\texttt{studio}) agrupa voctocore, las cuatro cámaras, el servicio
-de telemetría y las señales de continuidad. Al compartir pod, todas las conexiones
-TCP internas de Voctomix funcionan sin ninguna configuración adicional y sin tocar
-el código. RabbitMQ se despliega en un pod independiente.
+Los puertos del clúster se exponen al exterior mediante un \textit{port-forward}
+(\texttt{kubectl port-forward --address 0.0.0.0}), que el script \texttt{start\_server\_pc1.sh}
+establece automáticamente tras comprobar que todos los pods están en estado \textit{ready}.
+Esto permite que voctogui y el monitor de programa se conecten desde PC2 exactamente igual
+que en el escenario de dos PCs nativo, usando la IP de PC1 como destino.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{figuras/k8s_pods}
-  \caption{Arquitectura de pods en el despliegue Kubernetes: pod principal con todos
-           los componentes de Voctomix y pod independiente para RabbitMQ.}
-  \label{fig:k8s_pods}
+  \includegraphics[width=\textwidth]{figuras/escenario_kubernetes.png}
+  \caption{Escenario de despliegue con Kubernetes: pod \texttt{studio} con todos los
+           componentes de Voctomix, pod independiente para RabbitMQ, y acceso desde
+           PC2 a través del Service y el port-forward.}
+  \label{fig:escenario_kubernetes}
 \end{figure}
-
-\subsection{Manifiestos de despliegue}
-
-El despliegue se define en cuatro ficheros YAML en el directorio \texttt{k8s/}:
-
-\begin{itemize}
-  \item \textbf{\texttt{studio.yaml}:} define el pod principal con todos los contenedores
-        del sistema y los puertos expuestos. Es el manifiesto central del despliegue.
-  \item \textbf{\texttt{rabbitmq.yaml}:} despliega RabbitMQ como pod independiente con
-        sus puertos AMQP (5672) y consola web (15672).
-  \item \textbf{\texttt{configmap.yaml}:} centraliza los parámetros de configuración,
-        como la resolución de vídeo, los puertos y la dirección del broker, como
-        variables de entorno accesibles por todos los contenedores. Cambiar un parámetro
-        aquí lo aplica a todo el clúster.
-  \item \textbf{\texttt{pvc.yaml}:} reserva 1~GiB de almacenamiento persistente para
-        el directorio de sesiones. Gracias a este volumen, los registros de telemetría
-        (.jsonl) sobreviven al reinicio del pod.
-\end{itemize}
-
-Las credenciales de RabbitMQ se almacenan en un \texttt{Secret} de Kubernetes en lugar
-de escribirlas directamente en los manifiestos, siguiendo las buenas prácticas de
-seguridad de la plataforma.
-
-\subsection{Orden de arranque y sondas de preparación}
-
-Kubernetes no garantiza por defecto que un pod esté listo cuando otro lo necesita.
-Para gestionar las dependencias de arranque se emplean dos mecanismos:
-
-\begin{itemize}
-  \item \textbf{Contenedor de inicialización:} antes de que arranque el pod principal,
-        un pequeño contenedor auxiliar espera a que RabbitMQ esté disponible. Solo
-        cuando RabbitMQ acepta conexiones, Kubernetes permite que el resto de contenedores
-        del pod arranquen.
-  \item \textbf{Sonda de preparación de voctocore:} una comprobación TCP sobre el puerto
-        9999 determina cuándo voctocore está listo para aceptar conexiones. Kubernetes
-        no enruta tráfico hacia el pod hasta que esta sonda es positiva.
-\end{itemize}
-
-El script \texttt{launch\_k8s.sh} automatiza el ciclo de vida completo: comprueba si
-Minikube ya está en marcha para no relanzarlo innecesariamente, aplica los manifiestos,
-espera a que todos los pods estén listos y establece un reenvío de puertos que expone
-los servicios del clúster en \texttt{localhost} del equipo anfitrión. Esto permite que
-voctogui se conecte al clúster exactamente igual que en cualquier otro escenario. Al
-cerrar el terminal, los reenvíos de puerto se cierran de forma ordenada.
