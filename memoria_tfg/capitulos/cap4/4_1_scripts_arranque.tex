@@ -51,14 +51,27 @@ y las pruebas funcionales del sistema.
   y muestra en la interfaz todas las fuentes activas. Al cerrar la interfaz, los
   procesos auxiliares se terminan de forma limpia de manera automática.
 
+\end{itemize}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{figuras/escenario_1pc.pdf}
+  \caption{Escenario de despliegue nativo con un único PC.}
+  \label{fig:escenario_1pc}
+\end{figure}
+
+\begin{itemize}
+
   \item \textbf{Escenario de dos PCs.}
-  En este escenario, la carga de trabajo se reparte entre dos equipos conectados por
-  red local: el PC servidor ejecuta voctocore y todos los servicios de apoyo, mientras
-  que el PC del realizador ejecuta únicamente voctogui. Para que voctogui pueda
-  conectarse a voctocore, el fichero de configuración de voctogui debe indicar la
-  dirección IP del servidor en el campo \texttt{host}, en lugar de \texttt{localhost}.
-  El script de arranque del realizador acepta esta IP como variable de entorno
-  (\texttt{IP\_SERVER}), lo que evita modificar el fichero de configuración en cada
-  despliegue.
+  En este escenario la carga de trabajo se reparte entre dos equipos conectados por
+  red local. El proceso de arranque es análogo al de un PC pero distribuido: en el
+  PC servidor se lanza \texttt{voctocore.py} y se inyectan todas las señales de
+  vídeo y audio mediante FFmpeg, exactamente igual que en el escenario anterior.
+  En el PC del realizador se lanza únicamente \texttt{voctogui.py}, que recibe como
+  parámetro la dirección IP del servidor (\texttt{IP\_SERVER}) para conectarse al
+  puerto de control~9999 a través de la red local, en lugar de \texttt{localhost}.
+  Adicionalmente, el PC del realizador abre un monitor de programa conectándose al
+  puerto de salida~15000 del servidor, lo que permite supervisar la señal de programa
+  en tiempo real desde el puesto del operador.
 
 \end{itemize}

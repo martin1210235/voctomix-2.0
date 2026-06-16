@@ -1,0 +1,66 @@
+<mxfile host="app.diagrams.net" modified="2026-06-16" agent="Claude" version="21.0.0">
+  <diagram name="Escenario 1 PC" id="escenario_1pc">
+    <mxGraphModel dx="1200" dy="800" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- PC box -->
+        <mxCell id="2" value="PC (único equipo)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontStyle=1;verticalAlign=top;arcSize=4;" vertex="1" parent="1">
+          <mxGeometry x="160" y="60" width="840" height="480" as="geometry" />
+        </mxCell>
+
+        <!-- voctocore -->
+        <mxCell id="3" value="voctocore.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="180" width="280" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- FFmpeg cameras -->
+        <mxCell id="4" value="FFmpeg&#xa;(cámaras sintéticas)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="200" y="180" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- FFmpeg continuity -->
+        <mxCell id="5" value="FFmpeg&#xa;(continuidad / stream blanker)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="200" y="310" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- voctogui -->
+        <mxCell id="6" value="voctogui.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="730" y="180" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Program output -->
+        <mxCell id="7" value="Salida de programa&#xa;(puerto 15000)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="440" y="380" width="280" height="55" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow: FFmpeg cams → voctocore -->
+        <mxCell id="8" value="10000–10005&#xa;(RAW I420)" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="4" target="3" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow: FFmpeg continuity → voctocore -->
+        <mxCell id="9" value="17000–17001, 18000" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.8;entryDx=0;entryDy=0;" edge="1" source="5" target="3" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow: voctogui → voctocore (control) -->
+        <mxCell id="10" value="9999 (control TCP)&#xa;localhost" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="6" target="3" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow: voctocore → program output -->
+        <mxCell id="11" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;" edge="1" source="3" target="7" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Label puertos previews -->
+        <mxCell id="12" value="Previews: 14000–14005&#xa;(voctogui los consume)" style="text;html=1;align=center;verticalAlign=middle;resizable=0;fontSize=10;fontStyle=2;" vertex="1" parent="1">
+          <mxGeometry x="700" y="310" width="200" height="40" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

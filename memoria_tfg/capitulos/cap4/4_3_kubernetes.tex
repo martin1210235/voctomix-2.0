@@ -75,17 +75,3 @@ espera a que todos los pods estén listos y establece un reenvío de puertos que
 los servicios del clúster en \texttt{localhost} del equipo anfitrión. Esto permite que
 voctogui se conecte al clúster exactamente igual que en cualquier otro escenario. Al
 cerrar el terminal, los reenvíos de puerto se cierran de forma ordenada.
-
-\subsection{Validación en producción: proyecto CyberNEMO}
-\label{sec:cybernemo}
-
-El despliegue Kubernetes de Voctomix~2.0 fue validado en un entorno de producción real
-en el marco del proyecto europeo de investigación CyberNEMO (UPM). El sistema se integró
-en el clúster Kubernetes del proyecto, donde el broker RabbitMQ de Voctomix~2.0 publicó
-los eventos del mezclador en las colas \texttt{vproduction-uc-media} y
-\texttt{vqprobe-uc-media} del clúster durante las pruebas de producción audiovisual.
-
-Esta integración demostró que el diseño de Voctomix~2.0 es compatible con
-infraestructura Kubernetes de producción sin modificaciones en el código: la
-misma imagen Docker y los mismos manifiestos que funcionan en Minikube local se
-desplegaron sobre el clúster del proyecto sin necesidad de adaptar ningún componente.
