@@ -18,13 +18,13 @@ Marcar cada uno como completado al terminar.
   > Buscar y añadir más referencias académicas (Google Scholar, IEEE) sobre producción audiovisual remota. El apartado está demasiado escaso de citas de peso.
 
 - [ ] **2.1.2 — Extender un ~20% e integrar Docker/Kubernetes**
-  > El apartado 2.1.2 debe ser más extenso. Integrar una mención a Docker y Kubernetes como infraestructura que ha facilitado la adopción de sistemas de producción remota. Mencionar también Matroska como contenedor de vídeo RAW en este contexto (moverlo desde donde esté ahora).
+  > El apartado 2.1.2 debe ser más extenso. Integrar una mención a Docker y Kubernetes como infraestructura que ha facilitado la adopción de sistemas de producción remota.
 
-- [ ] **2.2 (Protocolos de transporte) — Integrar en 2.3/2.4, no como sección independiente**
+- [x] **2.2 (Protocolos de transporte) — Integrar en 2.3/2.4, no como sección independiente**
   > La sección de protocolos de transporte no debe ser un apartado autónomo. Integrar su contenido dentro de las secciones de contribución (2.3) y distribución (2.4) según corresponda. Además, los títulos de las subsecciones no deben usar siglas: escribir "User Datagram Protocol", "Transmission Control Protocol", "Hypertext Transfer Protocol" en lugar de UDP, TCP, HTTP.
 
 - [ ] **2.3.2 — Renombrar a "Contenedores multimedia de contribución" y revisar contenido**
-  > Renombrar el apartado de formatos de contribución a "Contenedores multimedia [de contribución]". Quitar Matroska de aquí (no es un formato de contribución profesional) y añadir en su lugar los formatos profesionales MXF y XF (usados en cámaras de broadcast).
+  > Renombrar el apartado de formatos de contribución a "Contenedores multimedia [de contribución]". Quitar Matroska de aquí (no es un formato de contribución profesional) y añadir en su lugar los formatos profesionales MXF y XF (usados en cámaras de broadcast). Mencionar también Matroska como contenedor de vídeo RAW en este contexto (moverlo desde donde esté ahora).
 
 - [ ] **2.3.3 — Añadir códecs de audio profesionales**
   > Añadir Dolby Atmos y AC-4 como códecs de audio relevantes en el contexto de contribución profesional.
