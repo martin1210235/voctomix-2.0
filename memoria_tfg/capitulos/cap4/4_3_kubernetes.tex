@@ -19,7 +19,7 @@ stream blanker e intro) y el servicio de telemetría. Al compartir pod, todas la
 TCP internas funcionan sin modificar una sola línea de código. RabbitMQ se despliega en un
 pod independiente y se comunica con la telemetría mediante AMQP.
 
-El despliegue se define en cuatro ficheros YAML en el directorio \texttt{k8s/}:
+El despliegue se define en cuatro ficheros YAML:
 \texttt{studio.yaml} define el pod principal con todos sus contenedores y los puertos
 expuestos; \texttt{rabbitmq.yaml} despliega RabbitMQ como pod independiente;
 \texttt{configmap.yaml} centraliza todos los parámetros de configuración (resolución,
@@ -28,11 +28,12 @@ de forma que un solo cambio aquí se aplica a todo el clúster; y \texttt{pvc.ya
 1~GiB de almacenamiento persistente para los registros de telemetría, que así sobreviven
 al reinicio del pod.
 
-Kubernetes no garantiza por defecto que un pod esté listo cuando otro lo necesita. Para
-gestionar el orden de arranque se emplean dos mecanismos: antes de que arranque el pod
-\texttt{studio}, un contenedor de inicialización espera a que RabbitMQ esté disponible;
-y una sonda de preparación comprueba periódicamente el puerto~9999 de voctocore y evita
-que Kubernetes enrute tráfico hacia el pod hasta que el núcleo esté listo.
+El orden de arranque también requiere coordinación. Si el pod \texttt{studio} intentase
+arrancar antes de que RabbitMQ estuviera listo, la telemetría fallaría al intentar
+conectarse. Para evitarlo, un pequeño contenedor auxiliar se ejecuta primero y simplemente
+espera hasta que RabbitMQ responde; solo entonces arranca el resto del pod. Del mismo modo,
+una comprobación periódica sobre el puerto~9999 confirma que voctocore está operativo antes
+de que el sistema empiece a aceptar conexiones externas.
 
 Los puertos del clúster se exponen al exterior mediante un \textit{port-forward}
 (\texttt{kubectl port-forward --address 0.0.0.0}), que el script \texttt{start\_server\_pc1.sh}
