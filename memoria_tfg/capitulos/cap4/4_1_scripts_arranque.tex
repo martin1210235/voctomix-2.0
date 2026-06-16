@@ -7,24 +7,16 @@ producción en la nube. La tabla~\ref{tab:escenarios_despliegue} resume cada opc
   \caption{Escenarios de despliegue de Voctomix~2.0.}
   \label{tab:escenarios_despliegue}
   \small
-  \begin{tabular}{|l|l|l|l|}
+  \begin{tabularx}{\textwidth}{|l|l|l|X|}
     \hline
     \textbf{Escenario} & \textbf{Requisito} & \textbf{Caso de uso} & \textbf{Arranque} \\
     \hline
-    Un PC (nativo)  & Linux + GStreamer + Python
-                    & Pruebas y desarrollo
-                    & \texttt{./start\_studio\_single\_pc.sh} \\
-    Dos PCs (nativo)& Dos equipos Linux en red local
-                    & Eventos con hardware dedicado
-                    & \texttt{./start\_voctocore\_pc1.sh} \\
-    Docker Compose  & Docker instalado
-                    & Despliegue reproducible
-                    & \texttt{make docker-up} \\
-    Kubernetes      & Minikube o clúster externo
-                    & Producción y nube
-                    & \texttt{./launch\_k8s.sh} \\
+    Un PC (nativo)   & Linux + GStreamer + Python      & Pruebas y desarrollo          & \texttt{./start\_studio\_single\_pc.sh} \\
+    Dos PCs (nativo) & Dos equipos Linux en red local  & Eventos con hardware dedicado & \texttt{./start\_voctocore\_pc1.sh} \\
+    Docker Compose   & Docker instalado                & Despliegue reproducible       & \texttt{make docker-up} \\
+    Kubernetes       & Minikube o clúster externo      & Producción y nube             & \texttt{./launch\_k8s.sh} \\
     \hline
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
 Los dos primeros se denominan escenarios nativos porque ejecutan los procesos directamente
