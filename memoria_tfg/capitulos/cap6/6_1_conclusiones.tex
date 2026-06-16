@@ -1,9 +1,9 @@
-En este capítulo se sintetizan las principales aportaciones del trabajo y se evalúa el
+En este capítulo se resumen las principales aportaciones del trabajo y se evalúa el
 grado de consecución de los objetivos planteados en el Capítulo~1. La
-Sección~\ref{sec:conclusiones} recoge las conclusiones extraídas del desarrollo e
+Sección~\ref{sec:conclusiones} recoge las conclusiones del desarrollo e
 implementación del sistema. La Sección~\ref{sec:lineas_futuras} identifica las líneas
-de trabajo futuro que podrían ampliar las capacidades de Voctomix~2.0 o adaptar la
-plataforma a nuevos casos de uso.
+de trabajo futuro que podrían ampliar las capacidades de Voctomix~2.0 o adaptarla a
+nuevos casos de uso.
 
 \section{Conclusiones}
 \label{sec:conclusiones}
@@ -22,7 +22,7 @@ cámara. El gestor de estados de emisión (\textit{stream blanker}) ofrece tres 
 (LIVE, PAUSE y NOSTREAM) que permiten interrumpir la señal de salida sin detener el
 procesamiento interno de la mezcla. La funcionalidad \textit{Audio Follows Video}
 ajusta automáticamente los volúmenes en cada cambio de fuente, eliminando la gestión
-manual del audio y reduciendo la carga cognitiva del operador durante la producción.
+manual del audio y reduciendo el trabajo del operador durante la producción.
 
 \vspace{0.2cm}
 \noindent\textbf{OE-2: Servicio de telemetría.}
@@ -30,17 +30,16 @@ El servicio de telemetría registra en tiempo real los eventos de operación del
 (tipo CHANGE) y el estado periódico del sistema (tipo STATE, cada 5 segundos) en
 formato JSON Lines. Los eventos se publican simultáneamente en un broker RabbitMQ
 mediante AMQP, lo que permite su integración con sistemas externos de monitorización
-o análisis sin modificar el núcleo de la aplicación. Los datos de rendimiento
-obtenidos a través de este sistema han permitido caracterizar cuantitativamente el
-comportamiento del sistema en los cuatro escenarios de despliegue.
+o análisis sin modificar el núcleo de la aplicación. Los datos obtenidos han permitido caracterizar el comportamiento del sistema en los
+cuatro escenarios de despliegue.
 
 \vspace{0.2cm}
 \noindent\textbf{OE-3: Contenerización con Docker.}
 El sistema completo se ha empaquetado en una pila de diez contenedores Docker orquestada
 con Docker Compose, incluyendo voctocore, cuatro fuentes de cámara sintéticas, el stream
 blanker, el gestor de audio, el broker RabbitMQ y el servicio de telemetría. El despliegue
-completo se realiza con un único comando (\texttt{docker compose up}), eliminando la
-principal barrera de adopción del sistema.
+completo se realiza con un único comando (\texttt{docker compose up}), lo que hace
+que la puesta en marcha del sistema sea sencilla.
 
 \vspace{0.2cm}
 \noindent\textbf{OE-4: Despliegue en Kubernetes.}
@@ -53,18 +52,15 @@ sin necesidad de modificar el código del núcleo ni de la interfaz gráfica.
 
 \vspace{0.2cm}
 \noindent\textbf{OE-5: Validación en múltiples escenarios.}
-El sistema ha sido validado funcionalmente en cuatro escenarios de despliegue
-(monopuesto nativo, dos PCs en red local, Docker Compose y Kubernetes), superando
-en todos ellos las nueve categorías de pruebas funcionales definidas. La latencia
-de conmutación medida en los escenarios contenerizados fue inferior a 5\,ms en
-el 100\,\% de las mediciones, con una mediana de 1{,}5\,ms en Docker y 1{,}8\,ms
-en Kubernetes, cumpliendo con amplio margen el requisito de conmutación
-imperceptible a 25 fotogramas por segundo (40\,ms por fotograma).
+El sistema ha sido validado en cuatro escenarios de despliegue: monopuesto nativo,
+dos PCs en red local, Docker Compose y Kubernetes. En todos ellos se han superado
+las pruebas funcionales definidas y los resultados obtenidos confirman que el sistema
+cumple los requisitos de rendimiento establecidos para producción en directo.
 
 \vspace{0.2cm}
 \noindent\textbf{OE-6: Despliegue en producción real.}
 El sistema fue desplegado en un entorno de producción real dentro del proyecto
-europeo de investigación \textbf{CyberNEMO} (UPM), donde actuó como motor de
+europeo de investigación CyberNEMO (UPM), donde actuó como motor de
 producción audiovisual. Este despliegue acredita la madurez del sistema más allá
 del prototipo académico y lo posiciona como una contribución directamente aplicable
 a infraestructuras de investigación y producción audiovisual profesional.
@@ -93,13 +89,11 @@ y las secciones de la memoria donde se documentan.
 
 \vspace{0.3cm}
 
-Más allá de la consecución individual de los objetivos, el trabajo ha demostrado que
-es viable construir una plataforma de producción audiovisual profesional íntegramente
-sobre software libre. La elección de GStreamer como motor multimedia ha resultado
-especialmente acertada: su modelo de \textit{pipeline} modular ha permitido integrar
-cada nueva funcionalidad como un módulo independiente sin necesidad de alterar el
-núcleo original del sistema, lo que facilita el mantenimiento futuro y la contribución
-por parte de terceros.
+El trabajo ha demostrado que es posible construir una plataforma de producción
+audiovisual profesional íntegramente sobre software libre. GStreamer ha sido la pieza
+central: su modelo de \textit{pipeline} modular ha permitido integrar cada nueva
+funcionalidad como un módulo independiente sin modificar el núcleo original, lo que
+facilita el mantenimiento y la extensión del sistema.
 
 La separación entre \texttt{voctocore} y \texttt{voctogui} ha demostrado ser robusta
 en todos los entornos probados y escala de forma natural desde una red local hasta
