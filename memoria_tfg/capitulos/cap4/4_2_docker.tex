@@ -1,7 +1,7 @@
 \section{Contenedorización con Docker Compose}
 \label{sec:docker}
 
-Docker~\cite{merkel2014docker,docker_compose_docs} permite empaquetar el sistema completo, incluidas todas sus dependencias, en
+Docker permite empaquetar el sistema completo, incluidas todas sus dependencias, en
 contenedores que se ejecutan de forma idéntica en cualquier máquina con Docker instalado.
 El operador no necesita instalar GStreamer, Python ni ninguna otra librería: con
 \texttt{make docker-up} el sistema arranca en segundos.
@@ -17,7 +17,7 @@ imágenes de Docker Hub que ya no existen. Se reescribió desde cero sobre
 Ubuntu~22.04~LTS, la versión de soporte extendido vigente.
 
 Las dependencias se instalan en una sola capa para reducir el tamaño final de la imagen:
-GStreamer~1.0 con todos sus plugins, FFmpeg~\cite{ffmpeg_project} para la inyección de fuentes de vídeo, los
+GStreamer~1.0 con todos sus plugins, FFmpeg para la inyección de fuentes de vídeo, los
 bindings Python de GObject, la librería AMQP para la integración con RabbitMQ, y las
 utilidades de red necesarias para las comprobaciones de puerto durante el arranque.
 
@@ -111,7 +111,7 @@ El fichero \texttt{docker-compose.yml} define los siguientes servicios:
   \caption{Servicios definidos en \texttt{docker-compose.yml}.}
   \label{tab:servicios_docker}
   \small
-  \begin{tabularx}{\linewidth}{|l|l|X|}
+  \begin{tabular}{|l|l|l|}
     \hline
     \textbf{Servicio} & \textbf{Puertos} & \textbf{Función} \\
     \hline
@@ -121,7 +121,7 @@ El fichero \texttt{docker-compose.yml} define los siguientes servicios:
     rabbitmq         & 5672, 15672                      & Broker de mensajería AMQP \\
     telemetria       & 8080                             & Servicio de telemetría REST \\
     \hline
-  \end{tabularx}
+  \end{tabular}
 \end{table}
 
 \subsection{Interfaz gráfica y recursos gráficos}

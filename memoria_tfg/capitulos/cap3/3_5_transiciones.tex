@@ -19,9 +19,7 @@ El botón Trans realiza una transición animada entre el estado actual y el
 nuevo estado de composite o fuente, interpolando los parámetros geométricos y de
 transparencia durante un tiempo configurable (por defecto 750~ms, definido en la
 sección \texttt{[transitions]} del fichero de configuración). La transición se implementa
-modificando progresivamente los valores de los pads del compositor de GStreamer. Las
-trayectorias de interpolación se calculan mediante curvas B-Spline con las librerías
-\texttt{scipy}~\cite{virtanen2020scipy} y \texttt{numpy}~\cite{harris2020numpy}.
+modificando progresivamente los valores de los pads del compositor de GStreamer.
 
 Voctomix 2.0 define múltiples trayectorias de transición según el estado de origen y
 destino (por ejemplo, de \texttt{fs} a \texttt{pip} la transición pasa por el composite

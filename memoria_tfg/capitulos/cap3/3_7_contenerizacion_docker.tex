@@ -49,7 +49,7 @@ cada contenedor tiene por defecto su propio \texttt{localhost} aislado, lo que r
 todas las conexiones TCP de entrada al núcleo.
 
 En lugar de reescribir las direcciones IP en todo el código fuente, se adoptó el patrón
-\textbf{\textit{Shared Network Namespace}}: los contenedores de las cámaras y el servicio de telemetría
+\textbf{\textit{Shared Network Namespace}}: los contenedores de las cámaras y el Notario
 declaran \texttt{network\_mode: "service:voctocore"}, lo que fusiona sus interfaces de
 red virtuales con la del contenedor del núcleo. Desde el punto de vista de Linux, todos
 estos procesos comparten la misma tarjeta de red, por lo que \texttt{localhost} es el
@@ -71,7 +71,7 @@ una red \textit{bridge} privada (\texttt{voctomix\_net}):
     cam1--cam4     & local/voctomix & (namespace compartido) & Fuentes de prueba FFmpeg \\
     stream\_blanker& local/voctomix & 17000--17001, 18000 & Bucles pausa/offline \\
     rabbitmq       & rabbitmq:mgmt  & 5672, 15672 & Broker AMQP \\
-    telemetria     & local/voctomix & 8080 & Telemetría REST/AMQP \\
+    notario        & local/voctomix & 8080 & Telemetría REST/AMQP \\
     \hline
   \end{tabular}
 \end{table}
@@ -141,40 +141,8 @@ avanzada de señales del sistema operativo:
         \texttt{SIGINT} (Ctrl+C) y ejecuta una rutina de limpieza que llama a
         \texttt{docker compose down}, deteniendo todos los contenedores y liberando
         los puertos de forma ordenada.
-  \item \textbf{En el servicio de telemetría (Python):} la opción \texttt{SO\_REUSEADDR}
+  \item \textbf{En el Notario (Python):} la opción \texttt{SO\_REUSEADDR}
         (\texttt{HTTPServer.allow\_reuse\_address = True}) ordena al kernel que
         reasigne el puerto 8080 de forma inmediata tras un cierre, eliminando el
         \texttt{Errno~98} que aparecía en reinicios rápidos durante el desarrollo.
-\end{itemize}
-
-\subsection{Scripts de arranque}
-\label{sec:scripts_arranque}
-
-Para reducir el tiempo de despliegue y eliminar errores de configuración manual, se
-desarrollaron dos scripts maestros de shell que unifican el arranque de todos los
-componentes del sistema en el escenario nativo (sin Docker):
-
-\begin{itemize}
-  \item \textbf{\texttt{lanzar\_realizacion.sh}} (modo producción): arranca voctocore,
-        inyecta las señales de continuidad (vídeos de pausa, música de fondo) y lanza
-        voctogui. Concebido para sesiones reales sin fuentes de prueba sintéticas.
-  \item \textbf{\texttt{pruebas\_lanzar\_realizacion.sh}} (modo laboratorio): además de
-        la infraestructura anterior, inyecta automáticamente cuatro fuentes de prueba
-        FFmpeg (cam1--cam4 con \textit{test card} y reloj sobreimpresionado), lo que
-        permite probar transiciones, composites y rotulación sin cámaras físicas.
-\end{itemize}
-
-Ambos scripts implementan las siguientes garantías de robustez, equivalentes a las que
-Docker Compose proporciona de forma nativa en el escenario contenedorizado:
-
-\begin{itemize}
-  \item \textbf{Espera activa de puertos:} un bucle consulta \texttt{ss -lnt} hasta
-        confirmar que el puerto 9999 está en escucha, sustituyendo los \texttt{sleep}
-        fijos del código original y eliminando las condiciones de carrera al arranque.
-  \item \textbf{Auto-limpieza (\texttt{trap}):} al cerrar voctogui, la señal
-        \texttt{SIGCHLD} dispara \texttt{kill} masivo de todos los procesos hijos,
-        garantizando la liberación inmediata de los puertos de red.
-  \item \textbf{Rutas dinámicas:} \texttt{BASE\_DIR="\$(cd "\$(dirname "\$0")" \&\& pwd)"}
-        elimina todas las rutas absolutas \textit{hardcodeadas}, haciendo el proyecto
-        completamente portátil a cualquier máquina sin modificación de código.
 \end{itemize}
