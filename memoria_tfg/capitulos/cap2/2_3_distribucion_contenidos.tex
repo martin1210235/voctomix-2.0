@@ -57,6 +57,24 @@ espectador.
   \end{tabular}
 \end{table}
 
+\subsection{Hypertext Transfer Protocol}
+
+HTTP es un protocolo de capa de aplicación definido en la RFC~9110~\cite{rfc9110_http}
+que opera sobre TCP (HTTP/1.1 y HTTP/2) o sobre QUIC/UDP (HTTP/3). Su modelo de
+petición-respuesta y su infraestructura de caché y distribución global mediante CDN
+(\textit{Content Delivery Networks}) lo convierten en el protocolo de referencia para
+la distribución de contenidos a audiencias masivas.
+
+En distribución audiovisual, HTTP actúa como capa de transporte para los principales
+protocolos de \textit{streaming} adaptativo:
+
+\begin{itemize}
+  \item \textbf{HLS y MPEG-DASH}: dividen el vídeo en segmentos de fichero servidos
+        como respuestas HTTP estándar. Cualquier infraestructura de servidores web
+        o CDN puede distribuir estos segmentos sin configuración específica de
+        \textit{media}.
+\end{itemize}
+
 \subsection{Formatos de distribución}
 
 El formato contenedor de distribución define cómo se empaquetan los flujos de vídeo y

@@ -73,6 +73,67 @@ red local o contribución remota sobre Internet.
   \end{tabular}
 \end{table}
 
+\subsection{User Datagram Protocol}
+
+UDP es un protocolo de transporte sin conexión definido en la RFC~768~\cite{rfc768_udp}.
+Envía datagramas de forma independiente sin establecer sesión previa, sin confirmación de
+entrega ni reordenación de paquetes. Estas características le confieren la mínima latencia
+posible dentro de la pila de red, al eliminar todo el \textit{overhead} de fiabilidad.
+
+En contribución audiovisual, UDP es el protocolo de elección cuando la latencia prima sobre
+la integridad de los datos: un fotograma perdido es preferible a un fotograma retrasado en
+aplicaciones de tiempo real. Por este motivo, los siguientes protocolos de nivel superior
+operan sobre UDP:
+
+\begin{itemize}
+  \item \textbf{RTP} (\textit{Real-time Transport Protocol}): encapsula los flujos
+        multimedia con marcas de tiempo y números de secuencia que permiten al receptor
+        detectar y compensar pérdidas sin retransmisión.
+  \item \textbf{SRT}: utiliza UDP como transporte pero añade una capa ARQ
+        (\textit{Automatic Repeat Request}) propia para recuperar paquetes perdidos
+        sin incrementar la latencia en condiciones normales de red.
+\end{itemize}
+
+\subsection{Transmission Control Protocol}
+
+TCP es un protocolo de transporte orientado a conexión definido en la
+RFC~793~\cite{rfc793_tcp}. Garantiza la entrega ordenada de todos los bytes mediante
+confirmaciones de recepción, retransmisión automática de segmentos perdidos y control
+de flujo y congestión.
+
+En contribución audiovisual, TCP se emplea cuando la integridad de los datos no es
+negociable y la latencia adicional es aceptable:
+
+\begin{itemize}
+  \item \textbf{Voctomix interno}: voctocore acepta las fuentes de cámara mediante
+        conexiones TCP que transportan flujos MKV con vídeo RAW~I420 y audio
+        PCM~S16LE. TCP garantiza la sincronización audio-vídeo sin pérdidas dentro
+        de la red local.
+  \item \textbf{Protocolo de control}: el servidor de comandos de voctocore escucha
+        en el puerto 9999 mediante TCP, asegurando que cada comando enviado por la
+        interfaz gráfica llega íntegramente al núcleo y que la respuesta de estado
+        retorna sin corrupción.
+\end{itemize}
+
+\begin{table}[H]
+  \centering
+  \caption{Comparativa de los protocolos de transporte en producción audiovisual.}
+  \label{tab:protocolos_red}
+  \small
+  \begin{tabular}{|l|c|c|c|l|}
+    \hline
+    \textbf{Protocolo} & \textbf{Orientado a conexión} & \textbf{Fiabilidad} & \textbf{Latencia} & \textbf{Uso en Voctomix} \\
+    \hline
+    UDP  & No  & Sin garantías & Mínima       & RTP, SRT \\
+    TCP  & Sí  & Garantizada   & Variable     & MKV/fuentes, control \\
+    HTTP & Sí* & Garantizada   & Alta         & HLS, DASH, telemetría REST \\
+    \hline
+  \end{tabular}
+  \begin{flushleft}
+    \footnotesize *HTTP/1.1 y HTTP/2 operan sobre TCP; HTTP/3 opera sobre QUIC (UDP).
+  \end{flushleft}
+\end{table}
+
 \subsection{Contenedor multimedia de contribución}
 
 El contenedor multimedia agrupa y sincroniza los flujos de vídeo y audio durante el
