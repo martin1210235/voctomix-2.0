@@ -11,9 +11,9 @@ la emisión.
 
 El servicio (\texttt{telemetry\_service.py}) es un proceso independiente que se conecta
 a voctocore en el puerto~9999 como un cliente TCP ordinario y consulta su estado cada
-segundo. Sin embargo, voctocore solo conoce lo que ocurre en el mezclador y no tiene
-acceso a la información gestionada por la interfaz gráfica: qué fuentes están en preview,
-los niveles de audio o qué overlays están activos.
+segundo. Sin embargo, voctocore no tiene acceso a la información gestionada por la
+interfaz gráfica: qué fuentes están en preview, los niveles de audio de cada fuente,
+qué logos están activos o el contenido de los rótulos.
 
 Para capturar también esta información, el módulo \texttt{gui\_state\_exporter.py} de
 voctogui exporta el estado completo de la interfaz cada segundo. En el escenario de un
@@ -21,7 +21,7 @@ PC lo escribe en un fichero local; en escenarios en red (Docker o dos PCs) lo en
 servicio mediante HTTP POST al puerto~8080.
 
 El servicio fusiona las dos fuentes y construye una vista unificada de la sesión, que
-guarda en formato \textit{JSON} (\texttt{session\_N.jsonl}): un objeto
+guarda en formato \textit{JSON} (\texttt{sessionN.jsonl}): un objeto
 JSON completo por línea, con numeración automática por sesión. Este formato permite
 analizar el log de forma incremental con herramientas estándar como Python, sin necesidad de cargar el fichero completo en memoria.
 
