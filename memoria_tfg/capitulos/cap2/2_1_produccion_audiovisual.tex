@@ -197,3 +197,14 @@ al modelo remoto incluso para organizaciones sin presupuesto broadcast:
            mezclador de vídeo y salida de distribución.}
   \label{fig:cadena_produccion}
 \end{figure}
+
+La adopción de herramientas de producción por software ha impulsado el uso de
+tecnologías de contenerización como Docker~\cite{merkel2014docker} y
+Kubernetes~\cite{kubernetes_burns2016}, que permiten desplegar estos sistemas de
+forma reproducible en cualquier equipo Linux sin instalar dependencias manualmente.
+Esta infraestructura es especialmente relevante en entornos de investigación: los
+proyectos del grupo de la Universidad Politécnica de Madrid vinculados a CyberNEMO
+utilizan Kubernetes como plataforma de despliegue por su capacidad para orquestar
+servicios distribuidos de forma fiable. Esta necesidad motivó que Voctomix~2.0 se
+diseñara desde el principio para ejecutarse tanto en Docker Compose como en
+Kubernetes, objetivos que se desarrollan en el Capítulo~\ref{chap:despliegue}.
