@@ -7,31 +7,24 @@ stream blanker, estado de overlays y niveles de audio. Esta información permite
 monitorizar la sesión mientras está en curso como auditarla en detalle una vez terminada
 la emisión.
 
-\subsection{Cómo funciona}
+\subsection{Arquitectura del servicio}
 
-El servicio (\texttt{telemetry\_service.py}) es un proceso independiente que no forma
-parte del núcleo de procesamiento. Se conecta a voctocore en el puerto~9999 como un
-cliente TCP ordinario y consulta su estado cada segundo. Sin embargo, voctocore solo
-conoce lo que ocurre en el mezclador: qué fuente está en programa, qué composite está
-activo o cuál es el estado del stream blanker. Todo lo que gestiona la interfaz gráfica,
-como las fuentes seleccionadas en preview, los niveles de audio o los overlays activos,
-queda fuera de su alcance.
+El servicio (\texttt{telemetry\_service.py}) es un proceso independiente que se conecta
+a voctocore en el puerto~9999 como un cliente TCP ordinario y consulta su estado cada
+segundo. Sin embargo, voctocore solo conoce lo que ocurre en el mezclador y no tiene
+acceso a la información gestionada por la interfaz gráfica: qué fuentes están en preview,
+los niveles de audio o qué overlays están activos.
 
-Para capturar también este segundo bloque de información, el módulo
-\texttt{gui\_state\_exporter.py} de voctogui exporta el estado completo de la interfaz
-gráfica cada segundo. En el escenario de un PC lo escribe en un fichero local
-(\texttt{sessions/gui\_state.json}); en escenarios con red (Docker o dos PCs) lo envía
-directamente al servicio mediante una petición HTTP POST al puerto~8080. Esta última
-opción, basada en HTTP, sustituyó a una implementación inicial con UDP que presentaba
-problemas de pérdida de paquetes y bloqueos de puerto al reiniciar los scripts durante
-el desarrollo.
+Para capturar también esta información, el módulo \texttt{gui\_state\_exporter.py} de
+voctogui exporta el estado completo de la interfaz cada segundo. En el escenario de un
+PC lo escribe en un fichero local; en escenarios en red (Docker o dos PCs) lo envía al
+servicio mediante HTTP POST al puerto~8080.
 
-El servicio fusiona las dos fuentes de información y construye una vista unificada de la
-sesión, que guarda en formato \textit{JSON Lines}
-(\texttt{sessions/session\_N.jsonl}): un objeto JSON completo por línea, con numeración
-automática por sesión. Este formato permite analizar el log de forma incremental con
-herramientas estándar como \texttt{jq} o Python, sin necesidad de cargar el fichero
-completo en memoria.
+El servicio fusiona las dos fuentes y construye una vista unificada de la sesión, que
+guarda en formato \textit{JSON Lines} (\texttt{sessions/session\_N.jsonl}): un objeto
+JSON completo por línea, con numeración automática por sesión. Este formato permite
+analizar el log de forma incremental con herramientas estándar como \texttt{jq} o
+Python, sin necesidad de cargar el fichero completo en memoria.
 
 \begin{figure}[H]
   \centering
@@ -41,7 +34,7 @@ completo en memoria.
   \label{fig:telemetria_state_change}
 \end{figure}
 
-\subsection{Tipos de entrada: Change y State}
+\subsection{Registro de eventos}
 
 El registro combina dos tipos de entrada:
 
@@ -51,19 +44,14 @@ El registro combina dos tipos de entrada:
         composite. Captura el instante exacto en que ocurre el cambio.
   \item \textbf{Evento State (\texttt{STATE}):} un hilo independiente escribe el estado
         completo del sistema cada 5~segundos, con independencia de que haya habido
-        cambios. Sirve como mecanismo de redundancia para poder reconstruir la sesión
-        aunque se pierda algún evento.
+        cambios. Sirve como mecanismo de redundancia para reconstruir la sesión aunque
+        se pierda algún evento.
 \end{itemize}
 
-Cada entrada incluye la marca de tiempo, el estado de todas las fuentes, el composite
-activo, el modo de stream (LIVE, PAUSE o NOSTREAM), los overlays y los niveles de audio
-en decibelios. Se añade además un bloque \texttt{system\_health} con el uso de CPU y RAM
-del servidor, lo que permite relacionar eventuales degradaciones de la señal con picos
-de carga del sistema. El campo \texttt{stream\_info} almacena los parámetros técnicos
-del pipeline: resolución, framerate, formato de píxel y el ancho de banda calculado por
-fuente (622~Mbps para 1080p25 en I420).
-
-Un ejemplo de entrada de tipo CHANGE tras un corte de cámara:
+Cada entrada incluye una marca de tiempo, el estado completo del mezclador (fuentes en
+programa y preview, composite, modo de stream, overlays y niveles de audio) y métricas
+del servidor (CPU, RAM y ancho de banda por fuente). El ejemplo siguiente muestra una
+entrada de tipo CHANGE completa tras un corte de cámara:
 
 \begin{verbatim}
 {"timestamp": "2025-03-28 20:14:32",
@@ -71,12 +59,27 @@ Un ejemplo de entrada de tipo CHANGE tras un corte de cámara:
  "output":  {"channel_a": "cam2", "channel_b": "cam1"},
  "preview": {"channel_a": "cam1", "channel_b": "cam2"},
  "mode": "live",
- "composite": {"name": "full_screen", "fullscreen": true},
- "audio": {"cam1_db": -12.0, "cam2_db": 0.0},
- "system_health": {"cpu_usage_percent": 34.2, "ram_usage_percent": 8.7,
-                   "calc_bandwidth_mbps_per_cam": 622.08},
+ "composite": {"name": "full_screen", "fullscreen": true,
+               "side_by_side": false, "pip": false, "lecture": false},
+ "mirror": false,
+ "insertion": {"overlay": false, "auto_off": true,
+               "overlay_selected": "Overlay Speaker",
+               "logo1": false, "logo2": false,
+               "text1_active": false, "text1_value": "",
+               "text2_active": false, "text2_value": ""},
+ "audio": {"cam1_db": -12.0, "cam2_db": 0.0, "cam3_db": -20.0,
+           "cam4_db": -20.0, "break_db": null, "intro_db": null},
+ "sources": {"cam1": true, "cam2": true, "cam3": true,
+             "cam4": true, "break": true, "intro": true},
  "stream_info": {"video_resolution": "1920x1080", "video_fps": "25",
-                 "video_pix_fmt": "I420"}}
+                 "video_codec": "rawvideo", "video_pix_fmt": "I420",
+                 "calc_bandwidth_mbps_per_cam": 622.08,
+                 "audio_sample_rate": "48000", "audio_channels": "2",
+                 "audio_fmt": "S16LE"},
+ "system_health": {"cpu_usage_percent": 34.2, "ram_usage_percent": 8.7,
+                   "ram_available_mb": 107494, "uptime": "11:53:20",
+                   "session_duration": "00:05:47"},
+ "network": {"core_ip": "172.19.0.4", "gui_local_ip": "192.168.0.42"}}
 \end{verbatim}
 
 \subsection{API HTTP y publicación en RabbitMQ}
