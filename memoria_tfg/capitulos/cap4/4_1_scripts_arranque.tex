@@ -31,6 +31,12 @@ Los dos primeros se denominan escenarios nativos porque ejecutan los procesos di
 sobre el sistema operativo del equipo, sin virtualización. Los dos siguientes emplean
 contenedores, lo que elimina la necesidad de instalar GStreamer, Python o sus dependencias
 en la máquina anfitriona y garantiza un comportamiento idéntico en cualquier equipo.
+La contenerización fue un objetivo prioritario del proyecto por dos razones complementarias.
+Docker simplifica la adopción del sistema al reducir el despliegue a un único comando,
+sin configuración manual del entorno. Kubernetes, por su parte, responde a una necesidad
+concreta del contexto en el que se desarrolla este trabajo: los proyectos de investigación
+CyberNEMO y NEMO de la UPM utilizan Kubernetes como infraestructura de producción, por lo
+que Voctomix~2.0 debe poder integrarse de forma nativa en ese entorno.
 
 \section{Despliegue nativo: un PC y dos PCs}
 \label{sec:despliegue_nativo}
