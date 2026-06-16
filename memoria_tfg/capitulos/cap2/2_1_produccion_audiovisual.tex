@@ -38,7 +38,16 @@ ordenadores de presentación, se interconectan mediante cableado \textbf{SDI}
 (\textit{Serial Digital Interface}), el estándar histórico de la industria \textit{broadcast} (radiodifusión)
 para el transporte de vídeo sin comprimir~\cite{smpte_sdi}. La señal resultante recorre
 el mezclador, los sistemas de rotulación y grabación, y finalmente el encoder de
-distribución, todo ello dentro del mismo emplazamiento físico.
+distribución, todo ello dentro del mismo emplazamiento físico. La
+figura~\ref{fig:produccion_tradicional} ilustra esta cadena completa.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figuras/produccion_tradicional}
+  \caption{Cadena de producción audiovisual tradicional: cámaras SDI, unidad móvil con
+           mezclador hardware y encoder de distribución.}
+  \label{fig:produccion_tradicional}
+\end{figure}
 
 Este modelo ha demostrado su solidez durante décadas en las grandes producciones de
 televisión: retransmisiones deportivas, eventos parlamentarios y galas de premios
@@ -75,7 +84,7 @@ señal hacia el centro remoto. El procesamiento completo, mezcla de fuentes, ins
 de gráficos, control de audio, gestión de overlays y distribución al espectador,
 se realiza de forma centralizada.
 
-\begin{figure}[t]
+\begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{figuras/remi_arquitectura}
   \caption{Arquitectura del modelo REMI.}
