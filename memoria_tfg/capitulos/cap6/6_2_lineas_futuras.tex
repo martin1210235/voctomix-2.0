@@ -11,9 +11,7 @@ constituyen líneas de trabajo futuro de interés.
   La totalidad de las pruebas descritas en este trabajo se han realizado con fuentes
   sintéticas generadas mediante FFmpeg. La validación definitiva del sistema consiste
   en conectar cámaras físicas mediante tarjetas de captura o NDI y realizar una
-  retransmisión en directo completa. Este escenario está previsto en el contexto del
-  grupo de investigación CyberNemo de la UPM, donde Voctomix~2.0 se utilizará para
-  retransmitir seminarios y presentaciones. Una producción real permitirá detectar
+  retransmisión en directo completa. Una producción real permitirá detectar
   posibles problemas de sincronización, \textit{jitter} de red o estabilidad que no
   se manifiestan con fuentes sintéticas de frecuencia constante.
 
@@ -33,23 +31,19 @@ constituyen líneas de trabajo futuro de interés.
   La resolución de trabajo actual del sistema es 1920$\times$1080 píxeles a 25~fps,
   con un ancho de banda interno de 622~Mbit/s por fuente RAW~I420. La ampliación a
   resolución 4K (3840$\times$2160) cuadruplicaría ese ancho de banda hasta
-  aproximadamente 2{,}5~Gbit/s por fuente, lo que exigiría circunscribir el tráfico
-  de vídeo a redes de alta velocidad o interfaces de red con MTU ampliado. El motor
-  compositor de GStreamer y los modos de composición existentes admiten resoluciones
-  arbitrarias, de forma que la adaptación se realizaría principalmente mediante
-  cambios en el fichero de configuración de voctocore, si bien los requisitos de CPU
-  aumentarían proporcionalmente al número de píxeles procesados. Este escalado
-  situaría el sistema a la par con los estándares de producción actualmente exigidos
-  en eventos de mediana y gran escala.
+  aproximadamente 2{,}5~Gbit/s por fuente, lo que requeriría redes internas de alta
+  velocidad. GStreamer admite resoluciones arbitrarias, de modo que la adaptación se
+  realizaría principalmente mediante cambios en la configuración de voctocore, aunque
+  el consumo de CPU crecería proporcionalmente. Este escalado situaría el sistema a
+  la par con los estándares de producción actuales en eventos de mediana y gran escala.
 
   \item \textbf{Interfaz gráfica con reconfiguración dinámica en tiempo real.}
   La arquitectura actual de voctogui requiere reiniciar el sistema completo para
   modificar el número de fuentes activas o la configuración de los modos de
   composición, lo que limita la adaptabilidad del sistema durante una producción en
-  directo. Una extensión natural sería ampliar el protocolo de control TCP del
-  puerto~9999 con comandos que permitan añadir y eliminar fuentes en caliente,
-  modificar los parámetros de los composites en tiempo real y recargar la
-  configuración sin interrumpir la señal de programa. En el lado del cliente, la
+  directo. Una extensión natural sería incorporar en el sistema comandos que permitan
+  añadir y eliminar fuentes en caliente, modificar los parámetros de los composites
+  en tiempo real y recargar la configuración sin interrumpir la señal de programa. En el lado del cliente, la
   interfaz gráfica debería reflejar dinámicamente esos cambios actualizando sus
   controles sin necesidad de reconexión. Esta mejora eliminaría uno de los
   principales puntos de fricción del sistema en producciones con configuraciones
