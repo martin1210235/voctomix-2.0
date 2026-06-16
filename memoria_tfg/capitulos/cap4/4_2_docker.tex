@@ -1,0 +1,153 @@
+\section{Contenedorización con Docker Compose}
+\label{sec:docker}
+
+Docker permite empaquetar el sistema completo, incluidas todas sus dependencias, en
+contenedores que se ejecutan de forma idéntica en cualquier máquina con Docker instalado.
+El operador no necesita instalar GStreamer, Python ni ninguna otra librería: con
+\texttt{make docker-up} el sistema arranca en segundos.
+
+El despliegue se define en dos ficheros: \texttt{Dockerfile}, que describe cómo construir
+la imagen base del sistema, y \texttt{docker-compose.yml}, que declara todos los servicios
+y cómo se relacionan entre sí.
+
+\subsection{Reescritura del Dockerfile}
+
+El \texttt{Dockerfile} original del repositorio databa de 2016 y usaba Ubuntu~15.10 con
+imágenes de Docker Hub que ya no existen. Se reescribió desde cero sobre
+Ubuntu~22.04~LTS, la versión de soporte extendido vigente.
+
+Las dependencias se instalan en una sola capa para reducir el tamaño final de la imagen:
+GStreamer~1.0 con todos sus plugins, FFmpeg para la inyección de fuentes de vídeo, los
+bindings Python de GObject, la librería AMQP para la integración con RabbitMQ, y las
+utilidades de red necesarias para las comprobaciones de puerto durante el arranque.
+
+La imagen incluye un \textit{healthcheck} que comprueba si voctocore acepta conexiones
+en el puerto 9999. Docker Compose espera a que esta sonda sea positiva antes de arrancar
+los contenedores que dependen del núcleo, replicando en Docker la misma lógica de espera
+activa que usan los scripts nativos.
+
+\subsection{El problema de la red en Docker y su solución}
+\label{sec:docker_red}
+
+En Docker, cada contenedor tiene su propia red aislada: cuando un proceso dentro de
+un contenedor se conecta a \texttt{localhost}, solo puede alcanzar a los demás procesos
+del mismo contenedor. Esto es un problema para Voctomix porque las cámaras se conectan
+a voctocore mediante \texttt{localhost:10000}. Si cada componente vive en su propio
+contenedor, esas conexiones fallan.
+
+La solución adoptada es el patrón de \textbf{espacio de red compartido}: los contenedores
+de cámara y el servicio de telemetría se configuran con la opción
+\texttt{network\_mode: "service:voctocore"} en el fichero Compose. Esto hace que esos
+contenedores compartan la misma interfaz de red que voctocore, exactamente igual que si
+todos los procesos se estuvieran ejecutando en la misma máquina. No fue necesario
+modificar ninguna línea del código de Voctomix.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  box/.style={rounded corners=4pt, minimum width=1.8cm, minimum height=0.9cm,
+              text centered, font=\small},
+  lbl/.style={font=\scriptsize}
+]
+  % --- equipo anfitrión ---
+  \draw[rounded corners=6pt, thick, gray!40, fill=gray!5]
+    (-0.4,-1.0) rectangle (11.2,4.2);
+  \node[anchor=north west, font=\footnotesize\bfseries, text=gray!55] at (-0.2,4.2)
+    {Equipo anfitrión};
+
+  % --- namespace compartido ---
+  \draw[rounded corners=5pt, thick, blue!35, fill=blue!5, dashed]
+    (0.2,0.3) rectangle (8.5,3.8);
+  \node[anchor=north west, font=\scriptsize\bfseries, text=blue!50] at (0.4,3.8)
+    {Namespace de red compartido (\texttt{network\_mode: service:voctocore})};
+
+  % voctocore
+  \node[box, fill=orange!20, draw=orange!50, minimum width=2.4cm] (vc) at (2.2,2.2)
+    {\textbf{voctocore}};
+  \node[lbl] at (2.2,1.7) {\texttt{:9999 / :15000}};
+
+  % cámaras
+  \node[box, fill=green!15, draw=green!40] (c1) at (5.0,2.7) {cam1};
+  \node[box, fill=green!15, draw=green!40] (c2) at (5.0,1.7) {cam2--4};
+  \node[lbl] at (5.0,1.2) {\texttt{:10000\,--\,10003}};
+
+  % telemetría
+  \node[box, fill=violet!15, draw=violet!35, minimum width=2.0cm] (tel) at (7.5,2.2)
+    {telemetría};
+  \node[lbl] at (7.5,1.7) {\texttt{:8080}};
+
+  % flechas internas (localhost)
+  \draw[->, gray!70] (c1.west) -- (vc.east);
+  \draw[->, gray!70] (c2.west) -- (vc.east);
+  \draw[->, gray!70] (vc.east) -- (tel.west);
+
+  % rabbitmq (red propia)
+  \node[box, fill=yellow!25, draw=yellow!60, minimum width=2.2cm] (rmq) at (10.0,2.2)
+    {rabbitmq};
+  \node[lbl] at (10.0,1.7) {\texttt{:5672 / :15672}};
+  \draw[->, gray!60, dashed] (tel.east) -- (rmq.west)
+    node[midway, above, lbl, text=gray] {AMQP};
+
+  % voctogui (nativo)
+  \node[box, fill=gray!20, draw=gray!50, minimum width=2.4cm] (gui) at (2.2,-0.4)
+    {\textbf{voctogui} (nativo)};
+  \draw[->, thick, gray!70] (gui.north) -- (vc.south)
+    node[midway, right, lbl, text=gray] {TCP \texttt{:9999}};
+
+\end{tikzpicture}
+\caption{Patrón de espacio de red compartido en Docker Compose: los contenedores
+         de cámara y telemetría comparten la red de voctocore, mientras que
+         RabbitMQ mantiene su red independiente. Voctogui se ejecuta de forma
+         nativa en el equipo anfitrión.}
+\label{fig:docker_red}
+\end{figure}
+
+\subsection{Servicios del sistema}
+
+El fichero \texttt{docker-compose.yml} define los siguientes servicios:
+
+\begin{table}[H]
+  \centering
+  \caption{Servicios definidos en \texttt{docker-compose.yml}.}
+  \label{tab:servicios_docker}
+  \small
+  \begin{tabular}{|l|l|l|}
+    \hline
+    \textbf{Servicio} & \textbf{Puertos} & \textbf{Función} \\
+    \hline
+    voctocore        & 9999, 11000--15000, 14000--14005 & Núcleo de mezcla multimedia \\
+    cam1--cam4       & (red compartida)                 & Fuentes de vídeo de prueba \\
+    stream\_blanker  & 17000--17001, 18000              & Señales de pausa y sin señal \\
+    rabbitmq         & 5672, 15672                      & Broker de mensajería AMQP \\
+    telemetria       & 8080                             & Servicio de telemetría REST \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsection{Interfaz gráfica y recursos gráficos}
+
+Voctogui se ejecuta de forma nativa en el sistema anfitrión y se conecta a voctocore a
+través del puerto 9999 expuesto por Docker. Ejecutar una interfaz GTK dentro de un
+contenedor introduce problemas de latencia y aceleración gráfica que la hacen inviable
+en producción.
+
+Los logos e imágenes de fondo que GStreamer necesita se montan dentro del contenedor
+de voctocore mediante un volumen de tipo \textit{bind mount}: el directorio
+\texttt{./images} del equipo anfitrión se expone como \texttt{/opt/images} dentro del
+contenedor. Esto permite actualizar los recursos gráficos sin reconstruir la imagen.
+
+\subsection{Resiliencia ante reinicios}
+
+Durante las pruebas se observó que los contenedores de cámara intentaban conectarse a
+voctocore antes de que este hubiera terminado de arrancar, produciendo fallos silenciosos.
+El problema se resolvió combinando dos mecanismos:
+
+\begin{itemize}
+  \item \textbf{Reinicio automático:} la opción \texttt{restart: always} hace que Docker
+        reinicie automáticamente cualquier contenedor que falle, sin intervención del
+        operador.
+  \item \textbf{Espera activa por puerto:} en los scripts de arranque nativos, los
+        \texttt{sleep} fijos se sustituyeron por bucles que comprueban con
+        \texttt{ss -lnt} que el puerto 9999 está en escucha antes de lanzar los
+        servicios dependientes.
+\end{itemize}
