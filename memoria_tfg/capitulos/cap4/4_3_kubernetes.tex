@@ -24,10 +24,10 @@ El despliegue se define en cuatro ficheros YAML:
 expuestos; \texttt{rabbitmq.yaml} despliega RabbitMQ como pod independiente;
 \texttt{configmap.yaml} centraliza todos los parámetros de configuración (resolución,
 puertos, fuentes de vídeo) como variables de entorno accesibles por todos los contenedores,
-de forma que un solo cambio aquí se aplica a todo el clúster; \texttt{pvc.yaml} reserva
+de forma que un solo cambio aquí se aplica a todo el clúster; y \texttt{pvc.yaml} reserva
 1~GiB de almacenamiento persistente para los registros de telemetría, que así sobreviven
-al reinicio del pod; y un \texttt{Secret} almacena las credenciales de RabbitMQ de forma
-segura, sin escribirlas directamente en los manifiestos.
+al reinicio del pod. Las credenciales de RabbitMQ se almacenan aparte en un
+\texttt{Secret} de Kubernetes, sin escribirlas directamente en los manifiestos.
 
 El orden de arranque también requiere coordinación. Si el pod \texttt{studio} intentase
 arrancar antes de que RabbitMQ estuviera listo, la telemetría fallaría al intentar
@@ -53,3 +53,11 @@ retomarse en cualquier momento sin necesidad de volver a desplegarlos.
   \caption{Escenario de despliegue con Kubernetes.}
   \label{fig:escenario_kubernetes}
 \end{figure}
+
+Los cuatro escenarios de despliegue cubren un rango amplio de necesidades: el escenario
+de un PC es el punto de entrada natural para el desarrollo y las pruebas; el de dos PCs
+permite separar el servidor del puesto del realizador en una red local; Docker elimina
+la instalación de dependencias y hace el sistema portable a cualquier máquina; y
+Kubernetes lo integra en infraestructuras de producción como la del proyecto CyberNEMO.
+En todos los casos el código de Voctomix~2.0 es idéntico, y solo cambia el entorno
+de ejecución.

@@ -14,9 +14,9 @@ imágenes que ya no existen. Se reescribió desde cero sobre Ubuntu~22.04~LTS. L
 dependencias se instalan en una sola capa para reducir el tamaño de la imagen: GStreamer~1.0
 con todos sus plugins, FFmpeg~\cite{ffmpeg_project} para la inyección de fuentes de vídeo,
 los bindings Python de GObject y la librería AMQP para la integración con RabbitMQ.
-La imagen incluye un \textit{healthcheck} que comprueba si voctocore acepta conexiones
-en el puerto~9999, de forma que Docker Compose espera a que el núcleo esté listo antes
-de arrancar los servicios que dependen de él.
+El fichero Compose define un \textit{healthcheck} que comprueba si voctocore acepta
+conexiones en el puerto~9999, de forma que Docker Compose espera a que el núcleo esté
+listo antes de arrancar los servicios que dependen de él.
 
 El principal desafío técnico de la contenedorización fue el aislamiento de red. En Docker,
 cada contenedor tiene su propia interfaz de red, de modo que cuando un proceso se conecta
@@ -27,8 +27,8 @@ todos los contenedores del sistema (cámaras, break, intro, stream blanker, audi
 y telemetría) se configuran con \texttt{network\_mode: "service:voctocore"} en el fichero
 Compose, lo que hace que compartan la misma interfaz de red que voctocore. Desde su perspectiva es como si todos
 los procesos se ejecutasen en la misma máquina, sin necesidad de modificar ninguna línea
-del código de Voctomix. RabbitMQ mantiene su propia red aislada y se comunica con el
-servicio de telemetría mediante el protocolo AMQP.
+del código de Voctomix. RabbitMQ mantiene su propia red aislada; la telemetría le publica sus eventos
+mediante el protocolo AMQP.
 
 Voctogui se ejecuta directamente en el equipo anfitrión y se conecta a voctocore a través
 del puerto~9999. Ejecutar una interfaz gráfica dentro de un contenedor no es viable sin acceso al
