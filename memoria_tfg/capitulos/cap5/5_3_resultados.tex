@@ -3,7 +3,8 @@
 
 Se ejecutaron cuatro sesiones de cinco minutos con 1, 2, 3 y 4 cámaras activas
 en los escenarios Docker Compose y Kubernetes con Minikube. Los valores de CPU y RAM son la mediana de las
-muestras de telemetría recogidas durante cada sesión (una cada 5\,s). La energía
+muestras de telemetría recogidas durante cada sesión (una cada 5\,s); el análisis
+estadístico se realizó con NumPy~\cite{numpy_2020} y SciPy~\cite{scipy_2020}. La energía
 se midió con el sensor RAPL (\textit{Running Average Power Limit}) del procesador, que devuelve el consumo real del
 paquete CPU; el valor mostrado descuenta el baseline de cada entorno en reposo.
 
