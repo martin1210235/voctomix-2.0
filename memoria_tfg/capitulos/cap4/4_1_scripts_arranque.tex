@@ -7,14 +7,14 @@ producción en la nube. La tabla~\ref{tab:escenarios_despliegue} resume cada opc
   \caption{Escenarios de despliegue de Voctomix~2.0.}
   \label{tab:escenarios_despliegue}
   \small
-  \begin{tabularx}{\textwidth}{|l|l|l|X|}
+  \begin{tabularx}{\textwidth}{|l|X|l|}
     \hline
-    \textbf{Escenario} & \textbf{Requisito} & \textbf{Caso de uso} & \textbf{Arranque} \\
+    \textbf{Escenario} & \textbf{Requisito} & \textbf{Caso de uso} \\
     \hline
-    Un PC (nativo)   & Linux + GStreamer + Python      & Pruebas y desarrollo          & \texttt{./start\_studio\_single\_pc.sh} \\
-    Dos PCs (nativo) & Dos equipos Linux en red local  & Eventos con hardware dedicado & \texttt{./start\_voctocore\_pc1.sh} \\
-    Docker Compose   & Docker instalado                & Despliegue reproducible       & \texttt{make docker-up} \\
-    Kubernetes       & Minikube o clúster externo      & Producción y nube             & \texttt{./launch\_k8s.sh} \\
+    Un PC (nativo)   & Linux, GStreamer y Python       & Pruebas y desarrollo \\
+    Dos PCs (nativo) & Dos equipos Linux en red local  & Eventos con hardware dedicado \\
+    Docker Compose   & Docker instalado                & Despliegue reproducible \\
+    Kubernetes       & Minikube o clúster externo      & Producción y nube \\
     \hline
   \end{tabularx}
 \end{table}
@@ -27,8 +27,8 @@ La contenerización fue un objetivo prioritario del proyecto por dos razones com
 Docker simplifica la adopción del sistema al reducir el despliegue a un único comando,
 sin configuración manual del entorno. Kubernetes, por su parte, responde a una necesidad
 concreta del contexto en el que se desarrolla este trabajo: los proyectos de investigación
-CyberNEMO y NEMO de la UPM utilizan Kubernetes como infraestructura de producción, por lo
-que Voctomix~2.0 debe poder integrarse de forma nativa en ese entorno.
+CyberNEMO de la UPM utilizan Kubernetes como infraestructura de producción, por lo
+que Voctomix~2.0 debe poder integrarse en ese entorno.
 
 \section{Despliegue nativo: un PC y dos PCs}
 \label{sec:despliegue_nativo}
