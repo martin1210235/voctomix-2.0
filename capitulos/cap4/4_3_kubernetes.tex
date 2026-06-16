@@ -1,13 +1,13 @@
 \section{Orquestación con Kubernetes}
 \label{sec:kubernetes}
 
-Kubernetes es un sistema de orquestación de contenedores que gestiona de forma
+Kubernetes~\cite{kubernetes_burns2016} es un sistema de orquestación de contenedores que gestiona de forma
 declarativa el ciclo de vida de los servicios: arranque, reinicio ante fallos,
 actualizaciones y escalado. A diferencia de Docker Compose, que está pensado para un
 único equipo, Kubernetes puede ejecutarse sobre infraestructura en la nube sin modificar
 el código de la aplicación.
 
-Para las pruebas locales se utilizó Minikube, que levanta un clúster Kubernetes
+Para las pruebas locales se utilizó Minikube~\cite{minikube_docs}, que levanta un clúster Kubernetes
 completo dentro de una máquina virtual en el propio equipo de desarrollo, eliminando
 la necesidad de disponer de infraestructura en la nube durante el desarrollo.
 

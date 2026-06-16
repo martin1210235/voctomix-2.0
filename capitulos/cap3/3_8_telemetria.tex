@@ -103,7 +103,7 @@ El servicio expone los datos de telemetría en dos canales complementarios:
         Python sin dependencias externas. Devuelve el estado actual completo en formato
         JSON. La opción \texttt{allow\_reuse\_address} evita bloqueos de puerto en
         reinicios rápidos del servicio.
-  \item \textbf{Mensajería AMQP (RabbitMQ):} cada cambio de estado se publica en el
+  \item \textbf{Mensajería AMQP~\cite{oasis_amqp10} (RabbitMQ~\cite{rabbitmq_docs}):} cada cambio de estado se publica en el
         exchange \texttt{voctomix\_events} (tipo fanout), de forma que cualquier
         consumidor externo puede suscribirse a los eventos sin acoplarse directamente
         al servicio de telemetría ni a voctocore.
