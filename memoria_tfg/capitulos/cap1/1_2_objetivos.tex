@@ -1,0 +1,33 @@
+\section{Objetivos}
+
+El objetivo principal de este trabajo es diseñar e implementar una arquitectura de
+código abierto, modular y reproducible para la producción remota de vídeo en tiempo real.
+Partiendo de Voctomix como base, se busca construir un sistema completo que permita
+realizar producciones audiovisuales de calidad profesional sin depender de hardware
+propietario de alto coste, y que pueda desplegarse fácilmente mediante contenedores.
+
+Para lograrlo, se plantean los siguientes objetivos específicos:
+
+\begin{enumerate}
+  \item Ampliar las funcionalidades del mezclador con características propias de la
+        producción profesional: rotulación dinámica con gráficos y textos en tiempo real,
+        un gestor de estados de emisión y sincronización automática de audio con el vídeo.
+
+  \item Implementar un servicio de telemetría que exporte el estado del sistema en
+        formato JSON y lo publique en un broker de mensajería, de forma que se pueda
+        integrar con herramientas externas sin tocar el núcleo de la aplicación.
+
+  \item Contenerizar el sistema completo con Docker, de modo que
+        cualquiera pueda desplegarlo con un único comando y sin preocuparse por
+        dependencias ni configuraciones del entorno.
+
+  \item Extender el despliegue a Kubernetes, validando que el sistema funciona también
+        en infraestructuras más complejas y multi-nodo.
+
+  \item Validar el funcionamiento del sistema en varios escenarios reales: desde un
+        único ordenador hasta un clúster de Kubernetes, comprobando que todo funciona correctamente
+        en cada uno de ellos.
+
+  \item Demostrar que el sistema es útil en producción real, a través de su uso en el
+        proyecto europeo CyberNEMO en la Universidad Politécnica de Madrid.
+\end{enumerate}

@@ -1,0 +1,156 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cam1
+  namespace: voctomix-exp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cam1
+  template:
+    metadata:
+      labels:
+        app: cam1
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      restartPolicy: Always
+      containers:
+        - name: cam1
+          image: voctomix-voctocore:latest
+          imagePullPolicy: Never
+          command:
+            - bash
+            - -c
+            - |
+              while true; do
+                ffmpeg -y -nostdin -re \
+                  -f lavfi -i "testsrc2=size=1920x1080:rate=25" \
+                  -f lavfi -i "anullsrc=r=48000:cl=stereo" \
+                  -ac 2 -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le \
+                  -f matroska tcp://localhost:10000 2>/dev/null
+                sleep 2
+              done
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "128Mi"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cam2
+  namespace: voctomix-exp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cam2
+  template:
+    metadata:
+      labels:
+        app: cam2
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      restartPolicy: Always
+      containers:
+        - name: cam2
+          image: voctomix-voctocore:latest
+          imagePullPolicy: Never
+          command:
+            - bash
+            - -c
+            - |
+              while true; do
+                ffmpeg -y -nostdin -re \
+                  -f lavfi -i "testsrc2=size=1920x1080:rate=25" \
+                  -f lavfi -i "anullsrc=r=48000:cl=stereo" \
+                  -ac 2 -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le \
+                  -f matroska tcp://localhost:10001 2>/dev/null
+                sleep 2
+              done
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "128Mi"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cam3
+  namespace: voctomix-exp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cam3
+  template:
+    metadata:
+      labels:
+        app: cam3
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      restartPolicy: Always
+      containers:
+        - name: cam3
+          image: voctomix-voctocore:latest
+          imagePullPolicy: Never
+          command:
+            - bash
+            - -c
+            - |
+              while true; do
+                ffmpeg -y -nostdin -re \
+                  -f lavfi -i "testsrc2=size=1920x1080:rate=25" \
+                  -f lavfi -i "anullsrc=r=48000:cl=stereo" \
+                  -ac 2 -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le \
+                  -f matroska tcp://localhost:10002 2>/dev/null
+                sleep 2
+              done
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "128Mi"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cam4
+  namespace: voctomix-exp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cam4
+  template:
+    metadata:
+      labels:
+        app: cam4
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      restartPolicy: Always
+      containers:
+        - name: cam4
+          image: voctomix-voctocore:latest
+          imagePullPolicy: Never
+          command:
+            - bash
+            - -c
+            - |
+              while true; do
+                ffmpeg -y -nostdin -re \
+                  -f lavfi -i "testsrc2=size=1920x1080:rate=25" \
+                  -f lavfi -i "anullsrc=r=48000:cl=stereo" \
+                  -ac 2 -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le \
+                  -f matroska tcp://localhost:10003 2>/dev/null
+                sleep 2
+              done
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "128Mi"
