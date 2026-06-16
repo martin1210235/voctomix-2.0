@@ -30,26 +30,22 @@ los procesos se ejecutasen en la misma máquina, sin necesidad de modificar ning
 del código de Voctomix. RabbitMQ mantiene su propia red aislada y se comunica con el
 servicio de telemetría mediante el protocolo AMQP.
 
-Voctogui se ejecuta de forma nativa en el sistema anfitrión y se conecta a voctocore
-a través del puerto~9999 expuesto por Docker. Ejecutar una interfaz GTK dentro de un
-contenedor introduce problemas de latencia y aceleración gráfica que la hacen inviable.
-Los recursos gráficos (logos e imágenes de fondo) se montan en el contenedor de voctocore
-mediante un volumen de tipo \textit{bind mount}, lo que permite actualizarlos sin
-reconstruir la imagen.
+Voctogui se ejecuta directamente en el equipo anfitrión y se conecta a voctocore a través
+del puerto~9999. Ejecutar una interfaz gráfica dentro de un contenedor no es viable por
+problemas de rendimiento, por lo que esta parte del sistema queda fuera de Docker. Los
+recursos gráficos como logos e imágenes de fondo se comparten con el contenedor de
+voctocore mediante un volumen, lo que permite modificarlos sin necesidad de reconstruir
+la imagen.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{figuras/escenario_docker.png}
-  \caption{Escenario de despliegue con Docker Compose: las fuentes de señal y la
-           telemetría comparten el espacio de red de voctocore mediante
-           \texttt{network\_mode: service:voctocore}. RabbitMQ mantiene su red
-           independiente. Voctogui se ejecuta de forma nativa en el equipo anfitrión.}
+  \caption{Escenario de despliegue con Docker Compose.}
   \label{fig:escenario_docker}
 \end{figure}
 
-Durante las pruebas se observó que los contenedores de cámara intentaban conectarse a
-voctocore antes de que este hubiera terminado de arrancar, produciendo fallos silenciosos.
-El problema se resolvió con dos mecanismos complementarios: la opción \texttt{restart: always}
-hace que Docker reinicie automáticamente cualquier contenedor que falle, y los scripts de
-arranque incorporan bucles de espera activa que comprueban con \texttt{ss -lnt} que el
-puerto~9999 está en escucha antes de lanzar los servicios dependientes.
+Durante las pruebas se detectó un problema de arranque: las cámaras intentaban conectarse
+a voctocore antes de que este estuviera listo, lo que producía fallos. La solución combina
+dos medidas: si un contenedor falla, Docker lo reinicia automáticamente mediante
+\texttt{restart: always}; y antes de lanzar cada servicio, el sistema comprueba que el
+puerto~9999 está disponible.
