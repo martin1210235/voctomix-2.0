@@ -38,7 +38,7 @@ ocupar todo el encuadre.
 
 La fuente A se muestra a pantalla completa mientras la fuente B aparece reducida en
 una esquina del encuadre (típicamente la esquina inferior derecha), a una escala
-aproximada del 27\,\% del ancho del fotograma. Es el composite clásico de ponente con
+aproximada del 26\,\% del ancho del fotograma. Es el composite clásico de ponente con
 presentación: la cámara del ponente ocupa la pantalla completa y las diapositivas
 aparecen en la esquina, o viceversa.
 
@@ -80,13 +80,13 @@ proyectado.
 
 \subsection{Mirror}
 
-Aunque no es un composite independiente sino una propiedad disponible en Picture in
-Picture y en Lecture activando la opción de mirror,
-el efecto espejo permite invertir horizontalmente la fuente A o B en el composite. Es
-necesario cuando la señal de cámara llega especularmente invertida, como puede ocurrir
-con ciertos modelos de cámaras web o cuando la cámara está orientada de forma atípica.
-Al activar el mirror desde el fichero de configuración, el núcleo aplica la inversión
-directamente en el compositor de GStreamer sin coste adicional.
+El modo mirror no es un composite independiente, sino una variante disponible para
+Picture in Picture y Lecture. Al activarlo, el núcleo invierte la disposición horizontal
+del composite: los elementos situados a la derecha se desplazan a la izquierda y
+viceversa. Por ejemplo, el recuadro del PIP pasa de la esquina inferior derecha a la
+inferior izquierda, y en Lecture el bloque de diapositivas cambia de lado.
+Esta variante se genera automáticamente a partir de los parámetros geométricos del
+composite original, sin coste adicional en el procesamiento de vídeo.
 
 \begin{figure}[H]
   \centering
