@@ -1,0 +1,80 @@
+El sistema puede desplegarse en cuatro escenarios distintos según el contexto de uso:
+desde un único ordenador para desarrollo y pruebas hasta un clúster Kubernetes para
+producción en la nube. La tabla~\ref{tab:escenarios_despliegue} resume cada opción.
+
+\begin{table}[H]
+  \centering
+  \caption{Escenarios de despliegue de Voctomix~2.0.}
+  \label{tab:escenarios_despliegue}
+  \small
+  \begin{tabular}{|l|l|l|l|}
+    \hline
+    \textbf{Escenario} & \textbf{Requisito} & \textbf{Caso de uso} & \textbf{Arranque} \\
+    \hline
+    Un PC (nativo)  & Linux + GStreamer + Python
+                    & Pruebas y desarrollo
+                    & \texttt{./start\_studio\_single\_pc.sh} \\
+    Dos PCs (nativo)& Dos equipos Linux en red local
+                    & Eventos con hardware dedicado
+                    & \texttt{./start\_voctocore\_pc1.sh} \\
+    Docker Compose  & Docker instalado
+                    & Despliegue reproducible
+                    & \texttt{make docker-up} \\
+    Kubernetes      & Minikube o clúster externo
+                    & Producción y nube
+                    & \texttt{./launch\_k8s.sh} \\
+    \hline
+  \end{tabular}
+\end{table}
+
+Los dos primeros se denominan escenarios nativos porque ejecutan los procesos directamente
+sobre el sistema operativo del equipo, sin virtualización. Los dos siguientes emplean
+contenedores, lo que elimina la necesidad de instalar GStreamer, Python o sus dependencias
+en la máquina anfitriona y garantiza un comportamiento idéntico en cualquier equipo.
+
+\section{Despliegue nativo: un PC y dos PCs}
+\label{sec:despliegue_nativo}
+
+El despliegue nativo es la forma más directa de arrancar el sistema: los procesos
+de voctocore y voctogui se ejecutan como programas normales sobre Linux, sin ninguna
+capa intermedia. Es el escenario habitual durante el desarrollo y para eventos en los
+que el equipo técnico dispone de una máquina preparada con todas las dependencias
+instaladas.
+
+\subsection{Escenario de un PC}
+
+El script \texttt{start\_studio\_single\_pc.sh} arranca todos los componentes del
+sistema con un único comando: primero inicia voctocore, después inyecta las señales
+de continuidad (vídeo de pausa, vídeo sin señal y audio de fondo) y por último
+abre voctogui. Antes de lanzar cada componente, el script comprueba que el puerto
+9999 está activo y aceptando conexiones, deteniendo el proceso de arranque hasta que
+voctocore esté listo.
+
+Esta comprobación resolvió un problema que aparecía en el código original: los
+componentes intentaban conectarse a voctocore antes de que este hubiera terminado de
+arrancar, produciendo fallos silenciosos. La solución con \texttt{sleep} fijo que usaba
+el proyecto era frágil porque el tiempo real de arranque varía según el hardware. Al
+usar una espera activa por puerto se elimina esa dependencia.
+
+Al cerrar voctogui, una instrucción \texttt{trap} captura la señal de salida y termina
+todos los procesos hijos de forma limpia, evitando que queden procesos huérfanos
+ejecutándose en segundo plano.
+
+\subsection{Escenario de dos PCs}
+
+En este escenario, la carga de trabajo se reparte entre dos equipos conectados por
+red local. El PC servidor ejecuta voctocore y todos los servicios de apoyo; el PC del
+realizador ejecuta únicamente voctogui.
+
+El script del servidor (\texttt{start\_voctocore\_pc1.sh}) detecta automáticamente la
+IP de la interfaz de red consultando la tabla de enrutamiento del sistema, de modo que
+no es necesario configurar la IP manualmente en cada despliegue. El script del
+realizador (\texttt{start\_voctogui\_pc2.sh}) solo necesita conocer la IP del servidor
+a través de la variable de entorno \texttt{IP\_SERVER}:
+
+\begin{verbatim}
+IP_SERVER=192.168.1.50 ./2pc_escenario2/start_voctogui_pc2.sh
+\end{verbatim}
+
+Si no se especifica \texttt{IP\_SERVER}, el valor por defecto es \texttt{127.0.0.1},
+lo que permite probar el escenario de dos PCs en un único equipo sin modificar nada.
