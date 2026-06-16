@@ -35,11 +35,16 @@ espera hasta que RabbitMQ responde; solo entonces arranca el resto del pod. Del 
 una comprobación periódica sobre el puerto~9999 confirma que voctocore está operativo antes
 de que el sistema empiece a aceptar conexiones externas.
 
-Los puertos del clúster se exponen al exterior mediante un \textit{port-forward}
-(\texttt{kubectl port-forward --address 0.0.0.0}), que el script \texttt{start\_server\_pc1.sh}
-establece automáticamente tras comprobar que todos los pods están en estado \textit{ready}.
-Esto permite que voctogui y el monitor de programa se conecten desde PC2 exactamente igual
-que en el escenario de dos PCs nativo, usando la IP de PC1 como destino.
+Para arrancar el sistema, el operador ejecuta el script de servidor en PC1. Este comprueba
+si Minikube ya está en marcha y, si no, lo inicia. A continuación aplica todos los
+manifiestos YAML al clúster y espera a que los pods estén completamente listos. Una vez
+que el sistema está operativo, establece un reenvío de puertos
+(\texttt{kubectl port-forward --address 0.0.0.0}) que hace accesibles desde la red local
+los puertos de voctocore (control, previews, salida de programa). En PC2, el operador
+lanza voctogui apuntando a la IP de PC1, exactamente igual que en el escenario de dos PCs
+nativo. Para detener el sistema basta con cerrar el terminal de PC1, lo que cierra
+automáticamente el reenvío de puertos; el clúster y los pods permanecen activos y pueden
+retomarse en cualquier momento sin necesidad de volver a desplegarlos.
 
 \begin{figure}[H]
   \centering
