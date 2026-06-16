@@ -14,8 +14,8 @@ La unidad mínima de despliegue en Kubernetes es el \textit{pod}. Cuando varios 
 se agrupan en el mismo pod, comparten automáticamente la interfaz de red, es decir, todos
 ven el mismo \texttt{localhost}. Este comportamiento resuelve de forma nativa el mismo
 problema de aislamiento de red que en Docker se solucionó con el espacio de red compartido.
-El pod principal, llamado \texttt{studio}, agrupa voctocore, las fuentes de vídeo (cam1--4,
-stream blanker e intro) y el servicio de telemetría. Al compartir pod, todas las conexiones
+El pod principal, llamado \texttt{studio}, agrupa voctocore, todas las fuentes de vídeo
+(cam1--4, break, intro, stream blanker y audio manager) y el servicio de telemetría. Al compartir pod, todas las conexiones
 TCP internas funcionan sin modificar una sola línea de código. RabbitMQ se despliega en un
 pod independiente y se comunica con la telemetría mediante AMQP.
 
@@ -24,9 +24,10 @@ El despliegue se define en cuatro ficheros YAML:
 expuestos; \texttt{rabbitmq.yaml} despliega RabbitMQ como pod independiente;
 \texttt{configmap.yaml} centraliza todos los parámetros de configuración (resolución,
 puertos, fuentes de vídeo) como variables de entorno accesibles por todos los contenedores,
-de forma que un solo cambio aquí se aplica a todo el clúster; y \texttt{pvc.yaml} reserva
+de forma que un solo cambio aquí se aplica a todo el clúster; \texttt{pvc.yaml} reserva
 1~GiB de almacenamiento persistente para los registros de telemetría, que así sobreviven
-al reinicio del pod.
+al reinicio del pod; y un \texttt{Secret} almacena las credenciales de RabbitMQ de forma
+segura, sin escribirlas directamente en los manifiestos.
 
 El orden de arranque también requiere coordinación. Si el pod \texttt{studio} intentase
 arrancar antes de que RabbitMQ estuviera listo, la telemetría fallaría al intentar
