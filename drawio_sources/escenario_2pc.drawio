@@ -1,125 +1,57 @@
 <mxfile host="app.diagrams.net">
   <diagram id="escenario_2pc" name="Escenario 2 PCs">
-    <mxGraphModel dx="1400" dy="680" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="580" math="0" shadow="0">
+    <mxGraphModel dx="1200" dy="380" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="340" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
-        <!-- ── PC1 container ── -->
-        <mxCell id="pc1_box" value="PC1 — Servidor" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#6699FF;strokeWidth=2;dashed=1;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=6;align=center;" vertex="1" parent="1">
-          <mxGeometry x="20" y="20" width="720" height="530" as="geometry"/>
+        <!-- PC1 container -->
+        <mxCell id="pc1" value="PC1 · Servidor" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#6699FF;strokeWidth=2;dashed=1;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="560" height="300" as="geometry"/>
         </mxCell>
 
-        <!-- ── PC2 container ── -->
-        <mxCell id="pc2_box" value="PC2 — Realizador" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#6699FF;strokeWidth=2;dashed=1;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=6;align=center;" vertex="1" parent="1">
-          <mxGeometry x="840" y="20" width="540" height="530" as="geometry"/>
+        <!-- PC2 container -->
+        <mxCell id="pc2" value="PC2 · Realizador" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#6699FF;strokeWidth=2;dashed=1;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="620" y="20" width="560" height="300" as="geometry"/>
         </mxCell>
 
-        <!-- ── SECTION LABELS PC1 ── -->
-        <mxCell id="lbl_fuentes" value="Fuentes de señal" style="text;html=1;align=center;fontStyle=1;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="50" y="70" width="200" height="20" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_sb_title" value="Stream Blanker" style="text;html=1;align=center;fontStyle=1;fontSize=11;fontColor=#CC0000;" vertex="1" parent="1">
-          <mxGeometry x="50" y="320" width="200" height="20" as="geometry"/>
+        <!-- FFmpeg sources (PC1) -->
+        <mxCell id="ffmpeg" value="FFmpeg&#xa;fuentes de señal" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="120" width="180" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- ── CAMERA SOURCES (PC1) ── -->
-        <mxCell id="cam1" value="cam1 · 10000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="50" y="100" width="190" height="45" as="geometry"/>
-        </mxCell>
-        <mxCell id="cam2" value="cam2 · 10001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="50" y="155" width="190" height="45" as="geometry"/>
-        </mxCell>
-        <mxCell id="cam3" value="cam3 · 10002" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="50" y="210" width="190" height="45" as="geometry"/>
-        </mxCell>
-        <mxCell id="cam4" value="cam4 · 10003" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="50" y="265" width="190" height="45" as="geometry"/>
+        <!-- voctocore (PC1) -->
+        <mxCell id="voctocore" value="voctocore.py&#xa;:9999 · :15000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#FF8800;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="310" y="110" width="220" height="90" as="geometry"/>
         </mxCell>
 
-        <!-- ── STREAM BLANKER SOURCES (PC1) ── -->
-        <mxCell id="sb_pause" value="PAUSE · 17000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#CC0000;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="50" y="350" width="190" height="45" as="geometry"/>
-        </mxCell>
-        <mxCell id="sb_nostream" value="NOSTREAM · 17001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#CC0000;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="50" y="405" width="190" height="45" as="geometry"/>
-        </mxCell>
-        <mxCell id="sb_audio" value="Audio SB · 18000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#CC0000;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="50" y="460" width="190" height="45" as="geometry"/>
+        <!-- voctogui (PC2) -->
+        <mxCell id="voctogui" value="voctogui.py&#xa;host = IP_SERVER" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="660" y="100" width="220" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- ── VOCTOCORE (PC1) ── -->
-        <mxCell id="voctocore_box" value="voctocore" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#FF8800;strokeWidth=2;dashed=1;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="310" y="80" width="380" height="380" as="geometry"/>
-        </mxCell>
-        <mxCell id="av_inputs" value="Entradas de vídeo y audio" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#FF8800;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="340" y="140" width="310" height="55" as="geometry"/>
-        </mxCell>
-        <mxCell id="vmix" value="VideoMix" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#FF8800;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="340" y="230" width="310" height="55" as="geometry"/>
-        </mxCell>
-        <mxCell id="sb_module" value="Stream Blanker" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#CC0000;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="340" y="320" width="310" height="55" as="geometry"/>
-        </mxCell>
-        <mxCell id="ctrl_server" value="Servidor de control · 9999" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#FF8800;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="340" y="390" width="310" height="45" as="geometry"/>
+        <!-- Monitor (PC2) -->
+        <mxCell id="monitor" value="Monitor de programa&#xa;:15000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="660" y="220" width="220" height="65" as="geometry"/>
         </mxCell>
 
-        <!-- ── SALIDA PROGRAMA (PC1) ── -->
-        <mxCell id="out_program" value="Salida de programa · 15000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="310" y="490" width="380" height="45" as="geometry"/>
+        <!-- LAN label -->
+        <mxCell id="lan" value="Red local&#xa;(LAN)" style="text;html=1;align=center;fontStyle=2;fontSize=12;fontColor=#444444;" vertex="1" parent="1">
+          <mxGeometry x="566" y="140" width="80" height="40" as="geometry"/>
         </mxCell>
 
-        <!-- ── VOCTOGUI (PC2) ── -->
-        <mxCell id="voctogui" value="voctogui&#xa;host = IP_SERVER" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;fontSize=12;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="880" y="180" width="260" height="80" as="geometry"/>
-        </mxCell>
-
-        <!-- ── MONITOR PROGRAMA (PC2) ── -->
-        <mxCell id="monitor" value="Monitor de programa&#xa;(ffplay · 15000)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="880" y="380" width="260" height="60" as="geometry"/>
-        </mxCell>
-
-        <!-- ── LAN LABEL ── -->
-        <mxCell id="lan_label" value="Red local (LAN)" style="text;html=1;align=center;fontStyle=2;fontSize=12;fontColor=#444444;" vertex="1" parent="1">
-          <mxGeometry x="750" y="255" width="110" height="20" as="geometry"/>
-        </mxCell>
-
-        <!-- ── ARROWS: sources → voctocore ── -->
-        <mxCell id="a1" value="RAW I420" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" source="cam1" target="av_inputs" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="a2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="cam2" target="av_inputs" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="a3" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" edge="1" source="cam3" target="av_inputs" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="a4" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.9;entryDx=0;entryDy=0;" edge="1" source="cam4" target="av_inputs" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="a_sb1" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" source="sb_pause" target="sb_module" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="a_sb2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="sb_nostream" target="sb_module" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="a_sb3" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" edge="1" source="sb_audio" target="sb_module" parent="1">
+        <!-- Arrow: FFmpeg → voctocore -->
+        <mxCell id="a1" value=":10000–10005" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;strokeWidth=2;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="ffmpeg" target="voctocore" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- ── ARROWS: voctocore → salida programa ── -->
-        <mxCell id="a_prog" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;" edge="1" source="sb_module" target="out_program" parent="1">
+        <!-- Arrow: voctogui → voctocore (control, LAN) -->
+        <mxCell id="a2" value=":9999 control TCP" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;strokeWidth=2;strokeColor=#82b366;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;" edge="1" source="voctogui" target="voctocore" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- ── ARROWS: voctogui → voctocore (LAN) ── -->
-        <mxCell id="a_ctrl" value="Control TCP · 9999" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;strokeColor=#82b366;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="voctogui" target="ctrl_server" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- ── ARROW: salida programa → monitor (LAN) ── -->
-        <mxCell id="a_mon" value="Puerto 15000" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;strokeColor=#6c8ebf;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="out_program" target="monitor" parent="1">
+        <!-- Arrow: voctocore → monitor (program, LAN) -->
+        <mxCell id="a3" value=":15000 programa" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;strokeWidth=2;strokeColor=#6c8ebf;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="voctocore" target="monitor" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 

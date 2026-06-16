@@ -1,126 +1,47 @@
 <mxfile host="app.diagrams.net">
   <diagram id="escenario_1pc" name="Escenario 1 PC">
-    <mxGraphModel dx="1400" dy="600" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="560" math="0" shadow="0">
+    <mxGraphModel dx="1200" dy="380" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="340" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
         <!-- PC container -->
-        <mxCell id="pc_box" value="PC (único equipo)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#6699FF;strokeWidth=2;dashed=1;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=6;align=center;" vertex="1" parent="1">
-          <mxGeometry x="20" y="20" width="1360" height="510" as="geometry"/>
+        <mxCell id="pc" value="PC (único equipo)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#6699FF;strokeWidth=2;dashed=1;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=6;align=center;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1160" height="300" as="geometry"/>
         </mxCell>
 
-        <!-- ── SECTION LABELS ── -->
-        <mxCell id="lbl_fuentes" value="Fuentes de señal" style="text;html=1;align=center;fontStyle=1;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="50" y="70" width="200" height="20" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_sb_title" value="Stream Blanker" style="text;html=1;align=center;fontStyle=1;fontSize=11;fontColor=#CC0000;" vertex="1" parent="1">
-          <mxGeometry x="50" y="320" width="200" height="20" as="geometry"/>
-        </mxCell>
-        <mxCell id="lbl_salidas" value="Salidas" style="text;html=1;align=center;fontStyle=1;fontSize=12;" vertex="1" parent="1">
-          <mxGeometry x="1070" y="70" width="260" height="20" as="geometry"/>
+        <!-- FFmpeg sources -->
+        <mxCell id="ffmpeg" value="FFmpeg&#xa;fuentes de señal" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="70" y="120" width="200" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- ── CAMERA SOURCES ── -->
-        <mxCell id="cam1" value="cam1 · 10000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="50" y="100" width="200" height="45" as="geometry"/>
-        </mxCell>
-        <mxCell id="cam2" value="cam2 · 10001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="50" y="155" width="200" height="45" as="geometry"/>
-        </mxCell>
-        <mxCell id="cam3" value="cam3 · 10002" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="50" y="210" width="200" height="45" as="geometry"/>
-        </mxCell>
-        <mxCell id="cam4" value="cam4 · 10003" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="50" y="265" width="200" height="45" as="geometry"/>
+        <!-- voctocore -->
+        <mxCell id="voctocore" value="voctocore.py" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#FF8800;fontColor=#333333;fontSize=13;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="470" y="100" width="260" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- ── STREAM BLANKER SOURCES ── -->
-        <mxCell id="sb_pause" value="PAUSE · 17000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#CC0000;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="50" y="350" width="200" height="45" as="geometry"/>
-        </mxCell>
-        <mxCell id="sb_nostream" value="NOSTREAM · 17001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#CC0000;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="50" y="405" width="200" height="45" as="geometry"/>
-        </mxCell>
-        <mxCell id="sb_audio" value="Audio SB · 18000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#CC0000;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="50" y="460" width="200" height="45" as="geometry"/>
+        <!-- output -->
+        <mxCell id="output" value="Salida de programa · :15000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="490" y="240" width="220" height="55" as="geometry"/>
         </mxCell>
 
-        <!-- ── VOCTOCORE ── -->
-        <mxCell id="voctocore_box" value="voctocore" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#FF8800;strokeWidth=2;dashed=1;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=6;" vertex="1" parent="1">
-          <mxGeometry x="360" y="80" width="540" height="420" as="geometry"/>
-        </mxCell>
-        <mxCell id="av_inputs" value="Entradas de vídeo y audio" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#FF8800;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="400" y="140" width="220" height="55" as="geometry"/>
-        </mxCell>
-        <mxCell id="vmix" value="VideoMix" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#FF8800;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="400" y="230" width="220" height="55" as="geometry"/>
-        </mxCell>
-        <mxCell id="amix" value="AudioMix" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#FF8800;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="400" y="320" width="220" height="55" as="geometry"/>
-        </mxCell>
-        <mxCell id="sb_module" value="Stream Blanker" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6e6;strokeColor=#CC0000;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="400" y="410" width="220" height="55" as="geometry"/>
-        </mxCell>
-        <mxCell id="ctrl_server" value="Servidor de control · 9999" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#FF8800;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="660" y="230" width="200" height="55" as="geometry"/>
+        <!-- voctogui -->
+        <mxCell id="voctogui" value="voctogui.py&#xa;host = localhost" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="920" y="120" width="220" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- ── VOCTOGUI ── -->
-        <mxCell id="voctogui" value="voctogui&#xa;host=localhost" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;fontSize=12;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="1070" y="200" width="260" height="70" as="geometry"/>
-        </mxCell>
-
-        <!-- ── OUTPUTS ── -->
-        <mxCell id="out_preview" value="Previews por fuente&#xa;14000–14005" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1070" y="100" width="260" height="55" as="geometry"/>
-        </mxCell>
-        <mxCell id="out_program" value="Salida de programa&#xa;15000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=11;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="1070" y="350" width="260" height="55" as="geometry"/>
-        </mxCell>
-        <mxCell id="out_raw" value="Mezcla bruta · 11000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="1070" y="440" width="260" height="55" as="geometry"/>
-        </mxCell>
-
-        <!-- ── ARROWS: sources → voctocore ── -->
-        <mxCell id="a1" value="RAW I420" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" edge="1" source="cam1" target="av_inputs" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="a2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="cam2" target="av_inputs" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="a3" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" edge="1" source="cam3" target="av_inputs" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="a4" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.9;entryDx=0;entryDy=0;" edge="1" source="cam4" target="av_inputs" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="a_sb" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="sb_pause" target="sb_module" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="a_sb2" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7;entryDx=0;entryDy=0;" edge="1" source="sb_nostream" target="sb_module" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="a_sb3" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.9;entryDx=0;entryDy=0;" edge="1" source="sb_audio" target="sb_module" parent="1">
+        <!-- Arrow: FFmpeg → voctocore -->
+        <mxCell id="a1" value=":10000–10005&#xa;RAW I420" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;strokeWidth=2;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="ffmpeg" target="voctocore" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- ── ARROWS: voctocore → outputs ── -->
-        <mxCell id="a_prev" value="JPEG" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.2;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="voctocore_box" target="out_preview" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="a_prog" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="sb_module" target="out_program" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="a_raw" value="" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=1;exitY=0.9;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="voctocore_box" target="out_raw" parent="1">
+        <!-- Arrow: voctocore → output -->
+        <mxCell id="a2" value=":15000" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;strokeWidth=2;strokeColor=#6c8ebf;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" source="voctocore" target="output" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- ── ARROWS: voctogui ↔ voctocore ── -->
-        <mxCell id="a_ctrl" value="Control TCP · 9999 · localhost" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;dashed=0;strokeColor=#82b366;strokeWidth=2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="voctogui" target="ctrl_server" parent="1">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="a_gui_prev" value="Previews" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=10;exitX=0;exitY=0.3;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="voctogui" target="out_preview" parent="1">
+        <!-- Arrow: voctogui ↔ voctocore (control) -->
+        <mxCell id="a3" value=":9999 control TCP" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;strokeWidth=2;strokeColor=#82b366;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="voctogui" target="voctocore" parent="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
