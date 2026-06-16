@@ -33,46 +33,32 @@ que Voctomix~2.0 debe poder integrarse en ese entorno.
 \section{Despliegue nativo: un PC y dos PCs}
 \label{sec:despliegue_nativo}
 
-El despliegue nativo es la forma más directa de arrancar el sistema: los procesos
-de voctocore y voctogui se ejecutan como programas normales sobre Linux, sin ninguna
-capa intermedia. Es el escenario habitual durante el desarrollo y para eventos en los
-que el equipo técnico dispone de una máquina preparada con todas las dependencias
-instaladas.
+El despliegue nativo ejecuta los procesos de voctocore y voctogui directamente sobre
+Linux, sin ninguna capa intermedia. Es el escenario de referencia para el desarrollo
+y las pruebas funcionales del sistema.
 
-\subsection{Escenario de un PC}
+\begin{itemize}
 
-El script \texttt{start\_studio\_single\_pc.sh} arranca todos los componentes del
-sistema con un único comando: primero inicia voctocore, después inyecta las señales
-de continuidad (vídeo de pausa, vídeo sin señal y audio de fondo) y por último
-abre voctogui. Antes de lanzar cada componente, el script comprueba que el puerto
-9999 está activo y aceptando conexiones, deteniendo el proceso de arranque hasta que
-voctocore esté listo.
+  \item \textbf{Escenario de un PC.}
+  Este fue el escenario utilizado durante el desarrollo del proyecto y el que permitió
+  comprender en profundidad la arquitectura del sistema. El arranque sigue tres pasos:
+  primero se lanza \texttt{voctocore.py}, que abre el puerto de control~(9999) y los
+  puertos de entrada de señal (10000--10005, uno por fuente), y comienza a escuchar
+  conexiones; a continuación se inyectan las señales de vídeo y audio en esos puertos
+  mediante FFmpeg; por último se arranca \texttt{voctogui.py}, que se conecta a
+  voctocore a través de \texttt{localhost} (configurado como \texttt{host=localhost}
+  en el fichero de configuración de voctogui, al ser la dirección del propio equipo),
+  y muestra en la interfaz todas las fuentes activas. Al cerrar la interfaz, los
+  procesos auxiliares se terminan de forma limpia de manera automática.
 
-Esta comprobación resolvió un problema que aparecía en el código original: los
-componentes intentaban conectarse a voctocore antes de que este hubiera terminado de
-arrancar, produciendo fallos silenciosos. La solución con \texttt{sleep} fijo que usaba
-el proyecto era frágil porque el tiempo real de arranque varía según el hardware. Al
-usar una espera activa por puerto se elimina esa dependencia.
+  \item \textbf{Escenario de dos PCs.}
+  En este escenario, la carga de trabajo se reparte entre dos equipos conectados por
+  red local: el PC servidor ejecuta voctocore y todos los servicios de apoyo, mientras
+  que el PC del realizador ejecuta únicamente voctogui. Para que voctogui pueda
+  conectarse a voctocore, el fichero de configuración de voctogui debe indicar la
+  dirección IP del servidor en el campo \texttt{host}, en lugar de \texttt{localhost}.
+  El script de arranque del realizador acepta esta IP como variable de entorno
+  (\texttt{IP\_SERVER}), lo que evita modificar el fichero de configuración en cada
+  despliegue.
 
-Al cerrar voctogui, una instrucción \texttt{trap} captura la señal de salida y termina
-todos los procesos hijos de forma limpia, evitando que queden procesos huérfanos
-ejecutándose en segundo plano.
-
-\subsection{Escenario de dos PCs}
-
-En este escenario, la carga de trabajo se reparte entre dos equipos conectados por
-red local. El PC servidor ejecuta voctocore y todos los servicios de apoyo; el PC del
-realizador ejecuta únicamente voctogui.
-
-El script del servidor (\texttt{start\_voctocore\_pc1.sh}) detecta automáticamente la
-IP de la interfaz de red consultando la tabla de enrutamiento del sistema, de modo que
-no es necesario configurar la IP manualmente en cada despliegue. El script del
-realizador (\texttt{start\_voctogui\_pc2.sh}) solo necesita conocer la IP del servidor
-a través de la variable de entorno \texttt{IP\_SERVER}:
-
-\begin{verbatim}
-IP_SERVER=192.168.1.50 ./2pc_escenario2/start_voctogui_pc2.sh
-\end{verbatim}
-
-Si no se especifica \texttt{IP\_SERVER}, el valor por defecto es \texttt{127.0.0.1},
-lo que permite probar el escenario de dos PCs en un único equipo sin modificar nada.
+\end{itemize}
