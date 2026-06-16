@@ -103,7 +103,7 @@ El servicio expone los datos de telemetría en dos canales complementarios:
         Python sin dependencias externas. Devuelve el estado actual completo en formato
         JSON. La opción \texttt{allow\_reuse\_address} evita bloqueos de puerto en
         reinicios rápidos del servicio.
-  \item \textbf{Mensajería AMQP~\cite{oasis_amqp10} (RabbitMQ~\cite{rabbitmq_docs}):} cada cambio de estado se publica en el
+  \item \textbf{Mensajería AMQP (RabbitMQ):} cada cambio de estado se publica en el
         exchange \texttt{voctomix\_events} (tipo fanout), de forma que cualquier
         consumidor externo puede suscribirse a los eventos sin acoplarse directamente
         al servicio de telemetría ni a voctocore.
@@ -137,25 +137,3 @@ constituyó la primera validación del sistema de telemetría en un entorno real
 La arquitectura desacoplada del servicio, conectado al núcleo como un cliente TCP
 ordinario sin privilegios especiales, garantiza que su eventual fallo no afecte al
 procesamiento multimedia principal.
-
-\subsection{Evolución del protocolo: de UDP a HTTP}
-\label{sec:evolucion_telemetria}
-
-En el escenario de dos PCs, el servicio de telemetría necesita recibir el estado de la
-GUI desde el PC del realizador a través de la red. La implementación inicial utilizó
-UDP, que presentó dos problemas críticos:
-
-\begin{itemize}
-  \item \textbf{Falta de fiabilidad:} UDP es \textit{fire-and-forget}; los paquetes
-        de estado podían perderse sin que el emisor lo detectara, dejando el servicio
-        y la GUI desincronizados.
-  \item \textbf{Bloqueos de puerto (\texttt{Errno 98}):} al reiniciar los scripts
-        rápidamente durante el desarrollo, el kernel mantenía el puerto en estado
-        \texttt{TIME\_WAIT}, impidiendo el rearranque inmediato del servicio.
-\end{itemize}
-
-La solución fue migrar a HTTP/TCP: el servicio actúa como servidor HTTP en el puerto
-8080, y \texttt{gui\_state\_exporter.py} envía los datos mediante peticiones HTTP POST
-con cuerpo JSON. TCP garantiza la entrega ordenada de los datos, y se estableció un
-\textit{timeout} de 1~segundo en el cliente para que la GUI nunca se bloquee si el
-servidor no está disponible.
