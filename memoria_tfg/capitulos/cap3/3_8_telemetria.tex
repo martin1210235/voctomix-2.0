@@ -21,16 +21,15 @@ PC lo escribe en un fichero local; en escenarios en red (Docker o dos PCs) lo en
 servicio mediante HTTP POST al puerto~8080.
 
 El servicio fusiona las dos fuentes y construye una vista unificada de la sesión, que
-guarda en formato \textit{JSON Lines} (\texttt{sessions/session\_N.jsonl}): un objeto
+guarda en formato \textit{JSON} (\texttt{session\_N.jsonl}): un objeto
 JSON completo por línea, con numeración automática por sesión. Este formato permite
-analizar el log de forma incremental con herramientas estándar como \texttt{jq} o
-Python, sin necesidad de cargar el fichero completo en memoria.
+analizar el log de forma incremental con herramientas estándar como Python, sin necesidad de cargar el fichero completo en memoria.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{figuras/telemetria_state_change.png}
   \caption{Salida del servicio de telemetría mostrando un evento STATE y un evento
-           CHANGE consecutivos durante una sesión real.}
+           CHANGE consecutivos.}
   \label{fig:telemetria_state_change}
 \end{figure}
 
@@ -98,10 +97,10 @@ directamente al servicio de telemetría ni a voctocore. Si RabbitMQ no está dis
 el servicio continúa funcionando con el log local y la API HTTP sin interrupción alguna.
 
 En el marco del proyecto europeo CyberNEMO (UPM), el broker RabbitMQ de Voctomix~2.0
-fue integrado en el clúster Kubernetes del proyecto, donde las colas
+fue integrado en el clúster Kubernetes, donde las colas
 \texttt{vproduction-uc-media} y \texttt{vqprobe-uc-media} recibieron los eventos del
-mezclador en tiempo real durante las pruebas de producción audiovisual. Este despliegue
-constituyó la primera validación del sistema de telemetría en un entorno real.
+mezclador en tiempo real. Al conectarse como un cliente TCP ordinario, un fallo del
+servicio no afecta al procesamiento multimedia principal.
 
 \begin{figure}[h]
   \centering
@@ -109,7 +108,3 @@ constituyó la primera validación del sistema de telemetría en un entorno real
   \caption{Colas RabbitMQ activas durante la integración con CyberNEMO.}
   \label{fig:rabbitmq_cybernemo}
 \end{figure}
-
-La arquitectura desacoplada del servicio, conectado al núcleo como un cliente TCP
-ordinario sin privilegios especiales, garantiza que un eventual fallo del servicio de
-telemetría no afecte al procesamiento multimedia principal.
