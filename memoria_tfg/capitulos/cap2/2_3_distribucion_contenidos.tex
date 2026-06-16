@@ -143,10 +143,26 @@ pérdida de calidad a cambio de viabilizar el transporte.
   con aceleración hardware dedicada. YouTube, Netflix y Facebook ya codifican gran parte
   de su contenido en AV1 para streaming bajo demanda.
 
+  \item \textbf{H.266 / VVC (\textit{Versatile Video Coding})}~\cite{itu_h266}: sucesor
+  de H.265 publicado en 2020 por el Joint Video Experts Team (JVET) de ITU-T e
+  ISO/IEC. Aproximadamente duplica la eficiencia de compresión de H.265, permitiendo
+  la misma calidad perceptual a la mitad del bitrate~\cite{chen2024_codec_comparison}.
+  Diseñado para contenidos 4K, 8K, vídeo de 360° y HDR. Su principal limitación actual
+  es la velocidad de codificación, significativamente superior a la de H.265, lo que
+  restringe su uso en tiempo real a entornos con aceleración hardware especializada.
+  Plataformas como Netflix y Disney$+$ lo evalúan para distribución OTT de próxima
+  generación.
+
   \item \textbf{AAC / Opus}: códecs de audio utilizados habitualmente junto a los
   anteriores. AAC (\textit{Advanced Audio Coding}) es el estándar en distribución
   broadcast y plataformas de streaming; Opus es el códec preferido en aplicaciones
   WebRTC por su eficiencia a bajas tasas de bits.
+
+  \item \textbf{AC-4 (ETSI TS~103~190)}~\cite{etsi_ac4}: códec de audio de nueva
+  generación adoptado en ATSC~3.0 (\textit{NextGen TV}) y DVB como estándar de
+  distribución broadcast. Ofrece mayor eficiencia que Dolby Digital Plus (E-AC-3) y
+  soporta audio inmersivo objeto por objeto, permitiendo distribuir contenido Dolby Atmos
+  a través de flujos de baja tasa de bits hacia el espectador final.
 \end{itemize}
 
 \begin{table}[H]
@@ -161,6 +177,8 @@ pérdida de calidad a cambio de viabilizar el transporte.
     H.264/AVC  & Base       & Muy rápido       & Universal         & Sí \\
     H.265/HEVC & $\times$2  & 5--8$\times$ más lento & Alta (post 2015) & Sí (con HW) \\
     AV1        & $\times$3  & 5--10$\times$ más lento & Media (creciendo) & Solo con HW \\
+    H.266/VVC  & $\times$4  & Muy lento        & Emergente (2024+) & No (laboratorio) \\
+    AC-4       & Audio      & Tiempo real      & ATSC 3.0, DVB     & Sí \\
     \hline
   \end{tabular}
 \end{table}

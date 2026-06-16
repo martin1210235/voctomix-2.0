@@ -3,9 +3,9 @@
 
 La producción remota ha dejado de ser una propuesta experimental para convertirse en el
 modelo operativo de referencia en eventos de gran escala. En esta sección se recogen
-cuatro casos de uso representativos que ilustran el rango de aplicaciones, desde eventos
-masivos con presupuesto de televisión pública hasta despliegues académicos de
-investigación.
+cinco casos de uso representativos que ilustran el rango de aplicaciones, desde eventos
+masivos con presupuesto de televisión pública hasta proyectos europeos de investigación
+con participación de la UPM.
 
 \subsection{Chaos Communication Congress (C3VOC)}
 
@@ -52,7 +52,50 @@ deportivo durante el transporte, y la corrección ARQ recupera los paquetes perd
 impacto perceptible en la latencia. La operación resultó transparente para el equipo de
 realización, que mantuvo su flujo de trabajo habitual sin adaptaciones significativas.
 
-\subsection{Proyecto CyberNEMO (Universidad Politécnica de Madrid)}
+\subsection{Proyecto 5G Media: Producción desde el Edge (Telefónica/RTVE/UPM)}
+
+El proyecto europeo 5G Media, financiado por la Comisión Europea con la participación
+de Telefónica, RTVE y la Universidad Politécnica de Madrid, desarrolló el servicio
+denominado \textit{Producción desde el Edge}~\cite{rtve_5gmedia_2019}. El 4 de
+diciembre de 2019 se realizó en la Cineteca del Matadero de Madrid el primer piloto
+operativo: tres cámaras conectadas mediante fibra óptica al \textit{edge} de Telefónica
+transmitieron la ficción sonora \textit{La Radio es Sueño} de Radio~3, mientras el
+equipo de realización operaba desde las instalaciones de RTVE en Torrespaña,
+suprimiendo el desplazamiento de la unidad móvil de producción.
+
+La latencia extremo a extremo medida fue de 3--5~ms sobre la red de acceso de
+Telefónica, cumpliendo el requisito de tiempo real para producción en directo. Este
+resultado demostró que la infraestructura de \textit{edge computing} puede sustituir
+funcionalmente a la unidad móvil en eventos de cobertura local, con ahorros estimados
+superiores al 30\,\% respecto al modelo tradicional.
+
+\subsection{Proyectos europeos de investigación de la UPM}
+
+La Universidad Politécnica de Madrid ha liderado una línea de investigación en
+producción audiovisual remota a través de sucesivos proyectos europeos que han
+evolucionado desde la validación de tecnologías de red hasta la ciberseguridad
+aplicada a entornos multimedia distribuidos:
+
+\begin{itemize}
+  \item \textbf{5G Media (2017--2020):} proyecto de la Comisión Europea que exploró
+        la viabilidad del \textit{edge computing} para la producción audiovisual
+        remota. El piloto con RTVE y Telefónica descrito en la sección anterior
+        constituyó su demostración operativa más representativa.
+
+  \item \textbf{NEMO (Network and Edge Media Orchestration):} proyecto europeo
+        orientado a la orquestación de servicios multimedia en infraestructuras de
+        red distribuidas. Estableció las bases de arquitectura de microservicios
+        sobre las que se construyó el despliegue contenerizado de Voctomix~2.0.
+
+  \item \textbf{CyberNEMO:} proyecto europeo centrado en la ciberseguridad aplicada
+        a entornos de producción y distribución multimedia. Voctomix~2.0 fue
+        desplegado en el clúster Kubernetes del proyecto, donde el broker RabbitMQ
+        del sistema fue integrado con las colas
+        \texttt{vproduction-uc-media} y \texttt{vqprobe-uc-media}, publicando en
+        tiempo real eventos de mezclador durante sesiones de producción audiovisual
+        técnica. Este despliegue constituyó la primera validación del sistema de
+        telemetría de Voctomix~2.0 en un entorno real.
+\end{itemize}
 
 En el marco del proyecto europeo de investigación CyberNEMO de la UPM, Voctomix~2.0 fue
 desplegado en un clúster Kubernetes de producción para validar la arquitectura de
@@ -78,6 +121,7 @@ monitorización sin necesidad de modificar el núcleo de procesamiento multimedi
     CCC / C3VOC          & Múltiples salas   & Voctomix, MKV/TCP    & Origen del proyecto \\
     Tokio 2020 (OBS)     & Decenas de sedes  & REMI cloud           & Validación olímpica \\
     UEFA CL (Telefónica) & Estadio único     & SRT + AES-256        & REMI sobre Internet \\
+    5G Media (UPM/RTVE)  & Red de acceso     & Edge computing, fibra & Latencia 3--5 ms \\
     CyberNEMO (UPM)      & Clúster K8s       & RabbitMQ, telemetría & Validación académica \\
     \hline
   \end{tabular}
