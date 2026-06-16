@@ -77,7 +77,10 @@ target/
 /*.toc
 # main.pdf en raíz se conserva accesible (no ignorado)
 memoria_tfg/*.aux
+memoria_tfg/*.bbl
+memoria_tfg/*.blg
 memoria_tfg/*.log
+memoria_tfg/*.pdf
 memoria_tfg/*.toc
 memoria_tfg/*.lof
 memoria_tfg/*.lot
