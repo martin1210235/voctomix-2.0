@@ -17,55 +17,43 @@ constituyen líneas de trabajo futuro de interés.
   posibles problemas de sincronización, \textit{jitter} de red o estabilidad que no
   se manifiestan con fuentes sintéticas de frecuencia constante.
 
-  \item \textbf{Soporte NDI nativo como fuente de entrada.}
-  Incorporar el protocolo NDI como tipo de fuente alternativo a TCP/MKV facilitaría
-  la integración con cámaras de red modernas, ordenadores de presentación y
-  herramientas de producción ampliamente adoptadas. La implementación requeriría
-  añadir un plugin GStreamer para NDI en el contenedor de voctocore y definir un
-  nuevo tipo de fuente en el fichero de configuración, manteniendo la compatibilidad
-  con las fuentes TCP existentes.
+  \item \textbf{Migración del pipeline de salida de H.264 a H.265/HEVC.}
+  Voctomix~2.0 emplea H.264 como códec de salida predeterminado a través de
+  \texttt{libx264}, que opera en tiempo real en CPU de gama media. La migración del
+  pipeline de transcodificación a H.265/HEVC permitiría reducir el ancho de banda de
+  la señal de programa aproximadamente a la mitad manteniendo la misma calidad
+  perceptual, lo que facilitaría la distribución en entornos con conectividad
+  limitada. El principal obstáculo es la velocidad de codificación, entre cinco y
+  ocho veces inferior a la de H.264, por lo que la implementación en tiempo real
+  requeriría aceleración hardware mediante NVENC (NVIDIA) o VAAPI (Intel), ambas
+  accesibles desde FFmpeg. Esta mejora es directamente aplicable en los escenarios
+  contenerizados, donde el contenedor de codificación puede actualizarse de forma
+  independiente sin modificar el núcleo de voctocore.
 
-  \item \textbf{Interfaz web de control.}
-  Sustituir o complementar \texttt{voctogui} con una aplicación web que consuma la
-  API REST del servicio de telemetría eliminaría la dependencia de GTK~3 y permitiría
-  controlar el sistema desde cualquier dispositivo con navegador, incluidas tabletas
-  y teléfonos móviles. Esta mejora resulta especialmente relevante en el modelo REMI,
-  donde el realizador puede encontrarse geográficamente separado del servidor de
-  producción.
+  \item \textbf{Escalado de la resolución de trabajo a 4K.}
+  La resolución de trabajo actual del sistema es 1920$\times$1080 píxeles a 25~fps,
+  con un ancho de banda interno de 622~Mbit/s por fuente RAW~I420. La ampliación a
+  resolución 4K (3840$\times$2160) cuadruplicaría ese ancho de banda hasta
+  aproximadamente 2{,}5~Gbit/s por fuente, lo que exigiría circunscribir el tráfico
+  de vídeo a redes de alta velocidad o interfaces de red con MTU ampliado. El motor
+  compositor de GStreamer y los modos de composición existentes admiten resoluciones
+  arbitrarias, de forma que la adaptación se realizaría principalmente mediante
+  cambios en el fichero de configuración de voctocore, si bien los requisitos de CPU
+  aumentarían proporcionalmente al número de píxeles procesados. Este escalado
+  situaría el sistema a la par con los estándares de producción actualmente exigidos
+  en eventos de mediana y gran escala.
 
-  \item \textbf{Escalado automático en Kubernetes.}
-  Kubernetes puede arrancar automáticamente nuevas instancias de un servicio cuando
-  la demanda sube, mediante el mecanismo \textit{Horizontal Pod Autoscaler} (HPA).
-  Una aplicación directa sería convertir la transcodificación de salida en un
-  microservicio independiente: un contenedor FFmpeg que reciba la mezcla de voctocore
-  y la reenvíe hacia plataformas de distribución (RTMP, SRT). Si el evento crece y
-  hay que emitir a más destinos simultáneamente, Kubernetes podría lanzar nuevas
-  copias de ese transcodificador de forma automática, sin interrumpir la producción
-  en curso ni tocar el núcleo del mezclador.
-
-  \item \textbf{Distribución de salida con SRT y HLS adaptativo.}
-  Actualmente la señal de programa se expone como flujo TCP en bruto por el puerto
-  15000. Una mejora natural sería añadir una etapa de transcodificación con FFmpeg que
-  publique simultáneamente la señal en SRT para ingesta profesional de baja latencia
-  y en HLS para audiencias masivas mediante CDN, integrando ambas salidas como
-  servicios adicionales en el Docker Compose existente.
-
-  \item \textbf{Integración de subtitulación automática en tiempo real.}
-  La arquitectura de eventos del servicio de telemetría facilita la integración de
-  un módulo de reconocimiento de voz que genere subtítulos automáticos y los publique
-  como overlay de texto dinámico. Este flujo de trabajo conectaría el audio de programa
-  con un servicio de transcripción (por ejemplo, Whisper de OpenAI ejecutado de forma
-  local) y alimentaría el mecanismo de rotulación existente, añadiendo accesibilidad
-  a las retransmisiones sin intervención manual del operador.
-
-  \item \textbf{Panel de monitorización en tiempo real.}
-  El sistema ya publica todos los eventos de producción en RabbitMQ en formato JSON.
-  A partir de ahí, un consumidor intermedio podría traducir esos eventos en métricas
-  numéricas y enviarlas a Prometheus, una herramienta de monitorización ampliamente
-  utilizada en infraestructuras cloud~\cite{prometheus_docs}. Sobre esas métricas,
-  Grafana permitiría construir un panel visual con el consumo de CPU, la latencia de
-  conmutación y el estado de cada cámara en tiempo real, y configurar alertas
-  automáticas que avisen al equipo si una fuente cae o el sistema supera un umbral
-  de rendimiento durante la retransmisión.
+  \item \textbf{Interfaz gráfica con reconfiguración dinámica en tiempo real.}
+  La arquitectura actual de voctogui requiere reiniciar el sistema completo para
+  modificar el número de fuentes activas o la configuración de los modos de
+  composición, lo que limita la adaptabilidad del sistema durante una producción en
+  directo. Una extensión natural sería ampliar el protocolo de control TCP del
+  puerto~9999 con comandos que permitan añadir y eliminar fuentes en caliente,
+  modificar los parámetros de los composites en tiempo real y recargar la
+  configuración sin interrumpir la señal de programa. En el lado del cliente, la
+  interfaz gráfica debería reflejar dinámicamente esos cambios actualizando sus
+  controles sin necesidad de reconexión. Esta mejora eliminaría uno de los
+  principales puntos de fricción del sistema en producciones con configuraciones
+  variables o imprevistos técnicos durante la emisión.
 
 \end{itemize}
