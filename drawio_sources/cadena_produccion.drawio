@@ -1,96 +1,73 @@
 <mxfile host="65bd71144e">
     <diagram id="cadena_produccion_v2" name="Page-1">
-        <mxGraphModel dx="1063" dy="547" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="320" math="0" shadow="0">
+        <mxGraphModel dx="869" dy="423" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="320" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-
-                <!-- Section labels -->
-                <mxCell id="s1" value="&lt;font style=&quot;font-size: 14px; font-style: italic;&quot; color=&quot;#888888&quot;&gt;Contribución&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=12;" vertex="1" parent="1">
+                <mxCell id="s1" value="&lt;font style=&quot;font-size: 18px;&quot; color=&quot;#888888&quot;&gt;&lt;b style=&quot;&quot;&gt;Contribución&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="20" y="8" width="170" height="22" as="geometry"/>
                 </mxCell>
-                <mxCell id="s2" value="&lt;font style=&quot;font-size: 14px; font-style: italic;&quot; color=&quot;#888888&quot;&gt;Mezcla&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=12;" vertex="1" parent="1">
+                <mxCell id="s2" value="&lt;font style=&quot;font-size: 18px;&quot; color=&quot;#888888&quot;&gt;&lt;b style=&quot;&quot;&gt;Mezcla&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="275" y="8" width="180" height="22" as="geometry"/>
                 </mxCell>
-                <mxCell id="s3" value="&lt;font style=&quot;font-size: 14px; font-style: italic;&quot; color=&quot;#888888&quot;&gt;Codificación&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=12;" vertex="1" parent="1">
+                <mxCell id="s3" value="&lt;font style=&quot;font-size: 18px;&quot; color=&quot;#888888&quot;&gt;&lt;b style=&quot;&quot;&gt;Codificación&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="535" y="8" width="160" height="22" as="geometry"/>
                 </mxCell>
-                <mxCell id="s4" value="&lt;font style=&quot;font-size: 14px; font-style: italic;&quot; color=&quot;#888888&quot;&gt;Distribución&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=12;" vertex="1" parent="1">
+                <mxCell id="s4" value="&lt;font style=&quot;font-size: 18px;&quot; color=&quot;#888888&quot;&gt;&lt;b style=&quot;&quot;&gt;Distribución&lt;/b&gt;&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=12;" parent="1" vertex="1">
                     <mxGeometry x="785" y="8" width="395" height="22" as="geometry"/>
                 </mxCell>
-
-                <!-- Cameras -->
-                <mxCell id="cam1" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Cámara 1&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+                <mxCell id="cam1" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Cámara 1&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" parent="1" vertex="1">
                     <mxGeometry x="20" y="48" width="160" height="46" as="geometry"/>
                 </mxCell>
-                <mxCell id="cam2" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Cámara 2&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+                <mxCell id="cam2" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Cámara 2&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" parent="1" vertex="1">
                     <mxGeometry x="20" y="108" width="160" height="46" as="geometry"/>
                 </mxCell>
-                <mxCell id="cam3" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Cámara 3&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+                <mxCell id="cam3" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Cámara 3&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" parent="1" vertex="1">
                     <mxGeometry x="20" y="168" width="160" height="46" as="geometry"/>
                 </mxCell>
-                <mxCell id="cam4" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Cámara 4&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+                <mxCell id="cam4" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Cámara 4&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" parent="1" vertex="1">
                     <mxGeometry x="20" y="228" width="160" height="46" as="geometry"/>
                 </mxCell>
-
-                <!-- Floating label for camera arrows -->
-                <mxCell id="lbl_contrib" value="&lt;font style=&quot;font-size: 13px;&quot; color=&quot;#666666&quot;&gt;SDI / NDI / IP&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;" vertex="1" parent="1">
+                <mxCell id="lbl_contrib" value="&lt;font style=&quot;font-size: 13px;&quot; color=&quot;#666666&quot;&gt;SDI / NDI / IP&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=11;" parent="1" vertex="1">
                     <mxGeometry x="188" y="148" width="80" height="22" as="geometry"/>
                 </mxCell>
-
-                <!-- Mixer -->
-                <mxCell id="mixer" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;Mezclador&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;de v&#237;deo&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#FF8800;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+                <mxCell id="mixer" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;Mezclador&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;de vídeo&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#FF8800;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" parent="1" vertex="1">
                     <mxGeometry x="280" y="100" width="170" height="120" as="geometry"/>
                 </mxCell>
-
-                <!-- Encoder -->
-                <mxCell id="encoder" value="&lt;font style=&quot;font-size: 19px;&quot;&gt;Encoder&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 17px;&quot; color=&quot;#666666&quot;&gt;(FFmpeg)&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+                <mxCell id="encoder" value="&lt;font style=&quot;font-size: 19px;&quot;&gt;Encoder&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 17px;&quot; color=&quot;#666666&quot;&gt;(FFmpeg)&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" parent="1" vertex="1">
                     <mxGeometry x="543" y="112" width="155" height="96" as="geometry"/>
                 </mxCell>
-
-                <!-- Distribution -->
-                <mxCell id="dist" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Distribuci&#243;n&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 15px;&quot; color=&quot;#4a7ab5&quot;&gt;RTMP &#183; SRT &#183; HLS&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
-                    <mxGeometry x="793" y="112" width="175" height="96" as="geometry"/>
+                <mxCell id="dist" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;Distribución&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 15px;&quot; color=&quot;#4a7ab5&quot;&gt;RTMP · SRT · HLS&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="810" y="112" width="175" height="96" as="geometry"/>
                 </mxCell>
-
-                <!-- CDN / Viewers -->
-                <mxCell id="cdn" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;CDN /&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 18px;&quot;&gt;Espectadores&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" vertex="1" parent="1">
+                <mxCell id="cdn" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;CDN /&lt;/font&gt;&lt;div&gt;&lt;span style=&quot;font-size: 18px;&quot;&gt;Usuarios&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" parent="1" vertex="1">
                     <mxGeometry x="1065" y="120" width="120" height="80" as="geometry"/>
                 </mxCell>
-
-                <!-- Edges: Cameras to Mixer -->
-                <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.15;entryDx=0;entryDy=0;" edge="1" source="cam1" target="mixer" parent="1">
+                <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.15;entryDx=0;entryDy=0;" parent="1" source="cam1" target="mixer" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.38;entryDx=0;entryDy=0;" edge="1" source="cam2" target="mixer" parent="1">
+                <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.38;entryDx=0;entryDy=0;" parent="1" source="cam2" target="mixer" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.62;entryDx=0;entryDy=0;" edge="1" source="cam3" target="mixer" parent="1">
+                <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.62;entryDx=0;entryDy=0;" parent="1" source="cam3" target="mixer" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.85;entryDx=0;entryDy=0;" edge="1" source="cam4" target="mixer" parent="1">
+                <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.85;entryDx=0;entryDy=0;" parent="1" source="cam4" target="mixer" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-
-                <!-- Mixer to Encoder -->
-                <mxCell id="e5" value="&lt;font style=&quot;font-size: 15px;&quot; color=&quot;#FF8800&quot;&gt;RAW I420&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#FF8800;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="mixer" target="encoder" parent="1">
-                    <mxGeometry x="0" y="-12" relative="1" as="geometry">
+                <mxCell id="e5" value="&lt;font style=&quot;font-size: 15px;&quot; color=&quot;#FF8800&quot;&gt;RAW I420&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#FF8800;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="mixer" target="encoder" edge="1">
+                    <mxGeometry x="0.0753" y="20" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
                 </mxCell>
-
-                <!-- Encoder to Distribution -->
-                <mxCell id="e6" value="&lt;font style=&quot;font-size: 15px;&quot; color=&quot;#6c8ebf&quot;&gt;H.264 / AAC&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#6c8ebf;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="encoder" target="dist" parent="1">
-                    <mxGeometry x="0" y="-12" relative="1" as="geometry">
-                        <mxPoint as="offset"/>
+                <mxCell id="e6" value="&lt;font style=&quot;font-size: 15px;&quot; color=&quot;#6c8ebf&quot;&gt;H.264 / AAC&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#6c8ebf;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="encoder" target="dist" edge="1">
+                    <mxGeometry x="0.0947" y="20" relative="1" as="geometry">
+                        <mxPoint x="1" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-
-                <!-- Distribution to CDN -->
-                <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#6c8ebf;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" source="dist" target="cdn" parent="1">
+                <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeWidth=2;strokeColor=#6c8ebf;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="dist" target="cdn" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-
             </root>
         </mxGraphModel>
     </diagram>
