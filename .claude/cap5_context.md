@@ -16,7 +16,7 @@ y se compone de los siguientes ficheros LaTeX:
 | `memoria_tfg/capitulos/cap5/5_1_escenarios_despliegue.tex` | Introducción al capítulo: escenarios analizados |
 | `memoria_tfg/capitulos/cap5/5_2_pruebas_validacion.tex` | Secciones 5.1 (entorno de pruebas) y 5.2 (validación funcional) |
 | `memoria_tfg/capitulos/cap5/5_3_resultados.tex` | Secciones 5.3 (rendimiento) y 5.4 (latencia, con subsecciones 5.4.1 y 5.4.2) |
-| `memoria_tfg/capitulos/cap5/5_5_adicionales.tex` | Secciones 5.5 (estabilidad), 5.6 (overhead telemetría), 5.7 (resiliencia — pendiente) |
+| `memoria_tfg/capitulos/cap5/5_5_adicionales.tex` | Secciones 5.5 (estabilidad), 5.6 (overhead telemetría), 5.7 (resiliencia — COMPLETADO) |
 
 Todos estos ficheros están incluidos en `memoria_tfg/main.tex` mediante `\import`.
 
@@ -287,21 +287,32 @@ sistema de monitorización.
 
 ---
 
-## Sección 5.7 — Resiliencia y recuperación (EN EJECUCIÓN al cierre del contexto)
+## Sección 5.7 — Resiliencia y recuperación (COMPLETADO)
 
-**Qué mide:** tiempo desde `docker stop cam1` hasta que el contenedor vuelve a
-estar `healthy`. Incluye: detección del fallo → restart automático de Docker
-(`restart: on-failure`) → FFmpeg arranca → se conecta al socket TCP de voctocore
-→ healthcheck pasa.
+**Qué mide:** tiempo desde que se mata el proceso principal de cam1 (SIGKILL a PID 1)
+hasta que el contenedor vuelve a estar `healthy`. Incluye: detección del fallo →
+restart automático de Docker (`restart: on-failure`) → FFmpeg arranca →
+healthcheck pasa.
 
 **Metodología:** 10 iteraciones, contenedor `cam1`, espera 2 s entre iteraciones.
-El script hace polling cada 0,5 s sobre `docker inspect`.
+El script usa `docker exec cam1 kill -9 1` (NO `docker stop`).
+⚠️ `docker stop` pone desired-state=stopped → Docker NO aplica restart policy → todo timeout.
+
+**Resultados reales (sessions/resilience_cam1.json):**
+
+| Estadístico | Tiempo (ms) |
+|---|---|
+| Mínimo | 516 |
+| Mediana | 520 |
+| Media | 520 |
+| Máximo | 526 |
+| Percentil 95 | 525 |
+
+**Conclusión:** rango 516–526 ms (dispersión 10 ms), muy estable. La recuperación
+tarda ~0,5 s, dominada por el arranque de FFmpeg y el healthcheck, no por variación
+del SO. Sin intervención manual.
 
 **Script:** `tools/measure_resilience.py`
-**Estado al cierre del contexto:** prueba en ejecución, resultados pendientes de escribir en sección 5.7.
-
-**Resultado esperado:** ~5–15 s de recuperación en Docker. Voctocore no debe caer
-(fallo de fuente ≠ fallo del núcleo mezclador).
 
 ---
 
@@ -314,12 +325,14 @@ sessions/
   composite_latency_kubernetes.json   — 32 mediciones transición composite K8s (NodePort)
   composite_latency_kubernetes_pf.json — 32 mediciones K8s vía port-forward (confirmación)
   cpu_no_telemetry.json               — 60 muestras CPU sin contenedor telemetría
-  resilience_cam1.json                — PENDIENTE: 10 iteraciones stop/recovery cam1
+  resilience_cam1.json                — 10 iteraciones kill/recovery cam1 (mediana 520 ms)
 
 tools/
   analyze_stability.py                — lee JSONL, genera estabilidad_30min.png
   measure_composite_latency.py        — mide latencia transition → composite (args: --host --port --n --label)
-  measure_resilience.py               — mide tiempo recovery tras docker stop (args: --container --n)
+  measure_resilience.py               — mide tiempo recovery tras kill -9 1 (args: --container --n)
+                                        ⚠️ usa docker exec <container> kill -9 1, NO docker stop
+                                        docker stop no activa restart: on-failure (desired-state=stopped)
 
 docker-compose.stability.yml          — override: SAVE_LOGS=true + fuentes lavfi para todas las cámaras
 ```
@@ -356,7 +369,7 @@ docker-compose.stability.yml          — override: SAVE_LOGS=true + fuentes lav
 | ¿Y en cambiar el modo de composición? | 2,8 ms en Docker. En K8s sube a 79,8 ms por la contención de CPU del plano de control |
 | ¿Es estable durante una retransmisión larga? | Sí: 31 min sin reinicios, RAM con desv. típica de 0,4 pp, cero fuga de memoria |
 | ¿La telemetría afecta al rendimiento? | No: overhead indistinguible del ruido (diferencia −2,1 pp, dentro de la variación natural de 1,7 pp std) |
-| ¿Qué pasa si cae una cámara? | Docker la recupera automáticamente en ~X s (sección 5.7 pendiente) |
+| ¿Qué pasa si cae una cámara? | Docker la recupera automáticamente en ~520 ms (mediana). Rango 516–526 ms en 10 iteraciones, dispersión de solo 10 ms |
 | ¿Por qué K8s consume más CPU? | El plano de control de Minikube (4 procesos) añade ~16 pp fijos independientemente del número de cámaras |
 | ¿Por qué Kubernetes en vez de la nube? | Validación funcional local. En EKS/GKE/AKS el plano de control corre en servidores del proveedor y los costes se equiparan a Docker Compose |
 | ¿Cuánto ancho de banda genera el sistema? | 622 Mbps por cámara (RAW I420 1080p25). Con 4 cámaras: 2,49 Gbps por loopback interno |
