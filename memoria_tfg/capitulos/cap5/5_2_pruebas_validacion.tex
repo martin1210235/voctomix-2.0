@@ -29,6 +29,68 @@ condicionan directamente los resultados obtenidos.
   \end{tabular}
 \end{table}
 
+\section{Validación funcional}
+\label{sec:validacion_funcional}
+
+Antes de entrar en el análisis cuantitativo de rendimiento, esta sección verifica
+que cada módulo desarrollado en los capítulos~3 y~4 funciona correctamente en
+condiciones reales de operación.
+Para cada módulo se realizaron pruebas manuales sobre el escenario Docker~Compose
+con señal activa: se ejecutó la acción correspondiente desde la interfaz de control
+y se comprobó que el sistema respondía de acuerdo con su especificación.
+La tabla~\ref{tab:validacion_funcional} resume los resultados.
+
+\begin{table}[H]
+  \centering
+  \caption{Validación funcional por módulo.}
+  \label{tab:validacion_funcional}
+  \small
+  \begin{tabular}{|l|p{6.8cm}|p{3.6cm}|}
+    \hline
+    \textbf{Módulo} & \textbf{Función verificada} & \textbf{Resultado} \\
+    \hline
+    Composites
+      & Combinación visual de dos fuentes: pantalla completa, \ac{PIP}, lateral y ponencia.
+      & OK — 4 modos + mirror \\
+    \hline
+    Transiciones
+      & Interpolación animada entre composites mediante el elemento \texttt{compositor} de GStreamer.
+      & OK — sin corte visible \\
+    \hline
+    Overlay dinámico
+      & Rótulo inferior con texto configurable y animaciones de entrada y salida.
+      & OK — auto-off en cada corte \\
+    \hline
+    Stream blanker
+      & Control del estado de emisión: LIVE, PAUSE y NOSTREAM.
+      & OK — 3 estados conmutables \\
+    \hline
+    Audio Follows Video
+      & Fundido de audio automático al cambiar la fuente de vídeo activa.
+      & OK — sin intervención manual \\
+    \hline
+    Telemetría STATE
+      & Evento periódico cada 5\,s con el estado completo del mezclador publicado en RabbitMQ.
+      & OK — latencia $<$\,50\,ms \\
+    \hline
+    Telemetría CHANGE
+      & Evento inmediato ante cualquier acción del operador sobre la interfaz.
+      & OK — latencia $<$\,50\,ms \\
+    \hline
+    Despliegue Docker Compose
+      & Sistema completo operativo con todos los servicios en estado \textit{healthy}.
+      & OK — arranque $\approx$\,20\,s \\
+    \hline
+    Despliegue Kubernetes
+      & Clúster Minikube con todos los pods en estado \textit{Ready}.
+      & OK — arranque $\approx$\,90\,s \\
+    \hline
+  \end{tabular}
+\end{table}
+
+Todos los módulos superaron la verificación. La validación del sistema de
+telemetría, por su mayor complejidad, se detalla en el apartado siguiente.
+
 \section{Validación del sistema de telemetría}
 \label{sec:prueba_telemetria}
 
