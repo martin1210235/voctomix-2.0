@@ -260,28 +260,41 @@ disponibles.
   \centering
   \begin{tikzpicture}
     \begin{axis}[
-      ybar,
-      width=10cm, height=6cm,
-      ylabel={Latencia mediana (ms)},
-      xtick={1.125,1.875},
-      xticklabels={Docker Compose, {}},
-      xticklabel style={font=\small, anchor=north, align=center, text width=2.5cm},
-      xtick style={draw=none},
-      clip=false,
-      xmin=0.3, xmax=2.7,
-      ymin=0, ymax=95,
+      ybar interval,
+      width=6cm, height=5cm,
+      title={Docker Compose},
+      xlabel={Latencia (ms)},
+      ylabel={Frecuencia},
+      xtick={1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5,6.0},
+      xticklabel style={font=\tiny, rotate=45, anchor=east},
+      xmin=1.0, xmax=6.0,
+      ymin=0, ymax=14,
       ymajorgrids=true, grid style=dashed,
-      bar width=2cm,
-      nodes near coords,
-      nodes near coords style={font=\small, anchor=south},
+      bar width=0.5,
+      fill=orange!40, draw=orange!70,
     ]
-      \addplot[fill=orange!40, draw=orange!80] coordinates {(1.125,2.8)};
-      \addplot[fill=violet!40, draw=violet!80] coordinates {(1.875,79.8)};
-      \node[rotate=90, font=\small, anchor=south, yshift=-18pt]
-        at (axis cs:1.875, 0) {Kubernetes};
+      \addplot coordinates {(1.0,0)(1.5,1)(2.0,9)(2.5,10)(3.0,4)(3.5,4)(4.0,3)(4.5,0)(5.0,1)(5.5,0)};
     \end{axis}
   \end{tikzpicture}
-  \caption{Latencia mediana de transición de composite.}
+  \hspace{1cm}
+  \begin{tikzpicture}
+    \begin{axis}[
+      ybar interval,
+      width=6cm, height=5cm,
+      title={Kubernetes},
+      xlabel={Latencia (ms)},
+      xtick={65,70,75,80,85,90,95,100,110,140},
+      xticklabel style={font=\tiny, rotate=45, anchor=east},
+      xmin=65, xmax=140,
+      ymin=0, ymax=18,
+      ymajorgrids=true, grid style=dashed,
+      bar width=5,
+      fill=violet!40, draw=violet!70,
+    ]
+      \addplot coordinates {(65,0)(70,4)(75,15)(80,10)(85,2)(90,0)(95,0)(100,1)(110,0)};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Distribución de latencias de transición de composite ($n=32$ por entorno).}
   \label{fig:latencia_transicion}
 \end{figure}
 
