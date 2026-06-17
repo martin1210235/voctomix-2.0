@@ -1,0 +1,157 @@
+{
+  "label": "docker",
+  "timestamp": "2026-06-17T15:23:21.988469",
+  "host": "localhost",
+  "port": 9999,
+  "stats": {
+    "n": 32,
+    "min_ms": 1.59,
+    "median_ms": 2.8,
+    "mean_ms": 2.95,
+    "max_ms": 5.3,
+    "std_ms": 0.8,
+    "p95_ms": 4.2
+  },
+  "histogram": {
+    "1.0-1.5": 0,
+    "1.5-2.0": 1,
+    "2.0-2.5": 9,
+    "2.5-3.0": 10,
+    "3.0-3.5": 4,
+    "3.5-4.0": 4,
+    "4.0-4.5": 3,
+    "4.5-5.0": 0,
+    "5.0-6.0": 1,
+    "6.0-8.0": 0
+  },
+  "raw": [
+    {
+      "mode": "fs",
+      "latency_ms": 2.193
+    },
+    {
+      "mode": "sbs",
+      "latency_ms": 2.68
+    },
+    {
+      "mode": "pip",
+      "latency_ms": 3.811
+    },
+    {
+      "mode": "lec",
+      "latency_ms": 4.33
+    },
+    {
+      "mode": "fs",
+      "latency_ms": 2.855
+    },
+    {
+      "mode": "sbs",
+      "latency_ms": 2.947
+    },
+    {
+      "mode": "pip",
+      "latency_ms": 2.05
+    },
+    {
+      "mode": "lec",
+      "latency_ms": 4.087
+    },
+    {
+      "mode": "fs",
+      "latency_ms": 3.026
+    },
+    {
+      "mode": "sbs",
+      "latency_ms": 3.755
+    },
+    {
+      "mode": "pip",
+      "latency_ms": 3.112
+    },
+    {
+      "mode": "lec",
+      "latency_ms": 2.661
+    },
+    {
+      "mode": "fs",
+      "latency_ms": 1.586
+    },
+    {
+      "mode": "sbs",
+      "latency_ms": 2.256
+    },
+    {
+      "mode": "pip",
+      "latency_ms": 4.069
+    },
+    {
+      "mode": "lec",
+      "latency_ms": 2.469
+    },
+    {
+      "mode": "fs",
+      "latency_ms": 2.138
+    },
+    {
+      "mode": "sbs",
+      "latency_ms": 3.094
+    },
+    {
+      "mode": "pip",
+      "latency_ms": 2.003
+    },
+    {
+      "mode": "lec",
+      "latency_ms": 2.182
+    },
+    {
+      "mode": "fs",
+      "latency_ms": 3.806
+    },
+    {
+      "mode": "sbs",
+      "latency_ms": 3.651
+    },
+    {
+      "mode": "pip",
+      "latency_ms": 2.241
+    },
+    {
+      "mode": "lec",
+      "latency_ms": 2.719
+    },
+    {
+      "mode": "fs",
+      "latency_ms": 3.209
+    },
+    {
+      "mode": "sbs",
+      "latency_ms": 2.784
+    },
+    {
+      "mode": "pip",
+      "latency_ms": 2.81
+    },
+    {
+      "mode": "lec",
+      "latency_ms": 2.547
+    },
+    {
+      "mode": "fs",
+      "latency_ms": 2.996
+    },
+    {
+      "mode": "sbs",
+      "latency_ms": 2.269
+    },
+    {
+      "mode": "pip",
+      "latency_ms": 2.781
+    },
+    {
+      "mode": "lec",
+      "latency_ms": 5.305
+    }
+  ]
+}
