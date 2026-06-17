@@ -59,12 +59,12 @@ superficie de ataque. Un acceso no autorizado al protocolo de control TCP podrí
 una retransmisión en directo. Es responsabilidad del ingeniero que despliega el sistema aplicar
 autenticación en el broker RabbitMQ, restringir el acceso a los puertos de control mediante
 cortafuegos y no exponer el sistema directamente a Internet sin una capa de seguridad adicional,
-siguiendo las directrices del NIST Cybersecurity Framework~\cite{nist_csf2}.
+siguiendo las directrices del \ac{NIST} Cybersecurity Framework~\cite{nist_csf2}.
 
 Desde el punto de vista de la privacidad, la telemetría registra únicamente eventos de operación
 del mezclador en ficheros locales, sin recopilar datos personales de operadores ni audiencia. El
-uso del sistema para retransmitir imágenes de personas obliga al operador a cumplir el RGPD y la
-LOPD, así como a respetar los derechos de imagen y de propiedad intelectual sobre el contenido
+uso del sistema para retransmitir imágenes de personas obliga al operador a cumplir el \ac{RGPD} y la
+\ac{LOPD}, así como a respetar los derechos de imagen y de propiedad intelectual sobre el contenido
 emitido.}
 
 \vspace{0.15cm}
@@ -162,7 +162,7 @@ deben gestionarse activamente.}
   no implementa autenticación en la capa de aplicación; cualquier cliente que alcance el
   puerto~9999 puede emitir comandos al mezclador. En despliegues en red local controlada esto
   es aceptable, pero en entornos con acceso remoto debe añadirse una capa de túnel cifrado
-  (VPN, SSH port forwarding) para proteger el canal de control.
+  (\ac{VPN}, \ac{SSH} port forwarding) para proteger el canal de control.
 
   \item \textbf{Responsabilidad ante el desplazamiento laboral} La adopción de sistemas
   de producción remota debe ir acompañada de políticas de formación y reconversión para el

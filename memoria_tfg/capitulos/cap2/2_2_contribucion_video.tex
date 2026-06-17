@@ -21,10 +21,10 @@ red local o contribución remota sobre Internet.
   pero está limitado a distancias de hasta 100~m sin regeneradores y requiere
   infraestructura de alto coste.
 
-  \item \textbf{SMPTE ST~2022-6 (SDI sobre IP):} encapsula la señal SDI íntegra en
+  \item \textbf{\ac{SMPTE} ST~2022-6 (SDI sobre IP):} encapsula la señal SDI íntegra en
   paquetes UDP/IP, facilitando la migración de infraestructuras SDI existentes hacia
   redes Ethernet estándar~\cite{smpte_st2022_6}. La integridad del flujo puede
-  reforzarse opcionalmente con corrección de errores FEC mediante el estándar
+  reforzarse opcionalmente con corrección de errores \ac{FEC} mediante el estándar
   complementario SMPTE ST~2022-7.
 
   \item \textbf{SMPTE ST~2110 (producción IP nativa):} estándar publicado en 2017 que
@@ -35,11 +35,11 @@ red local o contribución remota sobre Internet.
 
   \item \textbf{NDI (\textit{Network Device Interface}):} protocolo propietario de
   Vizrt/NewTek~\cite{ndi_vizrt} que transporta vídeo con compresión ligera sobre redes
-  LAN Ethernet con latencia de un fotograma. Ampliamente soportado por cámaras PTZ,
+  \ac{LAN} Ethernet con latencia de un fotograma. Ampliamente soportado por cámaras \ac{PTZ},
   mezcladores hardware y herramientas de software de producción.
 
   \item \textbf{SRT (\textit{Secure Reliable Transport}):} protocolo de código abierto
-  desarrollado por Haivision con corrección de errores \ac{ARQ} y cifrado AES-128/256~\cite{sharabayko2024_srt}.
+  desarrollado por Haivision con corrección de errores \ac{ARQ} y cifrado \ac{AES}-128/256~\cite{sharabayko2024_srt}.
   Permite transportar la señal desde el lugar del evento hasta el centro de producción
   remoto sobre Internet pública con latencia inferior a 1~s. FFmpeg lo soporta como
   entrada y salida, lo que permite integrarlo directamente en pipelines de Voctomix.
@@ -142,8 +142,8 @@ y descriptores técnicos de cada pista. Los formatos más empleados en la etapa 
 contribución son:
 
 \begin{itemize}
-  \item \textbf{MXF (\textit{Material eXchange Format}, SMPTE ST~377-1)}~\cite{smpte_mxf}:
-  estándar de la industria broadcast definido por la SMPTE y adoptado por la EBU y la
+  \item \textbf{MXF (\textit{Material eXchange Format}, SMPTE ST~377-1)}\acused{MXF}~\cite{smpte_mxf}:
+  estándar de la industria broadcast definido por la SMPTE y adoptado por la \ac{EBU} y la
   mayoría de fabricantes de cámaras y sistemas de archivo profesionales. Encapsula
   vídeo comprimido (MPEG-2, AVC-Intra, ProRes), audio multicanal y metadatos de
   producción en un único fichero con soporte de \textit{timecode frame-accurate}.

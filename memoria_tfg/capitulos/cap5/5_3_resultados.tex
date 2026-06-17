@@ -121,7 +121,7 @@ El consumo neto atribuible a Voctomix\,2.0 es similar en ambos entornos, entre
 equivalente con independencia del orquestador. La mayor dispersión observada en
 Kubernetes se debe a la varianza del baseline del plano de control, que oscila
 entre 59 y 63\,W según el estado del sistema. En términos de consumo total, el escenario Docker alcanza unos 50\,W con cuatro
-cámaras, lo que representa aproximadamente el 30\,\% del TDP del procesador
+cámaras, lo que representa aproximadamente el 30\,\% del \ac{TDP} del procesador
 (165\,W, Intel Core i9-10900X), dejando un margen amplio para no saturar el
 sistema. Kubernetes supera los 90\,W al incluir la infraestructura de
 orquestación.
@@ -163,7 +163,7 @@ de estado distribuido), \texttt{kube-scheduler} (planificador de pods) y
 \texttt{kube-controller-manager} (controlador de recursos). En Docker Compose no
 existe ningún equivalente a estos procesos: la orquestación la realiza el demonio
 Docker directamente, sin capa adicional. En un despliegue sobre clúster gestionado
-en la nube (Amazon EKS, Google GKE o Azure AKS), el plano de control corre en
+en la nube (Amazon \ac{EKS}, Google \ac{GKE} o Azure \ac{AKS}), el plano de control corre en
 infraestructura del proveedor y los nodos de trabajo no incurren en este overhead,
 por lo que los recursos disponibles para Voctomix serían equivalentes a los del
 escenario Docker Compose.
@@ -236,13 +236,13 @@ operador desde que pulsa el corte hasta que la señal de programa cambia.
     Mínimo                & 1{,}0\,ms  & 1{,}4\,ms \\
     Mediana               & 1{,}5\,ms  & 1{,}8\,ms \\
     Máximo                & 2{,}7\,ms  & 4{,}7\,ms \\
-    $<$ 45\,ms (ITU-R BT.1359-1) & 30\,/\,30  & 30\,/\,30 \\
+    $<$ 45\,ms (\ac{ITU-R} BT.1359-1) & 30\,/\,30  & 30\,/\,30 \\
     \hline
   \end{tabular}
 \end{table}
 
 En los dos entornos, el 100\,\% de las conmutaciones se resuelve en menos de
-5\,ms. La recomendación ITU-R BT.1359-1~\cite{itur_bt1359_1998} establece que el
+5\,ms. La recomendación \ac{ITU-R} BT.1359-1~\cite{itur_bt1359_1998} establece que el
 umbral de detectabilidad humana para desincronizaciones audiovisuales se sitúa
 en torno a 45\,ms; la mediana de 1{,}5\,ms obtenida en Docker es 30 veces
 inferior a este umbral, y la de 1{,}8\,ms en Kubernetes es 25 veces inferior.
