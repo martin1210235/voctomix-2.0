@@ -9,7 +9,7 @@ El despliegue se define en dos ficheros: \texttt{Dockerfile}, que describe cómo
 la imagen base del sistema, y \texttt{docker-compose.yml}, que declara todos los servicios
 y cómo se relacionan entre sí.
 
-El \texttt{Dockerfile} se construyó sobre Ubuntu~22.04~LTS. Las
+El \texttt{Dockerfile} se construyó sobre Ubuntu~22.04~\ac{LTS}. Las
 dependencias se instalan en una sola capa para reducir el tamaño de la imagen: GStreamer~1.0
 con todos sus plugins, FFmpeg~\cite{ffmpeg_project} para la inyección de fuentes de vídeo,
 las bibliotecas Python de GObject y la librería AMQP para la integración con RabbitMQ.

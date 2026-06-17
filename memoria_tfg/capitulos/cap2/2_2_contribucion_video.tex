@@ -22,7 +22,7 @@ red local o contribución remota sobre Internet.
   infraestructura de alto coste.
 
   \item \textbf{\ac{SMPTE} ST~2022-6 (SDI sobre IP):} encapsula la señal SDI íntegra en
-  paquetes UDP/IP, facilitando la migración de infraestructuras SDI existentes hacia
+  paquetes \ac{UDP}/IP, facilitando la migración de infraestructuras SDI existentes hacia
   redes Ethernet estándar~\cite{smpte_st2022_6}. La integridad del flujo puede
   reforzarse opcionalmente con corrección de errores \ac{FEC} mediante el estándar
   complementario SMPTE ST~2022-7.
@@ -33,7 +33,7 @@ red local o contribución remota sobre Internet.
   entre flujos se consigue mediante PTP (IEEE~1588)~\cite{ieee1588_ptp}, con precisión
   de microsegundos.
 
-  \item \textbf{NDI (\textit{Network Device Interface}):} protocolo propietario de
+  \item \textbf{NDI (\textit{Network Device Interface})\acused{NDI}:} protocolo propietario de
   Vizrt/NewTek~\cite{ndi_vizrt} que transporta vídeo con compresión ligera sobre redes
   \ac{LAN} Ethernet con latencia de un fotograma. Ampliamente soportado por cámaras \ac{PTZ},
   mezcladores hardware y herramientas de software de producción.
@@ -44,11 +44,11 @@ red local o contribución remota sobre Internet.
   remoto sobre Internet pública con latencia inferior a 1~s. FFmpeg lo soporta como
   entrada y salida, lo que permite integrarlo directamente en pipelines de Voctomix.
 
-  \item \textbf{RTP (\textit{Real-time Transport Protocol}):} protocolo de transporte
+  \item \textbf{RTP (\textit{Real-time Transport Protocol})\acused{RTP}:} protocolo de transporte
   en tiempo real definido en la RFC~3550~\cite{rfc3550_rtp}, utilizado junto con RTSP
   para la distribución de flujos multimedia desde cámaras IP profesionales.
 
-  \item \textbf{RTSP (\textit{Real Time Streaming Protocol}):} protocolo de señalización
+  \item \textbf{RTSP (\textit{Real Time Streaming Protocol})\acused{RTSP}:} protocolo de señalización
   definido en la RFC~7826~\cite{rfc7826_rtsp} que se emplea para establecer y controlar
   sesiones de streaming multimedia. Actúa como mando a distancia del flujo RTP: permite
   iniciar, pausar y detener la transmisión de una fuente IP.
@@ -126,7 +126,7 @@ negociable y la latencia adicional es aceptable:
     \hline
     UDP  & No  & Sin garantías & Mínima       & RTP, SRT \\
     TCP  & Sí  & Garantizada   & Variable     & MKV/fuentes, control \\
-    HTTP & Sí* & Garantizada   & Alta         & HLS, DASH, telemetría (recepción POST) \\
+    \ac{HTTP} & Sí* & Garantizada   & Alta         & \ac{HLS}, \ac{DASH}, telemetría (recepción POST) \\
     \hline
   \end{tabularx}
   \begin{flushleft}
@@ -211,7 +211,7 @@ múltiples etapas de procesamiento.
   en su propósito, está ampliamente implantado en flujos de trabajo de postproducción
   broadcast y en sistemas de edición Avid Media Composer.
 
-  \item \textbf{JPEG~2000}~\cite{jpeg2000_iso}: códec que ofrece compresión sin
+  \item \textbf{\ac{JPEG}~2000}~\cite{jpeg2000_iso}: códec que ofrece compresión sin
   pérdidas o con pérdidas mínimas y latencia muy reducida gracias a su arquitectura de
   codificación por bloques independientes. Utilizado en sistemas de contribución
   broadcast de alta calidad y en señalización digital.
