@@ -157,8 +157,8 @@ el sistema en ejecutar ese cambio desde que el operador pulsa el botón.
 
 Para medirlo se enviaron 30 órdenes de cambio de fuente seguidas al mezclador
 y se cronometró el tiempo entre el envío de la orden y la confirmación de
-voctocore de que GStreamer había aplicado el cambio. Al usar vídeo RAW sin
-comprimir no hay ningún búfer de códec que añada retardo adicional.
+voctocore de que GStreamer había aplicado el cambio. Al no haber ningún proceso de codificación que introduzca retardo adicional,
+las latencias medidas reflejan únicamente el tiempo de procesado interno de GStreamer.
 
 \begin{figure}[H]
   \centering
