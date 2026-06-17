@@ -119,8 +119,8 @@ debe a que el consumo base del clúster de Minikube no es constante; el pico de
 durante esa sesión concreta, no una tendencia sistemática. En términos de
 consumo total, Docker alcanza unos 50\,W con
 cuatro cámaras, el 30\,\% del \ac{TDP} del procesador (165\,W), con margen
-suficiente para no saturarlo. Kubernetes supera los 90\,W porque hay que sumarle
-el consumo del plano de control. Este sobrecoste desaparecería en un despliegue
+suficiente para no saturarlo. Kubernetes puede superar los 90\,W al sumar el consumo neto de Voctomix
+y el del plano de control. Este sobrecoste desaparecería en un despliegue
 en la nube (\ac{EKS}, \ac{GKE} o \ac{AKS}), donde el plano
 de control corre en servidores del proveedor y no consume recursos del equipo.
 
@@ -135,8 +135,8 @@ Docker Compose tarda unos 20\,s en arrancar porque simplemente levanta los
 contenedores del sistema directamente sobre el equipo, sin ningún paso previo.
 Kubernetes, en cambio, necesita alrededor de 2 minutos porque antes de arrancar
 los servicios de Voctomix tiene que poner en marcha el propio clúster de
-Minikube: la máquina virtual, la base de datos de estado y los procesos de
-gestión del clúster. Solo cuando todo eso está listo empieza a desplegar la
+Minikube: el nodo del clúster, la base de datos de estado y los procesos de
+gestión. Solo cuando todo eso está listo empieza a desplegar la
 aplicación. Este tiempo mayor es asumible porque el sistema se despliega una
 sola vez antes del evento y permanece activo durante toda la retransmisión.
 Lo que importa durante la emisión es la rapidez con la que el sistema responde
@@ -146,8 +146,8 @@ al operador, que es lo que se analiza a continuación.
 \label{sec:latencia_conmutacion}
 
 Durante una retransmisión en directo el operador cambia de cámara
-continuamente. Si ese cambio tarda demasiado, el espectador lo nota como un
-corte brusco o un salto de audio. Por eso es importante medir cuánto tarda
+continuamente. Si ese cambio tarda demasiado, el espectador percibe un retraso
+o un desajuste entre la imagen y el audio. Por eso es importante medir cuánto tarda
 el sistema en ejecutar ese cambio desde que el operador pulsa el botón.
 
 Para medirlo se enviaron 30 órdenes de cambio de fuente seguidas al mezclador
@@ -237,6 +237,5 @@ cámara. La CPU está libre y GStreamer alcanza el siguiente ciclo de fotograma
 sin esperar. En Kubernetes la latencia sube a 79{,}8\,ms, lo que equivale a
 dos ciclos completos de 40\,ms: el plano de control de Minikube mantiene la
 CPU ocupada y GStreamer pierde el primer ciclo disponible. Este retardo es perceptible para el operador, pero la animación de transición
-se ejecuta correctamente, simplemente comenzando 80\,ms más tarde de lo que
-lo haría en Docker. En un despliegue en la nube, donde el plano de control no
+se ejecuta correctamente, comenzando 80\,ms más tarde de lo que lo haría en Docker. En un despliegue en la nube, donde el plano de control no
 comparte recursos con voctocore, la latencia sería comparable a la de Docker.
