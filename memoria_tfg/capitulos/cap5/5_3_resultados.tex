@@ -139,13 +139,16 @@ física, tanto en Docker como en Kubernetes.
 \section{Latencia del sistema}
 \label{sec:latencia_sistema}
 
-Una vez arrancado, Docker Compose tarda unos 20\,s en tener todos los servicios
-listos, mientras que Kubernetes necesita alrededor de 2 minutos al incluir el
-arranque del clúster Minikube. Este tiempo mayor es asumible porque el sistema
-se despliega una sola vez antes del evento y permanece activo durante toda la
-retransmisión. Lo que sí importa durante la emisión es la rapidez con la que
-el sistema responde a las acciones del operador, que es lo que se analiza en
-los apartados siguientes.
+Docker Compose tarda unos 20\,s en arrancar porque simplemente levanta los
+contenedores del sistema directamente sobre el equipo, sin ningún paso previo.
+Kubernetes, en cambio, necesita alrededor de 2 minutos porque antes de arrancar
+los servicios de Voctomix tiene que poner en marcha el propio clúster de
+Minikube: la máquina virtual, la base de datos de estado y los procesos de
+gestión del clúster. Solo cuando todo eso está listo empieza a desplegar la
+aplicación. Este tiempo mayor es asumible porque el sistema se despliega una
+sola vez antes del evento y permanece activo durante toda la retransmisión.
+Lo que importa durante la emisión es la rapidez con la que el sistema responde
+al operador, que es lo que se analiza a continuación.
 
 \subsection{Latencia de conmutación}
 \label{sec:latencia_conmutacion}
