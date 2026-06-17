@@ -147,18 +147,9 @@ contribución son:
   mayoría de fabricantes de cámaras y sistemas de archivo profesionales. Encapsula
   vídeo comprimido (MPEG-2, AVC-Intra, ProRes), audio multicanal y metadatos de
   producción en un único fichero con soporte de \textit{timecode frame-accurate}.
-  Fabricantes como Sony (XDCAM), Panasonic~(P2) y Grass Valley utilizan MXF como
-  formato de grabación y contribución nativo, convirtiéndolo en el contenedor de
-  intercambio estándar entre el lugar del evento y el centro de producción.
-
-  \item \textbf{Canon XF-AVC (MXF-OP1a)}~\cite{canon_xf_avc}: formato de grabación de
-  las cámaras de producción Canon de las series XF y Cinema~EOS, basado en el
-  contenedor MXF con perfil OP1a. Emplea compresión H.264/AVC con muestreo de color
-  4:2:2 a 10~bits y admite grabación hasta 4K~DCI/UHD con compresión intra-frame
-  (\textit{All-I}), lo que minimiza la acumulación de artefactos en cadenas de
-  contribución de múltiples etapas. Su compatibilidad nativa con los entornos de edición
-  profesional más extendidos simplifica los flujos de trabajo desde la captura en campo
-  hasta el mezclador.
+  Fabricantes como Sony (XDCAM), Panasonic~(P2), Canon~(XF-AVC) y Grass Valley
+  utilizan MXF como formato de grabación y contribución nativo, convirtiéndolo en el
+  contenedor de intercambio estándar entre el lugar del evento y el centro de producción.
 
   \item \textbf{Matroska (MKV)}~\cite{matroska_spec}: contenedor de código abierto
   empleado por Voctomix como formato de transporte interno para señal RAW. Las fuentes
@@ -196,7 +187,7 @@ múltiples etapas de procesamiento.
   únicamente del tiempo de cálculo sobre los píxeles. Para preservar la calidad colorimétrica,
   todos los flujos deben declarar espacio BT.709 (\texttt{colorimetry=bt709}) y rango
   televisivo (\texttt{tv~range}). Sin esta configuración, los colores pueden presentar
-  desviaciones perceptibles aunque la conexión se establezca correctamente. El coste de este enfoque es que los
+  desviaciones perceptibles aunque la conexión se establezca correctamente. El coste del formato RAW es que los
   622~Mbit/s por fuente obligan a que todo el tráfico de vídeo circule en bucle local,
   ya sea mediante la interfaz de loopback del servidor en instalación monopuesto o a
   través de redes Docker internas de alta velocidad en el despliegue contenerizado.
@@ -240,12 +231,6 @@ múltiples etapas de procesamiento.
   adoptado por las principales cadenas de televisión para producciones deportivas en
   vivo y entretenimiento premium.
 
-  \item \textbf{AC-4 (ETSI TS~103~190)}~\cite{etsi_ac4}: códec de audio de nueva
-  generación estandarizado por ETSI y adoptado en ATSC~3.0 y DVB. Aunque su adopción
-  principal está en la distribución al espectador final (véase la sección~\ref{sec:distribucion_av}),
-  se incluye aquí por su relación directa con Dolby Atmos en flujos de
-  contribución IP: ofrece eficiencia de compresión superior a Dolby Digital Plus (E-AC-3)
-  y transporta contenido inmersivo de objeto sonoro hacia el centro de producción.
 \end{itemize}
 
 \begin{table}[H]
@@ -264,7 +249,6 @@ múltiples etapas de procesamiento.
     JPEG 2000       & 4:1 -- 20:1    & $<$5 ms     & Contribución broadcast \\
     JPEG XS         & 4:1 -- 6:1     & $<$1 ms     & Contribución 4K/8K en vivo \\
     Dolby Atmos     & Variable       & $<$1 fotograma & Audio inmersivo broadcast en vivo \\
-    AC-4            & Alta eficiencia & $<$1 fotograma & ATSC 3.0, DVB, contribución IP \\
     \hline
   \end{tabularx}
 \end{table}

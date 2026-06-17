@@ -63,8 +63,8 @@ transmitieron la ficción sonora \textit{La Radio es Sueño} de Radio~3, mientra
 equipo de realización operaba desde las instalaciones de RTVE en Torrespaña,
 suprimiendo el desplazamiento de la unidad móvil de producción.
 
-La latencia extremo a extremo medida fue de 3--5~ms sobre la red de acceso de
-Telefónica, cumpliendo el requisito de tiempo real para producción en directo. Este
+La latencia de transporte medida en la red de acceso de Telefónica fue de 3--5~ms,
+cumpliendo el requisito de tiempo real para producción en directo. Este
 resultado demostró que la infraestructura de \textit{edge computing} puede sustituir
 funcionalmente a la unidad móvil en eventos de cobertura local, con ahorros estimados
 superiores al 30\,\% respecto al modelo tradicional.
@@ -102,15 +102,15 @@ aplicada a entornos multimedia distribuidos:
   \caption{Casos de uso representativos de producción remota audiovisual.}
   \label{tab:casos_uso_remi}
   \small
-  \begin{tabular}{|l|l|l|l|}
+  \begin{tabularx}{\textwidth}{|l|l|l|X|}
     \hline
     \textbf{Caso de uso} & \textbf{Escala} & \textbf{Tecnología clave} & \textbf{Aportación} \\
     \hline
     CCC / C3VOC          & Múltiples salas   & Voctomix, MKV/TCP    & Origen del proyecto \\
     Tokio 2020 (OBS)     & Decenas de sedes  & REMI cloud           & Validación olímpica \\
     UEFA CL (Telefónica) & Estadio único     & SRT + AES-256        & REMI sobre Internet \\
-    5G Media (UPM/RTVE)  & Red de acceso     & Edge computing, fibra & Latencia 3--5 ms \\
+    5G Media (UPM/RTVE)  & Red de acceso     & Edge computing, fibra & Latencia de red 3--5 ms \\
     CyberNEMO (UPM)      & Clúster K8s       & RabbitMQ, telemetría & Validación académica \\
     \hline
-  \end{tabular}
+  \end{tabularx}
 \end{table}

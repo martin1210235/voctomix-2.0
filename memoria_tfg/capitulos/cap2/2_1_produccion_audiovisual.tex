@@ -57,7 +57,7 @@ operación, lo pone fuera del alcance de organizaciones de mediana escala.
 Un caso ilustrativo es la retransmisión de un partido de La Liga de fútbol profesional
 en España. Este tipo de producción moviliza habitualmente entre 20 y 30 cámaras SDI,
 varias unidades móviles de producción equipadas con mezcladores hardware de gama alta
-y un equipo técnico de entre 50 y 100 personas desplazadas al estadio~\cite{blackmagic_atem}.
+y un equipo técnico de entre 50 y 100 personas desplazadas al estadio.
 El coste de una unidad móvil de estas características puede superar los 2 millones de
 euros, cifra a la que se suma el gasto recurrente en desplazamientos, montaje y
 operación. Este modelo queda así reservado a grandes cadenas de televisión y
@@ -138,8 +138,8 @@ reales~\cite{tmbroadcast_remi,remi_workflow_ibc2023}.
     Escalabilidad   & Un centro atiende múltiples eventos       & Riesgo de sobrecarga del servidor \\
     Red             & Producción desde cualquier ubicación IP   & Corte de red detiene la producción \\
     Calidad         & Hardware ilimitado en el centro remoto    & Artefactos con ancho de banda insuficiente \\
-    Sincronía A/V   & MKV + SRT garantizan sincronía            & \textit{jitter} (fluctuación) puede desincronizar fuentes \\
-    Seguridad       & Cifrado AES-256 extremo a extremo         & Mayor superficie de ataque expuesta \\
+    Sincronía A/V   & MKV/TCP garantiza sincronía A/V en cada flujo & \textit{jitter} (fluctuación) puede desincronizar fuentes \\
+    Seguridad       & Cifrado AES-256 disponible en transporte SRT & Mayor superficie de ataque expuesta \\
     Complejidad     & Herramientas maduras (Voctomix, FFmpeg)   & Diagnóstico de pipelines distribuidos \\
     Sostenibilidad  & Menor huella de carbono                   & Consumo energético del centro permanente \\
     \hline
@@ -217,6 +217,6 @@ idéntico en cualquier equipo Linux.
 Esta infraestructura es especialmente relevante en entornos de investigación: los
 proyectos del grupo de la Universidad Politécnica de Madrid vinculados a CyberNEMO
 utilizan Kubernetes como plataforma de despliegue por su capacidad para orquestar
-servicios distribuidos de forma fiable. Esta necesidad motivó que Voctomix~2.0 se
-diseñara desde el principio para ejecutarse tanto en Docker Compose como en
-Kubernetes, objetivos que se desarrollan en el Capítulo~\ref{chap:despliegue}.
+servicios distribuidos de forma fiable. Esta necesidad motivó que, en el presente trabajo, Voctomix~2.0 fuera preparado
+para ejecutarse tanto en Docker Compose como en Kubernetes, objetivos que se
+desarrollan en el Capítulo~\ref{chap:despliegue}.

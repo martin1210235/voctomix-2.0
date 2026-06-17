@@ -7,13 +7,14 @@ estructura de la memoria.
 El \textbf{Capítulo 2} presenta el estado del arte en producción audiovisual: la
 evolución desde la producción tradicional hasta el modelo remoto basado en software,
 los protocolos de red y los estándares de contribución y distribución de vídeo, y una
-comparativa de los mezcladores disponibles. Se incluyen también casos de uso reales de
+comparativa de enfoques y herramientas de producción remota por software. Se incluyen también casos de uso reales de
 producción remota a escala industrial.
 
 El \textbf{Capítulo 3} describe el diseño e implementación del sistema Voctomix~2.0:
 la arquitectura cliente-servidor (voctocore y voctogui), las fuentes de señal de
-cámaras y auxiliares, los modos de composición, las transiciones, el sistema de
-\textit{overlays} y rotulación dinámica, y el servicio de telemetría mediante RabbitMQ.
+cámaras y auxiliares, los modos de composición, las transiciones, el sistema de control
+de estados de emisión (stream blanker), el sistema de \textit{overlays} y rotulación
+dinámica, y el servicio de telemetría mediante RabbitMQ.
 
 El \textbf{Capítulo 4} detalla el despliegue del sistema en sus distintos escenarios:
 los scripts de arranque para entorno nativo, el despliegue contenerizado con Docker
