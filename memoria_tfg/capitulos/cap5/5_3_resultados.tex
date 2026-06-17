@@ -107,7 +107,7 @@ forma significativa porque GStreamer reutiliza sus búferes internos.
     \end{axis}
   \end{tikzpicture}
   \caption{Consumo energético neto medido por RAPL en función del número de
-           cámaras activas (descontado el baseline de cada entorno).}
+           cámaras activas.}
   \label{fig:energia_camaras}
 \end{figure}
 
@@ -118,7 +118,7 @@ actividad interna. En términos de consumo total, Docker alcanza unos 50\,W con
 cuatro cámaras, el 30\,\% del \ac{TDP} del procesador (165\,W), con margen
 suficiente para no saturarlo. Kubernetes supera los 90\,W porque hay que sumarle
 el consumo del plano de control. Este sobrecoste desaparecería en un despliegue
-en la nube (Amazon \ac{EKS}, Google \ac{GKE} o Azure \ac{AKS}), donde el plano
+en la nube (\ac{EKS}, \ac{GKE} o \ac{AKS}), donde el plano
 de control corre en servidores del proveedor y no consume recursos del equipo.
 
 Respecto al ancho de banda, cada cámara RAW~I420 a 1080p25 genera 622\,Mbps,
