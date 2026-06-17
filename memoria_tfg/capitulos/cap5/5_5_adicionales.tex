@@ -94,25 +94,10 @@ del sistema de monitorización.
 \section{Resiliencia y recuperación}
 \label{sec:resiliencia}
 
-Esta prueba mide cuánto tarda el sistema en recuperarse por sí solo cuando uno
-de sus componentes falla de forma inesperada. Se eligió el contenedor de la
-cámara~1 como sujeto de prueba porque es un componente crítico: si cae, la
-señal de una de las fuentes principales desaparece del mezclador.
-
-El proceso de cada medición fue el siguiente: se forzó el cierre inmediato del
-proceso principal del contenedor enviándole la señal \texttt{SIGKILL}
-(\texttt{kill -9 1}), que simula un fallo real, y se registró el instante en
-que se envió la señal. A continuación se monitorizó el estado del contenedor
-mediante \texttt{docker inspect} hasta que Docker lo hubo reiniciado y declarado
-\textit{healthy}. La diferencia entre ambos instantes es el tiempo de
-recuperación. Se realizaron 10 repeticiones consecutivas con una pausa de 2
-segundos entre ellas.
-
-Docker aplica la política \texttt{restart: on-failure}, lo que significa que
-reinicia automáticamente cualquier contenedor que termine con error. En cada
-iteración el proceso tarda: detener el contenedor caído, arrancar uno nuevo,
-ejecutar el \textit{health check} configurado (comprueba que FFmpeg genera
-vídeo correctamente) y declarar el estado \textit{healthy}.
+Se midió cuánto tarda el sistema en recuperarse solo cuando una cámara falla.
+Para ello se mató el proceso principal del contenedor cam1 con \texttt{kill -9}
+simulando un fallo real, y se cronometró el tiempo hasta que Docker lo reinició
+y lo declaró \textit{healthy}. Se repitió 10 veces.
 
 \begin{table}[H]
   \centering
@@ -127,8 +112,6 @@ vídeo correctamente) y declarar el estado \textit{healthy}.
     \hline
     Mediana      & 520 \\
     \hline
-    Media        & 520 \\
-    \hline
     Máximo       & 526 \\
     \hline
     Percentil 95 & 525 \\
@@ -136,10 +119,7 @@ vídeo correctamente) y declarar el estado \textit{healthy}.
   \end{tabular}
 \end{table}
 
-Los resultados son muy estables: todas las mediciones cayeron en la banda
-516--526\,ms, con una dispersión de apenas 10\,ms entre el mínimo y el
-máximo. Esto indica que el tiempo de recuperación está dominado por el
-arranque del proceso FFmpeg y la comprobación de salud, no por variaciones
-del sistema operativo o de la red. En términos prácticos, una cámara que
-cae vuelve a estar disponible en el mezclador en aproximadamente medio
-segundo, sin ninguna intervención manual.
+El sistema se recuperó siempre en torno a 520\,ms, con una variación de
+apenas 10\,ms entre la medición más rápida y la más lenta. Sin intervención
+manual, una cámara caída vuelve a estar disponible en el mezclador en
+aproximadamente medio segundo.
