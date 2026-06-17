@@ -64,14 +64,21 @@ El puerto~9999 expone el protocolo de control mediante comandos de texto plano c
 estado se difunde a todos los clientes conectados, de modo que la interfaz gráfica
 y el servicio de telemetría mantienen siempre una vista coherente del sistema.
 
+El módulo \texttt{AudioMix} implementa la función \textit{Audio Follows Video} (AFV):
+cuando el realizador conmuta a una fuente de vídeo diferente, el sistema ejecuta
+automáticamente un fundido cruzado en el audio hacia la pista de esa fuente. El
+audio y el vídeo en antena corresponden siempre a la misma fuente sin necesidad de
+intervención manual del operador.
+
 \subsection{voctogui: interfaz gráfica de control}
 \label{sec:voctogui}
 
-\texttt{voctogui} es el cliente de control: implementado en PyGTK3, proporciona al
+\texttt{voctogui} es el cliente de control: implementado en Python con GTK3 mediante PyGObject, proporciona al
 realizador la interfaz visual para operar el sistema en tiempo real. Se conecta al
 núcleo por TCP y recibe las previsualizaciones de cada fuente en formato JPEG
 comprimido (puertos 14000--14005), mientras que el monitor principal recibe la
-mezcla en bruto por el puerto~11000.
+mezcla por el puerto~12000 en formato JPEG comprimido (configuración predeterminada)
+o por el puerto~11000 en bruto cuando las previsualizaciones están desactivadas.
 
 \begin{figure}[H]
   \centering

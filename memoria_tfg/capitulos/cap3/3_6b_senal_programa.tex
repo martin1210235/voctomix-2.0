@@ -7,10 +7,11 @@ simultánea por dos puertos:
 
 \begin{itemize}
   \item \textbf{Puerto 11000}: salida de la mezcla en bruto (vídeo sin comprimir en
-        formato I420). La interfaz gráfica se conecta aquí para mostrar el monitor de
-        programa al realizador; los encoders externos como FFmpeg pueden conectarse
-        también para grabación local. Esta salida refleja siempre el estado real de la
-        mezcla, independientemente del estado del stream blanker.
+        formato I420), utilizada principalmente por encoders externos como FFmpeg para
+        grabación local. La interfaz gráfica solo se conecta aquí cuando las
+        previsualizaciones están desactivadas; en la configuración predeterminada
+        utiliza el puerto~12000 (JPEG comprimido). Esta salida refleja siempre el
+        estado real de la mezcla, independientemente del estado del stream blanker.
   \item \textbf{Puerto 15000}: salida de streaming, que pasa previamente por el
         stream blanker. Cuando el estado es LIVE, esta salida es idéntica al puerto
         11000; cuando el estado es PAUSE o NOSTREAM, emite el vídeo alternativo

@@ -23,8 +23,9 @@ red local o contribución remota sobre Internet.
 
   \item \textbf{SMPTE ST~2022-6 (SDI sobre IP):} encapsula la señal SDI íntegra en
   paquetes UDP/IP, facilitando la migración de infraestructuras SDI existentes hacia
-  redes Ethernet estándar~\cite{smpte_st2022_6}. Incorpora corrección de errores FEC
-  para compensar pérdidas propias de las redes IP.
+  redes Ethernet estándar~\cite{smpte_st2022_6}. La integridad del flujo puede
+  reforzarse opcionalmente con corrección de errores FEC mediante el estándar
+  complementario SMPTE ST~2022-7.
 
   \item \textbf{SMPTE ST~2110 (producción IP nativa):} estándar publicado en 2017 que
   transporta vídeo, audio y metadatos como flujos IP independientes, proporcionando
@@ -45,8 +46,7 @@ red local o contribución remota sobre Internet.
 
   \item \textbf{RTP (\textit{Real-time Transport Protocol}):} protocolo de transporte
   en tiempo real definido en la RFC~3550~\cite{rfc3550_rtp}, utilizado junto con RTSP
-  para la distribución de flujos multimedia desde cámaras IP profesionales y en sistemas
-  SMPTE~2110.
+  para la distribución de flujos multimedia desde cámaras IP profesionales.
 
   \item \textbf{RTSP (\textit{Real Time Streaming Protocol}):} protocolo de señalización
   definido en la RFC~7826~\cite{rfc7826_rtsp} que se emplea para establecer y controlar
@@ -68,7 +68,7 @@ red local o contribución remota sobre Internet.
     SMPTE ST 2110   & Ethernet IP   & Variable       & Sub-imagen   & Producción IP nativa \\
     NDI             & Ethernet LAN  & $\sim$100 Mbit/s & 1 fotograma & Software, PTZ \\
     SRT             & Internet/LAN  & Variable       & $<$1~s       & Contribución REMI IP \\
-    RTP/RTSP        & LAN/WAN       & Variable       & Sub-imagen   & Cámaras IP, ST 2110 \\
+    RTP/RTSP        & LAN/WAN       & Variable       & Sub-imagen   & Cámaras IP \\
     \hline
   \end{tabularx}
 \end{table}
@@ -195,8 +195,8 @@ múltiples etapas de procesamiento.
   formato durante el procesamiento y garantiza que la latencia de mezcla dependa
   únicamente del tiempo de cálculo sobre los píxeles. Para preservar la calidad colorimétrica,
   todos los flujos deben declarar espacio BT.709 (\texttt{colorimetry=bt709}) y rango
-  televisivo (\texttt{tv~range}), requisito que voctocore verifica en el
-  \textit{handshake} inicial con cada fuente. El coste de este enfoque es que los
+  televisivo (\texttt{tv~range}). Sin esta configuración, los colores pueden presentar
+  desviaciones perceptibles aunque la conexión se establezca correctamente. El coste de este enfoque es que los
   622~Mbit/s por fuente obligan a que todo el tráfico de vídeo circule en bucle local,
   ya sea mediante la interfaz de loopback del servidor en instalación monopuesto o a
   través de redes Docker internas de alta velocidad en el despliegue contenerizado.
