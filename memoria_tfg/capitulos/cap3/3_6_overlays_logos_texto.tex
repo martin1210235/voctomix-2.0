@@ -8,16 +8,18 @@ interfaz gráfica sin interrumpir la retransmisión.
 
 \subsection{Logos}
 
-El sistema soporta logos simultáneos, superpuestos en posiciones fijas del encuadre:
+El sistema soporta dos logos simultáneos superpuestos en posiciones fijas del encuadre:
 
 \begin{itemize}
   \item \textbf{logo1}: posicionado en la esquina inferior derecha del fotograma.
   \item \textbf{logo2}: posicionado en la esquina superior izquierda del fotograma.
 \end{itemize}
 
-Los ficheros PNG de los logos se definen en las secciones \texttt{[logo1]} y
-\texttt{[logo2]} del fichero de configuración, permitiendo adaptar la identidad visual
-del evento sin modificar el código. La visibilidad de cada logo se puede activar o
+La posición de cada logo no la determina el pipeline de GStreamer, sino el diseño
+del fichero PNG: cada imagen cubre el fotograma completo con una zona transparente
+excepto en la esquina donde aparece el logotipo. Los ficheros PNG de los logos se
+definen en las secciones \texttt{[logo1]} y \texttt{[logo2]} del fichero de
+configuración, lo que permite cambiar la identidad visual del evento sin modificar el código. La visibilidad de cada logo se puede activar o
 desactivar individualmente desde la interfaz gráfica.
 
 \subsection{Overlays PNG y texto dinámico}

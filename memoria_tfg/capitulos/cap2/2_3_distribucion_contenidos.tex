@@ -64,17 +64,8 @@ HTTP es un protocolo de capa de aplicación definido en la RFC~9110~\cite{rfc911
 que opera sobre TCP (HTTP/1.1 y HTTP/2) o sobre QUIC/UDP (HTTP/3). Su modelo de
 petición-respuesta y su infraestructura de caché y distribución global mediante CDN
 (\textit{Content Delivery Networks}) lo convierten en el protocolo de referencia para
-la distribución de contenidos a audiencias masivas.
-
-En distribución audiovisual, HTTP actúa como capa de transporte para los principales
-protocolos de \textit{streaming} adaptativo:
-
-\begin{itemize}
-  \item \textbf{HLS y MPEG-DASH}: dividen el vídeo en segmentos de fichero servidos
-        como respuestas HTTP estándar. Cualquier infraestructura de servidores web
-        o CDN puede distribuir estos segmentos sin configuración específica de
-        \textit{media}.
-\end{itemize}
+la distribución de contenidos a audiencias masivas. Los protocolos HLS y MPEG-DASH,
+descritos en la sección anterior, son su aplicación directa en distribución audiovisual.
 
 \subsection{Contenedores multimedia de distribución}
 
@@ -139,9 +130,10 @@ pérdida de calidad a cambio de viabilizar el transporte.
 
   \item \textbf{AV1}: códec abierto desarrollado por la Alliance for Open Media que
   mejora la eficiencia de H.265 en aproximadamente un 50\% adicional~\cite{chen2024_codec_comparison}.
-  Su limitación en producción en directo es la velocidad de codificación: AV1 tarda
-  entre 5 y 10 veces más que H.265, lo que restringe su uso en tiempo real a plataformas
-  con aceleración hardware dedicada. YouTube, Netflix y Facebook ya codifican gran parte
+  Su limitación histórica en producción en directo ha sido la velocidad de codificación:
+  AV1 tarda entre 5 y 10 veces más que H.265 en encoders de referencia, aunque el
+  encoder SVT-AV1 (Intel/Netflix) permite ya codificación en tiempo real en software
+  sobre CPU modernas de gama alta. YouTube, Netflix y Facebook ya codifican gran parte
   de su contenido en AV1 para streaming bajo demanda.
 
   \item \textbf{H.266 / VVC (\textit{Versatile Video Coding})}~\cite{itu_h266}: sucesor
@@ -177,7 +169,7 @@ pérdida de calidad a cambio de viabilizar el transporte.
     \hline
     H.264/AVC  & Base       & Muy rápido       & Universal         & Sí \\
     H.265/HEVC & $\times$2  & 5--8$\times$ más lento & Alta (post 2015) & Sí (con HW) \\
-    AV1        & $\times$3  & 5--10$\times$ más lento & Media (creciendo) & Solo con HW \\
+    AV1        & $\times$3  & 5--10$\times$ más lento & Media (creciendo) & Sí (HW o SVT-AV1) \\
     H.266/VVC  & $\times$4  & Muy lento        & Emergente (2024+) & No (laboratorio) \\
     AC-4       & Audio      & Tiempo real      & ATSC 3.0, DVB     & Sí \\
     \hline

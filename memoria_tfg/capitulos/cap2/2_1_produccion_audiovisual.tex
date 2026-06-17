@@ -27,7 +27,7 @@ infraestructura técnica y del personal en el emplazamiento del evento. El compo
 central de este modelo es el \textbf{mezclador hardware}, denominado
 \textit{switcher} (conmutador de vídeo), un dispositivo dedicado que selecciona en cada instante qué fuente
 de vídeo se emite a la salida de programa y gestiona las transiciones y los efectos.
-Fabricantes como Blackmagic Design (ATEM), Ross Video o Grass Valley (Kayenne) dominan
+Fabricantes como Blackmagic Design (ATEM), Ross Video (Carbonite) o Grass Valley (Kayenne) dominan
 el mercado de estos equipos, que ofrecen latencias sub-imagen, múltiples buses de
 programa y previsualización simultáneos, y redundancia hardware certificada para
 operación continua~\cite{blackmagic_atem}.
@@ -191,7 +191,7 @@ al modelo remoto incluso para organizaciones sin presupuesto broadcast:
     Personal \textit{in situ}           & Numeroso          & Reducido \\
     Latencia extremo a extremo          & Sub-imagen        & 1 fotograma -- varios segundos \\
     Escalabilidad                       & Limitada          & Alta \\
-    Sostenibilidad (huella de carbono)  & Baja              & Alta \\
+    Huella de carbono                   & Alta              & Baja \\
     Ejemplo                             & Blackmagic ATEM   & OBS, vMix, Voctomix \\
     \hline
   \end{tabular}
@@ -205,10 +205,11 @@ al modelo remoto incluso para organizaciones sin presupuesto broadcast:
   \label{fig:cadena_produccion}
 \end{figure}
 
-La adopción de herramientas de producción por software ha impulsado el uso de
-tecnologías de contenerización como Docker~\cite{merkel2014docker} y
-Kubernetes~\cite{kubernetes_burns2016}, que permiten desplegar estos sistemas de
-forma reproducible en cualquier equipo Linux sin instalar dependencias manualmente.
+La necesidad de desplegar estas herramientas de producción de forma portable y
+reproducible ha convertido en estándar el uso de tecnologías de contenerización
+como Docker~\cite{merkel2014docker} y Kubernetes~\cite{kubernetes_burns2016},
+que eliminan la instalación manual de dependencias y garantizan un comportamiento
+idéntico en cualquier equipo Linux.
 Esta infraestructura es especialmente relevante en entornos de investigación: los
 proyectos del grupo de la Universidad Politécnica de Madrid vinculados a CyberNEMO
 utilizan Kubernetes como plataforma de despliegue por su capacidad para orquestar
