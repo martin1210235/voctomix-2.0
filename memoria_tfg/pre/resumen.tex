@@ -8,39 +8,45 @@
 {\Large\textsc{\textcolor{nar}{Resumen}}}
 \vspace{0.2cm}
 
-La producción audiovisual en directo ha evolucionado desde grandes estudios con
-equipamiento dedicado de alto coste hacia soluciones basadas en software que permiten
-desplegar un sistema profesional de realización con hardware convencional. Voctomix es
-un mezclador de vídeo de código abierto desarrollado sobre GStreamer y Python que
-posibilita esta democratización de la producción en directo.
+Producir una retransmisión en directo con varias cámaras, transiciones, rótulos y
+grabación simultánea ha requerido históricamente equipamiento de radiodifusión
+profesional con costes de adquisición de varios miles de euros y equipos técnicos
+especializados desplazados al lugar del evento. Este modelo resulta inaccesible para
+comunidades universitarias, organismos públicos y eventos de mediana escala que
+necesitan producción de calidad sin presupuesto \textit{broadcast}.
 
 Este Trabajo Fin de Grado presenta el diseño e implementación de Voctomix~2.0, una
-versión extendida del mezclador original con nuevas capacidades orientadas a la
-producción remota. Las contribuciones principales del proyecto son: la integración de
-un sistema de gestión de composites avanzados (PIP, side-by-side, fullscreen), un módulo
-de transiciones basadas en mezcla de señales, soporte para overlays gráficos con
-animaciones de entrada y salida, gestión dinámica del audio mediante un servicio
-dedicado, y un sistema de telemetría basado en RabbitMQ que registra en tiempo real
-todos los eventos de sesión.
+plataforma modular de código abierto para la producción remota de vídeo en tiempo
+real. Construida sobre GStreamer y Python, sigue una arquitectura cliente-servidor en
+la que el núcleo de procesamiento puede ejecutarse en un servidor mientras el
+realizador opera la interfaz de control desde cualquier equipo de la red. Las
+contribuciones principales del trabajo son: un sistema de composites avanzados
+(pantalla completa, imagen dentro de imagen y visión lateral), un módulo de
+transiciones animadas entre fuentes, soporte para overlays gráficos dinámicos con
+animaciones de entrada y salida, un gestor de estados de emisión con tres modos
+(en antena, pausa y sin señal), sincronización automática del audio con la fuente de
+vídeo activa, y un sistema de telemetría que registra todos los eventos de la sesión
+en tiempo real y los publica en un broker RabbitMQ mediante el protocolo AMQP.
 
-Para facilitar el despliegue reproducible del sistema completo, se ha desarrollado una
-imagen Docker junto con un fichero Docker~Compose que orquesta voctocore, las fuentes
-de prueba FFmpeg, el broker RabbitMQ y el servicio de telemetría en una red privada
-aislada. Este despliegue permite reproducir el entorno completo en cualquier máquina
-con un único comando.
+Para facilitar el despliegue reproducible del sistema completo, se ha desarrollado un
+entorno contenerizado con Docker~Compose que arranca todos los servicios con un único
+comando, y un despliegue alternativo sobre Kubernetes para entornos de mayor escala.
 
-El sistema ha sido validado en dos escenarios: un despliegue en dos equipos físicos
-en red local y un despliegue completo en contenedores Docker. Los resultados confirman
-una latencia de conmutación inferior a un fotograma ($<$40~ms) y el registro correcto
-de todos los eventos de sesión en RabbitMQ.
+El sistema ha sido validado en dos escenarios reales: dos equipos físicos en red
+local y despliegue completo en contenedores. Los resultados confirman una latencia de
+conmutación mediana de 1{,}5~ms en Docker y 1{,}8~ms en Kubernetes, 30 veces por
+debajo del umbral de la recomendación ITU-R~BT.1359-1, con un uso de CPU inferior al
+40\,\% con cuatro cámaras activas. Voctomix~2.0 ha sido integrado en el proyecto
+europeo de investigación CyberNEMO de la UPM, donde opera como plataforma de
+producción audiovisual en un entorno de validación activo.
 
 \vspace{0.5cm}
 \addcontentsline{toc}{chapter}{Palabras clave}
 {\Large\textsc{\textcolor{nar}{Palabras clave}}}
 \vspace{0.2cm}
 
-producción audiovisual en directo, mezclador de vídeo, GStreamer, Docker,
-RabbitMQ, telemetría, software libre, \textit{streaming}, AMQP.
+producción audiovisual en directo, mezclador de vídeo, software libre, GStreamer,
+Docker, Kubernetes, RabbitMQ, telemetría, \textit{streaming}, AMQP.
 
 \newpage
 \thispagestyle{fancy}
@@ -49,37 +55,43 @@ RabbitMQ, telemetría, software libre, \textit{streaming}, AMQP.
 {\Large\textsc{\textcolor{nar}{Summary}}}
 \vspace{0.2cm}
 
-Live audiovisual production has evolved from large studios relying on dedicated
-high-cost hardware towards software-based solutions that allow deploying a
-professional production system on commodity hardware. Voctomix is an open-source
-video mixer built on GStreamer and Python that enables this democratisation of
-live production.
+Producing a live broadcast with multiple cameras, transitions, graphics and
+simultaneous recording has historically required professional broadcast equipment
+costing several thousand euros and specialised technical crews deployed on site.
+This model is out of reach for university communities, public organisations and
+medium-scale events that need quality production without a broadcast budget.
 
-This Bachelor's Thesis presents the design and implementation of Voctomix~2.0,
-an extended version of the original mixer featuring new capabilities aimed at
-remote production. The main contributions of the project are: integration of an
-advanced composite management system (PIP, side-by-side, fullscreen), a
-signal-mixing-based transitions module, support for graphical overlays with blend-in
-and blend-out animations, dynamic audio management through a dedicated service, and
-a RabbitMQ-based telemetry system that records all session events in real time.
+This Bachelor's Thesis presents the design and implementation of Voctomix~2.0, a
+modular open-source platform for remote video production in real time. Built on
+GStreamer and Python, it follows a client-server architecture in which the processing
+core can run on a server while the director operates the control interface from any
+machine on the network. The main contributions of the project are: an advanced
+composite system (fullscreen, picture-in-picture and side-by-side), an animated
+transition module between sources, support for dynamic graphical overlays with
+blend-in and blend-out animations, an output state manager with three modes (live,
+pause and no-signal), automatic audio synchronisation with the active video source,
+and a telemetry system that records all session events in real time and publishes them
+to a RabbitMQ broker via the AMQP protocol.
 
-To facilitate reproducible deployment of the full system, a Docker image and a
-Docker~Compose file have been developed, orchestrating voctocore, FFmpeg test
-sources, the RabbitMQ broker, and the telemetry service in an isolated private
-network. This deployment allows reproducing the complete environment on any machine
-with a single command.
+To facilitate reproducible deployment of the full system, a containerised environment
+using Docker~Compose has been developed that starts all services with a single
+command, along with an alternative deployment on Kubernetes for larger-scale
+environments.
 
-The system has been validated in two scenarios: a two-physical-machine deployment
-over a local network and a full Docker container deployment. Results confirm a
-switching latency below one video frame ($<$40~ms) and correct logging of all
-session events in RabbitMQ.
+The system has been validated in two real scenarios: a two-machine deployment over a
+local network and a full container-based deployment. Results confirm a median
+switching latency of 1.5~ms in Docker and 1.8~ms in Kubernetes, 30 times below the
+ITU-R~BT.1359-1 threshold, with CPU usage below 40\,\% with four active cameras.
+Voctomix~2.0 has been integrated into the CyberNEMO European research project at
+UPM, where it operates as the audiovisual production platform in an active validation
+environment.
 
 \vspace{0.5cm}
 \addcontentsline{toc}{chapter}{Keywords}
 {\Large\textsc{\textcolor{nar}{Keywords}}}
 \vspace{0.2cm}
 
-live audiovisual production, video mixer, GStreamer, Docker,
-RabbitMQ, telemetry, free software, streaming, AMQP.
+live audiovisual production, video mixer, free software, GStreamer,
+Docker, Kubernetes, RabbitMQ, telemetry, streaming, AMQP.
 
 \newpage
