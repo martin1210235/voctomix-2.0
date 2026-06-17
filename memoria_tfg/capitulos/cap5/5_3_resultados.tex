@@ -253,7 +253,7 @@ al usar los composites durante una retransmisión.
 
 Se midió enviando la orden de cambio de composite al mezclador y cronometrando
 el tiempo hasta recibir la confirmación de que el cambio se había aplicado.
-Se realizaron 32 mediciones en cada entorno ciclando entre los cuatro modos
+Se realizaron 32 mediciones en cada entorno cambiando entre los cuatro modos
 disponibles.
 
 \begin{figure}[H]
@@ -263,7 +263,7 @@ disponibles.
       ybar,
       width=10cm, height=6cm,
       ylabel={Latencia mediana (ms)},
-      xtick={1,2},
+      xtick={1.125,1.875},
       xticklabels={Docker Compose, Kubernetes},
       xticklabel style={font=\small},
       xmin=0.3, xmax=2.7,
@@ -273,11 +273,11 @@ disponibles.
       nodes near coords,
       nodes near coords style={font=\small, anchor=south},
     ]
-      \addplot[fill=orange!40, draw=orange!80] coordinates {(1,2.8)};
-      \addplot[fill=violet!40, draw=violet!80] coordinates {(2,79.8)};
+      \addplot[fill=orange!40, draw=orange!80] coordinates {(1.125,2.8)};
+      \addplot[fill=violet!40, draw=violet!80] coordinates {(1.875,79.8)};
     \end{axis}
   \end{tikzpicture}
-  \caption{Latencia mediana de transición de composite ($n=32$ por entorno).}
+  \caption{Latencia mediana de transición de composite.}
   \label{fig:latencia_transicion}
 \end{figure}
 
