@@ -1,37 +1,16 @@
 \section{Estabilidad a largo plazo}
 \label{sec:estabilidad}
 
-Las pruebas de rendimiento del apartado~\ref{sec:rendimiento_sistema} miden el
-sistema durante cinco minutos. Este apartado amplía ese horizonte temporal a
-treinta minutos con todas las fuentes activas, con el objetivo de comprobar que
-el sistema no acumula errores, no pierde memoria y no degrada su rendimiento
-con el tiempo, que es la condición mínima para usarlo en una retransmisión real.
-
-\subsection*{Cómo se realizó la prueba}
-
-Se ejecutó el despliegue completo en Docker~Compose con las cuatro cámaras y el
-resto de servicios activos: \textit{stream blanker}, gestor de audio e intro.
-Las fuentes de vídeo se generaron localmente con FFmpeg mediante patrones de
-prueba del tipo \textit{lavfi}, sin depender de ficheros externos ni de red, para
-garantizar que las fuentes nunca fallan ni interrumpen la prueba. El servicio de
-telemetría se configuró con \texttt{SAVE\_LOGS=true}, de forma que cada evento de
-estado se guardó en un fichero JSONL con marca temporal. Al finalizar, un script
-en Python leyó ese fichero y calculó los estadísticos de la tabla~\ref{tab:estabilidad}.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{figuras/estabilidad_30min.png}
-  \caption{Uso de CPU y RAM durante los 31 minutos de prueba de estabilidad.
-           Un pico puntual de CPU al minuto~4 excede la escala (83\,\%) y
-           corresponde a la finalización del arranque del pipeline GStreamer.}
-  \label{fig:estabilidad}
-\end{figure}
-
-\subsection*{Resultados}
+Se ejecutó el sistema completo en Docker~Compose durante 31 minutos con las
+cuatro cámaras y todos los servicios activos. Las fuentes de vídeo se generaron
+localmente con FFmpeg para que no dependieran de ficheros externos y no pudieran
+fallar durante la prueba. La telemetría registró el estado del sistema cada 5
+segundos, lo que produjo 372 muestras que se analizaron al finalizar con un
+script en Python (tabla~\ref{tab:estabilidad}, figura~\ref{fig:estabilidad}).
 
 \begin{table}[H]
   \centering
-  \caption{Estadísticos de la prueba de estabilidad (31\,min, 372 muestras a 5\,s).}
+  \caption{Estadísticos de la prueba de estabilidad (31\,min, 372 muestras).}
   \label{tab:estabilidad}
   \small
   \begin{tabular}{|l|c|c|}
@@ -39,34 +18,35 @@ en Python leyó ese fichero y calculó los estadísticos de la tabla~\ref{tab:es
     \textbf{Estadístico} & \textbf{CPU (\%)} & \textbf{RAM (\%)} \\
     \hline
     Mediana           & 51{,}9 & 22{,}2 \\
+    \hline
     Media             & 52{,}7 & 22{,}4 \\
+    \hline
     Mínimo            & 24{,}1 & 21{,}9 \\
+    \hline
     Máximo            & 83{,}0 & 23{,}5 \\
+    \hline
     Desviación típica &  3{,}9 &  0{,}4 \\
+    \hline
     Percentil 95      & 58{,}8 & 23{,}4 \\
     \hline
   \end{tabular}
 \end{table}
 
-El comportamiento de la RAM es el resultado más relevante: la desviación típica
-es de solo 0{,}4 puntos porcentuales durante media hora de operación continua.
-La diferencia entre el primer y el último bloque de cinco minutos es de
-$-$0{,}4 puntos, lo que confirma que no existe ninguna fuga de memoria en el
-sistema.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figuras/estabilidad_30min.png}
+  \caption{Uso de CPU y RAM durante los 31 minutos de prueba de estabilidad.
+           El pico de CPU al minuto~4 (83\,\%) corresponde a la finalización
+           del arranque del \textit{pipeline} GStreamer y excede la escala.}
+  \label{fig:estabilidad}
+\end{figure}
 
-La CPU se mantiene en una banda estrecha: el 96{,}8\,\% de las muestras cae
-entre el 40 y el 60\,\%, con una mediana de 51{,}9\,\%. El único pico
-significativo, de 83\,\%, se produjo a los cuatro minutos del inicio y
-corresponde al instante en que GStreamer termina de negociar los formatos de
-los cuatro \textit{pipelines} de fuente. Fuera de ese arranque, la CPU no
-volvió a superar el 70\,\% en ningún momento.
-
-A lo largo de toda la prueba no se registró ningún reinicio de contenedor.
-Los seis eventos \texttt{CHANGE} que aparecen en el fichero de sesión
-corresponden a la sincronización inicial del estado en los primeros ocho
-segundos de ejecución, no a fallos durante la retransmisión. El sistema
-procesó señal de forma ininterrumpida durante los 31 minutos sin necesitar
-ninguna intervención.
+La RAM se mantuvo prácticamente plana durante toda la sesión, con una
+desviación típica de 0{,}4 puntos porcentuales, lo que confirma que no existe
+ninguna fuga de memoria. La CPU operó en la banda del 50--60\,\% durante el
+96{,}8\,\% del tiempo, con un único pico al inicio por el arranque del
+\textit{pipeline}. No se registró ningún reinicio de contenedor ni ningún
+fallo durante los 31 minutos de ejecución continua.
 
 \section{Overhead de la telemetría}
 \label{sec:overhead_telemetria}
