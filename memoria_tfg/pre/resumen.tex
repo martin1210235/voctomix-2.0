@@ -24,13 +24,13 @@ contribuciones principales del trabajo son: un sistema de composites avanzados
 (pantalla completa, imagen dentro de imagen y visión lateral), un módulo de
 transiciones animadas entre fuentes, soporte para overlays gráficos dinámicos con
 animaciones de entrada y salida, un gestor de estados de emisión con tres modos
-(en antena, pausa y sin señal), sincronización automática del audio con la fuente de
+(en directo, pausa y sin señal), sincronización automática del audio con la fuente de
 vídeo activa, y un sistema de telemetría que registra todos los eventos de la sesión
 en tiempo real y los publica en un broker RabbitMQ mediante el protocolo AMQP.
 
-Para facilitar el despliegue reproducible del sistema completo, se ha desarrollado un
-entorno contenerizado con Docker~Compose que arranca todos los servicios con un único
-comando, y un despliegue alternativo sobre Kubernetes para entornos de mayor escala.
+El sistema completo se ha contenerizado mediante Docker~Compose y Kubernetes,
+facilitando su despliegue reproducible en entornos de investigación universitaria,
+como el del grupo CyberNEMO de la UPM, y en infraestructuras de mayor escala.
 
 El sistema ha sido validado en dos escenarios reales: dos equipos físicos en red
 local y despliegue completo en contenedores. Los resultados confirman una latencia de
@@ -73,10 +73,9 @@ pause and no-signal), automatic audio synchronisation with the active video sour
 and a telemetry system that records all session events in real time and publishes them
 to a RabbitMQ broker via the AMQP protocol.
 
-To facilitate reproducible deployment of the full system, a containerised environment
-using Docker~Compose has been developed that starts all services with a single
-command, along with an alternative deployment on Kubernetes for larger-scale
-environments.
+The complete system has been containerised using Docker~Compose and Kubernetes,
+enabling reproducible deployment in university research environments such as the
+UPM CyberNEMO group infrastructure, and in larger-scale deployments.
 
 The system has been validated in two real scenarios: a two-machine deployment over a
 local network and a full container-based deployment. Results confirm a median
