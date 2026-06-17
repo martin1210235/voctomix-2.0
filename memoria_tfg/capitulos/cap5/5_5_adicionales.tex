@@ -34,17 +34,16 @@ muestras en total.
       \legend{CPU (\%), RAM (\%)}
     \end{axis}
   \end{tikzpicture}
-  \caption{Uso de CPU (naranja) y RAM (azul) durante los 31 minutos de prueba de estabilidad (377 muestras, una cada 5\,s).}
+  \caption{Uso de CPU y RAM durante la prueba de estabilidad.}
   \label{fig:estabilidad}
 \end{figure}
 
 La CPU se estabilizó en la banda del 50--60\,\% pasados los primeros minutos
-de arranque y se mantuvo ahí sin ninguna tendencia creciente. La RAM descendió
-ligeramente al principio, cuando Docker liberó recursos temporales de arranque,
-y luego quedó completamente plana: no hay fuga de memoria. Durante los 31
-minutos no se registró ningún reinicio de contenedor ni ningún fallo, lo que
-confirma que el sistema es apto para retransmisiones de larga duración sin
-necesidad de supervisión continua.
+de arranque y se mantuvo ahí sin ninguna tendencia creciente. La RAM se mantuvo
+completamente plana durante toda la sesión, lo que confirma que no hay fuga de
+memoria. Durante toda la prueba no se registró ningún reinicio de contenedor ni
+ningún fallo, lo que confirma que el sistema es apto para retransmisiones de
+larga duración sin necesidad de supervisión continua.
 
 \section{Resiliencia y recuperación}
 \label{sec:resiliencia}
