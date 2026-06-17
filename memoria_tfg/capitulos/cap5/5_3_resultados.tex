@@ -242,72 +242,51 @@ y no tiene impacto en producción.
 \subsection{Latencia de transición de composite}
 \label{sec:latencia_transicion}
 
-Cambiar de modo de composición (por ejemplo, pasar de pantalla completa a
-\ac{PIP}) es una operación diferente a cambiar de cámara. Cuando el operador
-pulsa un corte de cámara, GStreamer simplemente activa otra fuente: una
-operación sin apenas coste. Cuando ordena una transición de composite, GStreamer
-tiene que calcular fotograma a fotograma cómo mezclar el modo anterior con el
-nuevo durante la animación. Para hacerlo de forma ordenada, espera al siguiente
-instante de procesado de fotograma del pipeline, que ocurre cada 40\,ms a
-25\,fps. Si el sistema tiene CPU disponible, ese instante llega casi
-inmediatamente. Si la CPU está ocupada, el pipeline llega tarde y tiene que
-esperar al siguiente ciclo.
+Además de medir cuánto tarda el sistema en cambiar de cámara, interesa saber
+cuánto tarda en cambiar el modo de composición, es decir, pasar por ejemplo de
+ver una sola cámara en pantalla completa a verlas en pantalla dividida. Esta
+operación es diferente a un corte de cámara porque GStreamer tiene que animar
+la mezcla fotograma a fotograma, y para hacerlo de forma sincronizada espera al
+siguiente ciclo de procesado del pipeline, que ocurre cada 40\,ms a 25\,fps.
+Conocer esta latencia es importante para saber si el operador notará retraso
+al usar los composites durante una retransmisión.
 
+Se midió enviando la orden de cambio de composite al mezclador y cronometrando
+el tiempo hasta recibir la confirmación de que el cambio se había aplicado.
 Se realizaron 32 mediciones en cada entorno ciclando entre los cuatro modos
-de mezcla disponibles. La tabla~\ref{tab:latencia_transicion} muestra los
-resultados, y la tabla~\ref{tab:comparativa_latencias} los pone en contexto
-comparando directamente ambos tipos de operación.
+disponibles.
 
-\begin{table}[H]
+\begin{figure}[H]
   \centering
-  \caption{Estadísticos de latencia de transición de composite ($n=32$ por entorno).}
-  \label{tab:latencia_transicion}
-  \small
-  \begin{tabular}{|l|c|c|}
-    \hline
-    \textbf{Estadístico} & \textbf{Docker Compose} & \textbf{Kubernetes} \\
-    \hline
-    Mínimo        & 1{,}6\,ms  & 69{,}5\,ms \\
-    \hline
-    Mediana       & 2{,}8\,ms  & 79{,}8\,ms \\
-    \hline
-    Máximo        & 5{,}3\,ms  & 136{,}6\,ms \\
-    \hline
-    Percentil 95  & 4{,}2\,ms  & 87{,}4\,ms \\
-    \hline
-  \end{tabular}
-\end{table}
+  \begin{tikzpicture}
+    \begin{axis}[
+      ybar,
+      width=10cm, height=6cm,
+      ylabel={Latencia mediana (ms)},
+      xtick={1,2},
+      xticklabels={Docker Compose, Kubernetes},
+      xticklabel style={font=\small},
+      xmin=0.3, xmax=2.7,
+      ymin=0, ymax=95,
+      ymajorgrids=true, grid style=dashed,
+      bar width=2cm,
+      nodes near coords,
+      nodes near coords style={font=\small, anchor=south},
+    ]
+      \addplot[fill=orange!40, draw=orange!80] coordinates {(1,2.8)};
+      \addplot[fill=violet!40, draw=violet!80] coordinates {(2,79.8)};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Latencia mediana de transición de composite ($n=32$ por entorno).}
+  \label{fig:latencia_transicion}
+\end{figure}
 
-\begin{table}[H]
-  \centering
-  \caption{Comparativa de latencia mediana: conmutación de fuente vs.\ transición de composite.}
-  \label{tab:comparativa_latencias}
-  \small
-  \begin{tabular}{|l|c|c|}
-    \hline
-    \textbf{Operación} & \textbf{Docker Compose} & \textbf{Kubernetes} \\
-    \hline
-    Conmutación de fuente  & 1{,}5\,ms  & 1{,}8\,ms \\
-    \hline
-    Transición de composite & 2{,}8\,ms & 79{,}8\,ms \\
-    \hline
-  \end{tabular}
-\end{table}
-
-En Docker, ambas operaciones son prácticamente igual de rápidas: la conmutación
-tarda 1{,}5\,ms y la transición 2{,}8\,ms, porque la CPU está libre y GStreamer
-alcanza el siguiente instante de procesado de fotograma sin esperar. En
-Kubernetes, en cambio, la conmutación sigue siendo igual de rápida (1{,}8\,ms),
-pero la transición se dispara hasta los 79{,}8\,ms. La diferencia entre ambas
-operaciones explica por qué: la conmutación no necesita sincronizarse con el
-ciclo de fotograma, pero la transición animada sí. Con la CPU al 50\,\%
-ocupada por el plano de control de Minikube, el hilo de GStreamer llega tarde al
-primer ciclo disponible y tiene que esperar al siguiente. A 25\,fps cada ciclo
-dura 40\,ms, y la mediana de 79{,}8\,ms equivale exactamente a dos ciclos de
-espera.
-
-Este retardo de unos 80\,ms es perceptible para el operador, pero no afecta a
-la señal de programa que ve el espectador: la animación empieza 80\,ms más tarde
-de lo esperado, pero se ejecuta correctamente. En un clúster gestionado en la
-nube, donde el plano de control no comparte recursos con voctocore, la latencia
-de transición sería comparable a la de Docker.
+En Docker la transición tarda 2{,}8\,ms, prácticamente igual que un corte de
+cámara. La CPU está libre y GStreamer alcanza el siguiente ciclo de fotograma
+sin esperar. En Kubernetes la latencia sube a 79{,}8\,ms, lo que equivale a
+dos ciclos completos de 40\,ms: el plano de control de Minikube mantiene la
+CPU ocupada y GStreamer pierde el primer ciclo disponible. Este retardo es
+perceptible para el operador, pero no afecta a lo que ve el espectador,
+ya que la animación simplemente empieza 80\,ms más tarde y se ejecuta
+correctamente. En un despliegue en la nube, donde el plano de control no
+comparte recursos con voctocore, la latencia sería comparable a la de Docker.
