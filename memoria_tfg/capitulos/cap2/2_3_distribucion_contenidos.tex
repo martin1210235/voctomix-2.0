@@ -19,8 +19,10 @@ espectador.
   estándar de ingesta para plataformas como YouTube Live o Twitch con latencia de
   2--5~s. Aunque obsoleto en reproducción desde la retirada de Adobe Flash en 2020,
   mantiene una adopción del 58\,\% entre profesionales broadcast en
-  2025~\cite{haivision_broadcast_report_2025}, solo por detrás de SRT (77\,\%), lo que
-  lo convierte en el protocolo de ingesta hacia plataformas CDN más implantado.
+  2025~\cite{haivision_broadcast_report_2025}, por detrás de SRT (77\,\%). A pesar de
+  esta segunda posición global, RTMP sigue siendo el protocolo de ingesta aceptado de
+  forma universal por las principales plataformas CDN (YouTube, Twitch, Facebook Live),
+  lo que lo convierte en el estándar de facto para la entrega de señal al distribuidor.
   Voctomix lo soporta como salida mediante FFmpeg.
 
   \item \textbf{HLS (\textit{HTTP Live Streaming}):} protocolo de Apple que divide el
@@ -133,7 +135,7 @@ pérdida de calidad a cambio de viabilizar el transporte.
   Su limitación histórica en producción en directo ha sido la velocidad de codificación:
   AV1 tarda entre 5 y 10 veces más que H.265 en encoders de referencia, aunque el
   encoder SVT-AV1 (Intel/Netflix) permite ya codificación en tiempo real en software
-  sobre CPU modernas de gama alta. YouTube, Netflix y Facebook ya codifican gran parte
+  sobre CPU modernas de gama alta. YouTube, Netflix y Meta ya codifican gran parte
   de su contenido en AV1 para streaming bajo demanda.
 
   \item \textbf{H.266 / VVC (\textit{Versatile Video Coding})}~\cite{itu_h266}: sucesor
