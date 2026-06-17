@@ -99,27 +99,32 @@ Para ello se mató el proceso principal del contenedor cam1 con \texttt{kill -9}
 simulando un fallo real, y se cronometró el tiempo hasta que Docker lo reinició
 y lo declaró \textit{healthy}. Se repitió 10 veces.
 
-\begin{table}[H]
+\begin{figure}[H]
   \centering
-  \caption{Tiempos de recuperación del contenedor cam1 (10 iteraciones).}
-  \label{tab:resiliencia}
-  \small
-  \begin{tabular}{|l|c|}
-    \hline
-    \textbf{Estadístico} & \textbf{Tiempo (ms)} \\
-    \hline
-    Mínimo       & 516 \\
-    \hline
-    Mediana      & 520 \\
-    \hline
-    Máximo       & 526 \\
-    \hline
-    Percentil 95 & 525 \\
-    \hline
-  \end{tabular}
-\end{table}
+  \begin{tikzpicture}
+    \begin{axis}[
+      ybar,
+      width=12cm, height=5.5cm,
+      xlabel={Iteración},
+      ylabel={Tiempo de recuperación (ms)},
+      xtick={1,2,3,4,5,6,7,8,9,10},
+      xticklabel style={font=\small},
+      xmin=0.3, xmax=10.7,
+      ymin=510, ymax=530,
+      ymajorgrids=true, grid style=dashed,
+      bar width=0.6cm,
+    ]
+      \addplot[fill=green!30, draw=green!70]
+        coordinates {(1,517)(2,522)(3,526)(4,523)(5,518)(6,519)(7,520)(8,516)(9,521)(10,517)};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Tiempo de recuperación del contenedor cam1 en cada iteración ($n=10$).}
+  \label{fig:resiliencia}
+\end{figure}
 
 El sistema se recuperó siempre en torno a 520\,ms, con una variación de
-apenas 10\,ms entre la medición más rápida y la más lenta. Sin intervención
-manual, una cámara caída vuelve a estar disponible en el mezclador en
-aproximadamente medio segundo.
+apenas 10\,ms de principio a fin. Esto es una buena noticia para una
+retransmisión en directo: si una cámara cae en medio de una emisión, el
+sistema la devuelve automáticamente en medio segundo, sin que nadie tenga
+que intervenir. El espectador apenas lo notaría, ya que el mezclador
+puede seguir emitiendo con las otras cámaras mientras tanto.
