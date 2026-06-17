@@ -122,8 +122,9 @@ en la nube (\ac{EKS}, \ac{GKE} o \ac{AKS}), donde el plano
 de control corre en servidores del proveedor y no consume recursos del equipo.
 
 Respecto al ancho de banda, cada cámara RAW~I420 a 1080p25 genera 622\,Mbps,
-lo que supone 2{,}49\,Gbps con cuatro cámaras activas. Todo ese tráfico circula
-por la red interna del equipo sin atravesar ninguna tarjeta de red física.
+lo que supone 2{,}49\,Gbps con cuatro cámaras activas. Todo ese tráfico se queda dentro del propio equipo, ya que los contenedores
+se comunican a través de la red virtual del sistema operativo sin necesidad
+de ninguna conexión de red externa.
 
 \section{Latencia del sistema}
 \label{sec:latencia_sistema}
