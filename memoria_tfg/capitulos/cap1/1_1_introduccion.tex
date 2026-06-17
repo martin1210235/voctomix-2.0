@@ -9,8 +9,9 @@ profesional que sean al mismo tiempo económicas, fiables y auditables.
 
 En este contexto surge Voctomix~\cite{voctomix_github,delRio2025ugc}, desarrollado por el equipo C3VOC (\textit{Chaos Communication
 Congress Video Operations Crew}). Frente a soluciones previas como \textit{dvswitch}~\cite{dvswitch_project}, limitada
-en resolución y escalabilidad, o herramientas comerciales como vMix o OBS Studio,
-diseñadas para un único operador en un único equipo, Voctomix adopta una arquitectura
+en resolución y escalabilidad, o herramientas como vMix (comercial) u OBS Studio
+(código abierto), cuya arquitectura monolítica concentra captura, procesamiento y
+emisión en un único nodo de operación, Voctomix adopta una arquitectura
 cliente-servidor desacoplada que separa el motor de mezcla multimedia de la interfaz
 de control, permitiendo distribuir la carga de procesamiento en distintos nodos de red.
 
@@ -36,18 +37,3 @@ infraestructura hardware costosa, proporcionando un entorno reproducible que pue
 ponerse en funcionamiento con un único comando (\texttt{docker compose up}) en
 cualquier equipo Linux estándar.
 
-% --- Figura sugerida ---
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.85\textwidth]{figuras/gui_voctomix2.png}
-%   \caption{Interfaz gráfica de Voctomix 2.0 en funcionamiento.}
-%   \label{fig:gui_voctomix2}
-% \end{figure}
-
-% --- Figura sugerida ---
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.85\textwidth]{figuras/diagrama_contexto.png}
-%   \caption{Diagrama de contexto: Voctomix 2.0 en el entorno de producción del grupo CyberNemo (UPM).}
-%   \label{fig:diagrama_contexto}
-% \end{figure}
