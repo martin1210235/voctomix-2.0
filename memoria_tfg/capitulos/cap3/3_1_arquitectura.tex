@@ -6,17 +6,6 @@ El trabajo comenzó con una fase de exploración sobre Voctomix~1.0, que permiti
 familiarizarse con el pipeline GStreamer, la comunicación cliente-servidor y el
 funcionamiento de los composites antes de abordar la versión más reciente.
 
-La figura~\ref{fig:diagrama_sistema} muestra una visión global del sistema: las
-fuentes de señal, el núcleo de procesamiento, las salidas y la capa de control y
-telemetría. Este diagrama sirve de hilo conductor para los apartados que siguen.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{figuras/diagrama_sistema.png}
-  \caption{Arquitectura global del sistema Voctomix~2.0.}
-  \label{fig:diagrama_sistema}
-\end{figure}
-
 La tabla~\ref{tab:puertos_sistema} recoge los puertos TCP/UDP del sistema y su función.
 
 \begin{table}[H]
@@ -43,6 +32,17 @@ La tabla~\ref{tab:puertos_sistema} recoge los puertos TCP/UDP del sistema y su f
     \hline
   \end{tabular}
 \end{table}
+
+La figura~\ref{fig:diagrama_sistema} muestra una visión global del sistema: las
+fuentes de señal, el núcleo de procesamiento, las salidas y la capa de control y
+telemetría. Este diagrama sirve de hilo conductor para los apartados que siguen.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figuras/diagrama_sistema.png}
+  \caption{Arquitectura global del sistema Voctomix~2.0.}
+  \label{fig:diagrama_sistema}
+\end{figure}
 
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Arquitectura del sistema}
