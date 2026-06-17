@@ -4,7 +4,8 @@
 Para garantizar que Voctomix puede funcionar durante una retransmisión larga sin
 saturar el equipo, se midió el consumo de CPU, RAM y energía en los dos entornos
 de despliegue. Se ejecutó una sesión de cinco minutos con 1, 2, 3 y 4 cámaras
-activas, anotando CPU y RAM cada 5\,s mediante la telemetría. El consumo energético
+activas; los valores de CPU y RAM que aparecen en las gráficas son la mediana
+de las muestras recogidas cada 5\,s por la telemetría. El consumo energético
 se midió con el sensor \ac{RAPL}~\cite{khan2018rapl} del procesador; los valores
 de las gráficas descuentan el consumo en reposo de cada entorno para mostrar
 únicamente el coste atribuible a Voctomix.
@@ -115,7 +116,8 @@ El consumo neto de Voctomix es similar en los dos entornos, entre 25 y 32\,W en
 Docker y entre 25 y 36\,W en Kubernetes. La mayor dispersión en Kubernetes se
 debe a que el consumo base del clúster de Minikube no es constante; el pico de
 36\,W con tres cámaras refleja un momento de mayor actividad interna del clúster
-durante esa sesión concreta, no una tendencia sistemática. En términos de consumo total, Docker alcanza unos 50\,W con
+durante esa sesión concreta, no una tendencia sistemática. En términos de
+consumo total, Docker alcanza unos 50\,W con
 cuatro cámaras, el 30\,\% del \ac{TDP} del procesador (165\,W), con margen
 suficiente para no saturarlo. Kubernetes supera los 90\,W porque hay que sumarle
 el consumo del plano de control. Este sobrecoste desaparecería en un despliegue
@@ -150,8 +152,9 @@ el sistema en ejecutar ese cambio desde que el operador pulsa el botón.
 
 Para medirlo se enviaron 30 órdenes de cambio de fuente seguidas al mezclador
 y se cronometró el tiempo entre el envío de la orden y la confirmación de
-voctocore de que GStreamer había aplicado el cambio. Al no haber ningún proceso de codificación que introduzca retardo adicional,
-las latencias medidas reflejan únicamente el tiempo de procesado interno de GStreamer.
+voctocore de que GStreamer había aplicado el cambio. Al no haber ningún proceso
+de codificación que introduzca retardo adicional, las latencias medidas reflejan
+únicamente el tiempo de procesado interno de GStreamer.
 
 \begin{figure}[H]
   \centering
