@@ -48,49 +48,6 @@ ninguna fuga de memoria. La CPU operó en la banda del 50--60\,\% durante el
 \textit{pipeline}. No se registró ningún reinicio de contenedor ni ningún
 fallo durante los 31 minutos de ejecución continua.
 
-\section{Overhead de la telemetría}
-\label{sec:overhead_telemetria}
-
-El servicio de telemetría monitoriza el sistema de forma continua: consulta el
-estado de voctocore cada 5\,s, lee el uso de CPU y RAM del sistema operativo y
-publica el resultado en RabbitMQ. La pregunta que responde este apartado es
-sencilla: ¿cuánta CPU extra consume ese servicio? Si el coste fuera significativo,
-los datos del apartado~\ref{sec:rendimiento_sistema} estarían inflados.
-
-Para medirlo se compararon dos sesiones de cinco minutos con las cuatro cámaras
-activas: una con el contenedor de telemetría en ejecución y otra tras pararlo con
-\texttt{docker compose stop telemetry}. En ambos casos se leyó el uso de CPU
-directamente desde \texttt{/proc/stat} del equipo anfitrión cada 5\,s.
-
-\begin{table}[H]
-  \centering
-  \caption{Uso de CPU del sistema con y sin el servicio de telemetría activo.}
-  \label{tab:overhead_telemetria}
-  \small
-  \begin{tabular}{|l|c|c|}
-    \hline
-    \textbf{} & \textbf{Con telemetría} & \textbf{Sin telemetría} \\
-    \hline
-    CPU mediana (\%)  & 53{,}1 & 55{,}2 \\
-    \hline
-    CPU media (\%)    & 53{,}3 & 55{,}4 \\
-    \hline
-    Desviación típica & ---    & 1{,}7 \\
-    \hline
-    Diferencia        & \multicolumn{2}{c|}{$-$2{,}1\,pp (dentro del ruido)} \\
-    \hline
-  \end{tabular}
-\end{table}
-
-La diferencia entre ambas sesiones es de $-$2{,}1 puntos porcentuales, con signo
-negativo porque la sesión sin telemetría tuvo, por azar, una CPU ligeramente más
-alta. Este valor queda dentro de la variación natural del sistema, que presenta
-una desviación típica de 1{,}7 puntos en condiciones estables. La conclusión es
-que el overhead de la telemetría es indistinguible del ruido de medición y no
-tiene impacto sobre los resultados presentados en el capítulo. Los datos del
-apartado~\ref{sec:rendimiento_sistema} reflejan el coste real de Voctomix, no el
-del sistema de monitorización.
-
 \section{Resiliencia y recuperación}
 \label{sec:resiliencia}
 
