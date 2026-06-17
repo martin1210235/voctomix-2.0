@@ -1,5 +1,5 @@
-\section{Rendimiento en función del número de cámaras}
-\label{sec:rendimiento_camaras}
+\section{Rendimiento del sistema}
+\label{sec:rendimiento_sistema}
 
 Para cada número de cámaras se ejecutó una sesión de cinco minutos en los dos
 escenarios. Los valores de CPU y RAM son la mediana de las muestras que la
@@ -125,45 +125,43 @@ total, Docker alcanza unos 50\,W con cuatro cámaras, el 30\,\% del \ac{TDP} del
 procesador (165\,W), con margen suficiente para no saturarlo. Kubernetes supera
 los 90\,W al sumar el trabajo de Voctomix y el del plano de control.
 
-\section{Análisis comparativo Docker vs.\ Kubernetes}
-\label{sec:rendimiento_escenarios}
+Este coste extra de Kubernetes es específico del uso de Minikube como clúster
+local. En un despliegue sobre un clúster gestionado en la nube (Amazon \ac{EKS},
+Google \ac{GKE} o Azure \ac{AKS}) el plano de control corre en servidores del
+proveedor y los recursos disponibles para Voctomix serían equivalentes a los del
+escenario Docker Compose.
 
-La tabla~\ref{tab:rendimiento_docker} resume las métricas obtenidas con cuatro
-fuentes activas en cada escenario.
+En cuanto al ancho de banda, cada fuente RAW~I420 a 1080p25 genera 622\,Mbps.
+Con cuatro cámaras activas, el tráfico total es de 2{,}49\,Gbps, que circula
+íntegramente por la red interna del equipo, sin atravesar ninguna tarjeta de red
+física, tanto en Docker como en Kubernetes.
+
+\section{Latencia del sistema}
+\label{sec:latencia_sistema}
+
+Este apartado analiza los tiempos de respuesta del sistema: el tiempo necesario
+para el arranque completo y la latencia de las operaciones de control que el
+operador realiza durante la retransmisión. La tabla~\ref{tab:latencia_arranque}
+resume los valores obtenidos con cuatro fuentes activas en cada escenario.
 
 \begin{table}[H]
   \centering
-  \caption{Métricas de rendimiento con cuatro cámaras activas.}
-  \label{tab:rendimiento_docker}
+  \caption{Tiempos de respuesta con cuatro cámaras activas.}
+  \label{tab:latencia_arranque}
   \small
   \begin{tabular}{|l|c|c|}
     \hline
     \textbf{Métrica} & \textbf{Docker Compose} & \textbf{Kubernetes} \\
     \hline
-    CPU sistema (\%)              & 38{,}8 & 51{,}2 \\
-    RAM sistema (\%)              & 10{,}1 & 13{,}4 \\
-    RAPL bruto (W)                & 49{,}9 & $\approx$90 \\
-    RAPL baseline (W)             & 17{,}70 & $\approx$62 \\
-    RAPL neto Voctomix (W)        & 32{,}2 & $\approx$28 \\
-    Tiempo arranque sistema (s)   & $\approx$20 & $\approx$90 \\
+    Tiempo arranque sistema (s)      & $\approx$20 & $\approx$90 \\
     Tiempo pods/servicios listos (s) & $\approx$15 & $\approx$60 \\
-    Latencia mediana (ms)         & 1{,}5 & 1{,}8 \\
-    Latencia p95 (ms)             & 2{,}3 & 2{,}6 \\
+    Latencia conmutación mediana (ms) & 1{,}5 & 1{,}8 \\
+    Latencia conmutación p95 (ms)    & 2{,}3 & 2{,}6 \\
     \hline
   \end{tabular}
 \end{table}
 
-Con cuatro cámaras, Kubernetes usa unos 12 puntos porcentuales más de CPU que
-Docker Compose y unos 3 puntos más de RAM. Como se vio en el apartado anterior,
-este coste extra no viene de Voctomix sino del plano de control de Minikube, que
-comparte equipo con las cargas de trabajo. En Docker Compose no existe nada
-equivalente: el demonio Docker gestiona los contenedores directamente. Este coste
-es específico del uso de Minikube como clúster local; en un despliegue sobre un
-clúster gestionado en la nube (Amazon \ac{EKS}, Google \ac{GKE} o Azure \ac{AKS})
-el plano de control corre en servidores del proveedor y los recursos disponibles
-para Voctomix serían equivalentes a los del escenario Docker Compose.
-
-El tiempo de arranque muestra también una diferencia clara. Docker Compose
+El tiempo de arranque muestra una diferencia clara entre entornos. Docker Compose
 levanta todos los servicios en unos 20\,s y, tras 15\,s adicionales para que
 voctocore supere el \textit{healthcheck}, el sistema ya está listo para procesar
 señal. Kubernetes necesita unos 90\,s para arrancar el clúster Minikube y otros
@@ -171,11 +169,6 @@ señal. Kubernetes necesita unos 90\,s para arrancar el clúster Minikube y otro
 más de 2 minutos con imágenes ya descargadas. Este arranque más largo es asumible
 en producción, ya que el sistema se despliega una sola vez antes del evento y
 permanece activo durante toda la retransmisión.
-
-En cuanto al ancho de banda, cada fuente RAW~I420 a 1080p25 genera 622\,Mbps.
-Con cuatro cámaras activas, el tráfico total es de 2{,}49\,Gbps, que circula
-íntegramente por la red interna del equipo, sin atravesar ninguna tarjeta de red
-física, tanto en Docker como en Kubernetes.
 
 \subsection{Latencia de conmutación}
 \label{sec:latencia_conmutacion}
@@ -243,3 +236,8 @@ la de Kubernetes (1{,}8\,ms), 25 veces por debajo. La pequeña diferencia entre
 entornos se debe al salto extra del \textit{port-forward} de kubectl y no tiene
 impacto en producción. Ambos escenarios cumplen con amplio margen el requisito
 de conmutación imperceptible en producción en directo.
+
+\subsection{Latencia de transición de composite}
+\label{sec:latencia_transicion}
+
+% Pendiente: medir set_composite_mode → composite_mode_and_video_status (30 mediciones por entorno)
