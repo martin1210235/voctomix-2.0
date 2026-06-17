@@ -187,35 +187,12 @@ las latencias medidas reflejan únicamente el tiempo de procesado interno de GSt
   \label{fig:latencia}
 \end{figure}
 
-\begin{table}[H]
-  \centering
-  \caption{Estadísticos de latencia de conmutación.}
-  \label{tab:latencia_stats}
-  \small
-  \begin{tabular}{|l|c|c|}
-    \hline
-    \textbf{Estadístico} & \textbf{Docker} & \textbf{Kubernetes} \\
-    \hline
-    Mínimo   & 1{,}0\,ms & 1{,}4\,ms \\
-    \hline
-    Mediana  & 1{,}5\,ms & 1{,}8\,ms \\
-    \hline
-    Máximo   & 2{,}7\,ms & 4{,}7\,ms \\
-    \hline
-    $<$ 45\,ms & 30\,/\,30 & 30\,/\,30 \\
-    \hline
-  \end{tabular}
-\end{table}
-
-Los resultados son muy buenos: el 100\,\% de los cambios se ejecutó en menos
-de 5\,ms en los dos entornos, y las distribuciones de ambos son prácticamente
-iguales. El estándar~\ac{ITU-R} BT.1359-1~\cite{itur_bt1359_1998} establece
-45\,ms como el umbral a partir del cual el ojo humano detecta un corte, lo que
-significa que las medianas de Docker (1{,}5\,ms) y Kubernetes (1{,}8\,ms)
-quedan unas 27 y 25 veces por debajo de ese límite, respectivamente. La
-pequeña diferencia entre entornos se debe al salto de red extra del proxy de
-Kubernetes y no tiene ningún impacto en producción. Cambiar de cámara en
-directo es, en la práctica, instantáneo.
+Los resultados son muy buenos: todos los cambios tardaron menos de 5\,ms en
+los dos entornos. La mediana fue de 1{,}5\,ms en Docker y 1{,}8\,ms en
+Kubernetes, lo que está muy por debajo de los 45\,ms que fija el
+estándar~\ac{ITU-R} BT.1359-1~\cite{itur_bt1359_1998} como umbral a partir
+del cual el ojo humano nota un corte. En la práctica, cambiar de cámara es
+instantáneo y el espectador no percibe ningún salto.
 
 \subsection{Latencia de transición de composite}
 \label{sec:latencia_transicion}
