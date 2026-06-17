@@ -1,14 +1,13 @@
 \section{Rendimiento en función del número de cámaras}
 \label{sec:rendimiento_camaras}
 
-Se ejecutaron cuatro sesiones de cinco minutos con 1, 2, 3 y 4 cámaras activas
-simultáneamente, en los dos escenarios de despliegue. Los valores de CPU y RAM son
-la mediana de las muestras recogidas por la telemetría durante cada sesión (una
-muestra cada 5\,s); el análisis estadístico se realizó con NumPy~\cite{numpy_2020}
-y SciPy~\cite{scipy_2020}. El consumo energético se midió con el sensor
-\ac{RAPL}~\cite{khan2018rapl} del procesador, que reporta el consumo real del
-paquete CPU; los valores mostrados descuentan el consumo en reposo de cada entorno
-para aislar la contribución de Voctomix.
+Para cada número de cámaras se ejecutó una sesión de cinco minutos en los dos
+escenarios. Los valores de CPU y RAM son la mediana de las muestras que la
+telemetría recoge cada 5\,s; el análisis estadístico se realizó con
+NumPy~\cite{numpy_2020} y SciPy~\cite{scipy_2020}. El consumo energético se midió
+con el sensor \ac{RAPL}~\cite{khan2018rapl} del procesador, que devuelve el consumo
+real del paquete CPU en vatios. Los valores de las gráficas descuentan el consumo
+en reposo de cada entorno para mostrar únicamente el coste atribuible a Voctomix.
 
 \begin{figure}[H]
   \centering
@@ -39,17 +38,17 @@ para aislar la contribución de Voctomix.
   \label{fig:cpu_camaras}
 \end{figure}
 
-En Docker, la CPU crece de forma suave al añadir cámaras: de 33{,}5\,\% con una
-fuente hasta 38{,}8\,\% con cuatro, un incremento total de 5{,}3 puntos que
-refleja directamente el coste de procesar cada señal adicional en GStreamer. En
-Kubernetes, en cambio, la CPU se mantiene prácticamente plana en torno al 50\,\%
-con independencia del número de cámaras. La razón es que Minikube ejecuta en el
-mismo equipo que Voctomix los cuatro procesos del plano de control del clúster:
+En Docker, la CPU sube de 33{,}5\,\% con una cámara a 38{,}8\,\% con cuatro, un
+incremento de 5{,}3 puntos que refleja directamente el coste de añadir cada
+fuente en GStreamer. En Kubernetes, la CPU se mantiene prácticamente plana en
+torno al 50\,\% sin importar el número de cámaras. Esto se debe a que Minikube
+ejecuta en el mismo equipo los cuatro procesos del plano de control del clúster:
 \texttt{kube-apiserver}, \texttt{etcd}, \texttt{kube-scheduler} y
-\texttt{kube-controller-manager}. Estos procesos consumen de forma continua
-alrededor del 40\,\% de CPU incluso cuando no hay ninguna carga de trabajo
-activa. El trabajo real de mezcla de vídeo es el mismo en ambos entornos, pero
-en Kubernetes queda absorbido por este coste fijo de orquestación.
+\texttt{kube-controller-manager}. Estos procesos elevan el consumo del sistema
+hasta el 50{,}2\,\% incluso con una sola cámara activa, frente al 33{,}5\,\% que
+registra Docker en las mismas condiciones. El trabajo real de mezcla de vídeo es
+el mismo en los dos entornos, pero en Kubernetes queda enmascarado por este
+consumo fijo de los procesos de orquestación.
 
 \begin{figure}[H]
   \centering
@@ -80,13 +79,12 @@ en Kubernetes queda absorbido por este coste fijo de orquestación.
   \label{fig:ram_camaras}
 \end{figure}
 
-El uso de memoria es prácticamente constante en los dos entornos: Docker sube de
-9{,}7\,\% a 10{,}1\,\% (+0{,}4 puntos) y Kubernetes de 12{,}8\,\% a 13{,}4\,\%
-(+0{,}6 puntos) al pasar de una a cuatro cámaras. La diferencia entre entornos,
-de unos 3 puntos porcentuales, corresponde a la memoria que ocupa la capa de
-orquestación de Kubernetes. En ambos casos, añadir cámaras apenas incrementa la
-memoria, lo que confirma que GStreamer reutiliza los búferes internos entre
-fuentes.
+El uso de memoria apenas varía al añadir cámaras: Docker pasa de 9{,}7\,\% a
+10{,}1\,\% y Kubernetes de 12{,}8\,\% a 13{,}4\,\%. La diferencia de unos
+3 puntos entre entornos corresponde a la memoria que ocupa el plano de control
+de Kubernetes. En ambos casos el consumo es prácticamente plano, lo que indica
+que GStreamer reutiliza los búferes internos y que añadir cámaras no incrementa
+el uso de memoria de forma significativa.
 
 \begin{figure}[H]
   \centering
@@ -118,14 +116,14 @@ fuentes.
   \label{fig:energia_camaras}
 \end{figure}
 
-El consumo energético neto atribuible a Voctomix es similar en los dos entornos:
-entre 25 y 32\,W en Docker y entre 25 y 28\,W en Kubernetes. Esto confirma que
-el trabajo real de procesamiento multimedia es el mismo con independencia del
-orquestador. El consumo total del equipo es muy diferente: Docker alcanza unos
-50\,W con cuatro cámaras, lo que supone el 30\,\% del \ac{TDP} del procesador
-(165\,W) y deja un margen amplio antes de saturarlo. Kubernetes supera los 90\,W
-porque el plano de control de Minikube añade entre 59 y 63\,W de consumo de
-base, con algo de variación según la actividad interna del clúster.
+El consumo neto atribuible a Voctomix es similar en los dos entornos: entre 25 y
+32\,W en Docker y entre 25 y 36\,W en Kubernetes. El rango más amplio en
+Kubernetes se debe a que el baseline del plano de control de Minikube no es
+constante, sino que varía entre 59 y 63\,W según la actividad interna del
+clúster, lo que introduce dispersión en los valores netos. En términos de consumo
+total, Docker alcanza unos 50\,W con cuatro cámaras, el 30\,\% del \ac{TDP} del
+procesador (165\,W), con margen suficiente para no saturarlo. Kubernetes supera
+los 90\,W al sumar el trabajo de Voctomix y el del plano de control.
 
 \section{Análisis comparativo Docker vs.\ Kubernetes}
 \label{sec:rendimiento_escenarios}
@@ -155,46 +153,41 @@ fuentes activas en cada escenario.
   \end{tabular}
 \end{table}
 
-Con cuatro cámaras activas, Kubernetes consume unos 12 puntos porcentuales de
-CPU más que Docker Compose, y unos 3 puntos más de RAM. Como se explicó en la
-sección anterior, este overhead no proviene de Voctomix sino del plano de control
-de Minikube, que comparte equipo con las cargas de trabajo. En Docker Compose no
-existe ningún equivalente: el demonio Docker gestiona los contenedores
-directamente, sin capa adicional de orquestación. Este coste es propio del uso
-de Minikube como clúster local; en un despliegue sobre un clúster gestionado en
-la nube (Amazon \ac{EKS}, Google \ac{GKE} o Azure \ac{AKS}), el plano de control
-corre en infraestructura del proveedor y los nodos de trabajo dispondrían de los
-mismos recursos que en el escenario Docker Compose.
+Con cuatro cámaras, Kubernetes usa unos 12 puntos porcentuales más de CPU que
+Docker Compose y unos 3 puntos más de RAM. Como se vio en el apartado anterior,
+este coste extra no viene de Voctomix sino del plano de control de Minikube, que
+comparte equipo con las cargas de trabajo. En Docker Compose no existe nada
+equivalente: el demonio Docker gestiona los contenedores directamente. Este coste
+es específico del uso de Minikube como clúster local; en un despliegue sobre un
+clúster gestionado en la nube (Amazon \ac{EKS}, Google \ac{GKE} o Azure \ac{AKS})
+el plano de control corre en servidores del proveedor y los recursos disponibles
+para Voctomix serían equivalentes a los del escenario Docker Compose.
 
-El tiempo de arranque refleja también la diferencia entre los dos entornos.
-Docker Compose levanta todos los servicios en unos 20\,s; los 15\,s adicionales
-hasta que voctocore supera el \textit{healthcheck} y acepta señal son el único
-tiempo de espera real antes de poder operar. Kubernetes necesita aproximadamente
-90\,s para levantar el clúster Minikube y otros 60\,s hasta que todos los pods
-alcanzan el estado \textit{Ready}, sumando en torno a 2{,}5\,min con imágenes
-previamente cacheadas. Este tiempo de arranque mayor es asumible en producción,
-donde el sistema se despliega una sola vez antes del evento y permanece activo
-durante toda la retransmisión.
+El tiempo de arranque muestra también una diferencia clara. Docker Compose
+levanta todos los servicios en unos 20\,s y, tras 15\,s adicionales para que
+voctocore supere el \textit{healthcheck}, el sistema ya está listo para procesar
+señal. Kubernetes necesita unos 90\,s para arrancar el clúster Minikube y otros
+60\,s hasta que todos los pods están en estado \textit{Ready}, lo que suma algo
+más de 2 minutos con imágenes ya descargadas. Este arranque más largo es asumible
+en producción, ya que el sistema se despliega una sola vez antes del evento y
+permanece activo durante toda la retransmisión.
 
-Desde el punto de vista del ancho de
-banda, cada fuente RAW I420 a 1080p25 genera 622\,Mbps, lo que con cuatro fuentes
-suma 2{,}49\,Gbps íntegramente sobre la red interna, tanto en Docker como en
-Kubernetes, sin atravesar ninguna interfaz física.
+En cuanto al ancho de banda, cada fuente RAW~I420 a 1080p25 genera 622\,Mbps.
+Con cuatro cámaras activas, el tráfico total es de 2{,}49\,Gbps, que circula
+íntegramente por la red interna del equipo, sin atravesar ninguna tarjeta de red
+física, tanto en Docker como en Kubernetes.
 
 \subsection{Latencia de conmutación}
 \label{sec:latencia_conmutacion}
 
-La latencia de conmutación mide el tiempo que transcurre entre que el operador
-ordena un corte y el sistema lo aplica. Para medirla, un script automatizó
-30 cambios de fuente consecutivos en cada entorno mediante el protocolo TCP de
-voctocore: por cada conmutación se registró el tiempo entre el envío del comando
-\texttt{set\_video\_a} y la recepción de la respuesta \texttt{video\_status}, que
-voctocore emite una vez el compositor GStreamer ha aplicado el cambio internamente.
-En ese instante el pipeline ya está procesando la nueva señal, de modo que el
-siguiente fotograma renderizado corresponde a la nueva fuente. Dado que el sistema
-trabaja con vídeo RAW~I420 sin codificación intermedia, no existe ningún búfer de
-códec que retrase la visibilidad del cambio: la latencia medida es una estimación
-conservadora del tiempo real que percibe el operador.
+La latencia de conmutación es el tiempo que tarda el sistema en cambiar de fuente
+desde que el operador pulsa el corte. Para medirla se automatizaron 30 cambios de
+fuente consecutivos en cada entorno: por cada conmutación, un script registró el
+tiempo entre el envío del comando \texttt{set\_video\_a} y la recepción de la
+respuesta \texttt{video\_status}, que voctocore envía una vez el compositor
+GStreamer ha procesado el cambio. Al trabajar con vídeo RAW~I420 sin codificación
+intermedia, no existe ningún búfer de códec que añada retardo, por lo que la
+latencia medida representa el tiempo real que percibe el operador.
 
 \begin{figure}[H]
   \centering
@@ -240,14 +233,13 @@ conservadora del tiempo real que percibe el operador.
 \end{table}
 
 En los dos entornos, el 100\,\% de las conmutaciones se resuelve en menos de
-5\,ms. Para contextualizar este resultado existen dos referencias: la duración
-de un fotograma a 25\,fps, que es de 40\,ms, por debajo de la cual el cambio
-ocurre dentro del mismo período de imagen y resulta imperceptible para el
-espectador; y la Recomendación \ac{ITU-R} BT.1359-1~\cite{itur_bt1359_1998}, que
-establece en 45\,ms el umbral a partir del cual el ojo humano detecta
-desincronizaciones entre audio y vídeo en emisión. La mediana obtenida en Docker
-(1{,}5\,ms) es 27 veces inferior a la duración de un fotograma, y la de
-Kubernetes (1{,}8\,ms) es 22 veces inferior. La pequeña diferencia entre
-entornos se debe al salto adicional del \textit{port-forward} de kubectl y es
-prácticamente irrelevante en producción. Ambos entornos cumplen con amplio
-margen el requisito de conmutación imperceptible en producción en directo.
+5\,ms. Para valorar este resultado se pueden usar dos referencias: un fotograma a
+25\,fps dura 40\,ms, por lo que cualquier latencia inferior a ese valor ocurre
+dentro del mismo período de imagen y es imperceptible para el espectador; y la
+Recomendación \ac{ITU-R} BT.1359-1~\cite{itur_bt1359_1998} establece en 45\,ms el
+umbral a partir del cual el ojo humano detecta desincronizaciones entre audio y
+vídeo. La mediana en Docker (1{,}5\,ms) está 27 veces por debajo de ese umbral, y
+la de Kubernetes (1{,}8\,ms), 25 veces por debajo. La pequeña diferencia entre
+entornos se debe al salto extra del \textit{port-forward} de kubectl y no tiene
+impacto en producción. Ambos escenarios cumplen con amplio margen el requisito
+de conmutación imperceptible en producción en directo.

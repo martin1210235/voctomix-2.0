@@ -1,12 +1,12 @@
 \section{Entorno de pruebas}
 \label{sec:entorno_pruebas}
 
-Todas las pruebas se realizaron en el mismo equipo físico, comparando dos escenarios
-de despliegue: Docker~Compose y Kubernetes con Minikube. La señal de entrada fue
-generada por FFmpeg~\cite{ffmpeg_project}: cuatro fuentes a 1920$\times$1080@25\,fps
-en formato RAW~I420, sin compresión, circulando íntegramente por la red interna del
-equipo. La tabla~\ref{tab:hardware} recoge las especificaciones relevantes para
-interpretar los resultados.
+Todas las pruebas se realizaron en el mismo equipo, comparando dos escenarios de
+despliegue: Docker~Compose y Kubernetes con Minikube. La señal de vídeo fue
+generada con FFmpeg~\cite{ffmpeg_project}: cuatro fuentes a 1920$\times$1080 a
+25\,fps en formato RAW~I420 sin compresión, cuyo tráfico circula íntegramente por
+la red interna del equipo sin atravesar ninguna interfaz física. La
+tabla~\ref{tab:hardware} recoge las especificaciones del entorno.
 
 \begin{table}[H]
   \centering
@@ -30,13 +30,11 @@ interpretar los resultados.
 \section{Validación funcional}
 \label{sec:validacion_funcional}
 
-Antes de entrar en el análisis cuantitativo de rendimiento, esta sección comprueba
-que cada módulo desarrollado en los capítulos~3 y~4 se comporta correctamente con
-señal activa. Las pruebas se realizaron manualmente en ambos escenarios de
-despliegue, Docker~Compose y Kubernetes: para cada funcionalidad se ejecutó la
-acción correspondiente desde la interfaz de control y se observó la respuesta del
-sistema. La tabla~\ref{tab:validacion_funcional} recoge las funcionalidades
-verificadas.
+En este apartado se comprueba que cada módulo del sistema funciona correctamente
+con señal activa. Para ello se ejecutaron las acciones correspondientes desde la
+interfaz de control y se verificó la respuesta del sistema, tanto en Docker~Compose
+como en Kubernetes. La tabla~\ref{tab:validacion_funcional} resume lo que se
+comprobó en cada caso.
 
 \begin{table}[H]
   \centering
