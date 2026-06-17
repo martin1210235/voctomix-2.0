@@ -3,12 +3,10 @@
 
 Todas las pruebas se realizaron en el mismo equipo físico, comparando dos escenarios
 de despliegue: Docker~Compose y Kubernetes con Minikube. La señal de entrada fue
-generada por FFmpeg~\cite{ffmpeg_project}: cuatro fuentes independientes a
-1920$\times$1080@25\,fps en formato RAW~I420. Este formato sin compresión supone un
-tráfico de 622\,Mbps por cámara, lo que con cuatro fuentes activas suma 2{,}49\,Gbps
-circulando íntegramente por la red interna del equipo, sin atravesar ninguna interfaz
-física. La tabla~\ref{tab:hardware} recoge únicamente las especificaciones que
-condicionan directamente los resultados obtenidos.
+generada por FFmpeg~\cite{ffmpeg_project}: cuatro fuentes a 1920$\times$1080@25\,fps
+en formato RAW~I420, sin compresión, circulando íntegramente por la red interna del
+equipo. La tabla~\ref{tab:hardware} recoge las especificaciones relevantes para
+interpretar los resultados.
 
 \begin{table}[H]
   \centering
@@ -88,42 +86,4 @@ La tabla~\ref{tab:validacion_funcional} resume los resultados.
   \end{tabular}
 \end{table}
 
-Todos los módulos superaron la verificación. La validación del sistema de
-telemetría, por su mayor complejidad, se detalla en el apartado siguiente.
-
-\section{Validación del sistema de telemetría}
-\label{sec:prueba_telemetria}
-
-El sistema de telemetría registra dos tipos de eventos: STATE, emitido
-periódicamente cada 5 segundos con el estado completo del mezclador y las métricas
-de rendimiento, y CHANGE, emitido de forma inmediata cuando el operador
-realiza cualquier acción sobre la GUI. Para verificar el correcto funcionamiento de
-ambos se realizaron diversas acciones sobre la interfaz: cortes de cámara,
-cambios de composite, activaciones y desactivaciones de overlay, inserción de
-texto en rótulos y transiciones entre los estados del stream blanker. Se
-accedió a la consola de administración de RabbitMQ
-(\texttt{http://localhost:15672}) y se verificó que la cola
-\texttt{voctomix\_events} acumulaba un mensaje por cada acción ejecutada. La
-figura~\ref{fig:rabbitmq_queues} muestra la consola con mensajes en cola.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{figuras/rabbitmq_cybernemo_queues.png}
-  \caption{Cola \texttt{voctomix\_events} en la consola RabbitMQ tras la sesión de prueba.}
-  \label{fig:rabbitmq_queues}
-\end{figure}
-
-Las capturas de la figura~\ref{fig:telemetria_eventos} muestran la salida en
-tiempo real del terminal durante la realización, con una latencia inferior a
-50\,ms. El contenido de este registro es idéntico al almacenado en el fichero
-\texttt{.jsonl}, que se genera automáticamente al finalizar la retransmisión
-como historial completo de la realización.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{figuras/telemetria_state_change.png}
-  \caption{Salida del terminal de telemetría: evento STATE (arriba) y evento
-           CHANGE (abajo), con el estado completo del mezclador y las métricas
-           de rendimiento.}
-  \label{fig:telemetria_eventos}
-\end{figure}
+Todos los módulos superaron la verificación.
