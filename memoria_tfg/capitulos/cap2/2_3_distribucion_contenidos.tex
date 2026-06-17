@@ -48,7 +48,7 @@ espectador.
   \caption{Comparativa de protocolos de distribución audiovisual en directo.}
   \label{tab:distribucion_protocolos}
   \small
-  \begin{tabular}{|l|c|l|c|l|}
+  \begin{tabularx}{\textwidth}{|l|c|l|c|X|}
     \hline
     \textbf{Protocolo} & \textbf{Latencia} & \textbf{Transporte} & \textbf{Cifrado} & \textbf{Uso principal} \\
     \hline
@@ -57,7 +57,7 @@ espectador.
     MPEG-DASH & 2--30~s     & HTTP   & HTTPS         & Streaming adaptativo abierto \\
     WebRTC    & 100--500~ms & UDP    & DTLS/SRTP     & Monitorización, retornos \\
     \hline
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
 \subsection{Hypertext Transfer Protocol}
@@ -165,7 +165,8 @@ pérdida de calidad a cambio de viabilizar el transporte.
   \caption{Comparativa de códecs de vídeo para distribución en directo.}
   \label{tab:codecs_distribucion}
   \small
-  \begin{tabular}{|l|c|c|c|l|}
+  \resizebox{\textwidth}{!}{%
+  \begin{tabular}{|l|c|c|c|c|}
     \hline
     \textbf{Códec} & \textbf{Eficiencia vs H.264} & \textbf{Vel. encoding} & \textbf{Compatibilidad} & \textbf{RT posible} \\
     \hline
@@ -175,5 +176,5 @@ pérdida de calidad a cambio de viabilizar el transporte.
     H.266/VVC  & $\times$4  & Muy lento        & Emergente (2024+) & No (laboratorio) \\
     AC-4       & Audio      & Tiempo real      & ATSC 3.0, DVB     & Sí \\
     \hline
-  \end{tabular}
+  \end{tabular}}
 \end{table}

@@ -59,7 +59,7 @@ red local o contribución remota sobre Internet.
   \caption{Comparativa de protocolos de contribución audiovisual.}
   \label{tab:contrib_interfaces}
   \small
-  \begin{tabular}{|l|l|c|c|l|}
+  \begin{tabularx}{\textwidth}{|l|l|c|c|X|}
     \hline
     \textbf{Protocolo} & \textbf{Medio} & \textbf{Velocidad máx.} & \textbf{Latencia} & \textbf{Uso típico} \\
     \hline
@@ -70,7 +70,7 @@ red local o contribución remota sobre Internet.
     SRT             & Internet/LAN  & Variable       & $<$1~s       & Contribución REMI IP \\
     RTP/RTSP        & LAN/WAN       & Variable       & Sub-imagen   & Cámaras IP, ST 2110 \\
     \hline
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
 \subsection{User Datagram Protocol}
@@ -120,7 +120,7 @@ negociable y la latencia adicional es aceptable:
   \caption{Comparativa de los protocolos de transporte en producción audiovisual.}
   \label{tab:protocolos_red}
   \small
-  \begin{tabular}{|l|c|c|c|l|}
+  \begin{tabularx}{\textwidth}{|l|c|c|c|X|}
     \hline
     \textbf{Protocolo} & \textbf{Orientado a conexión} & \textbf{Fiabilidad} & \textbf{Latencia} & \textbf{Uso en Voctomix} \\
     \hline
@@ -128,7 +128,7 @@ negociable y la latencia adicional es aceptable:
     TCP  & Sí  & Garantizada   & Variable     & MKV/fuentes, control \\
     HTTP & Sí* & Garantizada   & Alta         & HLS, DASH, telemetría (recepción POST) \\
     \hline
-  \end{tabular}
+  \end{tabularx}
   \begin{flushleft}
     \footnotesize *HTTP/1.1 y HTTP/2 operan sobre TCP; HTTP/3 opera sobre QUIC (UDP).
   \end{flushleft}
@@ -253,7 +253,7 @@ múltiples etapas de procesamiento.
   \caption{Comparativa de códecs de contribución audiovisual.}
   \label{tab:codecs_contribucion}
   \small
-  \begin{tabular}{|l|c|c|l|}
+  \begin{tabularx}{\textwidth}{|l|c|c|X|}
     \hline
     \textbf{Códec} & \textbf{Compresión} & \textbf{Latencia enc.} & \textbf{Uso típico} \\
     \hline
@@ -266,5 +266,5 @@ múltiples etapas de procesamiento.
     Dolby Atmos     & Variable       & $<$1 fotograma & Audio inmersivo broadcast en vivo \\
     AC-4            & Alta eficiencia & $<$1 fotograma & ATSC 3.0, DVB, contribución IP \\
     \hline
-  \end{tabular}
+  \end{tabularx}
 \end{table}
