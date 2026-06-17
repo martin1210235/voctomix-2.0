@@ -176,14 +176,11 @@ permanece activo durante toda la retransmisión.
 \subsection{Latencia de conmutación}
 \label{sec:latencia_conmutacion}
 
-La latencia de conmutación es el tiempo que tarda el sistema en cambiar de fuente
-desde que el operador pulsa el corte. Para medirla se automatizaron 30 cambios de
-fuente consecutivos en cada entorno: por cada conmutación, un script registró el
-tiempo entre el envío del comando \texttt{set\_video\_a} y la recepción de la
-respuesta \texttt{video\_status}, que voctocore envía una vez el compositor
-GStreamer ha procesado el cambio. Al trabajar con vídeo RAW~I420 sin codificación
-intermedia, no existe ningún búfer de códec que añada retardo, por lo que la
-latencia medida representa el tiempo real que percibe el operador.
+Se automatizaron 30 cambios de fuente consecutivos en cada entorno y se midió
+el tiempo entre el envío del comando \texttt{set\_video\_a} y la respuesta
+\texttt{video\_status} de voctocore, que se emite cuando GStreamer ha completado
+el cambio. Como el vídeo es RAW~I420 sin compresión, no hay ningún búfer de
+códec que añada retardo.
 
 \begin{figure}[H]
   \centering
@@ -216,29 +213,31 @@ latencia medida representa el tiempo real que percibe el operador.
   \centering
   \caption{Estadísticos de latencia de conmutación.}
   \label{tab:latencia_stats}
+  \small
   \begin{tabular}{|l|c|c|}
     \hline
     \textbf{Estadístico} & \textbf{Docker} & \textbf{Kubernetes} \\
     \hline
-    Mínimo                & 1{,}0\,ms  & 1{,}4\,ms \\
-    Mediana               & 1{,}5\,ms  & 1{,}8\,ms \\
-    Máximo                & 2{,}7\,ms  & 4{,}7\,ms \\
-    $<$ 45\,ms (\ac{ITU-R} BT.1359-1) & 30\,/\,30  & 30\,/\,30 \\
+    Mínimo   & 1{,}0\,ms & 1{,}4\,ms \\
+    \hline
+    Mediana  & 1{,}5\,ms & 1{,}8\,ms \\
+    \hline
+    Máximo   & 2{,}7\,ms & 4{,}7\,ms \\
+    \hline
+    $<$ 45\,ms (\ac{ITU-R} BT.1359-1) & 30\,/\,30 & 30\,/\,30 \\
     \hline
   \end{tabular}
 \end{table}
 
-En los dos entornos, el 100\,\% de las conmutaciones se resuelve en menos de
-5\,ms. Para valorar este resultado se pueden usar dos referencias: un fotograma a
-25\,fps dura 40\,ms, por lo que cualquier latencia inferior a ese valor ocurre
-dentro del mismo período de imagen y es imperceptible para el espectador; y la
-Recomendación \ac{ITU-R} BT.1359-1~\cite{itur_bt1359_1998} establece en 45\,ms el
-umbral a partir del cual el ojo humano detecta desincronizaciones entre audio y
-vídeo. La mediana en Docker (1{,}5\,ms) está 27 veces por debajo de ese umbral, y
-la de Kubernetes (1{,}8\,ms), 25 veces por debajo. La pequeña diferencia entre
-entornos se debe al salto extra del \textit{port-forward} de kubectl y no tiene
-impacto en producción. Ambos escenarios cumplen con amplio margen el requisito
-de conmutación imperceptible en producción en directo.
+El 100\,\% de las conmutaciones se resuelve en menos de 5\,ms en los dos
+entornos. Un fotograma a 25\,fps dura 40\,ms, así que cualquier cambio por
+debajo de ese valor es imperceptible para el espectador. La
+Recomendación~\ac{ITU-R} BT.1359-1~\cite{itur_bt1359_1998} establece 45\,ms
+como el umbral a partir del cual el ojo humano detecta desincronización entre
+audio y vídeo: la mediana de Docker (1{,}5\,ms) queda 27~veces por debajo de
+ese límite, y la de Kubernetes (1{,}8\,ms), 25~veces. La ligera diferencia
+entre entornos se debe al salto adicional del \textit{port-forward} de kubectl
+y no tiene impacto en producción.
 
 \subsection{Latencia de transición de composite}
 \label{sec:latencia_transicion}
