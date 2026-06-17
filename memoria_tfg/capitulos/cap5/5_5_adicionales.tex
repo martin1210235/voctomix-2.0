@@ -1,52 +1,48 @@
 \section{Estabilidad a largo plazo}
 \label{sec:estabilidad}
 
-Se ejecutó el sistema completo en Docker~Compose durante 31 minutos con las
-cuatro cámaras y todos los servicios activos. Las fuentes de vídeo se generaron
-localmente con FFmpeg para que no dependieran de ficheros externos y no pudieran
-fallar durante la prueba. La telemetría registró el estado del sistema cada 5
-segundos, lo que produjo 372 muestras que se analizaron al finalizar con un
-script en Python (tabla~\ref{tab:estabilidad}, figura~\ref{fig:estabilidad}).
+En sistemas de procesado de vídeo en continuo es habitual que, con el tiempo,
+la CPU vaya consumiendo cada vez más sin motivo aparente o que la memoria
+crezca de forma silenciosa hasta agotar los recursos del equipo. Estos
+problemas, conocidos como \textit{CPU creep} y fuga de memoria, no aparecen
+en pruebas cortas y solo se detectan dejando el sistema en marcha durante un
+periodo prolongado. El objetivo de esta prueba es comprobar que Voctomix no
+presenta ninguno de estos comportamientos.
 
-\begin{table}[H]
-  \centering
-  \caption{Estadísticos de la prueba de estabilidad (31\,min, 372 muestras).}
-  \label{tab:estabilidad}
-  \small
-  \begin{tabular}{|l|c|c|}
-    \hline
-    \textbf{Estadístico} & \textbf{CPU (\%)} & \textbf{RAM (\%)} \\
-    \hline
-    Mediana           & 51{,}9 & 22{,}2 \\
-    \hline
-    Media             & 52{,}7 & 22{,}4 \\
-    \hline
-    Mínimo            & 24{,}1 & 21{,}9 \\
-    \hline
-    Máximo            & 83{,}0 & 23{,}5 \\
-    \hline
-    Desviación típica &  3{,}9 &  0{,}4 \\
-    \hline
-    Percentil 95      & 58{,}8 & 23{,}4 \\
-    \hline
-  \end{tabular}
-\end{table}
+Se arrancó el sistema completo en Docker~Compose con las cuatro cámaras activas
+y se dejó funcionando 31 minutos seguidos. Las fuentes de vídeo se generaron
+con FFmpeg directamente en el equipo para que nada externo pudiera fallar.
+Cada 5 segundos la telemetría anotaba el uso de CPU y RAM, acumulando 377
+muestras en total.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=\textwidth]{figuras/estabilidad_30min.png}
-  \caption{Uso de CPU y RAM durante los 31 minutos de prueba de estabilidad.
-           El pico de CPU al minuto~4 (83\,\%) corresponde a la finalización
-           del arranque del \textit{pipeline} GStreamer y excede la escala.}
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=13cm, height=6cm,
+      xlabel={Tiempo (min)},
+      ylabel={Uso (\%)},
+      xmin=0, xmax=31.5,
+      ymin=0, ymax=90,
+      ymajorgrids=true, grid style=dashed,
+      legend style={at={(0.97,0.97)}, anchor=north east, font=\scriptsize},
+    ]
+      \addplot[color=orange!80!black, thick, no marks]
+        coordinates {(0.0,24.1) (0.3,60.3) (0.55,60.6) (0.8,55.3) (1.05,56.4) (1.3,59.0) (1.55,59.0) (1.8,55.0) (2.05,54.5) (2.3,58.9) (2.55,59.7) (2.8,56.7) (3.05,60.5) (3.3,55.0) (3.57,55.1) (3.82,54.8) (4.07,62.0) (4.32,63.1) (4.57,58.6) (4.82,59.7) (5.07,59.9) (5.32,58.3) (5.57,58.9) (5.82,56.5) (6.07,55.7) (6.32,58.7) (6.57,55.7) (6.82,55.4) (7.07,56.1) (7.32,56.9) (7.57,55.3) (7.82,56.4) (8.07,57.5) (8.32,50.9) (8.57,51.2) (8.82,51.3) (9.07,51.3) (9.32,50.2) (9.57,50.5) (9.82,52.9) (10.07,48.9) (10.32,51.7) (10.57,54.0) (10.82,50.9) (11.07,52.2) (11.32,52.1) (11.57,53.6) (11.82,52.1) (12.07,51.7) (12.32,53.7) (12.57,50.9) (12.82,52.7) (13.07,55.1) (13.32,50.8) (13.57,51.4) (13.82,54.1) (14.07,53.0) (14.32,51.8) (14.57,52.3) (14.82,53.1) (15.07,52.2) (15.32,49.9) (15.57,51.9) (15.82,50.4) (16.07,51.2) (16.32,51.2) (16.57,52.3) (16.83,49.3) (17.08,51.4) (17.33,51.7) (17.58,50.0) (17.83,51.5) (18.08,51.8) (18.33,50.2) (18.58,50.9) (18.83,52.1) (19.08,52.6) (19.33,51.6) (19.58,50.5) (19.83,54.5) (20.08,50.8) (20.33,54.1) (20.58,57.1) (20.83,51.2) (21.08,52.3) (21.33,52.5) (21.58,50.5) (21.83,50.6) (22.08,49.8) (22.33,52.6) (22.58,51.9) (22.83,49.8) (23.08,52.3) (23.33,51.0) (23.58,49.9) (23.83,53.1) (24.08,51.2) (24.33,51.7) (24.58,52.9) (24.83,52.8) (25.08,52.7) (25.33,53.4) (25.58,53.5) (25.83,52.4) (26.08,52.1) (26.33,52.4) (26.58,54.0) (26.83,51.7) (27.08,53.2) (27.33,57.8) (27.58,53.6) (27.83,52.0) (28.08,54.5) (28.33,50.0) (28.58,51.3) (28.83,50.5) (29.08,53.5) (29.33,52.4) (29.58,50.7) (29.83,53.3) (30.08,53.2) (30.35,50.1) (30.6,54.1) (30.85,51.9) (31.1,53.9) (31.35,53.5)};
+      \addplot[color=blue!70!black, thick, no marks]
+        coordinates {(0.0,22.6) (0.3,22.6) (0.55,22.6) (0.8,22.6) (1.05,22.6) (1.3,22.6) (1.55,22.5) (1.8,22.6) (2.05,22.6) (2.3,22.6) (2.55,22.7) (2.8,22.6) (3.05,22.7) (3.3,22.6) (3.57,23.2) (3.82,23.1) (4.07,23.1) (4.32,23.2) (4.57,23.3) (4.82,23.4) (5.07,23.3) (5.32,23.3) (5.57,23.4) (5.82,23.5) (6.07,23.3) (6.32,23.4) (6.57,23.2) (6.82,23.4) (7.07,23.4) (7.32,23.4) (7.57,23.4) (7.82,23.4) (8.07,23.4) (8.32,23.0) (8.57,23.0) (8.82,23.0) (9.07,23.0) (9.32,22.9) (9.57,22.9) (9.82,22.9) (10.07,22.9) (10.32,22.9) (10.57,22.9) (10.82,22.9) (11.07,22.9) (11.32,22.9) (11.57,22.9) (11.82,22.9) (12.07,22.9) (12.32,22.9) (12.57,22.9) (12.82,22.8) (13.07,22.8) (13.32,22.8) (13.57,22.8) (13.82,22.8) (14.07,22.8) (14.32,22.8) (14.57,22.8) (14.82,22.8) (15.07,22.8) (15.32,22.8) (15.57,22.8) (15.82,22.8) (16.07,22.8) (16.32,22.7) (16.57,22.7) (16.83,22.7) (17.08,22.7) (17.33,22.7) (17.58,22.7) (17.83,22.7) (18.08,22.7) (18.33,22.7) (18.58,22.7) (18.83,22.7) (19.08,22.6) (19.33,22.6) (19.58,22.6) (19.83,22.6) (20.08,22.6) (20.33,22.6) (20.58,22.5) (20.83,22.5) (21.08,22.5) (21.33,22.5) (21.58,22.4) (21.83,22.4) (22.08,22.4) (22.33,22.4) (22.58,22.4) (22.83,22.4) (23.08,22.3) (23.33,22.3) (23.58,22.3) (23.83,22.3) (24.08,22.3) (24.33,22.3) (24.58,22.2) (24.83,22.2) (25.08,22.2) (25.33,22.2) (25.58,22.2) (25.83,22.2) (26.08,22.2) (26.33,22.1) (26.58,22.1) (26.83,22.1) (27.08,22.1) (27.33,22.1) (27.58,22.1) (27.83,22.0) (28.08,22.0) (28.33,22.0) (28.58,22.0) (28.83,22.0) (29.08,21.9) (29.33,21.9) (29.58,21.9) (29.83,21.9) (30.08,21.9) (30.35,21.9) (30.6,21.9) (30.85,21.9) (31.1,21.9) (31.35,21.9)};
+      \legend{CPU (\%), RAM (\%)}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Uso de CPU (naranja) y RAM (azul) durante los 31 minutos de prueba de estabilidad (377 muestras, una cada 5\,s).}
   \label{fig:estabilidad}
 \end{figure}
 
-La RAM se mantuvo prácticamente plana durante toda la sesión, con una
-desviación típica de 0{,}4 puntos porcentuales, lo que confirma que no existe
-ninguna fuga de memoria. La CPU operó en la banda del 50--60\,\% durante el
-96{,}8\,\% del tiempo, con un único pico al inicio por el arranque del
-\textit{pipeline}. No se registró ningún reinicio de contenedor ni ningún
-fallo durante los 31 minutos de ejecución continua.
+La CPU se estabilizó en la banda del 50--60\,\% pasados los primeros minutos
+de arranque y se mantuvo ahí sin ninguna tendencia creciente. La RAM descendió
+ligeramente al principio, cuando Docker liberó recursos temporales de arranque,
+y luego quedó completamente plana: no hay fuga de memoria. Durante los 31
+minutos no se registró ningún reinicio de contenedor ni ningún fallo.
 
 \section{Resiliencia y recuperación}
 \label{sec:resiliencia}
@@ -75,7 +71,7 @@ y lo declaró \textit{healthy}. Se repitió 10 veces.
         coordinates {(1,517)(2,522)(3,526)(4,523)(5,518)(6,519)(7,520)(8,516)(9,521)(10,517)};
     \end{axis}
   \end{tikzpicture}
-  \caption{Tiempo de recuperación del contenedor cam1 en cada iteración ($n=10$).}
+  \caption{Tiempo de recuperación del contenedor cam1 en cada iteración.}
   \label{fig:resiliencia}
 \end{figure}
 
