@@ -29,8 +29,8 @@ implicados en el desarrollo y despliegue del sistema.}
 agrupados por dimensión:}
 
 \vspace{0.15cm}
-\noindent\textbf{Impacto en el sector audiovisual y académico}
-\normalsize{ Voctomix~2.0 tiene un impacto directo en comunidades con necesidades de producción
+\noindent\textbf{Impacto en el sector audiovisual y académico}\\
+\normalsize{Voctomix~2.0 tiene un impacto directo en comunidades con necesidades de producción
 audiovisual sin presupuesto broadcast: grupos de investigación universitarios como CyberNEMO (UPM),
 asociaciones estudiantiles, organismos públicos y entidades sin ánimo de lucro. El sistema
 permite a estas organizaciones ofrecer retransmisiones multicámara de calidad profesional con
@@ -39,8 +39,8 @@ hardware dedicado, ampliando el alcance de la divulgación científica y la cobe
 institucionales.}
 
 \vspace{0.15cm}
-\noindent\textbf{Aspectos éticos}
-\normalsize{ El sistema se construye sobre software libre publicado bajo licencias GPL~\cite{gpl_v2} y
+\noindent\textbf{Aspectos éticos}\\
+\normalsize{El sistema se construye sobre software libre publicado bajo licencias GPL~\cite{gpl_v2} y
 Apache~2.0~\cite{apache2_license}, lo que garantiza la transparencia del código, su auditabilidad y la independencia de
 proveedores propietarios.
 
@@ -68,8 +68,8 @@ LOPD, así como a respetar los derechos de imagen y de propiedad intelectual sob
 emitido.}
 
 \vspace{0.15cm}
-\noindent\textbf{Aspectos económicos}
-\normalsize{ La principal ventaja económica de Voctomix~2.0 deriva del modelo de producción
+\noindent\textbf{Aspectos económicos}\\
+\normalsize{La principal ventaja económica de Voctomix~2.0 deriva del modelo de producción
 remota (REMI) que habilita: al desplazar el núcleo de procesamiento a un servidor centralizado,
 se elimina la necesidad de trasladar al lugar del evento a todo el equipo técnico de realización.
 Esto se traduce en una reducción directa de los gastos de desplazamiento, alojamiento y
@@ -88,8 +88,8 @@ La arquitectura cliente-servidor permite además reutilizar la misma infraestruc
 eventos, reduciendo el coste por producción a medida que aumenta el volumen de retransmisiones.}
 
 \vspace{0.15cm}
-\noindent\textbf{Aspectos sociales}
-\normalsize{ La principal contribución social del proyecto es la democratización del acceso
+\noindent\textbf{Aspectos sociales}\\
+\normalsize{La principal contribución social del proyecto es la democratización del acceso
 a la producción audiovisual profesional. Al eliminar la barrera económica y técnica que supone el
 hardware dedicado, el sistema permite que entidades sin presupuesto broadcast, como
 conferencias académicas, jornadas de puertas abiertas, actos culturales y organismos públicos,
@@ -97,8 +97,8 @@ ofrezcan retransmisiones de calidad a sus audiencias. Al publicar el código baj
 fomenta la colaboración abierta en el ecosistema de software libre para la producción audiovisual.}
 
 \vspace{0.15cm}
-\noindent\textbf{Aspectos medioambientales}
-\normalsize{ El modelo REMI que habilita Voctomix~2.0 tiene un impacto ambiental positivo
+\noindent\textbf{Aspectos medioambientales}\\
+\normalsize{El modelo REMI que habilita Voctomix~2.0 tiene un impacto ambiental positivo
 significativo: al reducir los desplazamientos de personal y equipos, disminuye directamente las
 emisiones de CO\textsubscript{2} asociadas al transporte. La sustitución de hardware especializado
 por software sobre equipos de propósito general reduce la fabricación de dispositivos dedicados y
@@ -127,51 +127,51 @@ por ser la principal ventaja diferencial del modelo REMI, y el ético, por plant
 deben gestionarse activamente.}
 
 \vspace{0.15cm}
-\textbf{Impacto económico: reducción de costes en producción remota}
+\textbf{Impacto económico, reducción de costes en producción remota}
 
 \begin{enumerate}
-  \item \underline{Reducción de personal desplazado:} En una producción multicámara convencional,
+  \item \textbf{Reducción de personal desplazado} En una producción multicámara convencional,
   el equipo técnico de realización debe estar presente en el lugar del evento. El modelo REMI
   permite que el realizador, el técnico de mezcla de audio y el operador de gráficos trabajen
   desde una sala de control centralizada, reduciendo el personal desplazado a los mínimos
   operadores de cámara in situ.
 
-  \item \underline{Eliminación de hardware dedicado:} Voctomix~2.0 sustituye mezcladores,
+  \item \textbf{Eliminación de hardware dedicado} Voctomix~2.0 sustituye mezcladores,
   matrices de vídeo y sistemas de grabación profesional por software ejecutado en hardware
   convencional. El coste de adquisición pasa de varios miles de euros a prácticamente cero,
   con la única inversión en equipos de red y ordenadores de propósito general.
 
-  \item \underline{Escalabilidad sin sobrecoste:} La arquitectura contenerizada permite desplegar
+  \item \textbf{Escalabilidad sin sobrecoste} La arquitectura contenerizada permite desplegar
   el sistema completo, incluyendo telemetría y broker de mensajería, con un único comando,
   sin licencias adicionales ni infraestructura propietaria. El mismo despliegue puede reutilizarse
   para todos los eventos de una organización.
 \end{enumerate}
 
 \vspace{0.15cm}
-\textbf{Impacto ético: ciberseguridad y responsabilidad profesional}
+\textbf{Impacto ético, ciberseguridad y responsabilidad profesional}
 
 \begin{enumerate}
-  \item \underline{Superficie de ataque en red:} El sistema expone múltiples puertos TCP
+  \item \textbf{Superficie de ataque en red} El sistema expone múltiples puertos TCP
   (control en 9999, entradas de cámara en 10000--10005, salidas en 11000--15000, consola
   RabbitMQ en 15672, API de telemetría en 8080). En un entorno de red no controlado, cada
   puerto accesible es un vector de ataque potencial. El ingeniero que despliega el sistema
   tiene la responsabilidad de aplicar reglas de cortafuegos que limiten el acceso a estos
   puertos a los equipos autorizados.
 
-  \item \underline{Autenticación y control de acceso:} El protocolo de control TCP de voctocore
+  \item \textbf{Autenticación y control de acceso} El protocolo de control TCP de voctocore
   no implementa autenticación en la capa de aplicación; cualquier cliente que alcance el
   puerto~9999 puede emitir comandos al mezclador. En despliegues en red local controlada esto
   es aceptable, pero en entornos con acceso remoto debe añadirse una capa de túnel cifrado
   (VPN, SSH port forwarding) para proteger el canal de control.
 
-  \item \underline{Responsabilidad ante el desplazamiento laboral:} La adopción de sistemas
+  \item \textbf{Responsabilidad ante el desplazamiento laboral} La adopción de sistemas
   de producción remota debe ir acompañada de políticas de formación y reconversión para el
   personal técnico afectado, evitando que la eficiencia económica se consiga a costa de la
   precariedad laboral en el sector audiovisual.
 \end{enumerate}
 
 \vspace{0.15cm}
-\textbf{Consideraciones sobre privacidad:}
+\textbf{Consideraciones sobre privacidad}
 
 El sistema de telemetría registra los eventos de operación del mezclador en ficheros locales y
 los publica en un broker RabbitMQ interno. Es responsabilidad del operador asegurar que:

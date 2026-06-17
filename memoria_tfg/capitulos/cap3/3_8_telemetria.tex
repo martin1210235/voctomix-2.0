@@ -49,7 +49,7 @@ El registro combina dos tipos de entrada:
 
 Cada entrada incluye una marca de tiempo, el estado completo del mezclador (fuentes en
 programa y preview, composite, modo de stream, overlays y niveles de audio) y métricas
-del servidor (CPU, RAM y ancho de banda por fuente). El ejemplo siguiente muestra una
+del servidor (\ac{CPU}, \ac{RAM} y ancho de banda por fuente). El ejemplo siguiente muestra una
 entrada de tipo CHANGE completa tras un corte de cámara:
 
 \begin{verbatim}
@@ -85,7 +85,7 @@ entrada de tipo CHANGE completa tras un corte de cámara:
 \label{sec:rabbitmq}
 
 Opcionalmente, el servicio puede publicar cada evento en un broker
-RabbitMQ~\cite{rabbitmq_docs} mediante el protocolo AMQP~\cite{oasis_amqp10}. Cada
+RabbitMQ~\cite{rabbitmq_docs} mediante el protocolo \ac{AMQP}~\cite{oasis_amqp10}. Cada
 cambio de estado se publica en el exchange \texttt{voctomix\_events} (tipo fanout), de
 forma que cualquier consumidor externo puede suscribirse a los eventos sin acoplarse
 directamente al servicio de telemetría ni a voctocore. Si RabbitMQ no está disponible,

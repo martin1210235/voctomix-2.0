@@ -19,7 +19,7 @@ El pod principal, llamado \texttt{studio}, agrupa voctocore, todas las fuentes d
 TCP internas funcionan sin modificar una sola línea de código. RabbitMQ se despliega en un
 pod independiente; la telemetría le publica sus eventos mediante AMQP.
 
-El despliegue se define en cuatro ficheros YAML:
+El despliegue se define en cuatro ficheros \ac{YAML}:
 \texttt{studio.yaml} define el pod principal con todos sus contenedores y los puertos
 expuestos; \texttt{rabbitmq.yaml} despliega RabbitMQ como pod independiente;
 \texttt{configmap.yaml} centraliza todos los parámetros de configuración (resolución,

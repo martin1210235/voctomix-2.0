@@ -39,7 +39,7 @@ red local o contribución remota sobre Internet.
   mezcladores hardware y herramientas de software de producción.
 
   \item \textbf{SRT (\textit{Secure Reliable Transport}):} protocolo de código abierto
-  desarrollado por Haivision con corrección de errores ARQ y cifrado AES-128/256~\cite{sharabayko2024_srt}.
+  desarrollado por Haivision con corrección de errores \ac{ARQ} y cifrado AES-128/256~\cite{sharabayko2024_srt}.
   Permite transportar la señal desde el lugar del evento hasta el centro de producción
   remoto sobre Internet pública con latencia inferior a 1~s. FFmpeg lo soporta como
   entrada y salida, lo que permite integrarlo directamente en pipelines de Voctomix.
@@ -192,7 +192,7 @@ múltiples etapas de procesamiento.
   ya sea mediante la interfaz de loopback del servidor en instalación monopuesto o a
   través de redes Docker internas de alta velocidad en el despliegue contenerizado.
 
-  \item \textbf{Audio PCM (\textit{Pulse-Code Modulation}):} el audio se transporta sin
+  \item \textbf{Audio PCM (\textit{Pulse-Code Modulation})\acused{PCM}:} el audio se transporta sin
   compresión en formato PCM~S16LE (muestras enteras de 16 bits en orden
   \textit{little-endian}) a 48~kHz estéreo. Voctomix utiliza este formato para todo el
   procesamiento interno de audio, encapsulado junto al vídeo~I420 en el mismo contenedor
