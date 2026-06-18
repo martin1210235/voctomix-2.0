@@ -12,8 +12,7 @@ La producción de eventos en directo con múltiples cámaras, transiciones, rót
 y gestión de audio ha requerido históricamente equipamiento de radiodifusión
 profesional con costes de adquisición de varios miles de euros y personal técnico
 especializado desplazado al lugar del evento. Este modelo resulta inaccesible para
-comunidades universitarias, organismos públicos y eventos de mediana escala que
-necesitan producción de calidad sin presupuesto \textit{broadcast}.
+eventos de mediana escala que necesitan producción de calidad.
 
 Este Trabajo Fin de Grado presenta el diseño e implementación de Voctomix~2.0,
 una plataforma modular de código abierto para la producción remota de vídeo en
@@ -21,32 +20,22 @@ tiempo real. La plataforma se construye sobre GStreamer y Python, siguiendo una
 arquitectura cliente-servidor en la que el núcleo de procesamiento
 (\texttt{voctocore}) puede ejecutarse de forma remota mientras el realizador opera
 la interfaz gráfica (\texttt{voctogui}) desde cualquier equipo de la red. Las
-funcionalidades implementadas abarcan cuatro modos de composición de imagen con
-transiciones animadas entre ellos, un sistema de overlays gráficos dinámicos con
-animaciones de entrada y salida y desactivación automática en cada corte, un gestor
-de estados de emisión con tres modos (en directo, pausa y sin señal),
-sincronización automática del audio con la fuente de vídeo activa, y un servicio
-de telemetría que registra todos los eventos de la sesión y los publica en tiempo
-real en un broker RabbitMQ mediante el protocolo AMQP.
+funcionalidades implementadas incluyen cuatro modos de composición de imagen con
+transiciones animadas, overlays gráficos dinámicos, un gestor de estados de
+emisión con tres modos, sincronización automática del audio y un servicio de
+telemetría con publicación en tiempo real mediante AMQP.
 
-El sistema completo se ha contenerizado en una pila de diez servicios Docker
-orquestada con Docker~Compose, y se ha desplegado adicionalmente sobre un clúster
-Kubernetes con Minikube. Ambos escenarios permiten reproducir el entorno completo
-con un único comando, eliminando la instalación manual de dependencias de GStreamer
-y Python. El sistema ha sido integrado en el proyecto europeo de investigación
-CyberNEMO de la UPM, donde opera como plataforma de producción audiovisual en un
-entorno de validación activo.
+El sistema se ha contenerizado y desplegado tanto en Docker~Compose como en
+Kubernetes con Minikube, con el objetivo de ser utilizado en el proyecto europeo
+de investigación CyberNEMO de la UPM como plataforma de producción audiovisual
+en un entorno de validación activo.
 
-La validación se realizó en cuatro escenarios de despliegue: un único equipo, dos
-equipos físicos en red local, Docker~Compose y Kubernetes con Minikube. Los
-resultados confirman una latencia de conmutación mediana de 1{,}5~ms en Docker y
-1{,}8~ms en Kubernetes, ambas muy por debajo del umbral de 45~ms definido por la
-recomendación ITU-R~BT.1359-1 para la sincronía entre audio y vídeo. El uso de CPU
-con cuatro cámaras activas no supera el 40\,\% en Docker, con un crecimiento
-sub-lineal al añadir fuentes. Una prueba de estabilidad de 31 minutos no registró
-ninguna fuga de memoria ni ningún reinicio de contenedor. Ante un fallo simulado de
-cámara mediante \texttt{kill\,-9}, el sistema se recuperó de forma autónoma en
-menos de 520~ms en los diez casos medidos.
+La plataforma se ha validado en cuatro escenarios de despliegue: un único equipo,
+dos equipos físicos en red local, Docker~Compose y Kubernetes con Minikube. Se
+realizaron pruebas de rendimiento y consumo de recursos, mediciones de latencia
+de conmutación entre fuentes y de transición entre modos de composición, una
+prueba de estabilidad a largo plazo y ensayos de resiliencia ante fallos simulados
+de cámara.
 
 \vspace{0.5cm}
 \addcontentsline{toc}{chapter}{Palabras clave}
@@ -66,8 +55,7 @@ Docker, Kubernetes, RabbitMQ, telemetría, \textit{streaming}, AMQP.
 Live production of events with multiple cameras, transitions, graphics and audio
 management has historically required professional broadcast equipment costing
 several thousand euros and specialised technical crews deployed on site. This model
-is out of reach for university communities, public organisations and medium-scale
-events that need quality production without a broadcast budget.
+is out of reach for medium-scale events that need quality production.
 
 This Bachelor's Thesis presents the design and implementation of Voctomix~2.0, a
 modular open-source platform for remote video production in real time. The platform
@@ -75,30 +63,20 @@ is built on GStreamer and Python, following a client-server architecture in whic
 the processing core (\texttt{voctocore}) can run remotely while the director
 operates the graphical interface (\texttt{voctogui}) from any machine on the
 network. The implemented features include four image composition modes with animated
-transitions between them, a dynamic graphical overlay system with blend-in and
-blend-out animations and automatic deactivation on every cut, an output state
-manager with three modes (live, pause and no-signal), automatic audio
-synchronisation with the active video source, and a telemetry service that records
-all session events and publishes them in real time to a RabbitMQ broker via the
-AMQP protocol.
+transitions, dynamic graphical overlays, an output state manager with three modes,
+automatic audio synchronisation and a telemetry service with real-time publication
+via AMQP.
 
-The complete system has been containerised into a ten-service Docker stack
-orchestrated with Docker~Compose, and additionally deployed on a Kubernetes cluster
-using Minikube. Both scenarios allow the full environment to be reproduced with a
-single command, eliminating the manual installation of GStreamer and Python
-dependencies. The system has been integrated into the CyberNEMO European research
-project at UPM, where it operates as the audiovisual production platform in an
-active validation environment.
+The system has been containerised and deployed on both Docker~Compose and Kubernetes
+with Minikube, with the aim of being used in the CyberNEMO European research
+project at UPM as the audiovisual production platform in an active validation
+environment.
 
-Validation was carried out in four deployment scenarios: a single machine, two
+Validation was carried out across four deployment scenarios: a single machine, two
 physical machines over a local network, Docker~Compose and Kubernetes with Minikube.
-Results confirm a median switching latency of 1.5~ms in Docker and 1.8~ms in
-Kubernetes, both well below the 45~ms threshold defined by ITU-R~BT.1359-1 for
-audio-video synchrony. CPU usage with four active cameras does not exceed 40\,\% in
-Docker, with sub-linear growth as sources are added. A 31-minute stability test
-recorded no memory leaks and no container restarts. Following a simulated camera
-failure via \texttt{kill\,-9}, the system recovered autonomously in under 520~ms
-across all ten measured cases.
+Performance and resource consumption tests, switching latency and composition mode
+transition measurements, a long-term stability test and resilience trials with
+simulated camera failures were conducted to evaluate the system in practice.
 
 \vspace{0.5cm}
 \addcontentsline{toc}{chapter}{Keywords}
