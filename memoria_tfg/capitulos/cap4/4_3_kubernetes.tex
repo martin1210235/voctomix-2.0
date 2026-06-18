@@ -19,15 +19,19 @@ El pod principal, llamado \texttt{studio}, agrupa voctocore, todas las fuentes d
 TCP internas funcionan sin modificar una sola línea de código. RabbitMQ se despliega en un
 pod independiente; la telemetría le publica sus eventos mediante AMQP.
 
-El despliegue se define en cuatro ficheros \ac{YAML}:
+El despliegue se define en cinco ficheros \ac{YAML}:
 \texttt{studio.yaml} define el pod principal con todos sus contenedores y los puertos
 expuestos; \texttt{rabbitmq.yaml} despliega RabbitMQ como pod independiente;
 \texttt{configmap.yaml} centraliza todos los parámetros de configuración (resolución,
 puertos, fuentes de vídeo) como variables de entorno accesibles por todos los contenedores,
-de forma que un solo cambio aquí se aplica a todo el clúster; y \texttt{pvc.yaml} reserva
+de forma que un solo cambio aquí se aplica a todo el clúster; \texttt{pvc.yaml} reserva
 1~GiB de almacenamiento persistente para los registros de telemetría, que así sobreviven
-al reinicio del pod. Las credenciales de RabbitMQ se almacenan aparte en un
-\texttt{Secret} de Kubernetes, sin escribirlas directamente en los manifiestos.
+al reinicio del pod; y \texttt{secret.yaml} almacena las credenciales de RabbitMQ de
+forma segura, sin escribirlas directamente en los manifiestos. A diferencia del escenario
+Docker, donde la imagen se construye en el propio equipo, Kubernetes descarga la imagen
+directamente de Docker Hub (\texttt{martin1210235/voctomix:latest}), lo que permite
+desplegar el sistema en cualquier nodo del clúster sin necesidad de construirla localmente.
+Los manifiestos completos se reproducen en la sección~C7 del Anexo~C.
 
 El orden de arranque también requiere coordinación. Si el pod \texttt{studio} intentase
 arrancar antes de que RabbitMQ estuviera listo, la telemetría fallaría al intentar

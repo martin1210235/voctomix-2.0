@@ -11,7 +11,8 @@ que se remonta a 2016. Este anexo documenta la evolución del repositorio a lo l
 trabajo: la sección~C2 compara la estructura de directorios antes y después del desarrollo,
 la sección~C3 detalla los módulos incorporados, la sección~C4 muestra la evolución de
 la interfaz gráfica, la sección~C5 reproduce los ficheros de configuración INI del
-sistema y la sección~C6 los ficheros de infraestructura Docker.}
+sistema, la sección~C6 los ficheros de infraestructura Docker y la
+sección~C7 los manifiestos de despliegue en Kubernetes.}
 \vspace{0.4cm}
 
 % ── C2. Comparativa de estructura ───────────────────────────────────
@@ -862,4 +863,319 @@ services:
     depends_on:
       voctocore:
         condition: service_healthy
+\end{lstlisting}
+
+\clearpage
+\vspace{0.4cm}
+
+% ── C7. Manifiestos Kubernetes ───────────────────────────────────────
+\Large{\textsc{\textcolor{nar}{C7. Manifiestos de despliegue en Kubernetes}}}
+\vspace{0.2cm}
+
+\normalsize{El despliegue en Kubernetes se define en cinco ficheros YAML.
+\texttt{configmap.yaml} centraliza todos los parámetros del sistema como variables
+de entorno. \texttt{pvc.yaml} reserva almacenamiento persistente para los registros
+de telemetría. \texttt{rabbitmq.yaml} despliega el broker como pod independiente con
+su Service interno. \texttt{studio.yaml} define el pod principal con todos los
+contenedores de la aplicación, un \textit{initContainer} que espera a RabbitMQ, una
+\textit{readinessProbe} sobre el puerto~9999 de voctocore y un Service de tipo
+NodePort para exponer los puertos al exterior. Las credenciales se almacenan en un
+\texttt{Secret} referenciado por los manifiestos pero no reproducido aquí por seguridad;
+el fichero \texttt{secret.yaml.example} del repositorio sirve de plantilla.}
+\vspace{0.3cm}
+
+\noindent\textbf{\small k8s/configmap.yaml}
+\vspace{0.1cm}
+
+\begin{lstlisting}[style=codefile, morecomment={[l]{\#}}]
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: voctomix-config
+data:
+  WIDTH: "1920"
+  HEIGHT: "1080"
+  FRAMERATE: "25"
+  AUDIORATE: "48000"
+  VOCTOCORE_HOST: "localhost"
+  VOCTOCORE_PORT: "9999"
+  VOCTOCORE_CLOCK_PORT: "9998"
+  TELEMETRY_HTTP_PORT: "8080"
+  TELEMETRY_USE_UDP: "1"
+  VOCTOMIX_BASE_DIR: "/opt/voctomix"
+  SAVE_LOGS: "false"
+  RABBITMQ_HOST: "rabbitmq"
+  RABBITMQ_PORT: "5672"
+  RABBITMQ_USER: "voctomix"
+  CAM1_PORT: "10000"
+  CAM2_PORT: "10001"
+  CAM3_PORT: "10002"
+  CAM4_PORT: "10003"
+  BREAK_PORT: "10004"
+  INTRO_PORT: "10005"
+  BLANKER_PAUSE_PORT: "17000"
+  BLANKER_OFFLINE_PORT: "17001"
+  AUDIO_PORT: "18000"
+  CAM1_SOURCE: "http://cdn.media.ccc.de/.../talk1_hd.mp4"
+  CAM2_SOURCE: "http://cdn.media.ccc.de/.../talk2_hd.mp4"
+  CAM3_SOURCE: "http://cdn.media.ccc.de/.../talk3_hd.mp4"
+  CAM4_SOURCE: "https://www.w3schools.com/html/mov_bbb.mp4"
+  BREAK_VIDEO: "/opt/voctomix/videos/video_pausa.mp4"
+  BREAK_AUDIO: "/opt/voctomix/videos/musica_pausa.mp3"
+  INTRO_VIDEO: "/opt/voctomix/videos/intro.mp4"
+  PAUSE_VIDEO: "/opt/voctomix/videos/starting_soon.mp4"
+  OFFLINE_VIDEO: "/opt/voctomix/videos/stream_offline.mp4"
+  BACKGROUND_MUSIC: "/opt/voctomix/videos/musica_pausa.mp3"
+\end{lstlisting}
+
+\vspace{0.3cm}
+\noindent\textbf{\small k8s/pvc.yaml}
+\vspace{0.1cm}
+
+\begin{lstlisting}[style=codefile, morecomment={[l]{\#}}]
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: voctomix-sessions-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+\end{lstlisting}
+
+\vspace{0.3cm}
+\noindent\textbf{\small k8s/rabbitmq.yaml}
+\vspace{0.1cm}
+
+\begin{lstlisting}[style=codefile, morecomment={[l]{\#}}]
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+        - name: rabbitmq
+          image: rabbitmq:3-management
+          ports:
+            - containerPort: 5672
+            - containerPort: 15672
+          env:
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: voctomix-secret
+                  key: RABBITMQ_DEFAULT_USER
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: voctomix-secret
+                  key: RABBITMQ_DEFAULT_PASS
+          readinessProbe:
+            exec:
+              command: ["rabbitmq-diagnostics", "ping"]
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+            periodSeconds: 15
+            failureThreshold: 6
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+spec:
+  selector:
+    app: rabbitmq
+  ports:
+    - name: amqp
+      port: 5672
+      targetPort: 5672
+    - name: management
+      port: 15672
+      targetPort: 15672
+\end{lstlisting}
+
+\clearpage
+\noindent\textbf{\small k8s/studio.yaml}
+\vspace{0.1cm}
+
+\begin{lstlisting}[style=codefile, morecomment={[l]{\#}}]
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: studio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: studio
+  template:
+    metadata:
+      labels:
+        app: studio
+    spec:
+      initContainers:
+        - name: wait-for-rabbitmq
+          image: busybox
+          command:
+            - sh
+            - -c
+            - until nc -zw1 rabbitmq 5672; do sleep 2; done
+
+      containers:
+        - name: voctocore
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
+          imagePullPolicy: Always
+          command: ["bash", "-c",
+                    "cd /opt/voctomix/voctocore && python3 voctocore.py"]
+          envFrom:
+            - configMapRef:
+                name: voctomix-config
+            - secretRef:
+                name: voctomix-secret
+          volumeMounts:
+            - name: sessions
+              mountPath: /opt/voctomix/sessions
+          readinessProbe:
+            tcpSocket:
+              port: 9999
+            initialDelaySeconds: 20
+            periodSeconds: 5
+            failureThreshold: 12
+
+        - name: telemetry
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
+          imagePullPolicy: Always
+          command: ["python3",
+                    "example-scripts/ffmpeg/telemetry_service.py"]
+          envFrom:
+            - configMapRef:
+                name: voctomix-config
+            - secretRef:
+                name: voctomix-secret
+          volumeMounts:
+            - name: sessions
+              mountPath: /opt/voctomix/sessions
+
+        - name: cam1
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
+          imagePullPolicy: Always
+          command:
+            - sh
+            - -c
+            - >-
+              ffmpeg -y -nostdin
+              -i "${CAM1_SOURCE}"
+              -ac 2
+              -filter_complex "[0:v] scale=${WIDTH}:${HEIGHT},
+                fps=${FRAMERATE} [v]; [0:a] aresample=${AUDIORATE} [a]"
+              -map "[v]" -map "[a]"
+              -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le
+              -f matroska tcp://localhost:${CAM1_PORT}
+          envFrom:
+            - configMapRef:
+                name: voctomix-config
+
+        # cam2, cam3: identicos a cam1 con sus respectivos puertos y fuentes.
+
+        - name: cam4   # con conversion de colorimetria BT.709 explicita
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
+          imagePullPolicy: Always
+          command:
+            - sh
+            - -c
+            - >-
+              ffmpeg -y -nostdin -stream_loop -1
+              -i "${CAM4_SOURCE}"
+              -filter_complex "[0:v] format=yuv420p,
+                scale=${WIDTH}:${HEIGHT}:out_range=tv,fps=${FRAMERATE},
+                setparams=color_primaries=bt709:color_trc=bt709:
+                colorspace=bt709 [v]; [0:a] aresample=${AUDIORATE} [a]"
+              -map "[v]" -map "[a]"
+              -color_primaries bt709 -color_trc bt709
+              -colorspace bt709 -color_range tv
+              -c:v rawvideo -c:a pcm_s16le
+              -f matroska tcp://localhost:${CAM4_PORT}
+          envFrom:
+            - configMapRef:
+                name: voctomix-config
+
+        - name: stream-blanker
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
+          imagePullPolicy: Always
+          command:
+            - bash
+            - -c
+            - |
+              ffmpeg -nostats -loglevel warning -stream_loop -1 -re \
+                -i "${PAUSE_VIDEO}" \
+                -pix_fmt yuv420p -s "${WIDTH}x${HEIGHT}" -r "${FRAMERATE}" \
+                -c:v rawvideo -an \
+                -f matroska tcp://127.0.0.1:${BLANKER_PAUSE_PORT} &
+              ffmpeg -nostats -loglevel warning -stream_loop -1 -re \
+                -i "${OFFLINE_VIDEO}" \
+                -pix_fmt yuv420p -s "${WIDTH}x${HEIGHT}" -r "${FRAMERATE}" \
+                -c:v rawvideo -an \
+                -f matroska tcp://127.0.0.1:${BLANKER_OFFLINE_PORT} &
+              wait
+          envFrom:
+            - configMapRef:
+                name: voctomix-config
+
+        - name: audio-manager
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
+          imagePullPolicy: Always
+          command:
+            - sh
+            - -c
+            - >-
+              ffmpeg -nostats -loglevel warning -re -stream_loop -1
+              -i "${BACKGROUND_MUSIC}"
+              -c:a pcm_s16le -ar ${AUDIORATE} -ac 2 -vn
+              -f matroska tcp://127.0.0.1:${AUDIO_PORT}
+          envFrom:
+            - configMapRef:
+                name: voctomix-config
+
+      volumes:
+        - name: sessions
+          persistentVolumeClaim:
+            claimName: voctomix-sessions-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: studio
+spec:
+  type: NodePort
+  selector:
+    app: studio
+  ports:
+    - name: control
+      port: 9999
+      targetPort: 9999
+      nodePort: 30999
+    - name: program-out
+      port: 15000
+      targetPort: 15000
+      nodePort: 31500
+    - name: mix-preview
+      port: 12000
+      targetPort: 12000
+      nodePort: 31200
+    - name: preview-0
+      port: 14000
+      targetPort: 14000
+      nodePort: 31400
+    # preview-1 a preview-5: mismo patron, puertos 14001-14005 / 31401-31405
 \end{lstlisting}
