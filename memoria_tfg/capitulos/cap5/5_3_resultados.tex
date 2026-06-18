@@ -234,9 +234,10 @@ modos disponibles.
 \end{figure}
 
 En Docker la transición tarda 2{,}8\,ms, prácticamente igual que un corte de
-cámara. En Kubernetes la latencia sube a 79{,}8\,ms, lo que corresponde
-aproximadamente a dos ciclos completos de 40\,ms a 25\,fps: el plano de control
-de Minikube mantiene la CPU ocupada y GStreamer pierde el primer ciclo
-disponible. La animación de transición se ejecuta correctamente, aunque
-comenzando 80\,ms después de lo que ocurriría en Docker. En un despliegue en la nube, donde el plano de control no comparte
+cámara. La CPU está libre y GStreamer alcanza el siguiente ciclo de fotograma
+sin esperar. En Kubernetes la latencia sube a 79{,}8\,ms, lo que corresponde aproximadamente a
+dos ciclos completos de 40\,ms a 25\,fps: el plano de control de Minikube mantiene la
+CPU ocupada y GStreamer pierde el primer ciclo disponible. Este retardo es perceptible para el operador; la animación de transición
+se ejecuta correctamente, aunque comenzando 80\,ms después de lo que ocurriría
+en Docker. En un despliegue en la nube, donde el plano de control no comparte
 recursos con \texttt{voctocore}, la latencia sería comparable a la de Docker.
