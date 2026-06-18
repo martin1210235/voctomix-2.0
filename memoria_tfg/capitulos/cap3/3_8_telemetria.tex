@@ -12,8 +12,8 @@ la emisión.
 El servicio (\texttt{telemetry\_service.py}) es un proceso independiente que se conecta
 a voctocore en el puerto~9999 como un cliente TCP ordinario y consulta su estado cada
 segundo. Sin embargo, voctocore no tiene acceso a la información gestionada por la
-interfaz gráfica: qué fuentes están en preview, los niveles de audio de cada fuente,
-qué logos están activos o el contenido de los rótulos.
+interfaz gráfica: qué fuentes están en preview, qué logos están activos o el contenido
+de los rótulos.
 
 Para capturar también esta información, el módulo \texttt{gui\_state\_exporter.py} de
 voctogui exporta el estado completo de la interfaz cada segundo. En el escenario de un
@@ -92,7 +92,7 @@ lo serializa y lo publica en el \textit{exchange} \texttt{voctomix\_events} (tip
 eventos sin acoplarse directamente al servicio de telemetría ni a voctocore.
 
 La conexión al broker se configura mediante variables de entorno:
-\texttt{RABBITMQ\_HOST} fija la dirección \ac{IP} del servidor RabbitMQ,
+\texttt{RABBITMQ\_HOST} fija la dirección del broker RabbitMQ,
 \texttt{RABBITMQ\_PORT} el puerto (5672 por defecto), y \texttt{RABBITMQ\_USER}
 junto con \texttt{RABBITMQ\_PASS} las credenciales de acceso. La integración con
 RabbitMQ solo se activa cuando \texttt{RABBITMQ\_HOST} está explícitamente definida
