@@ -1,41 +1,39 @@
 \section{Contenedorización con Docker Compose}
 \label{sec:docker}
 
-Docker~\cite{merkel2014docker,docker_compose_docs} permite empaquetar el sistema completo,
-incluidas todas sus dependencias, en contenedores que se ejecutan de forma idéntica en
-cualquier máquina con Docker instalado. El operador no necesita instalar GStreamer, Python
-ni ninguna otra librería: con \texttt{make docker-up} el sistema arranca en segundos.
-El despliegue se define en dos ficheros: \texttt{Dockerfile}, que describe cómo construir
-la imagen base del sistema, y \texttt{docker-compose.yml}, que declara todos los servicios
-y cómo se relacionan entre sí. El contenido íntegro de ambos ficheros se reproduce en
+La principal ventaja de usar Docker~\cite{merkel2014docker,docker_compose_docs} es que
+el sistema funciona igual en cualquier máquina sin necesidad de instalar nada: ni
+GStreamer, ni Python, ni ninguna librería adicional. Con un único comando
+(\texttt{make docker-up}) el sistema arranca completo en cuestión de segundos. Todo el
+despliegue se define en dos ficheros: el \texttt{Dockerfile}, que describe cómo se
+construye la imagen del sistema, y el \texttt{docker-compose.yml}, que declara los
+servicios y cómo se relacionan entre sí. Ambos ficheros se reproducen íntegramente en
 la sección~C6 del Anexo~C.
 
-El \texttt{Dockerfile} se construyó sobre Ubuntu~22.04~\ac{LTS}. Las
-dependencias se instalan en una sola capa para reducir el tamaño de la imagen: GStreamer~1.0
-con todos sus plugins, FFmpeg~\cite{ffmpeg_project} para la inyección de fuentes de vídeo,
-las bibliotecas Python de GObject y la librería AMQP para la integración con RabbitMQ.
-El fichero Compose define un \textit{healthcheck} que comprueba si voctocore acepta
-conexiones en el puerto~9999, de forma que Docker Compose espera a que el núcleo esté
-listo antes de arrancar los servicios que dependen de él.
+A partir del \texttt{Dockerfile} se genera una única imagen personalizada, basada en
+Ubuntu~22.04~\ac{LTS}, que incluye todo lo necesario para ejecutar el sistema:
+GStreamer~1.0 con sus \textit{plugins}, FFmpeg~\cite{ffmpeg_project}, las librerías
+Python necesarias y \texttt{pika} para la integración con RabbitMQ. Esta misma imagen
+sirve de base para todos los servicios: voctocore ejecuta el núcleo de mezcla, los
+contenedores de cámara inyectan la señal de vídeo con FFmpeg, y el servicio de
+telemetría registra los eventos. La imagen se construye automáticamente la primera vez
+que se arranca el sistema. RabbitMQ es el único servicio que utiliza una imagen oficial
+externa.
 
-El principal desafío técnico de la contenedorización fue el aislamiento de red. En Docker,
-cada contenedor tiene su propia interfaz de red, de modo que cuando un proceso se conecta
-a \texttt{localhost} solo alcanza a los procesos de ese mismo contenedor. Esto supone un
-problema para Voctomix porque las fuentes de vídeo se conectan a voctocore mediante
-\texttt{localhost:10000}. La solución adoptada es el \textbf{espacio de red compartido}:
-todos los contenedores del sistema (cámaras, break, intro, stream blanker, audio manager
-y telemetría) se configuran con \texttt{network\_mode: "service:voctocore"} en el fichero
-Compose, lo que hace que compartan la misma interfaz de red que voctocore. Desde su perspectiva es como si todos
-los procesos se ejecutasen en la misma máquina, sin necesidad de modificar ninguna línea
-del código de Voctomix. RabbitMQ mantiene su propia red aislada; la telemetría le publica sus eventos
-mediante el protocolo AMQP.
+El principal problema técnico que hubo que resolver fue el aislamiento de red. En
+Docker, cada contenedor está aislado y cuando se conecta a \texttt{localhost} solo se
+comunica consigo mismo. Esto suponía un problema porque las cámaras necesitan enviar
+la señal a voctocore a través de \texttt{localhost}. La solución fue hacer que todos
+los contenedores compartan la red de voctocore mediante la opción
+\texttt{network\_mode: "service:voctocore"}, de forma que todos los procesos se ven
+entre sí como si estuvieran en la misma máquina, sin modificar ninguna línea del
+código original.
 
-Voctogui se ejecuta directamente en el equipo anfitrión y se conecta a voctocore a través
-del puerto~9999. Ejecutar una interfaz gráfica dentro de un contenedor no es viable sin acceso al
-servidor gráfico del sistema (X11 o Wayland), por lo que esta parte del sistema queda fuera de Docker. Los
-recursos gráficos como logos e imágenes de fondo se comparten con el contenedor de
-voctocore mediante un volumen, lo que permite modificarlos sin necesidad de reconstruir
-la imagen (figura~\ref{fig:escenario_docker}).
+Voctogui es el único componente que corre directamente en el equipo, sin contenedor,
+porque necesita acceder al servidor gráfico del sistema para mostrar la interfaz. Se
+conecta a voctocore a través del puerto~9999 y comparte los recursos visuales como
+logos e imágenes de fondo mediante un volumen Docker, por lo que se pueden modificar
+sin tener que reconstruir la imagen (figura~\ref{fig:escenario_docker}).
 
 \begin{figure}[H]
   \centering
@@ -44,27 +42,11 @@ la imagen (figura~\ref{fig:escenario_docker}).
   \label{fig:escenario_docker}
 \end{figure}
 
-Durante las pruebas se detectó un problema de arranque: los contenedores de fuente intentaban conectarse
-a voctocore antes de que este estuviera listo, lo que producía fallos. La solución combina
-dos medidas: si un contenedor falla, Docker lo reinicia automáticamente mediante
-\texttt{restart: on-failure}; y antes de lanzar cada servicio, el sistema comprueba que el
-puerto~9999 está disponible. Con estas medidas el despliegue completo resulta robusto
-y repetible en cualquier máquina con Docker instalado.
-
-El \textit{stack} genera una única imagen personalizada, construida automáticamente
-la primera vez que se arranca el sistema a partir del \texttt{Dockerfile}. Esa misma
-imagen sirve de base para todos los servicios del sistema, cada uno ejecutando un
-proceso diferente sobre el mismo entorno: voctocore lanza el núcleo de mezcla, los
-contenedores de cámara ejecutan FFmpeg para inyectar la señal de vídeo, y el servicio
-de telemetría registra los eventos. El broker RabbitMQ es el único servicio que emplea
-una imagen oficial externa. Voctogui corre de forma nativa en el equipo anfitrión
-porque requiere acceso al servidor gráfico del sistema y no puede ejecutarse dentro
-de un contenedor.
-
-El arranque del sistema sigue una secuencia ordenada: primero se eliminan los contenedores
-previos para garantizar un estado limpio, después se levantan todos los servicios en
-segundo plano y el sistema espera a que voctocore supere su verificación de salud
-antes de continuar. Una vez el núcleo está operativo, se lanza voctogui de forma
-nativa y se abre automáticamente un monitor de programa sobre el puerto~15000. Al
-cerrar la sesión, todos los procesos, tanto los contenedores como los procesos
-nativos, se detienen de forma coordinada.
+Durante las pruebas se detectó que algunos contenedores intentaban conectarse a
+voctocore antes de que estuviera listo, lo que causaba fallos en el arranque. Para
+resolverlo se combinaron dos medidas: Docker reinicia automáticamente cualquier
+contenedor que falle, y antes de lanzar cada servicio se verifica que el puerto~9999
+está disponible. El arranque sigue así una secuencia ordenada: primero se levanta
+voctocore, el resto de contenedores esperan a que el núcleo esté operativo, y
+finalmente se lanza voctogui de forma nativa junto con un monitor de programa en el
+puerto~15000. Al cerrar la sesión, todos los procesos se detienen de forma coordinada.
