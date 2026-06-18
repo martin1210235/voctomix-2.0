@@ -159,15 +159,14 @@ pérdida de calidad a cambio de viabilizar el transporte.
   \caption{Comparativa de códecs de vídeo para distribución en directo.}
   \label{tab:codecs_distribucion}
   \small
-  \resizebox{\textwidth}{!}{%
-  \begin{tabular}{|l|c|c|c|c|}
+  \begin{tabularx}{\textwidth}{|l|c|c|X|c|}
     \hline
     \textbf{Códec} & \textbf{Eficiencia vs H.264} & \textbf{Vel. encoding} & \textbf{Compatibilidad} & \textbf{RT posible} \\
     \hline
-    H.264/AVC  & Base       & Muy rápido       & Universal         & Sí \\
-    H.265/HEVC & $\times$2  & 5--8$\times$ más lento & Alta (post 2015) & Sí (con HW) \\
+    H.264/AVC  & Base       & Muy rápido             & Universal          & Sí \\
+    H.265/HEVC & $\times$2  & 5--8$\times$ más lento & Alta (post 2015)   & Sí (con HW) \\
     AV1        & $\times$3  & 5--10$\times$ más lento & Media (creciendo) & Sí (HW o SVT-AV1) \\
-    H.266/VVC  & $\times$4  & Muy lento        & Emergente (2024+) & No (laboratorio) \\
+    H.266/VVC  & $\times$4  & Muy lento              & Emergente (2024+)  & No \\
     \hline
-  \end{tabular}}
+  \end{tabularx}
 \end{table}
