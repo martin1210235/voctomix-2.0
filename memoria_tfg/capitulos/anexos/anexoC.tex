@@ -1,0 +1,171 @@
+\label{anexo:repositorio}
+\vspace{0cm}
+
+% ── C1. Introducción ────────────────────────────────────────────────
+\Large{\textsc{\textcolor{nar}{C1. Introducción}}}
+\vspace{0.2cm}
+
+\normalsize{El punto de partida del proyecto fue el repositorio oficial de Voctomix~\cite{voctomix_github},
+alojado en GitHub bajo la organización \texttt{voc}, con una historia de \textit{commits}
+que se remonta a 2016. El árbol de directorios mostrado a continuación refleja el estado
+del repositorio en el momento del clonado inicial y el estado final tras las extensiones
+desarrolladas en este TFG. Los ficheros marcados con \texttt{[N]} fueron añadidos o
+creados íntegramente en el marco de este trabajo; el resto existía en el repositorio
+original.}
+\vspace{0.4cm}
+
+% ── C2. Estado inicial ───────────────────────────────────────────────
+\Large{\textsc{\textcolor{nar}{C2. Estado inicial del repositorio clonado}}}
+\vspace{0.2cm}
+
+\normalsize{El siguiente árbol muestra la estructura del repositorio \texttt{voc/voctomix}
+inmediatamente después de ser clonado, antes de realizar ninguna modificación. Los
+módulos de \texttt{voctocore} y \texttt{voctogui} contenían la funcionalidad base de
+mezcla y la interfaz gráfica, sin soporte de \textit{overlays}, transiciones animadas,
+\textit{stream blanker}, telemetría ni infraestructura de contenedores.}
+\vspace{0.2cm}
+
+\begin{verbatim}
+voctomix/  (repositorio voc/voctomix, clonado)
+|-- voctocore/
+|   |-- lib/
+|   |   |-- audiomix.py
+|   |   |-- commands.py
+|   |   |-- composites.py
+|   |   |-- config.py
+|   |   |-- controlserver.py
+|   |   |-- loghandler.py
+|   |   |-- pipeline.py
+|   |   |-- response.py
+|   |   |-- tcpmulticonnection.py
+|   |   |-- tcpsingleconnection.py
+|   |   |-- videomix.py
+|   |   `-- sources/
+|   |       |-- avsource.py
+|   |       |-- decklinkavsource.py
+|   |       |-- imgvsource.py
+|   |       `-- tcpavsource.py
+|   |-- tests/
+|   |-- voctocore.py
+|   `-- default-config.ini
+|-- voctogui/
+|   |-- lib/
+|   |   |-- audioleveldisplay.py
+|   |   |-- config.py
+|   |   |-- connection.py
+|   |   |-- loghandler.py
+|   |   |-- toolbar/
+|   |   |   |-- buttons.py
+|   |   |   |-- helpers.py
+|   |   |   |-- misc.py
+|   |   |   |-- mix.py
+|   |   |   |-- output.py
+|   |   |   `-- preview.py
+|   |   `-- ui.py
+|   |-- ui/
+|   |-- voctogui.py
+|   `-- default-config.ini
+|-- vocto/
+|   `-- composite_commands.py
+|-- example-scripts/
+|   |-- control-server/
+|   `-- ffmpeg/  (scripts de inyeccion de fuentes)
+|-- README.md
+`-- LICENSE.txt
+\end{verbatim}
+
+\vspace{0.4cm}
+
+% ── C3. Estado final ─────────────────────────────────────────────────
+\Large{\textsc{\textcolor{nar}{C3. Estado final: Voctomix 2.0}}}
+\vspace{0.2cm}
+
+\normalsize{El siguiente árbol refleja la estructura completa tras el desarrollo de este TFG.
+Los módulos marcados con \texttt{[N]} son nuevos; el resto formaba parte del repositorio
+original. Los ficheros más relevantes se comentan brevemente a la derecha.}
+\vspace{0.2cm}
+
+\begin{verbatim}
+voctomix/  (Voctomix 2.0, estado final)
+|-- voctocore/
+|   |-- lib/
+|   |   |-- audiomix.py
+|   |   |-- avpreviewoutput.py
+|   |   |-- avrawoutput.py
+|   |   |-- commands.py
+|   |   |-- composites.py
+|   |   |-- config.py
+|   |   |-- controlserver.py
+|   |   |-- errors/
+|   |   |-- loghandler.py
+|   |   |-- overlay.py         [N] inyeccion de graficos sobre senal
+|   |   |-- pipeline.py
+|   |   |-- response.py
+|   |   |-- scene.py           [N] grafo de escenas y estados
+|   |   |-- streamblanker.py   [N] estados LIVE / PAUSE / NOSTREAM
+|   |   |-- tcpmulticonnection.py
+|   |   |-- tcpsingleconnection.py
+|   |   |-- transitions.py     [N] motor de transiciones animadas
+|   |   |-- videomix.py
+|   |   `-- sources/
+|   |       |-- avsource.py
+|   |       |-- decklinkavsource.py
+|   |       |-- imgvsource.py
+|   |       `-- tcpavsource.py
+|   |-- tests/
+|   |-- voctocore.py
+|   `-- default-config.ini
+|-- voctogui/
+|   |-- lib/
+|   |   |-- audioleveldisplay.py
+|   |   |-- config.py
+|   |   |-- connection.py
+|   |   |-- gui_state_exporter.py  [N] exportacion estado JSON/HTTP
+|   |   |-- loghandler.py
+|   |   |-- toolbar/
+|   |   |   |-- buttons.py
+|   |   |   |-- helpers.py
+|   |   |   |-- misc.py
+|   |   |   |-- mix.py
+|   |   |   |-- output.py
+|   |   |   |-- overlay.py     [N] panel de overlays en la GUI
+|   |   |   |-- preview.py
+|   |   |   `-- streamblank.py [N] botones LIVE/PAUSE/NOSTREAM
+|   |   `-- ui.py
+|   |-- ui/
+|   |-- voctogui.py
+|   `-- default-config.ini
+|-- vocto/
+|   `-- composite_commands.py
+|-- example-scripts/
+|   |-- control-server/
+|   `-- ffmpeg/
+|       |-- telemetry_service.py  [N] publicacion eventos RabbitMQ
+|       `-- (scripts originales)
+|-- docker-compose.yml    [N] stack Docker de 10 servicios
+|-- Dockerfile            [N] imagen del sistema
+|-- k8s_escenario/        [N] despliegue Kubernetes
+|   |-- experiments/
+|   |   |-- voctocore.yaml
+|   |   |-- cameras.yaml
+|   |   |-- rabbitmq.yaml
+|   |   |-- telemetry.yaml
+|   |   `-- namespace.yaml
+|   |-- start_server_pc1.sh
+|   `-- start_operator_pc2.sh
+|-- tools/                [N] herramientas de medicion y analisis
+|   |-- measure_composite_latency.py
+|   |-- measure_resilience.py
+|   `-- analyze_stability.py
+|-- images/               [N] recursos visuales para overlays
+|   |-- logos/
+|   `-- backgrounds/
+|-- 1pc_escenario1/       [N] arranque escenario 1 PC nativo
+|   `-- start_studio_single_pc.sh
+|-- 2pc_escenario2/       [N] arranque escenario 2 PC nativo
+|   |-- start_voctocore_pc1.sh
+|   `-- start_voctogui_pc2.sh
+|-- Makefile              [N] automatizacion de tareas
+|-- README.md
+`-- LICENSE.txt
+\end{verbatim}
