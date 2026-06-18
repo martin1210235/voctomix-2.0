@@ -119,16 +119,12 @@ contribución son:
   contenedor de intercambio estándar entre el lugar del evento y el centro de producción.
 
   \item \textbf{IMF (\textit{Interoperable Master Format}, serie SMPTE ST~2067)}\acused{IMF}~\cite{smpte_st2067_1,ebu_tech3381}:
-  estándar de mastering y distribución desarrollado por la SMPTE entre 2014 y 2016 con respaldo de
-  los principales estudios de Hollywood y adoptado por la EBU mediante la guía técnica
-  EBU Tech~3381. Construido sobre el contenedor MXF, incorpora una capa declarativa de
-  \textit{Composition Playlist} en XML que permite el versionado no destructivo: variantes
-  lingüísticas, de resolución o de rango dinámico se expresan como paquetes suplementarios sobre un
-  maestro base sin necesidad de duplicar la esencia de vídeo. Soporta vídeo JPEG~2000 o HEVC,
-  audio PCM y Dolby Atmos, y subtítulos TTML/IMSC1 con verificación criptográfica de integridad
-  por activo. Plataformas como Netflix, Amazon Prime Video y Disney$+$ lo exigen para la entrega
-  de contenido original, consolidándolo como el formato de intercambio de referencia en flujos
-  de postproducción y distribución OTT.
+  estándar de mastering desarrollado por la SMPTE y adoptado por la EBU. Construido sobre MXF,
+  incorpora una \textit{Composition Playlist} en XML que permite gestionar variantes lingüísticas,
+  de resolución y de rango dinámico como paquetes suplementarios sobre un maestro base, sin
+  duplicar la esencia de vídeo. Soporta vídeo JPEG~2000 o HEVC, audio PCM y subtítulos TTML.
+  Plataformas como Netflix, Amazon Prime Video y Disney$+$ lo exigen para la entrega de contenido
+  original, consolidándolo como referencia en distribución OTT.
 
   \item \textbf{Matroska (MKV)}~\cite{matroska_spec}: contenedor de código abierto
   empleado por Voctomix como formato de transporte interno para señal RAW. Las fuentes
