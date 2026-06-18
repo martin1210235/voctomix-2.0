@@ -17,13 +17,14 @@ Cada fuente de cámara se conecta al puerto TCP correspondiente de voctocore:
   \item \textbf{cam4} $\rightarrow$ puerto 10003
 \end{itemize}
 
-El envío de la señal puede realizarse con cualquier herramienta capaz de producir un
-flujo Matroska sobre TCP. En el entorno de desarrollo y pruebas, las fuentes de cámara
-se simulan mediante vídeos pregrabados de un evento real: grabaciones de distintas
-cámaras colocadas en diferentes puntos de un auditorio durante unas conferencias o
-charlas técnicas, que reproducen en bucle para emular la presencia de cámaras en
-directo. En un despliegue con cámaras físicas, la señal se encapsularía en
-Matroska/TCP mediante FFmpeg~\cite{ffmpeg_project} y una tarjeta de captura conectada al equipo servidor.
+El envío de la señal se realiza mediante FFmpeg~\cite{ffmpeg_project}, herramienta de
+código abierto para el procesamiento multimedia, que encapsula la señal en un flujo
+Matroska y lo transmite por TCP hacia el puerto correspondiente de voctocore. En el
+entorno de desarrollo y pruebas, FFmpeg inyecta vídeos pregrabados de un evento real,
+grabaciones de distintas cámaras colocadas en diferentes puntos de un auditorio durante
+unas conferencias técnicas, que se reproducen en bucle para emular la presencia de
+cámaras en directo. En un despliegue con cámaras físicas, el mismo proceso FFmpeg se
+ejecuta desde el equipo servidor conectado a la tarjeta de captura.
 
 \subsection{Previsualización en la interfaz gráfica}
 
