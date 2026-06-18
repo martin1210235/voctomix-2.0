@@ -84,50 +84,22 @@ cámara como flujos MKV (vídeo RAW~I420 y audio PCM~S16LE) y el protocolo de co
 el puerto~9999, donde la integridad de cada comando es prioritaria sobre la latencia.
 
 \begin{table}[H]
-    \centering
-    \caption{Comparativa de los principales protocolos de transporte utilizados en redes IP.}
-    \label{tab:protocolos_red}
-    \small
-
-    \begin{tabularx}{\textwidth}{|l|c|c|c|X|}
-        \hline
-        \textbf{Protocolo} &
-        \textbf{Orientado a conexión} &
-        \textbf{Fiabilidad} &
-        \textbf{Latencia} &
-        \textbf{Aplicaciones habituales} \\
-        \hline
-
-        UDP &
-        No &
-        Sin garantía de entrega &
-        Muy baja &
-        Transporte multimedia en tiempo real mediante RTP, SRT o SMPTE ST 2110. \\
-        \hline
-
-        TCP &
-        Sí &
-        Entrega garantizada &
-        Variable &
-        Transporte de flujos MKV, intercambio de datos y comunicaciones de control. \\
-        \hline
-
-        \ac{HTTP}\textsuperscript{*} &
-        Sí &
-        Entrega garantizada &
-        Media--alta &
-        Distribución de contenidos mediante HLS y DASH, así como servicios web y telemetría. \\
-        \hline
-
-    \end{tabularx}
-
-    \vspace{0.2cm}
-
-    \begin{flushleft}
-    \footnotesize
-    \textsuperscript{*} HTTP/1.1 y HTTP/2 utilizan TCP como protocolo de transporte, mientras que HTTP/3 emplea QUIC sobre UDP.
-    \end{flushleft}
-
+  \centering
+  \caption{Comparativa de los protocolos de transporte en producción audiovisual.}
+  \label{tab:protocolos_red}
+  \small
+  \begin{tabularx}{\textwidth}{|l|c|c|c|X|}
+    \hline
+    \textbf{Protocolo} & \textbf{Conexión} & \textbf{Fiabilidad} & \textbf{Latencia} & \textbf{Uso en Voctomix} \\
+    \hline
+    UDP                          & No & Sin garantías & Mínima   & RTP, SRT              \\
+    TCP                          & Sí & Garantizada   & Variable & MKV/fuentes, control  \\
+    \ac{HTTP}\textsuperscript{*} & Sí & Garantizada   & Alta     & HLS, DASH, telemetría \\
+    \hline
+  \end{tabularx}
+  \begin{flushleft}
+    \footnotesize \textsuperscript{*}HTTP/1.1 y HTTP/2 sobre TCP; HTTP/3 sobre QUIC (UDP).
+  \end{flushleft}
 \end{table}
 
 \subsection{Contenedores multimedia de contribución}
