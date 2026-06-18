@@ -23,7 +23,7 @@ la interfaz gráfica (\texttt{voctogui}) desde cualquier equipo de la red. Las
 funcionalidades implementadas incluyen cuatro modos de composición de imagen con
 transiciones animadas, overlays gráficos dinámicos, un gestor de estados de
 emisión con tres modos, sincronización automática del audio y un servicio de
-telemetría con publicación en tiempo real mediante AMQP.
+telemetría con publicación en tiempo real en el gestor de colas RabbitMQ.
 
 El sistema se ha contenerizado y desplegado tanto en Docker~Compose como en
 Kubernetes con Minikube, con el objetivo de ser utilizado en el proyecto europeo
@@ -64,8 +64,8 @@ the processing core (\texttt{voctocore}) can run remotely while the director
 operates the graphical interface (\texttt{voctogui}) from any machine on the
 network. The implemented features include four image composition modes with animated
 transitions, dynamic graphical overlays, an output state manager with three modes,
-automatic audio synchronisation and a telemetry service with real-time publication
-via AMQP.
+automatic audio synchronisation and a telemetry service that publishes events
+in real time to the RabbitMQ message broker.
 
 The system has been containerised and deployed on both Docker~Compose and Kubernetes
 with Minikube, with the aim of being used in the CyberNEMO European research
