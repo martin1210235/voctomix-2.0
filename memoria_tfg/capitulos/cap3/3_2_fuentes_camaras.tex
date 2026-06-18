@@ -92,5 +92,10 @@ calidad que toda fuente debe satisfacer:
         recalculan los valores de píxel en tiempo real sin degradación visual perceptible.
 \end{enumerate}
 
-Estas condiciones deben tenerse en cuenta al integrar cualquier fuente de vídeo externa,
-ya sea procedente de cámaras físicas, archivos grabados o generadores de señal de prueba.
+En definitiva, todos los parámetros del flujo entrante, resolución, frecuencia de imagen,
+espacio de color y formato de audio, deben coincidir con los valores declarados en el
+fichero de configuración INI de voctocore (\texttt{default-config.ini}), que fija los
+parámetros globales del sistema: 1920$\times$1080, I420, 25~fps y 48~kHz S16LE estéreo.
+Es el propio pipeline GStreamer el que impone esta restricción: cualquier discrepancia
+entre la fuente y la configuración provoca un rechazo de conexión o artefactos en la
+mezcla, como se comprobó durante el desarrollo.
