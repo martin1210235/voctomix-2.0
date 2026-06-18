@@ -85,17 +85,24 @@ entrada de tipo CHANGE completa tras un corte de cámara:
 \label{sec:rabbitmq}
 
 Opcionalmente, el servicio puede publicar cada evento en un broker
-RabbitMQ~\cite{rabbitmq_docs} mediante el protocolo \ac{AMQP}~\cite{oasis_amqp10}. Cada
-cambio de estado se publica en el exchange \texttt{voctomix\_events} (tipo fanout), de
-forma que cualquier consumidor externo puede suscribirse a los eventos sin acoplarse
-directamente al servicio de telemetría ni a voctocore. Si RabbitMQ no está disponible,
-el servicio continúa funcionando con el log local sin interrupción alguna.
+RabbitMQ~\cite{rabbitmq_docs} mediante el protocolo \ac{AMQP}~\cite{oasis_amqp10}.
+La función \texttt{publish\_to\_rabbit()} recibe el diccionario JSON de cada evento,
+lo serializa y lo publica en el \textit{exchange} \texttt{voctomix\_events} (tipo
+\textit{fanout}), de modo que cualquier consumidor externo puede suscribirse a los
+eventos sin acoplarse directamente al servicio de telemetría ni a voctocore.
+
+La conexión al broker se configura mediante variables de entorno:
+\texttt{RABBITMQ\_HOST} fija la dirección \ac{IP} del servidor RabbitMQ,
+\texttt{RABBITMQ\_PORT} el puerto (5672 por defecto), y \texttt{RABBITMQ\_USER}
+junto con \texttt{RABBITMQ\_PASS} las credenciales de acceso. La integración con
+RabbitMQ solo se activa cuando \texttt{RABBITMQ\_HOST} está explícitamente definida
+en el entorno de ejecución; en caso contrario, el servicio opera únicamente con el
+log local. El servicio mantiene una conexión persistente al broker y reconecta
+automáticamente ante cualquier caída, sin bloquear el procesamiento de eventos.
 
 En el marco del proyecto europeo CyberNEMO (UPM), el broker RabbitMQ de Voctomix~2.0
-fue integrado en el clúster Kubernetes, donde las colas
-\texttt{vproduction-uc-media} y \texttt{vqprobe-uc-media} recibieron los eventos del
-mezclador en tiempo real. Al conectarse como un cliente TCP ordinario, un fallo del
-servicio no afecta al procesamiento multimedia principal.
+fue integrado en el clúster Kubernetes, donde la cola \texttt{vproduction-uc-media}
+recibió los eventos del mezclador en tiempo real.
 
 \begin{figure}[h]
   \centering
