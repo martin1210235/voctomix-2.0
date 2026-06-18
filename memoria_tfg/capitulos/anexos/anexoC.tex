@@ -7,26 +7,29 @@
 
 \normalsize{El punto de partida del proyecto fue el repositorio oficial de Voctomix~\cite{voctomix_github},
 alojado en GitHub bajo la organización \texttt{voc}, con una historia de \textit{commits}
-que se remonta a 2016. El árbol de directorios mostrado a continuación refleja el estado
-del repositorio en el momento del clonado inicial y el estado final tras las extensiones
-desarrolladas en este TFG. Los ficheros marcados con \texttt{[N]} fueron añadidos o
-creados íntegramente en el marco de este trabajo; el resto existía en el repositorio
-original.}
+que se remonta a 2016. Este anexo documenta la evolución del repositorio a lo largo del
+trabajo: la sección~C2 compara la estructura de directorios antes y después del desarrollo,
+la sección~C3 detalla los módulos incorporados y la sección~C4 muestra la evolución de
+la interfaz gráfica.}
 \vspace{0.4cm}
 
-% ── C2. Estado inicial ───────────────────────────────────────────────
-\Large{\textsc{\textcolor{nar}{C2. Estado inicial del repositorio clonado}}}
+% ── C2. Comparativa de estructura ───────────────────────────────────
+\Large{\textsc{\textcolor{nar}{C2. Evolución de la estructura del repositorio}}}
 \vspace{0.2cm}
 
-\normalsize{El siguiente árbol muestra la estructura del repositorio \texttt{voc/voctomix}
-inmediatamente después de ser clonado, antes de realizar ninguna modificación. Los
-módulos de \texttt{voctocore} y \texttt{voctogui} contenían la funcionalidad base de
-mezcla y la interfaz gráfica, sin soporte de \textit{overlays}, transiciones animadas,
-\textit{stream blanker}, telemetría ni infraestructura de contenedores.}
-\vspace{0.2cm}
+\normalsize{Los árboles siguientes muestran la estructura del repositorio inmediatamente
+después del clonado (izquierda) y tras el desarrollo completo de Voctomix~2.0 (derecha).
+Los ficheros marcados con \texttt{[N]} fueron incorporados íntegramente en el marco de
+este trabajo.}
+\vspace{0.3cm}
 
-\begin{verbatim}
-voctomix/  (repositorio voc/voctomix, clonado)
+\noindent%
+\begin{minipage}[t]{0.47\textwidth}
+  {\centering\small\textbf{Estado inicial}\\[2pt]\small\textit{(voc/voctomix, clonado)}\par}
+  \vspace{0.15cm}
+  \scriptsize
+  \begin{verbatim}
+voctomix/
 |-- voctocore/
 |   |-- lib/
 |   |   |-- audiomix.py
@@ -69,39 +72,18 @@ voctomix/  (repositorio voc/voctomix, clonado)
 |   `-- composite_commands.py
 |-- example-scripts/
 |   |-- control-server/
-|   `-- ffmpeg/  (scripts de inyeccion de fuentes)
+|   `-- ffmpeg/
 |-- README.md
 `-- LICENSE.txt
-\end{verbatim}
-
-\vspace{0.3cm}
-
-\normalsize{La figura~\ref{fig:voctomix_inicial} muestra la interfaz gráfica de Voctomix
-en este estado inicial, antes de iniciar el desarrollo de este TFG. La comparación con
-la figura~\ref{fig:gui_completa} (Capítulo~\ref{chap:diseno}) ilustra el alcance de
-las extensiones realizadas.}
-\vspace{0.2cm}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=\textwidth]{figuras/voctomix_inicial.png}
-  \caption{Interfaz gráfica original de Voctomix al clonar el repositorio, antes del desarrollo del TFG.}
-  \label{fig:voctomix_inicial}
-\end{figure}
-
-\vspace{0.3cm}
-
-% ── C3. Estado final ─────────────────────────────────────────────────
-\Large{\textsc{\textcolor{nar}{C3. Estado final: Voctomix 2.0}}}
-\vspace{0.2cm}
-
-\normalsize{El siguiente árbol refleja la estructura completa tras el desarrollo de este TFG.
-Los módulos marcados con \texttt{[N]} son nuevos; el resto formaba parte del repositorio
-original. Los ficheros más relevantes se comentan brevemente a la derecha.}
-\vspace{0.2cm}
-
-\begin{verbatim}
-voctomix/  (Voctomix 2.0, estado final)
+  \end{verbatim}
+\end{minipage}%
+\hfill%
+\begin{minipage}[t]{0.47\textwidth}
+  {\centering\small\textbf{Estado final}\\[2pt]\small\textit{(Voctomix~2.0)}\par}
+  \vspace{0.15cm}
+  \scriptsize
+  \begin{verbatim}
+voctomix/
 |-- voctocore/
 |   |-- lib/
 |   |   |-- audiomix.py
@@ -113,14 +95,14 @@ voctomix/  (Voctomix 2.0, estado final)
 |   |   |-- controlserver.py
 |   |   |-- errors/
 |   |   |-- loghandler.py
-|   |   |-- overlay.py         [N] Inyección de graficos sobre señal
+|   |   |-- overlay.py       [N]
 |   |   |-- pipeline.py
 |   |   |-- response.py
-|   |   |-- scene.py           [N] grafo de escenas y estados
-|   |   |-- streamblanker.py   [N] estados LIVE / PAUSE / NOSTREAM
+|   |   |-- scene.py         [N]
+|   |   |-- streamblanker.py [N]
 |   |   |-- tcpmulticonnection.py
 |   |   |-- tcpsingleconnection.py
-|   |   |-- transitions.py     [N] motor de transiciones animadas
+|   |   |-- transitions.py   [N]
 |   |   |-- videomix.py
 |   |   `-- sources/
 |   |       |-- avsource.py
@@ -135,7 +117,7 @@ voctomix/  (Voctomix 2.0, estado final)
 |   |   |-- audioleveldisplay.py
 |   |   |-- config.py
 |   |   |-- connection.py
-|   |   |-- gui_state_exporter.py  [N] exportacion estado JSON/HTTP
+|   |   |-- gui_state_exporter.py [N]
 |   |   |-- loghandler.py
 |   |   |-- toolbar/
 |   |   |   |-- buttons.py
@@ -143,9 +125,9 @@ voctomix/  (Voctomix 2.0, estado final)
 |   |   |   |-- misc.py
 |   |   |   |-- mix.py
 |   |   |   |-- output.py
-|   |   |   |-- overlay.py     [N] panel de overlays en la GUI
+|   |   |   |-- overlay.py   [N]
 |   |   |   |-- preview.py
-|   |   |   `-- streamblank.py [N] botones LIVE/PAUSE/NOSTREAM
+|   |   |   `-- streamblank.py [N]
 |   |   `-- ui.py
 |   |-- ui/
 |   |-- voctogui.py
@@ -155,32 +137,107 @@ voctomix/  (Voctomix 2.0, estado final)
 |-- example-scripts/
 |   |-- control-server/
 |   `-- ffmpeg/
-|       |-- telemetry_service.py  [N] publicacion eventos RabbitMQ
-|       `-- (scripts originales)
-|-- docker-compose.yml    [N] stack Docker de 10 servicios
-|-- Dockerfile            [N] imagen del sistema
-|-- k8s_escenario/        [N] despliegue Kubernetes
-|   |-- experiments/
-|   |   |-- voctocore.yaml
-|   |   |-- cameras.yaml
-|   |   |-- rabbitmq.yaml
-|   |   |-- telemetry.yaml
-|   |   `-- namespace.yaml
-|   |-- start_server_pc1.sh
-|   `-- start_operator_pc2.sh
-|-- tools/                [N] herramientas de medicion y analisis
-|   |-- measure_composite_latency.py
-|   |-- measure_resilience.py
-|   `-- analyze_stability.py
-|-- images/               [N] recursos visuales para overlays
-|   |-- logos/
-|   `-- backgrounds/
-|-- 1pc_escenario1/       [N] arranque escenario 1 PC nativo
-|   `-- start_studio_single_pc.sh
-|-- 2pc_escenario2/       [N] arranque escenario 2 PC nativo
-|   |-- start_voctocore_pc1.sh
-|   `-- start_voctogui_pc2.sh
-|-- Makefile              [N] automatizacion de tareas
+|       `-- telemetry_srv.py [N]
+|-- docker-compose.yml   [N]
+|-- Dockerfile           [N]
+|-- k8s_escenario/       [N]
+|-- tools/               [N]
+|-- images/              [N]
+|-- 1pc_escenario1/      [N]
+|-- 2pc_escenario2/      [N]
+|-- Makefile             [N]
 |-- README.md
 `-- LICENSE.txt
-\end{verbatim}
+  \end{verbatim}
+\end{minipage}
+
+\vspace{0.5cm}
+
+% ── C3. Módulos desarrollados ────────────────────────────────────────
+\Large{\textsc{\textcolor{nar}{C3. Módulos incorporados en este trabajo}}}
+\vspace{0.2cm}
+
+\normalsize{La tabla~\ref{tab:modulos_nuevos} recoge todos los ficheros marcados con
+\texttt{[N]}, con su función y el apartado de la memoria donde se documenta en detalle.}
+\vspace{0.2cm}
+
+\begin{table}[H]
+  \centering
+  \small
+  \begin{tabularx}{\textwidth}{|l|X|c|}
+    \hline
+    \textbf{Módulo / fichero} & \textbf{Descripción} & \textbf{Sección} \\
+    \hline
+    \texttt{voctocore/lib/overlay.py}
+      & Inyección de gráficos sobre la señal de vídeo en tiempo real
+      & §\ref{sec:overlays} \\
+    \texttt{voctocore/lib/scene.py}
+      & Grafo de escenas y gestión de estados del compositor
+      & §\ref{sec:transiciones} \\
+    \texttt{voctocore/lib/streamblanker.py}
+      & Control de los estados LIVE, PAUSE y NOSTREAM
+      & §\ref{sec:senal_programa} \\
+    \texttt{voctocore/lib/transitions.py}
+      & Motor de transiciones animadas entre fuentes de vídeo
+      & §\ref{sec:transiciones} \\
+    \texttt{voctogui/lib/gui\_state\_exporter.py}
+      & Exportación del estado del mezclador como JSON por HTTP
+      & §\ref{sec:telemetria} \\
+    \texttt{voctogui/lib/toolbar/overlay.py}
+      & Panel de control de \textit{overlays} en la interfaz gráfica
+      & §\ref{sec:overlays} \\
+    \texttt{voctogui/lib/toolbar/streamblank.py}
+      & Botones LIVE, PAUSE y NOSTREAM en la barra de herramientas
+      & §\ref{sec:senal_programa} \\
+    \texttt{example-scripts/.../telemetry\_service.py}
+      & Publicación de eventos de telemetría en RabbitMQ
+      & §\ref{sec:telemetria} \\
+    \texttt{docker-compose.yml}
+      & Orquestación del \textit{stack} Docker de diez servicios
+      & §\ref{sec:docker} \\
+    \texttt{Dockerfile}
+      & Imagen base del sistema para todos los contenedores
+      & §\ref{sec:docker} \\
+    \texttt{k8s\_escenario/}
+      & Scripts y manifiestos para el despliegue en Kubernetes
+      & §\ref{sec:kubernetes} \\
+    \texttt{tools/}
+      & Herramientas de medición y análisis de rendimiento
+      & Cap.~\ref{chap:pruebas} \\
+    \texttt{images/}
+      & Recursos visuales para \textit{overlays} (logos y fondos)
+      & §\ref{sec:overlays} \\
+    \texttt{1pc\_escenario1/}
+      & Scripts de arranque para el escenario de un PC
+      & §\ref{sec:despliegue_nativo} \\
+    \texttt{2pc\_escenario2/}
+      & Scripts de arranque para el escenario de dos PC
+      & §\ref{sec:despliegue_nativo} \\
+    \texttt{Makefile}
+      & Automatización de tareas de desarrollo y despliegue
+      & Cap.~\ref{chap:despliegue} \\
+    \hline
+  \end{tabularx}
+  \caption{Módulos y ficheros incorporados en Voctomix~2.0.}
+  \label{tab:modulos_nuevos}
+\end{table}
+
+\vspace{0.4cm}
+
+% ── C4. Evolución de la interfaz gráfica ────────────────────────────
+\Large{\textsc{\textcolor{nar}{C4. Evolución de la interfaz gráfica}}}
+\vspace{0.2cm}
+
+\normalsize{La figura~\ref{fig:voctomix_inicial} muestra la interfaz gráfica de Voctomix
+en el estado original del repositorio clonado, sin ninguna de las extensiones desarrolladas
+en este trabajo. La comparación con la figura~\ref{fig:gui_completa} del
+Capítulo~\ref{chap:diseno} ilustra el alcance de las mejoras realizadas sobre la
+interfaz de control.}
+\vspace{0.2cm}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figuras/voctomix_inicial.png}
+  \caption{Interfaz gráfica original de Voctomix al clonar el repositorio.}
+  \label{fig:voctomix_inicial}
+\end{figure}
