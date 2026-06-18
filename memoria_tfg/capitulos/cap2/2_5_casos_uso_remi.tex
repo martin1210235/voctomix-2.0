@@ -10,8 +10,8 @@ con participación de la UPM.
 \subsection{Chaos Communication Congress (C3VOC)}
 
 El Chaos Communication Congress (CCC) es uno de los mayores congresos de tecnología y
-seguridad informática del mundo, celebrado anualmente en Alemania con más de 17\,000
-asistentes y múltiples salas en emisión simultánea. El equipo de producción de vídeo del
+seguridad informática del mundo, celebrado anualmente en Alemania con más de 17\,000 asistentes en sus ediciones de
+mayor afluencia y múltiples salas en emisión simultánea. El equipo de producción de vídeo del
 congreso, C3VOC, desarrolló Voctomix~\cite{voctomix_github} precisamente para cubrir
 esta necesidad: un mezclador software de código abierto capaz de gestionar varias salas
 en paralelo sin depender de hardware broadcast propietario.
@@ -20,13 +20,13 @@ Cada sala del congreso dispone de su propio servidor con una instancia de voctoc
 alimentado por cámaras que envían señal RAW~I420 sobre TCP/MKV y operado remotamente
 por un realizador a través de voctogui. Las grabaciones finales y la emisión en directo
 se publican en el portal de media del congreso (\url{media.ccc.de}). Este caso de
-uso es el origen y banco de pruebas principal del proyecto: Voctomix~2.0 hereda la
+uso es el origen del proyecto: Voctomix~2.0 hereda la
 arquitectura cliente-servidor de voctocore originalmente diseñada para este entorno.
 
 \subsection{Juegos Olímpicos de Tokio 2020 (OBS)}
 
-Los Juegos Olímpicos de Tokio 2020, celebrados en 2021, constituyeron el mayor
-despliegue de producción remota en la historia del olimpismo. Olympic Broadcasting
+Los Juegos Olímpicos de Tokio 2020, celebrados en 2021, constituyeron uno de los mayores
+despliegues de producción remota en la historia del olimpismo. Olympic Broadcasting
 Services (OBS) implementó un modelo REMI a gran escala en el que la señal de las
 cámaras de todas las sedes olímpicas se transportó a un centro de producción centralizado
 en Tokio, reduciendo drásticamente el número de equipos y personal técnico desplazado
@@ -66,8 +66,9 @@ suprimiendo el desplazamiento de la unidad móvil de producción.
 La latencia de transporte medida en la red de acceso de Telefónica fue de 3--5~ms,
 cumpliendo el requisito de tiempo real para producción en directo. Este
 resultado demostró que la infraestructura de \textit{edge computing} puede sustituir
-funcionalmente a la unidad móvil en eventos de cobertura local, con ahorros estimados
-superiores al 30\,\% respecto al modelo tradicional.
+funcionalmente a la unidad móvil en eventos de cobertura local. La industria estima
+ahorros superiores al 30\,\% respecto al modelo tradicional en implantaciones REMI de
+escala comparable~\cite{tmbroadcast_remi}.
 
 \subsection{Proyectos europeos de investigación de la UPM}
 

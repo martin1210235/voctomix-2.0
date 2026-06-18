@@ -58,7 +58,7 @@ Un caso ilustrativo es la retransmisión de un partido de La Liga de fútbol pro
 en España. Este tipo de producción moviliza habitualmente entre 20 y 30 cámaras SDI,
 varias unidades móviles de producción equipadas con mezcladores hardware de gama alta
 y un equipo técnico de entre 50 y 100 personas desplazadas al estadio.
-El coste de una unidad móvil de estas características puede superar los 2 millones de
+El coste de una unidad móvil de estas características puede alcanzar varios millones de
 euros, cifra a la que se suma el gasto recurrente en desplazamientos, montaje y
 operación. Este modelo queda así reservado a grandes cadenas de televisión y
 organizaciones con infraestructura broadcast consolidada, resultando inaccesible para
@@ -112,7 +112,7 @@ significativas~\cite{tmbroadcast_remi,remi_workflow_ibc2023}:
   mezcla y edición se realizan de forma centralizada.
   \item \textbf{Sostenibilidad:} la reducción de desplazamientos contribuye a disminuir
   la huella de carbono de las producciones, un factor cada vez más valorado por
-  organizaciones y broadcasters.
+  organizaciones y radiodifusores.
   \item \textbf{Escalabilidad:} el sistema puede adaptarse a producciones de diferente
   escala reutilizando la misma infraestructura centralizada.
   \item \textbf{Flexibilidad geográfica:} es posible retransmitir eventos desde
@@ -140,7 +140,7 @@ reales~\cite{tmbroadcast_remi,remi_workflow_ibc2023}.
     Calidad         & Hardware ilimitado en el centro remoto    & Artefactos con ancho de banda insuficiente \\
     Sincronía A/V   & Procesamiento centralizado facilita la sincronía entre fuentes & \textit{jitter} (fluctuación) puede desincronizar fuentes \\
     Seguridad       & Cifrado AES-256 disponible en transporte SRT & Mayor superficie de ataque expuesta \\
-    Complejidad     & Herramientas maduras (Voctomix, FFmpeg)   & Diagnóstico de pipelines distribuidos \\
+    Complejidad     & Herramientas maduras (FFmpeg, GStreamer)   & Diagnóstico de pipelines distribuidos \\
     Sostenibilidad  & Menor huella de carbono                   & Consumo energético del centro permanente \\
     \hline
   \end{tabularx}
@@ -208,14 +208,3 @@ espectador final.
   \label{fig:cadena_produccion}
 \end{figure}
 
-La necesidad de desplegar estas herramientas de producción de forma portable y
-reproducible ha convertido en estándar el uso de tecnologías de contenerización
-como Docker~\cite{merkel2014docker} y Kubernetes~\cite{kubernetes_burns2016},
-que eliminan la instalación manual de dependencias y garantizan un comportamiento
-idéntico en cualquier equipo Linux.
-Esta infraestructura es especialmente relevante en entornos de investigación: los
-proyectos del grupo de la Universidad Politécnica de Madrid vinculados a CyberNEMO
-utilizan Kubernetes como plataforma de despliegue por su capacidad para orquestar
-servicios distribuidos de forma fiable. Esta necesidad motivó que, en el presente trabajo, Voctomix~2.0 fuera preparado
-para ejecutarse tanto en Docker Compose como en Kubernetes, objetivos que se
-desarrollan en el Capítulo~\ref{chap:despliegue}.

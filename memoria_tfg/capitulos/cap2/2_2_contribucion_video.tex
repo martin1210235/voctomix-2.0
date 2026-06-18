@@ -24,8 +24,9 @@ red local o contribución remota sobre Internet.
   \item \textbf{\ac{SMPTE} ST~2022-6 (SDI sobre IP):} encapsula la señal SDI íntegra en
   paquetes \ac{UDP}/IP, facilitando la migración de infraestructuras SDI existentes hacia
   redes Ethernet estándar~\cite{smpte_st2022_6}. La integridad del flujo puede
-  reforzarse opcionalmente con corrección de errores \ac{FEC} mediante el estándar
-  complementario SMPTE ST~2022-7.
+  reforzarse opcionalmente mediante el estándar complementario SMPTE ST~2022-7,
+  que implementa conmutación sin corte (\textit{hitless failover}) entre dos flujos
+  redundantes.
 
   \item \textbf{SMPTE ST~2110 (producción IP nativa):} estándar publicado en 2017 que
   transporta vídeo, audio y metadatos como flujos IP independientes, proporcionando
@@ -34,7 +35,7 @@ red local o contribución remota sobre Internet.
   de microsegundos.
 
   \item \textbf{NDI (\textit{Network Device Interface})\acused{NDI}:} protocolo propietario de
-  Vizrt/NewTek~\cite{ndi_vizrt} que transporta vídeo con compresión ligera sobre redes
+  NewTek/Vizrt~\cite{ndi_vizrt} que transporta vídeo con compresión ligera sobre redes
   \ac{LAN} Ethernet con latencia de un fotograma. Ampliamente soportado por cámaras \ac{PTZ},
   mezcladores hardware y herramientas de software de producción.
 
@@ -73,47 +74,20 @@ red local o contribución remota sobre Internet.
   \end{tabularx}
 \end{table}
 
-\subsection{User Datagram Protocol}
+\subsection{Protocolos de transporte de red}
 
-UDP es un protocolo de transporte sin conexión definido en la RFC~768~\cite{rfc768_udp}.
-Envía datagramas de forma independiente sin establecer sesión previa, sin confirmación de
-entrega ni reordenación de paquetes. Estas características le confieren la mínima latencia
-posible dentro de la pila de red, al eliminar todo el \textit{overhead} de fiabilidad.
+UDP (RFC~768~\cite{rfc768_udp}) es un protocolo sin conexión que envía datagramas de
+forma independiente sin confirmación de entrega, lo que le confiere la mínima latencia
+posible al eliminar el \textit{overhead} de fiabilidad. En contribución audiovisual se
+emplea cuando la latencia prima sobre la integridad: RTP encapsula los flujos multimedia
+con marcas de tiempo que permiten detectar pérdidas sin retransmisión, y SRT añade una
+capa ARQ (\textit{Automatic Repeat Request}) sobre UDP para recuperar paquetes perdidos
+sin incrementar la latencia en condiciones normales de red.
 
-En contribución audiovisual, UDP es el protocolo de elección cuando la latencia prima sobre
-la integridad de los datos: un fotograma perdido es preferible a un fotograma retrasado en
-aplicaciones de tiempo real. Por este motivo, los siguientes protocolos de nivel superior
-operan sobre UDP:
-
-\begin{itemize}
-  \item \textbf{RTP} (\textit{Real-time Transport Protocol}): encapsula los flujos
-        multimedia con marcas de tiempo y números de secuencia que permiten al receptor
-        detectar y compensar pérdidas sin retransmisión.
-  \item \textbf{SRT}: utiliza UDP como transporte pero añade una capa ARQ
-        (\textit{Automatic Repeat Request}) propia para recuperar paquetes perdidos
-        sin incrementar la latencia en condiciones normales de red.
-\end{itemize}
-
-\subsection{Transmission Control Protocol}
-
-TCP es un protocolo de transporte orientado a conexión definido en la
-RFC~793~\cite{rfc793_tcp}. Garantiza la entrega ordenada de todos los bytes mediante
-confirmaciones de recepción, retransmisión automática de segmentos perdidos y control
-de flujo y congestión.
-
-En contribución audiovisual, TCP se emplea cuando la integridad de los datos no es
-negociable y la latencia adicional es aceptable:
-
-\begin{itemize}
-  \item \textbf{Voctomix interno}: voctocore acepta las fuentes de cámara mediante
-        conexiones TCP que transportan flujos MKV con vídeo RAW~I420 y audio
-        PCM~S16LE. TCP garantiza la sincronización audio-vídeo sin pérdidas dentro
-        de la red local.
-  \item \textbf{Protocolo de control}: el servidor de comandos de voctocore escucha
-        en el puerto 9999 mediante TCP, asegurando que cada comando enviado por la
-        interfaz gráfica llega íntegramente al núcleo y que la respuesta de estado
-        retorna sin corrupción.
-\end{itemize}
+TCP (RFC~793~\cite{rfc793_tcp}) garantiza la entrega ordenada de todos los bytes mediante
+retransmisión y control de flujo y congestión. En Voctomix, TCP transporta las fuentes de
+cámara como flujos MKV (vídeo RAW~I420 y audio PCM~S16LE) y el protocolo de control en
+el puerto~9999, donde la integridad de cada comando es prioritaria sobre la latencia.
 
 \begin{table}[H]
   \centering
@@ -184,10 +158,7 @@ múltiples etapas de procesamiento.
   Voctomix emplea I420 en todo el procesamiento interno del motor GStreamer mediante
   cápsulas \texttt{video/x-raw,format=I420}, lo que elimina cualquier conversión de
   formato durante el procesamiento y garantiza que la latencia de mezcla dependa
-  únicamente del tiempo de cálculo sobre los píxeles. Para preservar la calidad colorimétrica,
-  todos los flujos deben declarar espacio BT.709 (\texttt{colorimetry=bt709}) y rango
-  televisivo (\texttt{tv~range}). Sin esta configuración, los colores pueden presentar
-  desviaciones perceptibles aunque la conexión se establezca correctamente. El coste del formato RAW es que los
+  únicamente del tiempo de cálculo sobre los píxeles. El coste del formato RAW es que los
   622~Mbit/s por fuente obligan a que todo el tráfico de vídeo circule en bucle local,
   ya sea mediante la interfaz de loopback del servidor en instalación monopuesto o a
   través de redes Docker internas de alta velocidad en el despliegue contenerizado.
@@ -219,17 +190,11 @@ múltiples etapas de procesamiento.
   \item \textbf{JPEG XS (ISO/IEC~21122)}~\cite{jpeg_xs_iso}: códec intra-frame de
   nueva generación publicado en 2019 específicamente diseñado para producción
   profesional en tiempo real. Su latencia de codificación es inferior a un milisegundo
-  con compresiones de 4:1 a 6:1 sin pérdidas visualmente relevantes, lo que lo hace
+  con compresiones de 4:1 a 6:1 en entornos de producción profesional típicos, sin pérdidas visualmente relevantes, lo que lo hace
   adecuado para contribución 4K y 8K en vivo. Ha sido adoptado en iniciativas de
   producción IP de alta calidad donde JPEG~2000 resulta excesivamente exigente
   computacionalmente.
 
-  \item \textbf{Dolby Atmos}~\cite{dolby_atmos_broadcast}: sistema de audio inmersivo
-  basado en objetos sonoros desarrollado por Dolby Laboratories. En contribución
-  profesional, el contenido Atmos se transporta sobre SDI mediante Dolby~E o como
-  audio PCM multicanal con metadatos de posición tridimensional. Es el estándar
-  adoptado por las principales cadenas de televisión para producciones deportivas en
-  vivo y entretenimiento premium.
 
 \end{itemize}
 
@@ -248,7 +213,6 @@ múltiples etapas de procesamiento.
     VC-3 / DNxHD    & 4:1 -- 7:1     & $<$1 fotograma & Broadcast, Avid workflows \\
     JPEG 2000       & 4:1 -- 20:1    & $<$5 ms     & Contribución broadcast \\
     JPEG XS         & 4:1 -- 6:1     & $<$1 ms     & Contribución 4K/8K en vivo \\
-    Dolby Atmos     & Variable       & $<$1 fotograma & Audio inmersivo broadcast en vivo \\
     \hline
   \end{tabularx}
 \end{table}
