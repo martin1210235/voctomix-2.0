@@ -95,8 +95,8 @@ eventos en distintas localizaciones reutilizando la misma infraestructura de
 mezclado~\cite{remi_workflow_ibc2023}.
 
 El modelo REMI se ha consolidado en los últimos años como referencia en eventos de
-gran escala. Los casos representativos, desde los Juegos Olímpicos de Tokio 2020
-hasta el Chaos Communication Congress, se analizan en la
+gran escala. Los casos representativos, desde el Chaos Communication Congress
+hasta los Juegos Olímpicos de Tokio 2020, se analizan en la
 Sección~\ref{sec:casos_uso_remi}.
 
 
@@ -138,7 +138,7 @@ reales~\cite{tmbroadcast_remi,remi_workflow_ibc2023}.
     Escalabilidad   & Un centro atiende múltiples eventos       & Riesgo de sobrecarga del servidor \\
     Red             & Producción desde cualquier ubicación IP   & Corte de red detiene la producción \\
     Calidad         & Hardware ilimitado en el centro remoto    & Artefactos con ancho de banda insuficiente \\
-    Sincronía A/V   & \ac{MKV}/\ac{TCP} garantiza sincronía A/V en cada flujo & \textit{jitter} (fluctuación) puede desincronizar fuentes \\
+    Sincronía A/V   & Procesamiento centralizado facilita la sincronía entre fuentes & \textit{jitter} (fluctuación) puede desincronizar fuentes \\
     Seguridad       & Cifrado AES-256 disponible en transporte SRT & Mayor superficie de ataque expuesta \\
     Complejidad     & Herramientas maduras (Voctomix, FFmpeg)   & Diagnóstico de pipelines distribuidos \\
     Sostenibilidad  & Menor huella de carbono                   & Consumo energético del centro permanente \\
@@ -150,7 +150,7 @@ reales~\cite{tmbroadcast_remi,remi_workflow_ibc2023}.
 \subsubsection*{Herramientas de producción remota por software}
 
 La disponibilidad de herramientas de mezclado por software ha democratizado el acceso
-al modelo remoto incluso para organizaciones sin presupuesto broadcast:
+al modelo remoto incluso para organizaciones sin presupuesto de radiodifusión profesional:
 
 \begin{itemize}
   \item \textbf{OBS Studio}~\cite{obs_studio}: solución de código abierto ampliamente

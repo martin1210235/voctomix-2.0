@@ -1,4 +1,4 @@
-\section{Distribución Audiovisual}
+\section{Distribución audiovisual}
 \label{sec:distribucion_av}
 
 Una vez generada la señal de programa por el mezclador, esta debe distribuirse hasta
@@ -18,12 +18,10 @@ espectador.
   \item \textbf{RTMP (\textit{Real-Time Messaging Protocol})\acused{RTMP}:} protocolo TCP de Adobe,
   estándar de ingesta para plataformas como YouTube Live o Twitch con latencia de
   2--5~s. Aunque obsoleto en reproducción desde la retirada de Adobe Flash en 2020,
-  mantiene una adopción del 58\,\% entre profesionales broadcast en
-  2025~\cite{haivision_broadcast_report_2025}, por detrás de SRT (77\,\%). A pesar de
-  esta segunda posición global, RTMP sigue siendo el protocolo de ingesta aceptado de
-  forma universal por las principales plataformas \ac{CDN} (YouTube, Twitch, Facebook Live),
-  lo que lo convierte en el estándar de facto para la entrega de señal al distribuidor.
-  Voctomix lo soporta como salida mediante FFmpeg.
+  mantiene una adopción del 58\,\% entre profesionales en
+  2025~\cite{haivision_broadcast_report_2025} y sigue siendo el protocolo de ingesta
+  aceptado de forma universal por las principales plataformas \ac{CDN} (YouTube, Twitch,
+  Facebook Live). Voctomix lo soporta como salida mediante FFmpeg.
 
   \item \textbf{HLS (\textit{HTTP Live Streaming}):} protocolo de Apple que divide el
   vídeo en segmentos servidos mediante HTTP~\cite{rfc8216}. Latencia de 10--30~s en
@@ -150,8 +148,9 @@ pérdida de calidad a cambio de viabilizar el transporte.
 
   \item \textbf{AAC / Opus}: códecs de audio utilizados habitualmente junto a los
   anteriores. AAC (\textit{Advanced Audio Coding})\acused{AAC} es el estándar en distribución
-  broadcast y plataformas de streaming; Opus es el códec preferido en aplicaciones
-  WebRTC por su eficiencia a bajas tasas de bits.
+  broadcast y plataformas de streaming; Opus es el códec de audio obligatorio en
+  la especificación WebRTC (RFC~7874) y el preferido en aplicaciones de comunicación
+  en tiempo real.
 
   \item \textbf{AC-4 (ETSI TS~103~190)}~\cite{etsi_ac4}: códec de audio de nueva
   generación adoptado en ATSC~3.0 (\textit{NextGen TV}) y DVB como estándar de
