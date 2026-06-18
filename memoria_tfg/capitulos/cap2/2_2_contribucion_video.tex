@@ -88,15 +88,15 @@ el puerto~9999, donde la integridad de cada comando es prioritaria sobre la late
   \caption{Comparativa de los protocolos de transporte en producción audiovisual.}
   \label{tab:protocolos_red}
   \small
-  \begin{tabularx}{\textwidth}{|l|c|c|c|X|}
+  \begin{tabular}{|l|l|c|c|c|}
     \hline
-    \textbf{Protocolo} & \textbf{Conexión} & \textbf{Fiabilidad} & \textbf{Latencia} & \textbf{Uso en Voctomix} \\
+    \textbf{Protocolo} & \textbf{Uso en Voctomix} & \textbf{Conexión} & \textbf{Fiabilidad} & \textbf{Latencia} \\
     \hline
-    UDP                          & No & Sin garantías & Mínima   & RTP, SRT              \\
-    TCP                          & Sí & Garantizada   & Variable & MKV/fuentes, control  \\
-    \ac{HTTP}\textsuperscript{*} & Sí & Garantizada   & Alta     & HLS, DASH, telemetría \\
+    UDP                          & RTP, SRT         & No & Sin garantías & Mínima   \\
+    TCP                          & MKV, control     & Sí & Garantizada   & Variable \\
+    \ac{HTTP}\textsuperscript{*} & HLS, DASH        & Sí & Garantizada   & Alta     \\
     \hline
-  \end{tabularx}
+  \end{tabular}
   \begin{flushleft}
     \footnotesize \textsuperscript{*}HTTP/1.1 y HTTP/2 sobre TCP; HTTP/3 sobre QUIC (UDP).
   \end{flushleft}
