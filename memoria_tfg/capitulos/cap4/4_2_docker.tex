@@ -50,3 +50,21 @@ dos medidas: si un contenedor falla, Docker lo reinicia automáticamente mediant
 \texttt{restart: on-failure}; y antes de lanzar cada servicio, el sistema comprueba que el
 puerto~9999 está disponible. Con estas medidas el despliegue completo resulta robusto
 y repetible en cualquier máquina con Docker instalado.
+
+El \textit{stack} genera una única imagen personalizada, construida automáticamente
+la primera vez que se arranca el sistema a partir del \texttt{Dockerfile}. Esa misma
+imagen sirve de base para todos los servicios del sistema, cada uno ejecutando un
+proceso diferente sobre el mismo entorno: voctocore lanza el núcleo de mezcla, los
+contenedores de cámara ejecutan FFmpeg para inyectar la señal de vídeo, y el servicio
+de telemetría registra los eventos. El broker RabbitMQ es el único servicio que emplea
+una imagen oficial externa. Voctogui corre de forma nativa en el equipo anfitrión
+porque requiere acceso al servidor gráfico del sistema y no puede ejecutarse dentro
+de un contenedor.
+
+El arranque del sistema sigue una secuencia ordenada: primero se eliminan los contenedores
+previos para garantizar un estado limpio, después se levantan todos los servicios en
+segundo plano y el sistema espera a que voctocore supere su verificación de salud
+antes de continuar. Una vez el núcleo está operativo, se lanza voctogui de forma
+nativa y se abre automáticamente un monitor de programa sobre el puerto~15000. Al
+cerrar la sesión, todos los procesos, tanto los contenedores como los procesos
+nativos, se detienen de forma coordinada.
