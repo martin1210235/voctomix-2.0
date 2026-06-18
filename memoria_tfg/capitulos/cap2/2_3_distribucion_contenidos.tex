@@ -147,11 +147,22 @@ pérdida de calidad a cambio de viabilizar el transporte.
   Plataformas como Netflix y Disney$+$ lo evalúan para distribución OTT de próxima
   generación.
 
-  \item \textbf{AAC / Opus}: códecs de audio utilizados habitualmente junto a los
-  anteriores. AAC (\textit{Advanced Audio Coding})\acused{AAC} es el estándar en distribución
-  broadcast y plataformas de streaming; Opus es el códec de audio obligatorio en
-  la especificación WebRTC (RFC~7874) y el preferido en aplicaciones de comunicación
-  en tiempo real.
+  \item \textbf{AAC / Opus}: códecs de audio para distribución por Internet. AAC
+  (\textit{Advanced Audio Coding})\acused{AAC} es el estándar en plataformas de
+  \textit{streaming} (YouTube, Twitch, Apple Music) y en HLS; Opus es el códec de
+  audio obligatorio en WebRTC (RFC~7874) y el preferido en aplicaciones de
+  comunicación en tiempo real por su baja latencia y alta eficiencia a bitrates
+  reducidos.
+
+  \item \textbf{AC-3 / AC-4 (Dolby):} AC-3 (\textit{Dolby Digital},
+  ATSC~A/52)~\cite{atsc_a52} es el códec de audio dominante en distribución broadcast
+  lineal: estándar en la norma ATSC de televisión digital en Norteamérica y ampliamente
+  empleado en cable, satélite, DVD y Blu-ray. Soporta hasta 5.1 canales a tasas de
+  entre 192 y 640~kbit/s y es soportado de forma nativa por FFmpeg para la generación
+  de flujos MPEG-TS con audio envolvente. AC-4 (ETSI TS~103~190)~\cite{etsi_ac4} es su
+  sucesor de nueva generación, adoptado en el estándar ATSC~3.0 (\textit{NextGen TV}),
+  con soporte para audio inmersivo de hasta 7.1.4 canales compatible con Dolby Atmos y
+  mayor eficiencia de compresión que AC-3 a calidad perceptual equivalente.
 
 \end{itemize}
 
