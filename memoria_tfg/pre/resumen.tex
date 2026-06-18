@@ -26,24 +26,32 @@ emisión con tres modos, sincronización automática del audio y un servicio de
 telemetría con publicación en tiempo real en el gestor de colas RabbitMQ.
 
 El sistema se ha contenerizado y desplegado tanto en Docker~Compose como en
-Kubernetes con Minikube, con el objetivo de ser utilizado en el proyecto europeo
-de investigación CyberNEMO de la UPM como plataforma de producción audiovisual
-en un entorno de validación activo.
+Kubernetes con Minikube, integrándose en el proyecto europeo de investigación
+CyberNEMO de la UPM, donde opera en tiempo real como plataforma de producción
+audiovisual en un entorno de validación activa para diferentes componentes de
+ciberseguridad.
 
 La plataforma se ha validado en cuatro escenarios de despliegue: un único equipo,
 dos equipos físicos en red local, Docker~Compose y Kubernetes con Minikube. Se
 realizaron pruebas de rendimiento y consumo de recursos, mediciones de latencia
 de conmutación entre fuentes y de transición entre modos de composición, una
 prueba de estabilidad a largo plazo y ensayos de resiliencia ante fallos simulados
-de cámara.
+de cámara, verificando el funcionamiento en tiempo real del sistema en todos los
+entornos evaluados.
+
+El servicio de telemetría se validó de forma independiente, comprobando que los
+eventos de producción, el estado de las fuentes y las métricas de consumo de
+recursos se publican y almacenan correctamente en RabbitMQ mediante AMQP,
+posibilitando su análisis y auditoría posterior.
 
 \vspace{0.5cm}
 \addcontentsline{toc}{chapter}{Palabras clave}
 {\Large\textsc{\textcolor{nar}{Palabras clave}}}
 \vspace{0.2cm}
 
-producción audiovisual en directo, mezclador de vídeo, software libre, GStreamer,
-Docker, Kubernetes, RabbitMQ, telemetría, \textit{streaming}, AMQP.
+producción audiovisual en directo, producción remota de vídeo, mezclador de vídeo,
+software libre, GStreamer, Docker, Kubernetes, RabbitMQ, telemetría,
+\textit{streaming}, AMQP.
 
 \newpage
 \thispagestyle{fancy}
@@ -68,22 +76,27 @@ automatic audio synchronisation and a telemetry service that publishes events
 in real time to the RabbitMQ message broker.
 
 The system has been containerised and deployed on both Docker~Compose and Kubernetes
-with Minikube, with the aim of being used in the CyberNEMO European research
-project at UPM as the audiovisual production platform in an active validation
-environment.
+with Minikube, integrating into the CyberNEMO European research project at UPM,
+where it operates in real time as an audiovisual production platform in an active
+validation environment for different cybersecurity components.
 
 Validation was carried out across four deployment scenarios: a single machine, two
 physical machines over a local network, Docker~Compose and Kubernetes with Minikube.
 Performance and resource consumption tests, switching latency and composition mode
 transition measurements, a long-term stability test and resilience trials with
-simulated camera failures were conducted to evaluate the system in practice.
+simulated camera failures were conducted, verifying real-time operation of the
+system across all evaluated environments.
+
+The telemetry service was validated independently, confirming that production
+events, source status and resource consumption metrics are correctly published and
+stored in RabbitMQ via AMQP, enabling their subsequent analysis and auditing.
 
 \vspace{0.5cm}
 \addcontentsline{toc}{chapter}{Keywords}
 {\Large\textsc{\textcolor{nar}{Keywords}}}
 \vspace{0.2cm}
 
-live audiovisual production, video mixer, free software, GStreamer,
-Docker, Kubernetes, RabbitMQ, telemetry, streaming, AMQP.
+live audiovisual production, remote video production, video mixer, free software,
+GStreamer, Docker, Kubernetes, RabbitMQ, telemetry, streaming, AMQP.
 
 \newpage
