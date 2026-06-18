@@ -5,7 +5,8 @@ Los composites definen cómo se combinan visualmente las dos fuentes de vídeo a
 (bus A y bus B) en el fotograma de salida. Voctomix implementa los composites mediante
 el elemento GStreamer \texttt{compositor}, que sitúa y escala cada fuente de acuerdo
 con los parámetros geométricos definidos en la sección \texttt{[composites]} del
-fichero de configuración (reproducida en su totalidad en la sección~C5 del Anexo~C). El compositor de GStreamer soporta la modificación de estos parámetros en caliente
+fichero de configuración (reproducida en su totalidad en la sección~C5 del Anexo~C).
+El compositor de GStreamer soporta la modificación de estos parámetros en caliente
 sin interrumpir el pipeline, base técnica que el motor de transiciones
 (sección~\ref{sec:transiciones}) aprovecha para interpolar de forma animada entre
 composites consecutivos.
@@ -21,69 +22,71 @@ fuentes (A en naranja, B en azul) en cada uno de los composites principales.
   \label{fig:composites_diagrama}
 \end{figure}
 
-\subsection{Full Screen}
+El sistema ofrece cuatro modos de composite, cuyo resultado sobre la señal de programa
+se muestra en la figura~\ref{fig:composites_screenshots}:
 
-La fuente A ocupa toda la pantalla y la fuente B queda oculta. Es el modo
-por defecto de una realización convencional: el realizador selecciona una fuente y la
-emite a pantalla completa. Resulta adecuado para la emisión de una ponencia individual,
-una demostración en pantalla o cualquier situación en la que una única fuente deba
-ocupar todo el encuadre.
+\begin{itemize}
+  \item \textbf{Full Screen~(a):} la fuente A ocupa toda la pantalla y la fuente B
+        queda oculta. Es el modo por defecto de una realización convencional, adecuado
+        para la emisión de una ponencia individual, una demostración en pantalla o
+        cualquier situación en la que una única fuente deba ocupar todo el encuadre.
 
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.54\textwidth]{figuras/fullscreen}
-  \caption{Señal de programa con el composite Full Screen activo.}
-  \label{fig:screen_fs}
-\end{figure}
+  \item \textbf{Picture in Picture~(b):}\acused{PIP} la fuente A se muestra a pantalla
+        completa mientras la fuente B aparece reducida en una esquina del encuadre a
+        una escala aproximada del 26\,\% del ancho del fotograma. Es el composite
+        clásico de ponente con presentación: la cámara ocupa la pantalla completa y
+        las diapositivas aparecen en la esquina, o viceversa.
 
-\subsection{Picture in Picture}
-\acused{PIP}
+  \item \textbf{Side by Side~(c):} ambas fuentes se muestran a igual tamaño, situadas
+        una junto a la otra y ocupando cada una aproximadamente la mitad del fotograma.
+        Resulta útil para comparaciones visuales, debates con dos participantes o para
+        mostrar simultáneamente la cámara del ponente y sus diapositivas con el mismo
+        peso visual.
 
-La fuente A se muestra a pantalla completa mientras la fuente B aparece reducida en
-una esquina del encuadre (típicamente la esquina inferior derecha), a una escala
-aproximada del 26\,\% del ancho del fotograma. Es el composite clásico de ponente con
-presentación: la cámara del ponente ocupa la pantalla completa y las diapositivas
-aparecen en la esquina, o viceversa.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.54\textwidth]{figuras/picture_in_picture}
-  \caption{Señal de programa con el composite Picture in Picture activo.}
-  \label{fig:screen_pip}
-\end{figure}
-
-\subsection{Side by Side}
-
-Ambas fuentes se muestran a igual tamaño, situadas una junto a la otra y ocupando
-cada una aproximadamente la mitad del fotograma. Es útil para comparaciones visuales,
-debates con dos participantes o para mostrar simultáneamente la cámara del ponente y
-sus diapositivas con el mismo peso visual.
+  \item \textbf{Lecture~(d):} la fuente A ocupa el 75\,\% del encuadre y la fuente B
+        aparece reducida al 23\,\% en la parte derecha. Está diseñado para
+        retransmisiones de ponencias o clases: las diapositivas centran la atención
+        del espectador mientras la cámara del ponente permanece visible en un recuadro
+        lateral, sin comprometer la legibilidad del contenido proyectado.
+\end{itemize}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.54\textwidth]{figuras/side_by_side}
-  \caption{Señal de programa con el composite Side by Side activo.}
-  \label{fig:screen_sbs}
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figuras/fullscreen}
+    \subcaption{Full Screen.}
+    \label{fig:screen_fs}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figuras/picture_in_picture}
+    \subcaption{Picture in Picture.}
+    \label{fig:screen_pip}
+  \end{minipage}
+
+  \vspace{0.4cm}
+
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figuras/side_by_side}
+    \subcaption{Side by Side.}
+    \label{fig:screen_sbs}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{figuras/lecture}
+    \subcaption{Lecture.}
+    \label{fig:screen_lec}
+  \end{minipage}
+  \caption{Señal de programa en los cuatro modos de composite de Voctomix~2.0:
+           (a)~Full Screen, (b)~Picture in Picture, (c)~Side by Side y (d)~Lecture.}
+  \label{fig:composites_screenshots}
 \end{figure}
 
-\subsection{Lecture}
-
-La fuente A ocupa el 75\,\% del encuadre y la fuente B aparece reducida al 23\,\% en la
-parte derecha. Está diseñado para retransmisiones de ponencias o clases: las diapositivas
-(fuente A) centran la atención del espectador mientras la cámara del ponente (fuente B)
-permanece visible en un recuadro lateral, sin comprometer la legibilidad del contenido
-proyectado.
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.54\textwidth]{figuras/lecture}
-  \caption{Señal de programa con el composite Lecture activo.}
-  \label{fig:screen_lec}
-\end{figure}
-
-\subsection{Mirror}
-
-El modo mirror no es un composite independiente, sino una variante disponible para
+El sistema incorpora además un modo \textbf{mirror}, disponible como variante para
 Picture in Picture y Lecture. Al activarlo, el núcleo invierte la disposición horizontal
 del composite: los elementos situados a la derecha se desplazan a la izquierda y
 viceversa. Por ejemplo, el recuadro del PIP pasa de la esquina inferior derecha a la
