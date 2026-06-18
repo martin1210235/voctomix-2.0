@@ -241,3 +241,277 @@ interfaz de control.}
   \caption{Interfaz gráfica original de Voctomix al clonar el repositorio.}
   \label{fig:voctomix_inicial}
 \end{figure}
+
+\vspace{0.4cm}
+
+% ── C5. Ficheros de configuración ────────────────────────────────────
+\Large{\textsc{\textcolor{nar}{C5. Ficheros de configuración del sistema}}}
+\vspace{0.2cm}
+
+\lstdefinelanguage{iniconf}{%
+  sensitive=false,
+  morecomment=[l]{;},
+  moredelim=[s][\bfseries\color{nar}]{[}{]},
+}
+\lstdefinestyle{inifile}{%
+  language=iniconf,
+  basicstyle=\scriptsize\ttfamily,
+  commentstyle=\color{gray!60}\itshape,
+  showstringspaces=false,
+  breaklines=true,
+  breakindent=2em,
+  breakatwhitespace=false,
+  frame=leftline,
+  framesep=5pt,
+  framerule=2pt,
+  rulecolor=\color{nar!50},
+  backgroundcolor=\color{gray!4},
+  xleftmargin=1.5em,
+  aboveskip=4pt,
+  belowskip=6pt,
+}
+
+\normalsize{El sistema emplea dos ficheros de configuración INI independientes.
+\texttt{voctocore/default-config.ini} define los parámetros del núcleo de procesamiento:
+resolución, formato de vídeo y audio, geometría de los composites, secuencias de
+transición, configuración del \textit{stream blanker} y de los \textit{overlays}.
+\texttt{voctogui/default-config.ini} configura la interfaz gráfica: dirección del
+servidor, resolución de las previsualizaciones, atajos de teclado y disposición de
+la barra de herramientas.}
+\vspace{0.3cm}
+
+\noindent\textbf{\small voctocore/default-config.ini}
+\vspace{0.1cm}
+
+\begin{lstlisting}[style=inifile]
+[mix]
+videocaps = video/x-raw,format=I420,width=1920,height=1080,framerate=25/1,pixel-aspect-ratio=1/1,interlace-mode=progressive,colorimetry=bt709
+audiocaps = audio/x-raw,format=S16LE,channels=2,layout=interleaved,rate=48000
+
+sources = cam1,cam2,cam3,cam4,break,intro
+backgrounds=background1,background2
+audiostreams = 1
+
+[source.cam1]
+deinterlace = assume-progressive
+[source.cam2]
+deinterlace = assume-progressive
+[source.cam3]
+deinterlace = assume-progressive
+[source.cam4]
+deinterlace = assume-progressive
+[source.break]
+deinterlace = assume-progressive
+[source.intro]
+deinterlace = assume-progressive
+
+[logo1]
+file = ../images/logos/logo1.png
+
+[logo2]
+file = ../images/logos/logo2.png
+
+[source.background1]
+kind=test
+pattern=black
+composites=fs
+
+[source.background2]
+kind=img
+file = ../images/backgrounds/bg.png
+composites=sbs,pip,lec
+
+[stream-blanker]
+enabled=true
+sources=pause,nostream
+volume=1.0
+
+[source.stream-blanker-pause]
+kind=tcp
+
+[source.stream-blanker-nostream]
+kind=tcp
+
+[output-buffers]
+mix_out = 10000
+
+[previews]
+enabled = true
+live = true
+deinterlace = false
+videocaps=video/x-raw,width=1024,height=576,framerate=25/1
+
+[mirrors]
+enabled = true
+
+[overlay]
+path = ../images
+user-auto-off = true
+auto-off = true
+blend-time=300
+
+[composites]
+fs.a                  = *
+fs.b                  = *
+fs.alpha-b            = 0
+fs.noswap             = true
+
+fs-pip.a              = *
+fs-pip.b              = 0.86/0.85 0.0
+fs-pip.alpha-b        = 0
+fs-pip.inter          = true
+fs-pip.mirror         = true
+
+fs-sbs.a              = *
+fs-sbs.b              = 1.0/0.5 0.0
+fs-sbs.alpha-b        = 0
+fs-sbs.inter          = true
+
+fs-lec.a             = *
+fs-lec.b             = 1.0 0.0
+fs-lec.alpha-b       = 0
+fs-lec.crop-b        = 0.31/0
+fs-lec.inter         = true
+fs-lec.mirror        = true
+
+pip.a                   = *
+pip.b                   = 0.73/0.72 0.26
+pip.noswap              = true
+pip.mirror              = true
+
+sbs.a                   = 0.008/0.25 0.49
+sbs.b                   = 0.503/0.25 0.49
+
+lec.a                  = 0.006/0.01 0.75
+lec.b                  = 0.76/0.01 0.23
+lec.crop-b             = 0/0
+lec.mirror             = true
+
+lec_43.a               = 0.006/0.01 0.75
+lec_43.b               = 0.76/0.01 0.23
+lec_43.crop-a          = 0/0
+lec_43.crop-b          = 0/0
+lec_43.mirror          = true
+
+fs-b.a                  = *
+fs-b.b                  = *
+fs-b.noswap             = true
+
+fs-b-sbs.a              = 0.0/0.5 0.0
+fs-b-sbs.alpha-a        = 0.0
+fs-b-sbs.b              = *
+fs-b-sbs.inter          = true
+
+fs-b-lec.a             = 0.0/1.0 0.0
+fs-b-lec.b             = *
+fs-b-lec.inter         = true
+fs-b-lec.mirror        = true
+
+oao.a                   = 0.3/0.2 0.4
+oao.alpha-a             = 0.5
+oao.b                   = 0.2/0.3 0.6
+oao.inter               = true
+oao.noswap              = true
+
+[transitions]
+fs-fs                   = 750, fs / fs-b
+fs-pip                  = 750, fs-pip / pip
+fs-sbs                  = 750, fs-sbs / sbs
+fs-b-pip                = 750, fs-b / pip
+fs-b-sbs                = 750, fs-b-sbs / sbs
+fs-lec                  = 750, fs-lec / lec
+fs-b-lec                = 750, fs-b-lec / lec
+pip-pip                 = 750, pip / sbs / pip
+sbs-sbs                 = 750, sbs / oao / sbs
+_sbs-sbs                = 750, ^sbs / ^oao / sbs
+
+fs-pip_                 = 750, |fs-pip / |pip
+fs-b-pip_               = 750, fs-b / |pip
+fs-lec_                 = 750, |fs-lec / |lec
+fs-b-lec_               = 750, |fs-b-lec / |lec
+pip-pip_                = 750, |pip / sbs / |pip
+
+def                     = 750, * / *
+\end{lstlisting}
+
+\vspace{0.3cm}
+\noindent\textbf{\small voctogui/default-config.ini}
+\vspace{0.1cm}
+
+\begin{lstlisting}[style=inifile]
+[server]
+host=localhost
+
+[previews]
+width=320
+use=true
+
+[mainvideo]
+playaudio=false
+
+[videodisplay]
+; system=gl   (OpenGL, mayor rendimiento)
+; system=xv   (XVideo, modo clasico)
+system=x       (X-Images, compatible universal)
+
+[misc]
+close=true
+cut=true
+fullscreen=true
+
+[mainwindow]
+; width=1700
+; height=1000
+; forcefullscreen=true
+
+[toolbar.sources.a]
+cam1.name = CAM1
+cam1.key = F1
+cam2.name = CAM2
+cam2.key = F2
+cam3.name = CAM3
+cam3.key = F3
+cam4.name = CAM4
+cam4.key = F4
+break.name = BREAK
+break.key = F5
+intro.name = INTRO
+intro.key = F6
+
+[toolbar.sources.b]
+cam1.name = CAM1
+cam1.key = 1
+cam2.name = CAM2
+cam2.key = 2
+cam3.name = CAM3
+cam3.key = 3
+cam4.name = CAM4
+cam4.key = 4
+break.name = BREAK
+break.key = 5
+intro.name = INTRO
+intro.key = 6
+
+[toolbar.composites]
+fs.name = FULL SCREEN
+fs.key = F5
+sbs.name = SIDE BY SIDE
+sbs.key = F6
+pip.name = PIP
+pip.key = F7
+lec.name = LECTURE
+lec.key = F8
+
+[toolbar.mods]
+mirror.name = MIRROR
+mirror.replace = lec->|lec, pip->|pip
+mirror.key = F9
+
+[toolbar.mix]
+retake.name   = RETAKE
+retake.key    = BackSpace
+cut.name      = CUT
+cut.key       = Return
+trans.name    = TRANS
+trans.key     = space
+\end{lstlisting}
