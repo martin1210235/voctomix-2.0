@@ -27,7 +27,7 @@ La tabla~\ref{tab:puertos_sistema} recoge los puertos TCP/UDP del sistema y su f
     10004        & TCP  & Entrada fuente break (vídeo de pausa) \\
     10005        & TCP  & Entrada fuente intro (vídeo introductorio) \\
     11000        & TCP  & Salida mezcla en bruto (grabación, monitor sin JPEG) \\
-    12000        & TCP  & Salida previsualización de mezcla comprimida (JPEG, opcional) \\
+    12000        & TCP  & Salida previsualización de mezcla comprimida (JPEG) \\
     14000--14005 & TCP  & Salidas de previsualización comprimidas (GUI) \\
     15000        & TCP  & Salida de streaming \\
     17000        & TCP  & Entrada stream blanker PAUSE \\
@@ -57,7 +57,7 @@ telemetría. Este diagrama sirve de hilo conductor para los apartados que siguen
 \subsection{voctocore: núcleo multimedia}
 \label{sec:voctocore}
 
-\texttt{voctocore} es el servidor central del sistema: recibe las fuentes de vídeo
+\texttt{voctocore} es el servidor central del sistema. Recibe las fuentes de vídeo
 entrantes, realiza la mezcla y expone los resultados en distintos puertos TCP. Al
 arrancar construye el pipeline GStreamer a partir del fichero de configuración INI,
 crea una instancia de \texttt{AVSource} por cada fuente declarada, instancia el
@@ -78,7 +78,7 @@ intervención manual del operador.
 \subsection{voctogui: interfaz gráfica de control}
 \label{sec:voctogui}
 
-\texttt{voctogui} es el cliente de control: implementado en Python con GTK3 mediante PyGObject, proporciona al
+\texttt{voctogui} es el cliente de control. Implementado en Python con GTK3 mediante PyGObject, proporciona al
 realizador la interfaz visual para operar el sistema en tiempo real. Se conecta al
 núcleo por TCP y recibe las previsualizaciones de cada fuente en formato JPEG
 comprimido (puertos 14000--14005), mientras que el monitor principal recibe la
