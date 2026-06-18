@@ -9,8 +9,9 @@
 alojado en GitHub bajo la organización \texttt{voc}, con una historia de \textit{commits}
 que se remonta a 2016. Este anexo documenta la evolución del repositorio a lo largo del
 trabajo: la sección~C2 compara la estructura de directorios antes y después del desarrollo,
-la sección~C3 detalla los módulos incorporados y la sección~C4 muestra la evolución de
-la interfaz gráfica.}
+la sección~C3 detalla los módulos incorporados, la sección~C4 muestra la evolución de
+la interfaz gráfica, la sección~C5 reproduce los ficheros de configuración INI del
+sistema y la sección~C6 los ficheros de infraestructura Docker.}
 \vspace{0.4cm}
 
 % ── C2. Comparativa de estructura ───────────────────────────────────
@@ -434,6 +435,7 @@ pip-pip_                = 750, |pip / sbs / |pip
 def                     = 750, * / *
 \end{lstlisting}
 
+\clearpage
 \vspace{0.3cm}
 \noindent\textbf{\small voctogui/default-config.ini}
 \vspace{0.1cm}
@@ -514,4 +516,350 @@ cut.name      = CUT
 cut.key       = Return
 trans.name    = TRANS
 trans.key     = space
+\end{lstlisting}
+
+\clearpage
+\vspace{0.4cm}
+
+% ── C6. Ficheros de infraestructura Docker ───────────────────────────
+\Large{\textsc{\textcolor{nar}{C6. Ficheros de infraestructura Docker}}}
+\vspace{0.2cm}
+
+\lstdefinelanguage{dockerfile}{%
+  keywords={FROM, RUN, ENV, WORKDIR, COPY, HEALTHCHECK, CMD},
+  keywordstyle=\bfseries\color{nar},
+  morecomment=[l]{\#},
+  commentstyle=\color{gray!60}\itshape,
+  sensitive=true,
+}
+\lstdefinestyle{codefile}{%
+  basicstyle=\scriptsize\ttfamily,
+  commentstyle=\color{gray!60}\itshape,
+  showstringspaces=false,
+  breaklines=true,
+  breakatwhitespace=false,
+  frame=leftline,
+  framesep=5pt,
+  framerule=2pt,
+  rulecolor=\color{nar!50},
+  backgroundcolor=\color{gray!4},
+  xleftmargin=1.5em,
+  aboveskip=4pt,
+  belowskip=6pt,
+}
+
+\normalsize{El despliegue en contenedores se define en dos ficheros.
+El \texttt{Dockerfile} parte de Ubuntu~22.04~\ac{LTS} e instala en una sola capa
+todas las dependencias del sistema: GStreamer~1.0 con sus \textit{plugins}, Python~3,
+FFmpeg y la librería \texttt{pika} para la integración con RabbitMQ.
+El fichero \texttt{docker-compose.yml} declara los diez servicios del \textit{stack}:
+voctocore, RabbitMQ, el servicio de telemetría, cuatro contenedores de cámara
+(\texttt{cam1}--\texttt{cam4}), el \textit{stream blanker}, el intro y el gestor
+de audio, con sus relaciones de dependencia, puertos expuestos y configuración de red.}
+\vspace{0.3cm}
+
+\noindent\textbf{\small Dockerfile}
+\vspace{0.1cm}
+
+\begin{lstlisting}[style=codefile, language=dockerfile]
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-gi \
+    python3-gi-cairo \
+    python3-scipy \
+    python3-numpy \
+    gir1.2-gstreamer-1.0 \
+    gir1.2-gst-plugins-base-1.0 \
+    gir1.2-gtk-3.0 \
+    gstreamer1.0-tools \
+    gstreamer1.0-plugins-base \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-plugins-bad \
+    gstreamer1.0-plugins-ugly \
+    gstreamer1.0-libav \
+    ffmpeg \
+    netcat-openbsd \
+    iproute2 \
+    && pip3 install --no-cache-dir pika==1.3.2 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt/voctomix
+
+COPY . /opt/voctomix/
+
+HEALTHCHECK --interval=5s --timeout=3s --retries=12 \
+    --start-period=20s \
+    CMD bash -c "echo '' | nc -zw1 localhost ${VOCTOCORE_PORT:-9999}" || exit 1
+\end{lstlisting}
+
+\vspace{0.4cm}
+\noindent\textbf{\small docker-compose.yml}
+\vspace{0.1cm}
+
+\begin{lstlisting}[style=codefile, morecomment={[l]{\#}}]
+x-video-env: &video-env
+  WIDTH:     ${WIDTH:-1920}
+  HEIGHT:    ${HEIGHT:-1080}
+  FRAMERATE: ${FRAMERATE:-25}
+  AUDIORATE: ${AUDIORATE:-48000}
+
+# Dedicated bridge network: isolates the telemetry service from the
+# voctocore network stack, removing the single point of failure that
+# would take down all services if voctocore crashed.
+networks:
+  voctomix_net:
+    driver: bridge
+
+services:
+  # 0. RABBITMQ (Message Broker - event decoupling)
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    networks:
+      - voctomix_net
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-voctomix}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-voctomix123}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+
+  # 1. VOCTOCORE (Central Server)
+  voctocore:
+    build: .
+    container_name: voctocore
+    command: python3 voctocore/voctocore.py
+    volumes:
+      - ./:/opt/voctomix
+      - ./images:/opt/images
+    working_dir: /opt/voctomix
+    networks:
+      - voctomix_net
+    ports:
+      - "9998:9998"
+      - "9998:9998/udp"
+      - "9999:9999"
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+      - "10003:10003"
+      - "10004:10004"
+      - "10005:10005"
+      - "11000:11000"
+      - "12000:12000"
+      - "13000-13005:13000-13005"
+      - "14000-14005:14000-14005"
+      - "15000:15000"
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo '' | nc -zw1 localhost 9999"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 20s
+
+  # 2. TELEMETRY SERVICE (Telemetry and JSON logging)
+  telemetry:
+    image: voctomix-voctocore:latest
+    container_name: telemetry
+    command: python3 example-scripts/ffmpeg/telemetry_service.py
+    environment:
+      - TELEMETRY_USE_UDP=1
+      - HOST_IP=${HOST_IP}
+      - VOCTOCORE_HOST=voctocore
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=${RABBITMQ_USER:-voctomix}
+      - RABBITMQ_PASS=${RABBITMQ_PASS:-voctomix123}
+      - SAVE_LOGS=${SAVE_LOGS:-false}
+    user: "${COMPOSE_UID:-1000}:${COMPOSE_GID:-1000}"
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    networks:
+      - voctomix_net
+    ports:
+      - "8080:8080"
+    depends_on:
+      voctocore:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  # 3. CAMERA 1
+  cam1:
+    build: .
+    container_name: cam1
+    environment:
+      <<: *video-env
+      CAM1_SOURCE: ${CAM1_SOURCE:-https://...}
+      CAM1_PORT:   ${CAM1_PORT:-10000}
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin
+        -i "$$CAM1_SOURCE"
+        -ac 2
+        -filter_complex "[0:v] scale=$$WIDTH:$$HEIGHT,fps=$$FRAMERATE [v];
+                         [0:a] aresample=$$AUDIORATE [a]"
+        -map "[v]" -map "[a]"
+        -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le
+        -f matroska tcp://localhost:$$CAM1_PORT
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # cam2, cam3: identicos a cam1 con sus respectivos puertos y fuentes.
+
+  # 4. CAMERA 4 (con filtro de colorimetria BT.709 explicito)
+  cam4:
+    build: .
+    container_name: cam4
+    environment:
+      <<: *video-env
+      CAM4_SOURCE: ${CAM4_SOURCE:-https://...}
+      CAM4_PORT:   ${CAM4_PORT:-10003}
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin -stream_loop -1
+        -i "$$CAM4_SOURCE"
+        -filter_complex "[0:v] format=yuv420p,
+          scale=$$WIDTH:$$HEIGHT:out_range=tv,fps=$$FRAMERATE,
+          setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709 [v];
+          [0:a] aresample=$$AUDIORATE [a]"
+        -map "[v]" -map "[a]"
+        -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv
+        -c:v rawvideo -c:a pcm_s16le
+        -f matroska tcp://localhost:$$CAM4_PORT
+    volumes:
+      - ./:/opt/voctomix
+    working_dir: /opt/voctomix
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 5. BREAK (video de pausa con audio independiente)
+  break:
+    build: .
+    container_name: break
+    environment:
+      <<: *video-env
+      BREAK_VIDEO: ${BREAK_VIDEO:-/opt/voctomix/videos/video_pausa.mp4}
+      BREAK_AUDIO: ${BREAK_AUDIO:-/opt/voctomix/videos/musica_pausa.mp3}
+      BREAK_PORT:  ${BREAK_PORT:-10004}
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin -stream_loop -1 -i "$$BREAK_VIDEO"
+        -re -stream_loop -1 -i "$$BREAK_AUDIO"
+        -filter_complex "[0:v] format=yuv420p,scale=$$WIDTH:$$HEIGHT:out_range=tv,
+          fps=$$FRAMERATE [v]; [1:a] aresample=$$AUDIORATE,pan=stereo|c0=c0|c1=c1 [a]"
+        -map "[v]" -map "[a]"
+        -c:v rawvideo -c:a pcm_s16le
+        -f matroska tcp://localhost:$$BREAK_PORT
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 6. INTRO (bucle con pista de silencio generada en tiempo real)
+  intro:
+    build: .
+    container_name: intro
+    environment:
+      <<: *video-env
+      INTRO_VIDEO: ${INTRO_VIDEO:-/opt/voctomix/videos/intro.mp4}
+      INTRO_PORT:  ${INTRO_PORT:-10005}
+    command:
+      - bash
+      - -c
+      - |
+        while true; do
+          ffmpeg -loglevel quiet -nostats -re \
+            -i "$$INTRO_VIDEO" \
+            -f lavfi -i anullsrc=r=$$AUDIORATE:cl=stereo \
+            -pix_fmt yuv420p -s "$${WIDTH}x$${HEIGHT}" -r "$$FRAMERATE" \
+            -c:v rawvideo -c:a pcm_s16le \
+            -map 0:v:0 -map 1:a:0 -shortest \
+            -f matroska tcp://127.0.0.1:$$INTRO_PORT 2>/dev/null
+          sleep 1
+        done
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 7. STREAM BLANKER (PAUSE + NOSTREAM en paralelo)
+  stream_blanker:
+    build: .
+    container_name: stream_blanker
+    environment:
+      <<: *video-env
+      PAUSE_VIDEO:          ${PAUSE_VIDEO:-/opt/voctomix/videos/starting_soon.mp4}
+      OFFLINE_VIDEO:        ${OFFLINE_VIDEO:-/opt/voctomix/videos/stream_offline.mp4}
+      BLANKER_PAUSE_PORT:   ${BLANKER_PAUSE_PORT:-17000}
+      BLANKER_OFFLINE_PORT: ${BLANKER_OFFLINE_PORT:-17001}
+    command:
+      - bash
+      - -c
+      - |
+        ffmpeg -nostats -loglevel warning -stream_loop -1 -re \
+          -i "$$PAUSE_VIDEO" \
+          -pix_fmt yuv420p -s "$${WIDTH}x$${HEIGHT}" -r "$$FRAMERATE" \
+          -c:v rawvideo -an -f matroska tcp://127.0.0.1:$$BLANKER_PAUSE_PORT &
+        ffmpeg -nostats -loglevel warning -stream_loop -1 -re \
+          -i "$$OFFLINE_VIDEO" \
+          -pix_fmt yuv420p -s "$${WIDTH}x$${HEIGHT}" -r "$$FRAMERATE" \
+          -c:v rawvideo -an -f matroska tcp://127.0.0.1:$$BLANKER_OFFLINE_PORT &
+        wait
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
+
+  # 8. DYNAMIC AUDIO CONTROLLER (musica de fondo continua)
+  audio_manager:
+    build: .
+    container_name: audio_manager
+    environment:
+      AUDIORATE:        ${AUDIORATE:-48000}
+      BACKGROUND_MUSIC: ${BACKGROUND_MUSIC:-/opt/voctomix/videos/musica_pausa.mp3}
+      AUDIO_PORT:       ${AUDIO_PORT:-18000}
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -nostats -loglevel warning -re -stream_loop -1
+        -i "$$BACKGROUND_MUSIC"
+        -c:a pcm_s16le -ar $$AUDIORATE -ac 2 -vn
+        -f matroska tcp://127.0.0.1:$$AUDIO_PORT
+    network_mode: "service:voctocore"
+    restart: on-failure
+    depends_on:
+      voctocore:
+        condition: service_healthy
 \end{lstlisting}

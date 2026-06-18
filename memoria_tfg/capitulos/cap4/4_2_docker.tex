@@ -7,7 +7,8 @@ cualquier máquina con Docker instalado. El operador no necesita instalar GStrea
 ni ninguna otra librería: con \texttt{make docker-up} el sistema arranca en segundos.
 El despliegue se define en dos ficheros: \texttt{Dockerfile}, que describe cómo construir
 la imagen base del sistema, y \texttt{docker-compose.yml}, que declara todos los servicios
-y cómo se relacionan entre sí.
+y cómo se relacionan entre sí. El contenido íntegro de ambos ficheros se reproduce en
+la sección~C6 del Anexo~C.
 
 El \texttt{Dockerfile} se construyó sobre Ubuntu~22.04~\ac{LTS}. Las
 dependencias se instalan en una sola capa para reducir el tamaño de la imagen: GStreamer~1.0
