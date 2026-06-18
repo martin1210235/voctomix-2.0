@@ -5,14 +5,16 @@ La contribución audiovisual designa el transporte de la señal de vídeo y audi
 las fuentes de captura, cámaras, ordenadores de presentación y reproductores, hasta
 el mezclador o núcleo del sistema de producción. Es el primer eslabón de la cadena y
 su elección determina la calidad máxima disponible, la latencia de extremo a extremo
-y el coste de la infraestructura. En esta sección se describen los protocolos, contenedores multimedia y códecs
-empleados en esta etapa.
+y el coste de la infraestructura. En esta sección se describen los protocolos e
+interfaces, los contenedores multimedia y los códecs empleados en esta etapa.
 
-\subsection{Protocolos de contribución}
+\subsection{Protocolos e interfaces de contribución}
 
-Los protocolos de contribución definen el mecanismo de transporte de la señal desde
-el origen hasta el mezclador. La elección depende del entorno: producción en estudio,
-red local o contribución remota sobre Internet.
+Los mecanismos de contribución audiovisual se articulan en torno a dos familias: las
+interfaces físicas basadas en SDI, históricamente dominantes en el ámbito \textit{broadcast}
+profesional, y los protocolos IP, que transportan la señal sobre redes Ethernet estándar.
+La elección depende del entorno de producción: estudio con infraestructura SDI existente,
+red local de alta velocidad o contribución remota sobre Internet.
 
 \begin{itemize}
   \item \textbf{SDI (\textit{Serial Digital Interface}):} estándar histórico de la
@@ -33,12 +35,23 @@ red local o contribución remota sobre Internet.
   mayor flexibilidad de encaminamiento que SDI~\cite{smpte_st2110_20}. La sincronización
   entre flujos se consigue mediante PTP (IEEE~1588)~\cite{ieee1588_ptp}, con precisión
   de microsegundos.
+\end{itemize}
 
+Los protocolos IP de contribución se articulan sobre dos capas de transporte
+complementarias. \ac{UDP} (RFC~768~\cite{rfc768_udp}) es un protocolo sin conexión
+que minimiza la latencia al eliminar el \textit{overhead} de fiabilidad, y se emplea
+cuando la temporización prima sobre la integridad: tanto RTP como SRT lo utilizan como
+base. \ac{TCP} (RFC~793~\cite{rfc793_tcp}) garantiza la entrega ordenada mediante
+retransmisión y control de flujo, siendo la opción idónea cuando la integridad de cada
+byte es prioritaria, como ocurre con el protocolo de control de Voctomix en el
+puerto~9999 o el transporte de fuentes de cámara encapsuladas en MKV.
+
+\begin{itemize}
   \item \textbf{SRT (\textit{Secure Reliable Transport}):} protocolo de código abierto
   desarrollado por Haivision con corrección de errores \ac{ARQ} y cifrado \ac{AES}-128/256~\cite{sharabayko2024_srt}.
   Permite transportar la señal desde el lugar del evento hasta el centro de producción
   remoto sobre Internet pública con latencia inferior a 1~s. FFmpeg lo soporta como
-  entrada y salida, lo que permite integrarlo directamente en pipelines de Voctomix.
+  entrada y salida, lo que permite integrarlo directamente en \textit{pipelines} de Voctomix.
 
   \item \textbf{RTP (\textit{Real-time Transport Protocol})\acused{RTP}:} protocolo de transporte
   en tiempo real definido en la RFC~3550~\cite{rfc3550_rtp}, utilizado junto con RTSP
@@ -46,61 +59,26 @@ red local o contribución remota sobre Internet.
 
   \item \textbf{RTSP (\textit{Real Time Streaming Protocol})\acused{RTSP}:} protocolo de señalización
   definido en la RFC~7826~\cite{rfc7826_rtsp} que se emplea para establecer y controlar
-  sesiones de streaming multimedia. Actúa como mando a distancia del flujo RTP: permite
-  iniciar, pausar y detener la transmisión de una fuente IP.
+  sesiones de \textit{streaming} multimedia. Actúa como mando a distancia del flujo RTP:
+  permite iniciar, pausar y detener la transmisión de una fuente IP.
 \end{itemize}
 
 \begin{table}[H]
   \centering
-  \caption{Comparativa de protocolos de contribución audiovisual.}
+  \caption{Comparativa de protocolos e interfaces de contribución audiovisual.}
   \label{tab:contrib_interfaces}
   \small
   \begin{tabularx}{\textwidth}{|l|l|c|c|X|}
     \hline
     \textbf{Protocolo} & \textbf{Medio} & \textbf{Velocidad máx.} & \textbf{Latencia} & \textbf{Uso típico} \\
     \hline
-    SDI (12G)       & Coaxial/fibra & 11{,}88 Gbit/s & Sub-imagen   & Estudio broadcast \\
-    SMPTE ST 2022-6 & Ethernet IP   & 3 Gbit/s       & Sub-imagen   & Migración SDI/IP \\
-    SMPTE ST 2110   & Ethernet IP   & Variable       & Sub-imagen   & Producción IP nativa \\
-    SRT             & Internet/LAN  & Variable       & $<$1~s       & Contribución REMI IP \\
-    RTP/RTSP        & LAN/WAN       & Variable       & Sub-imagen   & Cámaras IP \\
+    SDI (12G)       & Coaxial/fibra & 11{,}88 Gbit/s & Sub-imagen & Estudio broadcast \\
+    SMPTE ST 2022-6 & UDP/IP        & 3 Gbit/s       & Sub-imagen & Migración SDI/IP  \\
+    SMPTE ST 2110   & UDP/IP        & Variable       & Sub-imagen & Producción IP nativa \\
+    SRT             & UDP/IP (ARQ)  & Variable       & $<$1~s     & Contribución REMI \\
+    RTP/RTSP        & UDP/IP        & Variable       & Sub-imagen & Cámaras IP \\
     \hline
   \end{tabularx}
-\end{table}
-
-\subsection{Protocolos de transporte de red}
-
-UDP (RFC~768~\cite{rfc768_udp}) es un protocolo sin conexión que envía datagramas de
-forma independiente sin confirmación de entrega, lo que le confiere la mínima latencia
-posible al eliminar el \textit{overhead} de fiabilidad. En contribución audiovisual se
-emplea cuando la latencia prima sobre la integridad: RTP encapsula los flujos multimedia
-con marcas de tiempo que permiten detectar pérdidas sin retransmisión, y SRT añade una
-capa ARQ (\textit{Automatic Repeat Request}) sobre UDP para recuperar paquetes perdidos
-sin incrementar la latencia en condiciones normales de red.
-
-TCP (RFC~793~\cite{rfc793_tcp}) garantiza la entrega ordenada de todos los bytes mediante
-retransmisión y control de flujo y congestión. En Voctomix, TCP transporta las fuentes de
-cámara como flujos MKV (vídeo RAW~I420 y audio PCM~S16LE) y el protocolo de control en
-el puerto~9999, donde la integridad de cada comando es prioritaria sobre la latencia.
-
-\begin{table}[H]
-  \centering
-  \caption{Comparativa de los protocolos de transporte en producción audiovisual.}
-  \label{tab:protocolos_red}
-  \small
-  {\setlength{\tabcolsep}{2pt}
-  \begin{tabular}{|l|l|c|c|c|}
-    \hline
-    \textbf{Protocolo} & \textbf{Uso en Voctomix} & \textbf{Conexión} & \textbf{Fiabilidad} & \textbf{Latencia} \\
-    \hline
-    UDP                          & RTP, SRT     & No & Sin garantía & Mínima   \\
-    TCP                          & MKV, control & Sí & Garantizada  & Variable \\
-    \ac{HTTP}\textsuperscript{*} & HLS, DASH    & Sí & Garantizada  & Alta     \\
-    \hline
-  \end{tabular}}
-  \begin{flushleft}
-    \footnotesize \textsuperscript{*}HTTP/1.1 y HTTP/2 sobre TCP; HTTP/3 sobre QUIC (UDP).
-  \end{flushleft}
 \end{table}
 
 \subsection{Contenedores multimedia de contribución}
@@ -119,14 +97,6 @@ contribución son:
   Fabricantes como Sony (XDCAM), Panasonic~(P2), Canon~(XF-AVC) y Grass Valley
   utilizan MXF como formato de grabación y contribución nativo, convirtiéndolo en el
   contenedor de intercambio estándar entre el lugar del evento y el centro de producción.
-
-  \item \textbf{IMF (\textit{Interoperable Master Format}, serie SMPTE ST~2067)}\acused{IMF}~\cite{smpte_st2067_1,ebu_tech3381}:
-  estándar de mastering desarrollado por la SMPTE y adoptado por la EBU. Construido sobre MXF,
-  incorpora una \textit{Composition Playlist} en XML que permite gestionar variantes lingüísticas,
-  de resolución y de rango dinámico como paquetes suplementarios sobre un maestro base, sin
-  duplicar la esencia de vídeo. Soporta vídeo JPEG~2000 o HEVC, audio PCM y subtítulos TTML.
-  Plataformas como Netflix, Amazon Prime Video y Disney$+$ lo exigen para la entrega de contenido
-  original, consolidándolo como referencia en distribución OTT.
 
   \item \textbf{Matroska (MKV)}~\cite{matroska_spec}: contenedor de código abierto
   empleado por Voctomix como formato de transporte interno para señal RAW. Las fuentes
@@ -193,12 +163,10 @@ múltiples etapas de procesamiento.
   \item \textbf{JPEG XS (ISO/IEC~21122)}~\cite{jpeg_xs_iso}: códec intra-frame de
   nueva generación publicado en 2019 específicamente diseñado para producción
   profesional en tiempo real. Su latencia de codificación es inferior a un milisegundo
-  con compresiones de 4:1 a 6:1 en entornos de producción profesional típicos, sin pérdidas visualmente relevantes, lo que lo hace
-  adecuado para contribución 4K y 8K en vivo. Ha sido adoptado en iniciativas de
-  producción IP de alta calidad donde JPEG~2000 resulta excesivamente exigente
-  computacionalmente.
-
-
+  con compresiones de 4:1 a 6:1 en entornos de producción profesional típicos, sin
+  pérdidas visualmente relevantes, lo que lo hace adecuado para contribución 4K y 8K
+  en vivo. Ha sido adoptado en iniciativas de producción IP de alta calidad donde
+  JPEG~2000 resulta excesivamente exigente computacionalmente.
 \end{itemize}
 
 \begin{table}[H]
@@ -210,12 +178,12 @@ múltiples etapas de procesamiento.
     \hline
     \textbf{Códec} & \textbf{Compresión} & \textbf{Latencia enc.} & \textbf{Uso típico} \\
     \hline
-    RAW (I420/UYVY) & Sin compresión & Nula        & Vídeo interno Voctomix / estudio \\
-    PCM S16LE (audio) & Sin compresión & Nula      & Audio interno Voctomix \\
-    Apple ProRes    & 4:1 -- 8:1     & $<$1 fotograma & Producción TV, postproducción \\
-    VC-3 / DNxHD    & 4:1 -- 7:1     & $<$1 fotograma & Broadcast, Avid workflows \\
-    JPEG 2000       & 4:1 -- 20:1    & $<$5 ms     & Contribución broadcast \\
-    JPEG XS         & 4:1 -- 6:1     & $<$1 ms     & Contribución 4K/8K en vivo \\
+    RAW (I420/UYVY)     & Sin compresión & Nula           & Vídeo interno Voctomix / estudio \\
+    PCM S16LE (audio)   & Sin compresión & Nula           & Audio interno Voctomix \\
+    Apple ProRes        & 4:1 -- 8:1     & $<$1 fotograma & Producción TV, postproducción \\
+    VC-3 / DNxHD        & 4:1 -- 7:1     & $<$1 fotograma & Broadcast, Avid workflows \\
+    JPEG 2000           & 4:1 -- 20:1    & $<$5 ms        & Contribución broadcast \\
+    JPEG XS             & 4:1 -- 6:1     & $<$1 ms        & Contribución 4K/8K en vivo \\
     \hline
   \end{tabularx}
 \end{table}
