@@ -13,8 +13,13 @@ interfaces, los contenedores multimedia y los códecs empleados en esta etapa.
 Los mecanismos de contribución audiovisual se articulan en torno a dos familias: las
 interfaces físicas basadas en SDI, históricamente dominantes en el ámbito \textit{broadcast}
 profesional, y los protocolos IP, que transportan la señal sobre redes Ethernet estándar.
-La elección depende del entorno de producción: estudio con infraestructura SDI existente,
-red local de alta velocidad o contribución remota sobre Internet.
+Los protocolos IP de contribución se apoyan en \ac{UDP}~(RFC~768~\cite{rfc768_udp}) para
+flujos en tiempo real donde la temporización es prioritaria sobre la integridad, como en
+RTP y SRT, o en \ac{TCP}~(RFC~793~\cite{rfc793_tcp}) cuando se requiere entrega ordenada
+garantizada, como en el transporte de fuentes de cámara o el protocolo de control del
+sistema. La elección entre una y otra familia depende del entorno: estudio con
+infraestructura SDI existente, red local de alta velocidad o contribución remota
+sobre Internet.
 
 \begin{itemize}
   \item \textbf{SDI (\textit{Serial Digital Interface}):} estándar histórico de la
@@ -24,7 +29,7 @@ red local de alta velocidad o contribución remota sobre Internet.
   infraestructura de alto coste.
 
   \item \textbf{\ac{SMPTE} ST~2022-6 (SDI sobre IP):} encapsula la señal SDI íntegra en
-  paquetes \ac{UDP}/IP, facilitando la migración de infraestructuras SDI existentes hacia
+  paquetes UDP/IP, facilitando la migración de infraestructuras SDI existentes hacia
   redes Ethernet estándar~\cite{smpte_st2022_6}. La integridad del flujo puede
   reforzarse opcionalmente mediante el estándar complementario SMPTE ST~2022-7,
   que implementa conmutación sin corte (\textit{hitless failover}) entre dos flujos
@@ -35,18 +40,7 @@ red local de alta velocidad o contribución remota sobre Internet.
   mayor flexibilidad de encaminamiento que SDI~\cite{smpte_st2110_20}. La sincronización
   entre flujos se consigue mediante PTP (IEEE~1588)~\cite{ieee1588_ptp}, con precisión
   de microsegundos.
-\end{itemize}
 
-Los protocolos IP de contribución se articulan sobre dos capas de transporte
-complementarias. \ac{UDP} (RFC~768~\cite{rfc768_udp}) es un protocolo sin conexión
-que minimiza la latencia al eliminar el \textit{overhead} de fiabilidad, y se emplea
-cuando la temporización prima sobre la integridad: tanto RTP como SRT lo utilizan como
-base. \ac{TCP} (RFC~793~\cite{rfc793_tcp}) garantiza la entrega ordenada mediante
-retransmisión y control de flujo, siendo la opción idónea cuando la integridad de cada
-byte es prioritaria, como ocurre con el protocolo de control de Voctomix en el
-puerto~9999 o el transporte de fuentes de cámara encapsuladas en MKV.
-
-\begin{itemize}
   \item \textbf{SRT (\textit{Secure Reliable Transport}):} protocolo de código abierto
   desarrollado por Haivision con corrección de errores \ac{ARQ} y cifrado \ac{AES}-128/256~\cite{sharabayko2024_srt}.
   Permite transportar la señal desde el lugar del evento hasta el centro de producción
