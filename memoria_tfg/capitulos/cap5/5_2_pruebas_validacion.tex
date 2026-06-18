@@ -20,7 +20,7 @@ tabla~\ref{tab:hardware} recoge las especificaciones del entorno.
     CPU            & Intel Core i9-10900X @ 3{,}70\,GHz (10 núcleos / 20 hilos) \\
     RAM            & 128\,GB DDR4 \\
     Sistema operativo & Ubuntu 22.04.5 LTS (kernel 6.8.0-111) \\
-    Docker Compose & Engine 29.1.3 / Compose v2.37.1 \\
+    Docker         & Engine 29.1.3 / Compose 2.37.1 \\
     Kubernetes     & Minikube v1.38.1 / kubectl v1.36.0 \\
     Red interna    & Loopback (sin interfaz física) \\
     \hline
@@ -63,11 +63,11 @@ comprobó en cada caso.
       & Al cambiar la cámara activa, el audio hace un fundido cruzado automático
         hacia la pista de la nueva fuente, sin intervención del operador. \\
     \hline
-    Telemetría (evento STATE)
+    Telemetría (\texttt{STATE})
       & Cada 5\,s se publica en RabbitMQ un mensaje con el estado completo del
         mezclador, con una latencia inferior a 50\,ms. \\
     \hline
-    Telemetría (evento CHANGE)
+    Telemetría (\texttt{CHANGE})
       & Cada acción sobre la interfaz genera de forma inmediata un evento en
         RabbitMQ, con una latencia inferior a 50\,ms. \\
     \hline

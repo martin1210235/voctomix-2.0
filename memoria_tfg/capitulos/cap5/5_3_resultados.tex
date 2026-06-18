@@ -41,8 +41,8 @@ de las gráficas descuentan el consumo en reposo de cada entorno para mostrar
 
 En Docker la CPU sube ligeramente al añadir cámaras, de 33{,}5\,\% con una a
 38{,}8\,\% con cuatro, porque cada fuente añade trabajo real a GStreamer. En
-Kubernetes, en cambio, la CPU se mantiene fija en torno al 50\,\% sin importar
-cuántas cámaras haya. Esto ocurre porque Minikube ejecuta en el mismo equipo los
+Kubernetes, en cambio, la CPU se mantiene fija en torno al 50\,\%
+independientemente del número de cámaras. Esto ocurre porque Minikube ejecuta en el mismo equipo los
 cuatro procesos de gestión del clúster, que consumen ese 50\,\% por sí solos
 incluso con una sola cámara activa. El trabajo de mezcla de vídeo es idéntico en
 los dos entornos, pero en Kubernetes queda oculto detrás de ese consumo fijo.
@@ -117,10 +117,10 @@ Docker y entre 25 y 36\,W en Kubernetes. La mayor dispersión en Kubernetes se
 debe a que el consumo base del clúster de Minikube no es constante; el pico de
 36\,W con tres cámaras refleja un momento de mayor actividad interna del clúster
 durante esa sesión concreta, no una tendencia sistemática. En términos de
-consumo total, Docker alcanza unos 50\,W con
-cuatro cámaras, el 30\,\% del \ac{TDP} del procesador (165\,W), con margen
-suficiente para no saturarlo. Kubernetes puede superar los 90\,W al sumar el consumo neto de Voctomix
-y el del plano de control. Este sobrecoste desaparecería en un despliegue
+consumo total, Docker alcanza unos 50\,W con cuatro cámaras, el 30\,\% del \ac{TDP}
+del procesador (165\,W), con margen suficiente para no saturarlo. Kubernetes alcanza
+unos 90\,W al sumar el consumo neto de Voctomix (hasta 36\,W) y el consumo base del
+plano de control de Minikube (unos 55\,W en reposo). Este sobrecoste desaparecería en un despliegue
 en la nube (\ac{EKS}, \ac{GKE} o \ac{AKS}), donde el plano
 de control corre en servidores del proveedor y no consume recursos del equipo.
 
@@ -234,8 +234,8 @@ modos disponibles.
 
 En Docker la transición tarda 2{,}8\,ms, prácticamente igual que un corte de
 cámara. La CPU está libre y GStreamer alcanza el siguiente ciclo de fotograma
-sin esperar. En Kubernetes la latencia sube a 79{,}8\,ms, lo que equivale a
-dos ciclos completos de 40\,ms: el plano de control de Minikube mantiene la
+sin esperar. En Kubernetes la latencia sube a 79{,}8\,ms, lo que corresponde aproximadamente a
+dos ciclos completos de 40\,ms a 25\,fps: el plano de control de Minikube mantiene la
 CPU ocupada y GStreamer pierde el primer ciclo disponible. Este retardo es perceptible para el operador, pero la animación de transición
 se ejecuta correctamente, comenzando 80\,ms más tarde de lo que lo haría en Docker. En un despliegue en la nube, donde el plano de control no
 comparte recursos con voctocore, la latencia sería comparable a la de Docker.

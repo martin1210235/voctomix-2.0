@@ -39,7 +39,10 @@ muestras en total.
 \end{figure}
 
 La CPU se estabilizó en la banda del 50--60\,\% pasados los primeros minutos
-de arranque y se mantuvo estable sin ninguna tendencia creciente. La RAM se mantuvo
+de arranque y se mantuvo estable sin ninguna tendencia creciente. El valor
+es algo superior al registrado en §\ref{sec:rendimiento_sistema} porque en
+esta prueba los procesos FFmpeg de generación de vídeo también corren en el
+mismo equipo, sumando su carga a la de Voctomix. La RAM se mantuvo
 completamente plana durante toda la sesión, lo que confirma que no hay fuga de
 memoria. Durante toda la prueba no se registró ningún reinicio de contenedor ni
 ningún fallo, lo que confirma que el sistema es apto para retransmisiones de
@@ -49,7 +52,7 @@ larga duración sin necesidad de supervisión continua.
 \label{sec:resiliencia}
 
 Se midió cuánto tarda el sistema en recuperarse de forma autónoma cuando una cámara falla.
-Para ello se mató el proceso principal del contenedor cam1 con \texttt{kill -9}
+Para ello se terminó el proceso principal del contenedor cam1 mediante \texttt{kill -9},
 simulando un fallo real, y se cronometró el tiempo hasta que Docker lo reinició
 y lo declaró \textit{healthy}. Se repitió 10 veces.
 
