@@ -121,7 +121,7 @@ consumo atribuible a Voctomix, el pico de 32\,W con cuatro cámaras en Docker
 representa menos del 20\,\% del \ac{TDP} del procesador (165\,W), lo que garantiza
 margen de operación suficiente. En Kubernetes el consumo total es
 considerablemente mayor, ya que el plano de control de Minikube añade una carga
-base considerable al consumo neto de Voctomix. Este sobrecoste desaparecería en un despliegue
+base significativa al consumo neto de Voctomix. Este sobrecoste desaparecería en un despliegue
 en la nube (\ac{EKS}, \ac{GKE} o \ac{AKS}), donde el plano
 de control corre en servidores del proveedor y no consume recursos del equipo.
 
@@ -153,7 +153,7 @@ el sistema en ejecutar ese cambio desde que el operador pulsa el botón.
 
 Para medirlo se enviaron 30 órdenes de cambio de fuente seguidas al mezclador
 y se cronometró el tiempo entre el envío de la orden y la confirmación de
-voctocore de que GStreamer había aplicado el cambio. Al no haber ningún proceso
+\texttt{voctocore} de que GStreamer había aplicado el cambio. Al no haber ningún proceso
 de codificación que introduzca retardo adicional, las latencias medidas reflejan
 únicamente el tiempo de procesado interno de GStreamer.
 
