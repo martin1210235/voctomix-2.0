@@ -1,39 +1,50 @@
 \section{Contenedorización con Docker Compose}
 \label{sec:docker}
 
-La principal ventaja de usar Docker~\cite{merkel2014docker,docker_compose_docs} es que
-el sistema funciona igual en cualquier máquina sin necesidad de instalar nada: ni
-GStreamer, ni Python, ni ninguna librería adicional. Con un único comando
-(\texttt{make docker-up}) el sistema arranca completo en cuestión de segundos. Todo el
-despliegue se define en dos ficheros: el \texttt{Dockerfile}, que describe cómo se
-construye la imagen del sistema, y el \texttt{docker-compose.yml}, que declara los
-servicios y cómo se relacionan entre sí. Ambos ficheros se reproducen íntegramente en
-la sección~C6 del Anexo~C.
+El despliegue con Docker~\cite{merkel2014docker,docker_compose_docs} se basa en
+\textbf{una única imagen personalizada}, construida a partir del \texttt{Dockerfile}
+sobre Ubuntu~22.04~\ac{LTS}. Esa imagen incluye todo lo necesario para ejecutar el
+sistema: GStreamer~1.0 con sus \textit{plugins}, FFmpeg~\cite{ffmpeg_project}, las
+librerías Python y \texttt{pika} para RabbitMQ. No hay una imagen por servicio ni
+una imagen separada para el núcleo y para la interfaz: todos los contenedores del
+\textit{stack} parten de esa misma imagen y ejecutan un proceso diferente sobre
+ella, voctocore como núcleo de mezcla, los contenedores de cámara inyectando señal
+con FFmpeg, el servicio de telemetría registrando eventos, etc.
+Voctogui \textbf{no tiene imagen Docker}: corre directamente en el equipo anfitrión
+porque necesita acceder al servidor gráfico del sistema para mostrar la interfaz.
+La única imagen externa que se utiliza es la oficial de RabbitMQ
+(\texttt{rabbitmq:3-management}), descargada automáticamente de Docker Hub.
+La imagen propia se construye de forma automática la primera vez que se arranca
+el sistema. Ambos ficheros de configuración se reproducen íntegramente en la
+sección~C6 del Anexo~C.
 
-A partir del \texttt{Dockerfile} se genera una única imagen personalizada, basada en
-Ubuntu~22.04~\ac{LTS}, que incluye todo lo necesario para ejecutar el sistema:
-GStreamer~1.0 con sus \textit{plugins}, FFmpeg~\cite{ffmpeg_project}, las librerías
-Python necesarias y \texttt{pika} para la integración con RabbitMQ. Esta misma imagen
-sirve de base para todos los servicios: voctocore ejecuta el núcleo de mezcla, los
-contenedores de cámara inyectan la señal de vídeo con FFmpeg, y el servicio de
-telemetría registra los eventos. La imagen se construye automáticamente la primera vez
-que se arranca el sistema. RabbitMQ es el único servicio que utiliza una imagen oficial
-externa.
+Para arrancar el sistema completo basta con ejecutar \texttt{make docker-up}.
+Internamente, el comando detiene cualquier contenedor previo para partir de un
+estado limpio, levanta todos los servicios en segundo plano y espera a que
+voctocore supere su verificación de salud (puerto~9999 disponible) antes de
+continuar. Una vez el núcleo está listo, lanza voctogui de forma nativa en el
+equipo y abre un monitor de programa en el puerto~15000. Al cerrar la sesión con
+Ctrl+C, todos los procesos, tanto los contenedores como los procesos nativos, se
+detienen de forma coordinada.
 
 El principal problema técnico que hubo que resolver fue el aislamiento de red. En
-Docker, cada contenedor está aislado y cuando se conecta a \texttt{localhost} solo se
-comunica consigo mismo. Esto suponía un problema porque las cámaras necesitan enviar
-la señal a voctocore a través de \texttt{localhost}. La solución fue hacer que todos
-los contenedores compartan la red de voctocore mediante la opción
-\texttt{network\_mode: "service:voctocore"}, de forma que todos los procesos se ven
-entre sí como si estuvieran en la misma máquina, sin modificar ninguna línea del
-código original.
+Docker, cada contenedor está aislado y cuando se conecta a \texttt{localhost} solo
+se comunica consigo mismo. Esto suponía un problema porque las cámaras necesitan
+enviar la señal a voctocore a través de \texttt{localhost}. La solución fue hacer
+que todos los contenedores compartan la red de voctocore mediante la opción
+\texttt{network\_mode: "service:voctocore"} en el fichero Compose, de forma que
+todos los procesos se ven entre sí como si estuvieran en la misma máquina, sin
+modificar ninguna línea del código original.
 
-Voctogui es el único componente que corre directamente en el equipo, sin contenedor,
-porque necesita acceder al servidor gráfico del sistema para mostrar la interfaz. Se
-conecta a voctocore a través del puerto~9999 y comparte los recursos visuales como
-logos e imágenes de fondo mediante un volumen Docker, por lo que se pueden modificar
-sin tener que reconstruir la imagen (figura~\ref{fig:escenario_docker}).
+Voctogui se conecta a voctocore a través del puerto~9999 y comparte los recursos
+visuales como logos e imágenes de fondo mediante un volumen Docker, por lo que se
+pueden modificar sin tener que reconstruir la imagen. Durante las pruebas se detectó
+que algunos contenedores intentaban conectarse a voctocore antes de que estuviera
+listo, lo que causaba fallos en el arranque. Para resolverlo, Docker reinicia
+automáticamente cualquier contenedor que falle y antes de lanzar cada servicio se
+verifica que el puerto~9999 está disponible, lo que garantiza un despliegue robusto
+y repetible en cualquier máquina con Docker instalado
+(figura~\ref{fig:escenario_docker}).
 
 \begin{figure}[H]
   \centering
@@ -41,12 +52,3 @@ sin tener que reconstruir la imagen (figura~\ref{fig:escenario_docker}).
   \caption{Escenario de despliegue con Docker Compose.}
   \label{fig:escenario_docker}
 \end{figure}
-
-Durante las pruebas se detectó que algunos contenedores intentaban conectarse a
-voctocore antes de que estuviera listo, lo que causaba fallos en el arranque. Para
-resolverlo se combinaron dos medidas: Docker reinicia automáticamente cualquier
-contenedor que falle, y antes de lanzar cada servicio se verifica que el puerto~9999
-está disponible. El arranque sigue así una secuencia ordenada: primero se levanta
-voctocore, el resto de contenedores esperan a que el núcleo esté operativo, y
-finalmente se lanza voctogui de forma nativa junto con un monitor de programa en el
-puerto~15000. Al cerrar la sesión, todos los procesos se detienen de forma coordinada.
