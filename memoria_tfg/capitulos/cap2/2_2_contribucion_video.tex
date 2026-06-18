@@ -34,11 +34,6 @@ red local o contribución remota sobre Internet.
   entre flujos se consigue mediante PTP (IEEE~1588)~\cite{ieee1588_ptp}, con precisión
   de microsegundos.
 
-  \item \textbf{NDI (\textit{Network Device Interface})\acused{NDI}:} protocolo propietario de
-  NewTek/Vizrt~\cite{ndi_vizrt} que transporta vídeo con compresión ligera sobre redes
-  \ac{LAN} Ethernet con latencia de un fotograma. Ampliamente soportado por cámaras \ac{PTZ},
-  mezcladores hardware y herramientas de software de producción.
-
   \item \textbf{SRT (\textit{Secure Reliable Transport}):} protocolo de código abierto
   desarrollado por Haivision con corrección de errores \ac{ARQ} y cifrado \ac{AES}-128/256~\cite{sharabayko2024_srt}.
   Permite transportar la señal desde el lugar del evento hasta el centro de producción
@@ -67,7 +62,6 @@ red local o contribución remota sobre Internet.
     SDI (12G)       & Coaxial/fibra & 11{,}88 Gbit/s & Sub-imagen   & Estudio broadcast \\
     SMPTE ST 2022-6 & Ethernet IP   & 3 Gbit/s       & Sub-imagen   & Migración SDI/IP \\
     SMPTE ST 2110   & Ethernet IP   & Variable       & Sub-imagen   & Producción IP nativa \\
-    NDI             & Ethernet LAN  & $\sim$100 Mbit/s & 1 fotograma & Software, PTZ \\
     SRT             & Internet/LAN  & Variable       & $<$1~s       & Contribución REMI IP \\
     RTP/RTSP        & LAN/WAN       & Variable       & Sub-imagen   & Cámaras IP \\
     \hline
