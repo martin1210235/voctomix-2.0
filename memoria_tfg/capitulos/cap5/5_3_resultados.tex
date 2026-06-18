@@ -117,10 +117,11 @@ Docker y entre 25 y 36\,W en Kubernetes. La mayor dispersión en Kubernetes se
 debe a que el consumo base del clúster de Minikube no es constante; el pico de
 36\,W con tres cámaras refleja un momento de mayor actividad interna del clúster
 durante esa sesión concreta, no una tendencia sistemática. En términos de
-consumo total, Docker alcanza unos 50\,W con cuatro cámaras, el 30\,\% del \ac{TDP}
-del procesador (165\,W), con margen suficiente para no saturarlo. Kubernetes alcanza
-unos 90\,W al sumar el consumo neto de Voctomix y el consumo base del
-plano de control de Minikube. Este sobrecoste desaparecería en un despliegue
+consumo atribuible a Voctomix, el pico de 32\,W con cuatro cámaras en Docker
+representa menos del 20\,\% del \ac{TDP} del procesador (165\,W), lo que garantiza
+margen de operación suficiente. En Kubernetes el consumo total es
+considerablemente mayor, ya que el plano de control de Minikube añade una carga
+base considerable al consumo neto de Voctomix. Este sobrecoste desaparecería en un despliegue
 en la nube (\ac{EKS}, \ac{GKE} o \ac{AKS}), donde el plano
 de control corre en servidores del proveedor y no consume recursos del equipo.
 
@@ -147,7 +148,7 @@ responde al operador, aspecto que se analiza a continuación.
 
 Durante una retransmisión en directo el operador cambia de cámara
 continuamente. Si ese cambio tarda demasiado, el espectador percibe un retraso
-o un desajuste entre la imagen y el audio. Por eso es importante medir cuánto tarda
+o un desajuste entre la imagen y el audio. Por ello resulta necesario medir cuánto tarda
 el sistema en ejecutar ese cambio desde que el operador pulsa el botón.
 
 Para medirlo se enviaron 30 órdenes de cambio de fuente seguidas al mezclador
@@ -186,8 +187,8 @@ de codificación que introduzca retardo adicional, las latencias medidas refleja
 Los resultados obtenidos son satisfactorios: todos los cambios tardaron menos de 5\,ms en
 los dos entornos. La mediana fue de 1{,}5\,ms en Docker y 1{,}8\,ms en
 Kubernetes, lo que está muy por debajo de los 45\,ms que fija el
-estándar~\ac{ITU-R} BT.1359-1~\cite{itur_bt1359_1998} como umbral a partir
-del cual el ojo humano nota un corte. En la práctica, cambiar de cámara es
+estándar~\ac{ITU-R} BT.1359-1~\cite{itur_bt1359_1998} como umbral máximo
+tolerable de desincronía entre audio y vídeo. En la práctica, cambiar de cámara es
 instantáneo y el espectador no percibe ningún salto.
 
 \subsection{Latencia de transición de modo de composición}
@@ -199,7 +200,7 @@ ver una sola cámara en pantalla completa a verlas en pantalla dividida. Esta
 operación es diferente a un corte de cámara porque GStreamer tiene que animar
 la mezcla fotograma a fotograma, y para hacerlo de forma sincronizada espera al
 siguiente ciclo de procesado del pipeline, que ocurre cada 40\,ms a 25\,fps.
-Conocer esta latencia es importante para saber si el operador notará retraso
+Conocer esta latencia permite evaluar si el operador percibirá retraso
 al usar los modos de composición durante una retransmisión.
 
 Se midió enviando la orden de cambio de modo de composición al mezclador y
@@ -236,6 +237,7 @@ En Docker la transición tarda 2{,}8\,ms, prácticamente igual que un corte de
 cámara. La CPU está libre y GStreamer alcanza el siguiente ciclo de fotograma
 sin esperar. En Kubernetes la latencia sube a 79{,}8\,ms, lo que corresponde aproximadamente a
 dos ciclos completos de 40\,ms a 25\,fps: el plano de control de Minikube mantiene la
-CPU ocupada y GStreamer pierde el primer ciclo disponible. Este retardo es perceptible para el operador, pero la animación de transición
-se ejecuta correctamente, comenzando 80\,ms después de lo que ocurriría en Docker. En un despliegue en la nube, donde el plano de control no
-comparte recursos con voctocore, la latencia sería comparable a la de Docker.
+CPU ocupada y GStreamer pierde el primer ciclo disponible. Este retardo es perceptible para el operador; la animación de transición
+se ejecuta correctamente, aunque comenzando 80\,ms después de lo que ocurriría
+en Docker. En un despliegue en la nube, donde el plano de control no comparte
+recursos con \texttt{voctocore}, la latencia sería comparable a la de Docker.
