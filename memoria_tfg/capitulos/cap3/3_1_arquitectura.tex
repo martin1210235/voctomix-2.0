@@ -62,7 +62,11 @@ entrantes, realiza la mezcla y expone los resultados en distintos puertos TCP. A
 arrancar construye el pipeline GStreamer a partir del fichero de configuración INI,
 crea una instancia de \texttt{AVSource} por cada fuente declarada, instancia el
 \texttt{VideoMix} y el \texttt{AudioMix}, conecta el \texttt{StreamBlanker} y abre
-los puertos de salida.
+los puertos de salida. La configuración por defecto (\texttt{default-config.ini}) fija
+los parámetros globales del sistema: vídeo a 1920$\times$1080 píxeles en formato I420
+a 25~fotogramas por segundo, y audio PCM S16LE a 48~kHz estéreo. Todas las fuentes de
+señal deben ajustarse a estos parámetros para garantizar la compatibilidad con el
+pipeline.
 
 El puerto~9999 expone el protocolo de control mediante comandos de texto plano como
 \texttt{set\_video\_a cam2} o \texttt{set\_composite\_mode pip}. Cada cambio de
