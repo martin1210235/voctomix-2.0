@@ -12,7 +12,9 @@ latencia, calidad y escalabilidad.
 
 Los protocolos de distribución gobiernan cómo la señal de programa viaja desde el
 mezclador hasta las plataformas de streaming y, desde ahí, hasta el reproductor del
-espectador.
+espectador. Dos de ellos, HLS y MPEG-DASH, delegan su transporte en HTTP~\cite{rfc9110_http},
+lo que les permite aprovechar la infraestructura CDN existente sin configuración
+específica de \textit{media}.
 
 \begin{itemize}
   \item \textbf{RTMP (\textit{Real-Time Messaging Protocol})\acused{RTMP}:} protocolo TCP de Adobe,
@@ -57,15 +59,6 @@ espectador.
     \hline
   \end{tabularx}
 \end{table}
-
-\subsection{Hypertext Transfer Protocol}
-
-HTTP es un protocolo de capa de aplicación definido en la RFC~9110~\cite{rfc9110_http}
-que opera sobre TCP (HTTP/1.1 y HTTP/2) o sobre QUIC/UDP (HTTP/3). Su modelo de
-petición-respuesta y su infraestructura de caché y distribución global mediante CDN
-(\textit{Content Delivery Networks}) lo convierten en el protocolo de referencia para
-la distribución de contenidos a audiencias masivas. Los protocolos HLS y MPEG-DASH,
-descritos en la sección anterior, son su aplicación directa en distribución audiovisual.
 
 \subsection{Contenedores multimedia de distribución}
 
