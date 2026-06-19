@@ -50,9 +50,8 @@ pero sí que el sector tendrá que adaptarse, y es responsabilidad de quienes ad
 tecnologías que ese cambio no derive en precariedad laboral~\cite{acemoglu2019automation}.
 
 Por otro lado, al exponer puertos de control por red, como el puerto~9999 de voctocore, la
-consola de RabbitMQ o la API de telemetría, el sistema amplía su superficie de ataque (es decir, los puntos accesibles que un
-atacante podría intentar explotar). Un acceso no autorizado podría interferir con
-una retransmisión en directo. Por ello, quien despliega el
+consola de RabbitMQ o la API de telemetría, aumenta el número de puntos de acceso que un atacante podría intentar explotar.
+Un acceso no autorizado podría interferir con una retransmisión en directo. Por ello, quien despliega el
 sistema debe aplicar autenticación en RabbitMQ, restringir los puertos mediante cortafuegos y no
 exponer el sistema a Internet sin protección adicional, siguiendo las recomendaciones del
 \ac{NIST} Cybersecurity Framework~\cite{nist_csf2}.
