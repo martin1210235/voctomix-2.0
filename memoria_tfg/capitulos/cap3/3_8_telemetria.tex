@@ -21,7 +21,7 @@ PC lo escribe en un fichero local; en escenarios en red (Docker o dos PCs) lo en
 servicio mediante HTTP POST al puerto~8080.
 
 El servicio fusiona las dos fuentes y construye una vista unificada de la sesión, que
-guarda en formato \textit{JSON} (\texttt{sessionN.jsonl}): un objeto
+guarda en formato \ac{JSON} (\texttt{sessionN.jsonl}): un objeto
 JSON completo por línea, con numeración automática por sesión. Este formato permite
 analizar el log de forma incremental con herramientas estándar como Python, sin necesidad de cargar el fichero completo en memoria.
 
@@ -84,35 +84,38 @@ entrada de tipo CHANGE completa tras un corte de cámara:
 \subsection{Publicación en RabbitMQ}
 \label{sec:rabbitmq}
 
-Cada evento de telemetría se publica opcionalmente en un \textit{broker}
-RabbitMQ~\cite{rabbitmq_docs} mediante el protocolo \ac{AMQP}~\cite{oasis_amqp10}.
-La función \texttt{publish\_to\_rabbit()} recibe el mismo diccionario Python del
-evento (idéntico al que se serializa en el log local), lo convierte a cadena JSON
-mediante \texttt{json.dumps()} y lo envía al \textit{exchange} \texttt{voctomix\_events}
-con \texttt{content\_type='application/json'}, de modo que cualquier consumidor pueda
-interpretarlo directamente. Los mensajes se publican sin persistencia en disco,
-priorizando la velocidad sobre la entrega garantizada, lo que es apropiado en
-producción en directo donde la latencia importa más que la durabilidad.
+RabbitMQ~\cite{rabbitmq_docs} es un servidor de mensajería que actúa como intermediario:
+los eventos se publican en él y cualquier aplicación externa interesada puede suscribirse
+para recibirlos, sin que el servicio de telemetría necesite saber quién los consume.
+Voctomix~2.0 lo utiliza para hacer accesibles los eventos de producción a sistemas externos
+mediante el protocolo \ac{AMQP}~\cite{oasis_amqp10}, el estándar abierto de mensajería
+entre aplicaciones.
 
-La conexión con el \textit{broker} se configura mediante cuatro variables de entorno.
+La función \texttt{publish\_to\_rabbit()} es la responsable del envío. Recibe los datos
+de cada evento (los mismos que ya se guardan en el log local), los serializa a texto JSON
+y los publica en el \textit{exchange} (punto de distribución de mensajes)
+\texttt{voctomix\_events}. Los mensajes no se persisten en disco, priorizando la velocidad
+sobre la entrega garantizada, lo que es apropiado en producción en directo.
+
+La conexión con el servidor se configura mediante cuatro variables de entorno.
 \texttt{RABBITMQ\_HOST} contiene la dirección del servidor RabbitMQ: puede ser una
 dirección IP, un nombre de dominio o, en entornos Docker y Kubernetes, el nombre del
-servicio, que el sistema DNS interno del \textit{cluster} traduce automáticamente a la
-IP del contenedor. \texttt{RABBITMQ\_PORT} fija el puerto TCP de escucha, cuyo valor
-estándar \ac{AMQP} es 5672. Las variables \texttt{RABBITMQ\_USER} y
+servicio, que el sistema DNS interno del clúster traduce automáticamente a la IP del
+contenedor correspondiente. \texttt{RABBITMQ\_PORT} fija el puerto TCP de escucha, cuyo
+valor estándar \ac{AMQP} es 5672. Las variables \texttt{RABBITMQ\_USER} y
 \texttt{RABBITMQ\_PASS} aportan las credenciales de autenticación: RabbitMQ requiere
-usuario y contraseña en todas sus conexiones y desactiva la cuenta de invitado por
-defecto en entornos en red por razones de seguridad. La integración con RabbitMQ solo
-se activa cuando \texttt{RABBITMQ\_HOST} está explícitamente definida; en su ausencia,
-el servicio opera únicamente con el log local sin penalización de rendimiento.
+usuario y contraseña en todas sus conexiones y desactiva la cuenta de invitado por defecto
+en entornos en red por razones de seguridad. La integración solo se activa cuando
+\texttt{RABBITMQ\_HOST} está definida; en su ausencia, el servicio opera únicamente con
+el log local sin penalización de rendimiento.
 
-El servicio mantiene una conexión TCP persistente al \textit{broker} y, ante cualquier
-caída de red, reintenta la reconexión de forma automática sin bloquear el procesamiento
-de eventos. El \textit{exchange} es de tipo \textit{fanout}: cualquier consumidor externo
+El servicio mantiene una conexión TCP persistente al servidor y reconecta automáticamente
+ante cualquier caída de red, sin bloquear el procesamiento de eventos. El \textit{exchange}
+es de tipo \textit{fanout} (difusión a todos los suscriptores): cualquier consumidor externo
 que se suscriba recibe todos los eventos sin necesidad de modificar el código del servicio
 de telemetría ni el de voctocore. En el marco del proyecto europeo CyberNEMO (UPM),
-el \textit{broker} RabbitMQ de Voctomix~2.0 fue integrado en el clúster Kubernetes,
-donde la cola \texttt{vproduction-uc-media} recibió los eventos del mezclador en tiempo real.
+el servidor RabbitMQ de Voctomix~2.0 fue integrado en el clúster Kubernetes, donde la
+cola \texttt{vproduction-uc-media} recibió los eventos del mezclador en tiempo real.
 
 \begin{figure}[h]
   \centering
