@@ -1,0 +1,38 @@
+{
+  "spec": {
+    "template": {
+      "spec": {
+        "containers": [
+          {
+            "name": "cam1",
+            "command": [
+              "sh", "-c",
+              "ffmpeg -y -nostdin -f lavfi -i 'smptebars=size=1920x1080:rate=25' -f lavfi -i 'anullsrc=r=48000:cl=stereo' -filter_complex '[0:v] fps=25 [v]; [1:a] aresample=48000 [a]' -map '[v]' -map '[a]' -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le -f matroska tcp://localhost:10000"
+            ]
+          },
+          {
+            "name": "cam2",
+            "command": [
+              "sh", "-c",
+              "ffmpeg -y -nostdin -f lavfi -i 'testsrc2=size=1920x1080:rate=25' -f lavfi -i 'anullsrc=r=48000:cl=stereo' -filter_complex '[0:v] fps=25 [v]; [1:a] aresample=48000 [a]' -map '[v]' -map '[a]' -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le -f matroska tcp://localhost:10001"
+            ]
+          },
+          {
+            "name": "cam3",
+            "command": [
+              "sh", "-c",
+              "ffmpeg -y -nostdin -f lavfi -i 'color=c=green:size=1920x1080:rate=25' -f lavfi -i 'anullsrc=r=48000:cl=stereo' -filter_complex '[0:v] fps=25 [v]; [1:a] aresample=48000 [a]' -map '[v]' -map '[a]' -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le -f matroska tcp://localhost:10002"
+            ]
+          },
+          {
+            "name": "cam4",
+            "command": [
+              "sh", "-c",
+              "ffmpeg -y -nostdin -f lavfi -i 'color=c=blue:size=1920x1080:rate=25' -f lavfi -i 'anullsrc=r=48000:cl=stereo' -filter_complex '[0:v] fps=25 [v]; [1:a] aresample=48000 [a]' -map '[v]' -map '[a]' -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le -f matroska tcp://localhost:10003"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

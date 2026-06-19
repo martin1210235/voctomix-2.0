@@ -1,0 +1,66 @@
+{
+  "spec": {
+    "template": {
+      "spec": {
+        "containers": [
+          {
+            "name": "cam1",
+            "command": [
+              "sh", "-c",
+              "ffmpeg -y -nostdin -i \"${CAM1_SOURCE}\" -ac 2 -filter_complex \"[0:v] scale=${WIDTH}:${HEIGHT},fps=${FRAMERATE} [v]; [0:a] aresample=${AUDIORATE} [a]\" -map \"[v]\" -map \"[a]\" -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le -f matroska tcp://localhost:${CAM1_PORT}"
+            ]
+          },
+          {
+            "name": "cam2",
+            "command": [
+              "sh", "-c",
+              "ffmpeg -y -nostdin -i \"${CAM2_SOURCE}\" -ac 2 -filter_complex \"[0:v] scale=${WIDTH}:${HEIGHT},fps=${FRAMERATE} [v]; [0:a] aresample=${AUDIORATE} [a]\" -map \"[v]\" -map \"[a]\" -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le -f matroska tcp://localhost:${CAM2_PORT}"
+            ]
+          },
+          {
+            "name": "cam3",
+            "command": [
+              "sh", "-c",
+              "ffmpeg -y -nostdin -i \"${CAM3_SOURCE}\" -ac 2 -filter_complex \"[0:v] scale=${WIDTH}:${HEIGHT},fps=${FRAMERATE} [v]; [0:a] aresample=${AUDIORATE} [a]\" -map \"[v]\" -map \"[a]\" -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le -f matroska tcp://localhost:${CAM3_PORT}"
+            ]
+          },
+          {
+            "name": "cam4",
+            "command": [
+              "sh", "-c",
+              "ffmpeg -y -nostdin -stream_loop -1 -i \"${CAM4_SOURCE}\" -filter_complex \"[0:v] format=yuv420p,scale=${WIDTH}:${HEIGHT}:out_range=tv,fps=${FRAMERATE},setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709 [v]; [0:a] aresample=${AUDIORATE} [a]\" -map \"[v]\" -map \"[a]\" -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv -c:v rawvideo -c:a pcm_s16le -f matroska tcp://localhost:${CAM4_PORT}"
+            ]
+          },
+          {
+            "name": "break",
+            "command": [
+              "sh", "-c",
+              "ffmpeg -y -nostdin -stream_loop -1 -i \"${BREAK_VIDEO}\" -re -stream_loop -1 -i \"${BREAK_AUDIO}\" -filter_complex \"[0:v] format=yuv420p,scale=${WIDTH}:${HEIGHT}:out_range=tv,fps=${FRAMERATE},setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709 [v]; [1:a] aresample=${AUDIORATE},pan=stereo|c0=c0|c1=c1 [a]\" -map \"[v]\" -map \"[a]\" -c:v rawvideo -c:a pcm_s16le -f matroska tcp://localhost:${BREAK_PORT}"
+            ]
+          },
+          {
+            "name": "intro",
+            "command": [
+              "bash", "-c",
+              "while true; do\n  ffmpeg -loglevel quiet -nostats -re \\\n    -i \"${INTRO_VIDEO}\" \\\n    -f lavfi -i anullsrc=r=${AUDIORATE}:cl=stereo \\\n    -pix_fmt yuv420p -s \"${WIDTH}x${HEIGHT}\" -r \"${FRAMERATE}\" \\\n    -c:v rawvideo -c:a pcm_s16le \\\n    -map 0:v:0 -map 1:a:0 \\\n    -shortest \\\n    -f matroska tcp://127.0.0.1:${INTRO_PORT} 2>/dev/null\n  sleep 1\ndone\n"
+            ]
+          },
+          {
+            "name": "stream-blanker",
+            "command": [
+              "bash", "-c",
+              "ffmpeg -nostats -loglevel warning -stream_loop -1 -re \\\n  -i \"${PAUSE_VIDEO}\" \\\n  -pix_fmt yuv420p -s \"${WIDTH}x${HEIGHT}\" -r \"${FRAMERATE}\" \\\n  -c:v rawvideo -an -f matroska tcp://127.0.0.1:${BLANKER_PAUSE_PORT} &\nffmpeg -nostats -loglevel warning -stream_loop -1 -re \\\n  -i \"${OFFLINE_VIDEO}\" \\\n  -pix_fmt yuv420p -s \"${WIDTH}x${HEIGHT}\" -r \"${FRAMERATE}\" \\\n  -c:v rawvideo -an -f matroska tcp://127.0.0.1:${BLANKER_OFFLINE_PORT} &\nwait\n"
+            ]
+          },
+          {
+            "name": "audio-manager",
+            "command": [
+              "sh", "-c",
+              "ffmpeg -nostats -loglevel warning -re -stream_loop -1 -i \"${BACKGROUND_MUSIC}\" -c:a pcm_s16le -ar ${AUDIORATE} -ac 2 -vn -f matroska tcp://127.0.0.1:${AUDIO_PORT}"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
