@@ -1,0 +1,22 @@
+{
+  "environment": "kubernetes",
+  "container": "cam1",
+  "pod": "studio-69b798db5f-k5rp5",
+  "timestamp": "2026-06-19T19:33:36.056205",
+  "wait_between_s": 720,
+  "stats": {
+    "n": 5,
+    "min_ms": 555,
+    "median_ms": 566.0,
+    "mean_ms": 565.6,
+    "max_ms": 576,
+    "p95_ms": 574.4
+  },
+  "raw_ms": [
+    568,
+    555,
+    563,
+    566,
+    576
+  ]
+}
