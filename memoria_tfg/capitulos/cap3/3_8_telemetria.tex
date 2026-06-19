@@ -2,7 +2,7 @@
 \label{sec:telemetria}
 
 El sistema de telemetría registra en tiempo real todo lo que ocurre durante una sesión
-de producción: cambios de fuente activa, cambios de composite, activaciones del
+de producción: cambios de fuente activa, cambios de \textit{composite}, activaciones del
 \textit{stream blanker}, estado de \textit{overlays} y niveles de audio. Esta información permite tanto
 monitorizar la sesión mientras está en curso como auditarla en detalle una vez terminada
 la emisión.
@@ -40,7 +40,7 @@ El registro combina dos tipos de entrada:
 \begin{itemize}
   \item \textbf{Evento Change (\texttt{CHANGE}):} se escribe inmediatamente cuando se
         detecta cualquier variación de estado, como un corte de cámara o un cambio de
-        composite. Captura el instante exacto en que ocurre el cambio.
+        \textit{composite}. Captura el instante exacto en que ocurre el cambio.
   \item \textbf{Evento State (\texttt{STATE}):} un hilo independiente escribe el estado
         completo del sistema cada 5~segundos, con independencia de que haya habido
         cambios. Sirve como mecanismo de redundancia para reconstruir la sesión aunque
@@ -48,7 +48,7 @@ El registro combina dos tipos de entrada:
 \end{itemize}
 
 Cada entrada incluye una marca de tiempo, el estado completo del mezclador (fuentes en
-programa y \textit{preview}, composite, modo de stream, \textit{overlays} y niveles de audio) y métricas
+programa y \textit{preview}, \textit{composite}, modo de stream, \textit{overlays} y niveles de audio) y métricas
 del servidor (\ac{CPU}, \ac{RAM} y ancho de banda por fuente). El ejemplo siguiente muestra una
 entrada de tipo CHANGE completa tras un corte de cámara:
 

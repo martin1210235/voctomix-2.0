@@ -3,7 +3,7 @@
 
 El sistema de telemetría de Voctomix~2.0 permite registrar en tiempo real todos los
 eventos que ocurren durante una sesión de producción: cambios de fuente activa, cambios
-de composite, activaciones del \textit{stream blanker}, carga y descarga de \textit{overlays}, niveles de
+de \textit{composite}, activaciones del \textit{stream blanker}, carga y descarga de \textit{overlays}, niveles de
 audio, y métricas de rendimiento del servidor. Esta información resulta valiosa tanto
 para la monitorización durante el directo como para la auditoría posterior de la sesión.
 El módulo se denomina internamente \textbf{Notario} por su papel de testigo imparcial
@@ -52,7 +52,7 @@ evitar condiciones de carrera. El registro sigue una doble vía temporal:
 \begin{itemize}
   \item \textbf{Por evento (\texttt{CHANGE}):} en cuanto se detecta cualquier variación
         de estado, la entrada se escribe inmediatamente en el log con su marca de
-        tiempo. Esta modalidad captura cada corte de cámara o cambio de composite en
+        tiempo. Esta modalidad captura cada corte de cámara o cambio de \textit{composite} en
         el instante exacto en que ocurre.
   \item \textbf{Por latido (\texttt{STATE}):} un hilo paralelo escribe el estado
         completo del sistema cada 5~segundos como medida de redundancia y control de
@@ -121,7 +121,7 @@ en dos niveles:
   \item \textbf{Nivel contenedor (prioridad):} si existe la variable de entorno
         \texttt{MI\_IP\_REAL} (inyectada por Docker Compose), el Notario la utiliza
         directamente como IP de la interfaz LAN real del servidor.
-  \item \textbf{Nivel nativo (fallback):} si la variable no existe, el script activa
+  \item \textbf{Nivel nativo (fallback):} si la variable no existe, el \textit{script} activa
         un socket UDP hacia \texttt{8.8.8.8} sin llegar a realizar la conexión
         efectiva, interrogando a la tabla de enrutamiento del kernel para identificar
         qué interfaz física tiene salida a Internet y obteniendo así la IP real de la

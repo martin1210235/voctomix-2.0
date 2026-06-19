@@ -1,28 +1,28 @@
 \section{Composites}
 \label{sec:composites}
 
-Los composites definen cómo se combinan visualmente las dos fuentes de vídeo activas
-(bus A y bus B) en el fotograma de salida. Voctomix implementa los composites mediante
+Los \textit{composites} definen cómo se combinan visualmente las dos fuentes de vídeo activas
+(bus A y bus B) en el fotograma de salida. Voctomix implementa los \textit{composites} mediante
 el elemento GStreamer \texttt{compositor}, que sitúa y escala cada fuente de acuerdo
 con los parámetros geométricos definidos en la sección \texttt{[composites]} del
 fichero de configuración (reproducida en su totalidad en la sección~C5 del Anexo~C).
 El compositor de GStreamer soporta la modificación de estos parámetros en caliente
 sin interrumpir el \textit{pipeline}, base técnica que el motor de transiciones
 (sección~\ref{sec:transiciones}) aprovecha para interpolar de forma animada entre
-composites consecutivos.
+\textit{composites} consecutivos.
 
 La figura~\ref{fig:composites_diagrama} ilustra la disposición visual de las dos
-fuentes en cada uno de los composites principales.
+fuentes en cada uno de los \textit{composites} principales.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{figuras/composites_diagrama}
   \caption{Disposición geométrica de las fuentes A y B en los
-           cuatro composites de Voctomix~2.0.}
+           cuatro \textit{composites} de Voctomix~2.0.}
   \label{fig:composites_diagrama}
 \end{figure}
 
-El sistema ofrece cuatro modos de composite, cuyo resultado sobre la señal de programa
+El sistema ofrece cuatro modos de \textit{composite}, cuyo resultado sobre la señal de programa
 se muestra en la figura~\ref{fig:composites_screenshots}:
 
 \begin{itemize}
@@ -33,7 +33,7 @@ se muestra en la figura~\ref{fig:composites_screenshots}:
 
   \item \textbf{Picture in Picture:}\acused{PIP} la fuente A se muestra a pantalla
         completa mientras la fuente B aparece reducida en una esquina del encuadre a
-        una escala aproximada del 26\,\% del ancho del fotograma. Es el composite
+        una escala aproximada del 26\,\% del ancho del fotograma. Es el \textit{composite}
         clásico de ponente con presentación: la cámara ocupa la pantalla completa y
         las diapositivas aparecen en la esquina, o viceversa.
 
@@ -81,17 +81,17 @@ se muestra en la figura~\ref{fig:composites_screenshots}:
     \subcaption{Lecture.}
     \label{fig:screen_lec}
   \end{minipage}
-  \caption{Señal de programa en los cuatro modos de composite de Voctomix~2.0.}
+  \caption{Señal de programa en los cuatro modos de \textit{composite} de Voctomix~2.0.}
   \label{fig:composites_screenshots}
 \end{figure}
 
 El sistema incorpora además un modo mirror, disponible como variante para
 Picture in Picture y Lecture. Al activarlo, el núcleo invierte la disposición horizontal
-del composite: los elementos situados a la derecha se desplazan a la izquierda y
+del \textit{composite}: los elementos situados a la derecha se desplazan a la izquierda y
 viceversa. Por ejemplo, el recuadro del PIP pasa de la esquina inferior derecha a la
 inferior izquierda, y en Lecture el bloque de diapositivas cambia de lado.
 Esta variante se genera automáticamente a partir de los parámetros geométricos del
-composite original, sin coste adicional en el procesamiento de vídeo.
+\textit{composite} original, sin coste adicional en el procesamiento de vídeo.
 
 \begin{figure}[H]
   \centering
@@ -108,6 +108,6 @@ composite original, sin coste adicional en el procesamiento de vídeo.
     \subcaption{Mirror activo en Lecture.}
     \label{fig:mirror_lec}
   \end{minipage}
-  \caption{Efecto espejo aplicado a los composites Picture in Picture y Lecture.}
+  \caption{Efecto espejo aplicado a los \textit{composites} Picture in Picture y Lecture.}
   \label{fig:mirror}
 \end{figure}
