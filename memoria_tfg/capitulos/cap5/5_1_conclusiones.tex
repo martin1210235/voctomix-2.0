@@ -14,9 +14,9 @@ consecución de cada uno de los seis objetivos específicos planteados.
 
 \vspace{0.3cm}
 \noindent\textbf{OE-1: Funcionalidades de producción profesional.}
-Se han implementado las tres funcionalidades broadcast requeridas. La rotulación dinámica
+Se han implementado las tres funcionalidades \textit{broadcast} requeridas. La rotulación dinámica
 permite superponer gráficos y texto en tiempo real, con fundido configurable y
-desactivación automática en cada corte. El gestor de estados (stream blanker) ofrece
+desactivación automática en cada corte. El gestor de estados (\textit{stream blanker}) ofrece
 tres modos, LIVE, PAUSE y NOSTREAM, que controlan la señal de salida de forma
 independiente del procesamiento interno. La sincronización Audio Follows Video ajusta
 los volúmenes automáticamente en cada cambio de fuente, eliminando la gestión manual
@@ -27,15 +27,15 @@ del audio durante la producción.
 El servicio de telemetría registra en tiempo real los eventos de operación del mezclador:
 el tipo CHANGE, emitido de forma inmediata ante cualquier acción, y el tipo STATE, que
 publica el estado completo del sistema cada 5 segundos. Los eventos se almacenan
-localmente en formato JSON Lines y se publican en un broker RabbitMQ mediante AMQP,
+localmente en formato JSON Lines y se publican en un \textit{broker} RabbitMQ mediante AMQP,
 lo que permite integrar el sistema con herramientas externas sin modificar el núcleo
 de la aplicación.
 
 \vspace{0.2cm}
 \noindent\textbf{OE-3: Contenerización con Docker.}
 El sistema completo se ha empaquetado en diez contenedores Docker orquestados con
-Docker Compose: voctocore, cuatro fuentes sintéticas, el stream blanker, el gestor
-de audio, el broker RabbitMQ y el servicio de telemetría. El despliegue completo se
+Docker Compose: voctocore, cuatro fuentes sintéticas, el \textit{stream blanker}, el gestor
+de audio, el \textit{broker} RabbitMQ y el servicio de telemetría. El despliegue completo se
 realiza con un único comando (\texttt{docker compose up}), eliminando la instalación
 manual de dependencias de GStreamer y Python.
 
@@ -76,7 +76,7 @@ objetivos y las secciones donde se documentan.
     \hline
     \textbf{Obj.} & \textbf{Descripción} & \textbf{Estado} & \textbf{Sección} \\
     \hline
-    OE-1 & Rotulación, stream blanker y AFV  & Cumplido & \S\ref{sec:overlays}, \S\ref{sec:fuentes_auxiliares} \\
+    OE-1 & Rotulación, \textit{stream blanker} y AFV  & Cumplido & \S\ref{sec:overlays}, \S\ref{sec:fuentes_auxiliares} \\
     OE-2 & Telemetría JSON + RabbitMQ        & Cumplido & \S\ref{sec:telemetria} \\
     OE-3 & Contenerización Docker Compose    & Cumplido & \S\ref{sec:docker} \\
     OE-4 & Despliegue en Kubernetes          & Cumplido & \S\ref{sec:kubernetes} \\
@@ -89,8 +89,8 @@ objetivos y las secciones donde se documentan.
 \vspace{0.3cm}
 
 Más allá de los objetivos concretos, el trabajo ha demostrado que es posible construir
-una plataforma de producción audiovisual profesional íntegramente sobre software libre.
-GStreamer ha sido la pieza central: su modelo de pipeline modular ha permitido integrar
+una plataforma de producción audiovisual profesional íntegramente sobre \textit{software} libre.
+GStreamer ha sido la pieza central: su modelo de \textit{pipeline} modular ha permitido integrar
 cada nueva funcionalidad como un elemento independiente sin modificar el núcleo original.
 La separación entre \texttt{voctocore} como servidor multimedia y \texttt{voctogui} como
 cliente de control ha resultado robusta en todos los entornos evaluados. En conjunto,

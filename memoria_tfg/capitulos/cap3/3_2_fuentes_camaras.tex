@@ -84,7 +84,7 @@ calidad que toda fuente debe satisfacer:
   \item \textbf{Colorimetría televisiva (BT.709):} se recomienda que los metadatos del
         flujo declaren el espacio de color estándar de alta definición
         (\texttt{colorimetry=bt709}) y el rango de luz televisivo (\texttt{tv range}).
-        Los archivos grabados con cámaras convencionales o editados con software de
+        Los archivos grabados con cámaras convencionales o editados con \textit{software} de
         consumo suelen emplear el rango \texttt{pc} (full range). Sin la conversión
         adecuada, los colores presentan una desviación perceptible en la mezcla, aunque
         la conexión se establece correctamente. Para convertirlos, se aplican los
@@ -96,6 +96,6 @@ En definitiva, todos los parámetros del flujo entrante, resolución, frecuencia
 espacio de color y formato de audio, deben coincidir con los valores declarados en el
 fichero de configuración INI de voctocore (\texttt{default-config.ini}), que fija los
 parámetros globales del sistema: 1920$\times$1080, I420, 25~fps y 48~kHz S16LE estéreo.
-Es el propio pipeline GStreamer el que impone esta restricción: cualquier discrepancia
+Es el propio \textit{pipeline} GStreamer el que impone esta restricción: cualquier discrepancia
 entre la fuente y la configuración provoca un rechazo de conexión o artefactos en la
 mezcla, como se comprobó durante el desarrollo.

@@ -24,12 +24,12 @@ profesional~\cite{tmbroadcast_remi}.
 
 El modelo de producción tradicional se basa en el despliegue físico de toda la
 infraestructura técnica y del personal en el emplazamiento del evento. El componente
-central de este modelo es el mezclador hardware, denominado
+central de este modelo es el mezclador \textit{hardware}, denominado
 \textit{switcher} (conmutador de vídeo), un dispositivo dedicado que selecciona en cada instante qué fuente
 de vídeo se emite a la salida de programa y gestiona las transiciones y los efectos.
 Fabricantes como Blackmagic Design (ATEM), Ross Video (Carbonite) o Grass Valley (Kayenne) dominan
 el mercado de estos equipos, que ofrecen latencias sub-imagen, múltiples buses de
-programa y previsualización simultáneos, y redundancia hardware certificada para
+programa y previsualización simultáneos, y redundancia \textit{hardware} certificada para
 operación continua~\cite{blackmagic_atem}.
 
 En el modelo tradicional, todas las fuentes, cámaras, reproductores de vídeo y
@@ -55,12 +55,12 @@ operación, lo pone fuera del alcance de organizaciones de mediana escala.
 
 Un caso ilustrativo es la retransmisión de un partido de La Liga de fútbol profesional
 en España. Este tipo de producción moviliza habitualmente entre 20 y 30 cámaras SDI,
-varias unidades móviles de producción equipadas con mezcladores hardware de gama alta
+varias unidades móviles de producción equipadas con mezcladores \textit{hardware} de gama alta
 y un equipo técnico de entre 50 y 100 personas desplazadas al estadio.
 El coste de una unidad móvil de estas características puede alcanzar varios millones de
 euros, cifra a la que se suma el gasto recurrente en desplazamientos, montaje y
 operación. Este modelo queda así reservado a grandes cadenas de televisión y
-organizaciones con infraestructura broadcast consolidada, resultando inaccesible para
+organizaciones con infraestructura \textit{broadcast} consolidada, resultando inaccesible para
 entidades académicas, asociaciones o eventos de mediana escala.
 
 \subsection{Producción audiovisual remota}
@@ -78,7 +78,7 @@ La figura~\ref{fig:remi_arquitectura} ilustra la separación funcional entre el 
 del evento y el centro de producción remoto. En el emplazamiento solo permanecen las
 cámaras, los micrófonos y un sistema de contribución IP que codifica y transmite la
 señal hacia el centro remoto. El procesamiento completo, mezcla de fuentes, inserción
-de gráficos, control de audio, gestión de overlays y distribución al espectador,
+de gráficos, control de audio, gestión de \textit{overlays} y distribución al espectador,
 se realiza de forma centralizada.
 
 \begin{figure}[H]
@@ -132,23 +132,23 @@ reales~\cite{tmbroadcast_remi,remi_workflow_ibc2023}.
     \hline
     \textbf{Dimensión} & \textbf{Beneficio} & \textbf{Desafío / Dificultad} \\
     \hline
-    Coste           & Reducción de desplazamientos y equipos    & Inversión inicial en red y software \\
+    Coste           & Reducción de desplazamientos y equipos    & Inversión inicial en red y \textit{software} \\
     Latencia        & Viable con \acs{SRT} ($<$1~s en \acs{WAN})  & Coordinación realizador--cámaras difícil \\
     Escalabilidad   & Un centro atiende múltiples eventos       & Número de fuentes de cámara simultáneas limitado por ancho de banda y capacidad de procesamiento \\
     Red             & Producción desde cualquier ubicación IP   & Corte de red detiene la producción \\
     Calidad         & Hardware ilimitado en el centro remoto    & Artefactos con ancho de banda insuficiente \\
     Sincronía A/V   & Procesamiento centralizado facilita la sincronía entre fuentes & \textit{jitter} (fluctuación) puede desincronizar fuentes \\
     Seguridad       & Cifrado AES-256 disponible en transporte SRT & Mayor superficie de ataque expuesta \\
-    Complejidad     & Herramientas maduras (FFmpeg, GStreamer)   & Diagnóstico de pipelines distribuidos \\
+    Complejidad     & Herramientas maduras (FFmpeg, GStreamer)   & Diagnóstico de \textit{pipelines} distribuidos \\
     Sostenibilidad  & Menor huella de carbono                   & Consumo energético del centro permanente \\
     \hline
   \end{tabularx}
 \end{table}
 
 
-\subsubsection*{Herramientas de producción remota por software}
+\subsubsection*{Herramientas de producción remota por \textit{software}}
 
-La disponibilidad de herramientas de mezclado por software ha democratizado el acceso
+La disponibilidad de herramientas de mezclado por \textit{software} ha democratizado el acceso
 al modelo remoto incluso para organizaciones sin presupuesto de radiodifusión profesional:
 
 \begin{itemize}
@@ -171,7 +171,7 @@ al modelo remoto incluso para organizaciones sin presupuesto de radiodifusión p
   la interfaz de control (\texttt{voctogui}), permitiendo que el procesamiento se
   realice en un servidor mientras el operador trabaja desde otro equipo conectado por
   red. Construido sobre GStreamer~\cite{gstreamer_docs}, un \textit{framework} (entorno
-  de software) multimedia de código abierto, proporciona composición de vídeo con
+  de \textit{software}) multimedia de código abierto, proporciona composición de vídeo con
   múltiples fuentes, transiciones animadas, \textit{overlays} y un protocolo de
   control TCP extensible. Es la herramienta objeto del presente trabajo (véase el
   Capítulo~\ref{chap:diseno}).
@@ -186,7 +186,7 @@ al modelo remoto incluso para organizaciones sin presupuesto de radiodifusión p
     \textbf{Parámetro} & \textbf{Tradicional} & \textbf{REMI / Software} \\
     \hline
     Infraestructura en lugar del evento & Completa          & Mínima (cámaras + encoder) \\
-    Coste de equipamiento               & Muy alto          & Bajo (hardware convencional) \\
+    Coste de equipamiento               & Muy alto          & Bajo (\textit{hardware} convencional) \\
     Personal \textit{in situ}           & Numeroso          & Reducido \\
     Latencia extremo a extremo          & Sub-imagen        & 1 fotograma -- varios segundos \\
     Escalabilidad                       & Limitada          & Alta \\

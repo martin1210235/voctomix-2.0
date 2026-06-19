@@ -13,8 +13,8 @@ El Chaos Communication Congress (CCC) es uno de los mayores congresos de tecnolo
 seguridad informática del mundo, celebrado anualmente en Alemania con más de 17\,000 asistentes en sus ediciones de
 mayor afluencia y múltiples salas en emisión simultánea. El equipo de producción de vídeo del
 congreso, C3VOC, desarrolló Voctomix~\cite{voctomix_github} precisamente para cubrir
-esta necesidad: un mezclador software de código abierto capaz de gestionar varias salas
-en paralelo sin depender de hardware broadcast propietario.
+esta necesidad: un mezclador \textit{software} de código abierto capaz de gestionar varias salas
+en paralelo sin depender de \textit{hardware} \textit{broadcast} propietario.
 
 Cada sala del congreso dispone de su propio servidor con una instancia de voctocore,
 alimentado por cámaras que envían señal RAW~I420 sobre TCP/MKV y operado remotamente
@@ -33,7 +33,7 @@ en Tokio, reduciendo drásticamente el número de equipos y personal técnico de
 a cada instalación~\cite{obs_tokyo_2021}.
 
 Este despliegue validó la viabilidad técnica del modelo REMI para eventos con decenas de
-sedes simultáneas, señales de alta resolución y requisitos de fiabilidad broadcast. La
+sedes simultáneas, señales de alta resolución y requisitos de fiabilidad \textit{broadcast}. La
 reducción de la huella de carbono asociada al transporte de equipos fue uno de los
 argumentos adicionales que aceleraron la adopción del modelo remoto como estándar para
 ediciones futuras.
@@ -46,7 +46,7 @@ Madrid~\cite{tsa_remi_2022}. Las cámaras del estadio enviaban la señal mediant
 sobre Internet pública hasta el centro de producción remoto, donde los realizadores
 operaban el sistema como si estuvieran físicamente presentes en el estadio.
 
-Este caso de uso demuestra la madurez del protocolo SRT para contribución broadcast
+Este caso de uso demuestra la madurez del protocolo SRT para contribución \textit{broadcast}
 en condiciones de red reales: el cifrado AES-256 garantiza la seguridad del contenido
 deportivo durante el transporte, y la corrección ARQ recupera los paquetes perdidos sin
 impacto perceptible en la latencia. La operación resultó transparente para el equipo de
@@ -92,7 +92,7 @@ aplicada a entornos multimedia distribuidos:
 
   \item \textbf{CyberNEMO:} proyecto europeo centrado en la ciberseguridad aplicada
         a entornos de producción y distribución multimedia. Voctomix~2.0 fue
-        desplegado en el clúster Kubernetes del proyecto, donde el broker RabbitMQ
+        desplegado en el clúster Kubernetes del proyecto, donde el \textit{broker} RabbitMQ
         del sistema fue integrado con las colas
         \texttt{vproduction-uc-media} y \texttt{vqprobe-uc-media}, publicando en
         tiempo real eventos de mezclador durante sesiones de producción audiovisual

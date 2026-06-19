@@ -32,12 +32,12 @@ para inyectar música de fondo durante los estados de pausa o fuera de emisión.
 entrada acepta un flujo Matroska de sólo audio (PCM S16LE, 48~kHz, estéreo) y su
 nivel de salida puede controlarse desde el protocolo de control.
 
-\subsection{Stream Blanker: estados de emisión}
+\subsection{\textit{Stream Blanker}: estados de emisión}
 
-El stream blanker es el mecanismo que permite interrumpir la señal de programa hacia el
+El \textit{stream blanker} es el mecanismo que permite interrumpir la señal de programa hacia el
 exterior sin interrumpir el flujo de trabajo interno del realizador. Se implementa en
 \texttt{streamblanker.py} como un elemento GStreamer adicional interpuesto
-entre la mezcla y el puerto de salida de streaming (puerto 15000).
+entre la mezcla y el puerto de salida de \textit{streaming} (puerto 15000).
 
 El sistema define tres estados de emisión, controlables desde la barra de herramientas
 de voctogui:
@@ -80,7 +80,7 @@ señal vista por el espectador en los estados NOSTREAM y PAUSE.
     \subcaptionbox{Señal del espectador en PAUSE.\label{fig:port_pause}}{%
       \includegraphics[width=\textwidth]{figuras/port_15000_pause.png}}
   \end{minipage}
-  \caption{Estados NOSTREAM y PAUSE del stream blanker: vista del realizador (arriba)
+  \caption{Estados NOSTREAM y PAUSE del \textit{stream blanker}: vista del realizador (arriba)
            y señal recibida por el espectador (abajo).}
   \label{fig:streamblanker_estados}
 \end{figure}

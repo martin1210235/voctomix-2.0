@@ -3,7 +3,7 @@
 
 El sistema de telemetría de Voctomix~2.0 permite registrar en tiempo real todos los
 eventos que ocurren durante una sesión de producción: cambios de fuente activa, cambios
-de composite, activaciones del stream blanker, carga y descarga de overlays, niveles de
+de composite, activaciones del \textit{stream blanker}, carga y descarga de \textit{overlays}, niveles de
 audio, y métricas de rendimiento del servidor. Esta información resulta valiosa tanto
 para la monitorización durante el directo como para la auditoría posterior de la sesión.
 El módulo se denomina internamente \textbf{Notario} por su papel de testigo imparcial
@@ -24,7 +24,7 @@ mensajes del protocolo interno, filtrando los eventos de estado relevantes:
 (distribución de pantalla activa), y \texttt{stream\_status} (LIVE, PAUSE, NOSTREAM).
 
 El handshake inicial incluye el comando \texttt{get\_config}, que devuelve en un bloque
-JSON los parámetros del pipeline: resolución, framerate, formato de píxel
+JSON los parámetros del \textit{pipeline}: resolución, \textit{framerate}, formato de píxel
 (\texttt{yuv420p}), frecuencia de muestreo de audio y número de canales. Estos datos
 se inyectan en el campo \texttt{stream\_info} de cada entrada del log, dotando al
 registro de validez técnica para análisis de rendimiento.
@@ -78,7 +78,7 @@ Para dotar al log de utilidad operativa, el Notario registra en cada entrada un 
         degradando la emisión.
   \item \textbf{Memoria RAM (\texttt{ram\_usage\_percent}, \texttt{ram\_available\_mb}):}
         leído de \texttt{/proc/meminfo}. Un consumo bajo y estable confirma que los
-        pipelines GStreamer procesan y liberan fotogramas en tiempo real sin acumular
+        \textit{pipelines} GStreamer procesan y liberan fotogramas en tiempo real sin acumular
         búferes en memoria.
   \item \textbf{Tiempos de sesión (\texttt{uptime}, \texttt{session\_duration}):}
         \texttt{uptime} indica el tiempo de encendido del servidor; \texttt{session\_duration}
@@ -140,16 +140,16 @@ El Notario expone los datos de telemetría en dos canales complementarios:
         la opción de socket \texttt{SO\_REUSEADDR}, equivalente al parámetro
         \texttt{allow\_reuse\_address = True} de Python.
   \item \textbf{Mensajería AMQP (RabbitMQ):} cada cambio de estado se publica como
-        un mensaje JSON en el exchange \texttt{voctomix\_events} del broker RabbitMQ,
-        permitiendo que cualquier consumidor externo (sistema de streaming, dashboard
+        un mensaje JSON en el exchange \texttt{voctomix\_events} del \textit{broker} RabbitMQ,
+        permitiendo que cualquier consumidor externo (sistema de \textit{streaming}, \textit{dashboard}
         web, automatización) se suscriba a los eventos sin acoplarse directamente al
         Notario ni a voctocore.
 \end{itemize}
 
-\subsection{RabbitMQ como broker de mensajería}
+\subsection{RabbitMQ como \textit{broker} de mensajería}
 \label{sec:rabbitmq}
 
-RabbitMQ es el broker de mensajería AMQP que centraliza los eventos de telemetría. En
+RabbitMQ es el \textit{broker} de mensajería AMQP que centraliza los eventos de telemetría. En
 el despliegue Docker se ejecuta como un contenedor independiente accesible en el puerto
 5672 (protocolo AMQP) y 15672 (consola web de administración). Las credenciales por
 defecto son \texttt{voctomix}/\texttt{voctomix123}.
@@ -188,7 +188,7 @@ garantías aunque el Notario no esté disponible (\textit{single point of failur
 \label{sec:evolucion_telemetria}
 
 En el escenario de dos PCs, el Notario necesita recibir los datos de estado de la GUI
-(niveles de audio, estado de overlays) desde el PC del realizador a través de la red.
+(niveles de audio, estado de \textit{overlays}) desde el PC del realizador a través de la red.
 La implementación inicial utilizó UDP (\texttt{socket.SOCK\_DGRAM}), que presenta dos
 fallos críticos en entornos Wi-Fi:
 

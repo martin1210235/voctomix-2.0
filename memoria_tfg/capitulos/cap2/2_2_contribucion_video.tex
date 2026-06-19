@@ -23,7 +23,7 @@ sobre Internet.
 
 \begin{itemize}
   \item \textbf{SDI (\textit{Serial Digital Interface}):} estándar histórico de la
-  industria broadcast para el transporte de vídeo sin comprimir sobre cable coaxial o
+  industria \textit{broadcast} para el transporte de vídeo sin comprimir sobre cable coaxial o
   fibra óptica~\cite{smpte_sdi}. Ofrece latencia sub-imagen y sincronismo garantizado,
   pero está limitado a distancias de hasta 100~m sin regeneradores y requiere
   infraestructura de alto coste.
@@ -66,7 +66,7 @@ sobre Internet.
     \hline
     \textbf{Protocolo} & \textbf{Medio} & \textbf{Velocidad máx.} & \textbf{Latencia} & \textbf{Uso típico} \\
     \hline
-    SDI (12G)       & Coaxial/fibra & 11{,}88 Gbit/s & Sub-imagen & Estudio broadcast \\
+    SDI (12G)       & Coaxial/fibra & 11{,}88 Gbit/s & Sub-imagen & Estudio \textit{broadcast} \\
     SMPTE ST 2022-6 & UDP/IP        & 3 Gbit/s       & Sub-imagen & Migración SDI/IP  \\
     SMPTE ST 2110   & UDP/IP        & Variable       & Sub-imagen & Producción IP nativa \\
     SRT             & UDP/IP (ARQ)  & Variable       & $<$1~s     & Contribución REMI \\
@@ -77,14 +77,14 @@ sobre Internet.
 
 \subsection{Contenedores multimedia de contribución}
 
-En producción broadcast profesional, el contenedor multimedia no solo encapsula los
+En producción \textit{broadcast} profesional, el contenedor multimedia no solo encapsula los
 flujos de vídeo y audio, sino que transporta también metadatos de producción, timecode
 y descriptores técnicos de cada pista. Los formatos más empleados en la etapa de
 contribución son:
 
 \begin{itemize}
   \item \textbf{MXF (\textit{Material eXchange Format}, SMPTE ST~377-1)}\acused{MXF}~\cite{smpte_mxf}:
-  estándar de la industria broadcast definido por la SMPTE y adoptado por la \ac{EBU} y la
+  estándar de la industria \textit{broadcast} definido por la SMPTE y adoptado por la \ac{EBU} y la
   mayoría de fabricantes de cámaras y sistemas de archivo profesionales. Encapsula
   vídeo comprimido (MPEG-2, AVC-Intra, ProRes), audio multicanal y metadatos de
   producción en un único fichero con soporte de \textit{timecode frame-accurate}.
@@ -96,7 +96,7 @@ contribución son:
   empleado por Voctomix como formato de transporte interno para señal RAW. Las fuentes
   envían vídeo~I420 y audio PCM~S16LE a 48~kHz encapsulados en MKV sobre conexiones
   TCP, garantizando sincronía audio-vídeo sin compresión intermedia. A diferencia de
-  MXF, no es un estándar broadcast certificado, pero su nula sobrecarga de codificación
+  MXF, no es un estándar \textit{broadcast} certificado, pero su nula sobrecarga de codificación
   lo hace idóneo para la contribución de señal sin comprimir en redes locales de alta
   velocidad.
 \end{itemize}
@@ -147,12 +147,12 @@ múltiples etapas de procesamiento.
   intra-frame estandarizado por SMPTE como VC-3 y distribuido comercialmente por Avid
   bajo el nombre DNxHD (y su variante de alta resolución DNxHR). Equivalente a ProRes
   en su propósito, está ampliamente implantado en flujos de trabajo de postproducción
-  broadcast y en sistemas de edición Avid Media Composer.
+  \textit{broadcast} y en sistemas de edición Avid Media Composer.
 
   \item \textbf{\ac{JPEG}~2000}~\cite{jpeg2000_iso}: códec que ofrece compresión sin
   pérdidas o con pérdidas mínimas y latencia muy reducida gracias a su arquitectura de
   codificación por bloques independientes. Utilizado en sistemas de contribución
-  broadcast de alta calidad y en señalización digital.
+  \textit{broadcast} de alta calidad y en señalización digital.
 
   \item \textbf{JPEG XS (ISO/IEC~21122)}~\cite{jpeg_xs_iso}: códec intra-frame de
   nueva generación publicado en 2019 específicamente diseñado para producción
@@ -176,7 +176,7 @@ múltiples etapas de procesamiento.
     PCM S16LE (audio)   & Sin compresión & Nula           & Audio interno Voctomix \\
     Apple ProRes        & 4:1 -- 8:1     & $<$1 fotograma & Producción TV, postproducción \\
     VC-3 / DNxHD        & 4:1 -- 7:1     & $<$1 fotograma & Broadcast, Avid workflows \\
-    JPEG 2000           & 4:1 -- 20:1    & $<$5 ms        & Contribución broadcast \\
+    JPEG 2000           & 4:1 -- 20:1    & $<$5 ms        & Contribución \textit{broadcast} \\
     JPEG XS             & 4:1 -- 6:1     & $<$1 ms        & Contribución 4K/8K en vivo \\
     \hline
   \end{tabularx}

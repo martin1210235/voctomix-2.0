@@ -15,7 +15,7 @@ se agrupan en el mismo pod, comparten automáticamente la interfaz de red, es de
 ven el mismo \texttt{localhost}. Este comportamiento resuelve de forma nativa el mismo
 problema de aislamiento de red que en Docker se solucionó con el espacio de red compartido.
 El pod principal, llamado \texttt{studio}, agrupa voctocore, todas las fuentes de vídeo
-(cam1--4, break, intro, stream blanker y audio manager) y el servicio de telemetría. Al compartir pod, todas las conexiones
+(cam1--4, break, intro, \textit{stream blanker} y audio manager) y el servicio de telemetría. Al compartir pod, todas las conexiones
 TCP internas funcionan sin modificar una sola línea de código. RabbitMQ se despliega en un
 pod independiente; la telemetría le publica sus eventos mediante AMQP.
 
@@ -45,7 +45,7 @@ si Minikube ya está en marcha y, si no, lo inicia. A continuación aplica todos
 manifiestos YAML al clúster y espera a que los pods estén completamente listos. Una vez
 que el sistema está operativo, establece un reenvío de puertos
 (\texttt{kubectl port-forward --address 0.0.0.0}) que hace accesibles desde la red local
-los puertos de voctocore (control, previews, salida de programa). En PC2, el operador
+los puertos de voctocore (control, \textit{previews}, salida de programa). En PC2, el operador
 lanza voctogui apuntando a la IP de PC1, exactamente igual que en el escenario de dos PCs
 nativo. Para detener el sistema basta con cerrar el terminal de PC1, lo que cierra
 automáticamente el reenvío de puertos; el clúster y los pods permanecen activos y pueden

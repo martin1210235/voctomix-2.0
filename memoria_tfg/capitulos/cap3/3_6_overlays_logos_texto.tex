@@ -1,8 +1,8 @@
-\section{Overlays, logos y texto dinámico}
+\section{\textit{Overlays}, logos y texto dinámico}
 \label{sec:overlays}
 
 Voctomix 2.0 incorpora un sistema completo de superposición de elementos gráficos
-sobre la señal de vídeo: logos corporativos, overlays \ac{PNG} con canal alfa y texto
+sobre la señal de vídeo: logos corporativos, \textit{overlays} \ac{PNG} con canal alfa y texto
 dinámico renderizado en tiempo real. Todos estos elementos se gestionan desde la
 interfaz gráfica sin interrumpir la retransmisión.
 
@@ -15,28 +15,28 @@ El sistema soporta dos logos simultáneos superpuestos en posiciones fijas del e
   \item \textbf{logo2}: posicionado en la esquina superior izquierda del fotograma.
 \end{itemize}
 
-La posición de cada logo no la determina el pipeline de GStreamer, sino el diseño
+La posición de cada logo no la determina el \textit{pipeline} de GStreamer, sino el diseño
 del fichero PNG: cada imagen cubre el fotograma completo con una zona transparente
 excepto en la esquina donde aparece el logotipo. Los ficheros PNG de los logos se
 definen en las secciones \texttt{[logo1]} y \texttt{[logo2]} del fichero de
 configuración, lo que permite cambiar la identidad visual del evento sin modificar el código. La visibilidad de cada logo se puede activar o
 desactivar individualmente desde la interfaz gráfica.
 
-\subsection{Overlays PNG y texto dinámico}
+\subsection{\textit{Overlays} PNG y texto dinámico}
 
-Los overlays son imágenes PNG que se superponen sobre la señal de vídeo
+Los \textit{overlays} son imágenes PNG que se superponen sobre la señal de vídeo
 mediante el elemento GStreamer \texttt{gdkpixbufoverlay}. El módulo
-\texttt{overlay.py} gestiona el ciclo de vida completo de un overlay:
+\texttt{overlay.py} gestiona el ciclo de vida completo de un \textit{overlay}:
 carga del fichero PNG, fundido de entrada (\textit{blend-in}), mantenimiento en
 pantalla y fundido de salida (\textit{blend-out}). El tiempo de fundido se controla
 mediante el parámetro \texttt{blend-time} en la sección \texttt{[overlay]} del
 fichero de configuración (en milisegundos).
 
 El elemento \texttt{gdkpixbufoverlay} está diseñado para leer archivos de imagen
-estáticos desde una ruta del sistema de ficheros. Para cambiar el overlay en caliente,
+estáticos desde una ruta del sistema de ficheros. Para cambiar el \textit{overlay} en caliente,
 la clase \texttt{Overlay} actualiza la propiedad \texttt{location} del elemento mediante
 el comando \texttt{set\_overlay} del protocolo de control, lo que fuerza la recarga del
-nuevo fichero PNG sin interrumpir el pipeline.
+nuevo fichero PNG sin interrumpir el \textit{pipeline}.
 
 \subsection{Rotulación dinámica}
 \label{sec:doble_rotulacion}
@@ -44,34 +44,34 @@ nuevo fichero PNG sin interrumpir el pipeline.
 El sistema de rotulación permite al operador escribir el nombre del ponente o el título
 de la sesión en el panel de la interfaz gráfica. Al confirmar el texto, la interfaz lo
 envía al núcleo a través del protocolo de control, donde voctocore actualiza
-directamente el elemento \texttt{textoverlay} del pipeline GStreamer. El rótulo aparece
+directamente el elemento \texttt{textoverlay} del \textit{pipeline} GStreamer. El rótulo aparece
 en antena en el siguiente fotograma, sin escritura a disco ni procesamiento externo.
 
 El sistema dispone de dos canales de rotulación independientes, lo que permite mostrar
 simultáneamente dos textos en posiciones distintas del encuadre sin solapamientos. Cada
 canal tiene su propio campo de texto en la interfaz, con gestión de foco de teclado
 independiente para evitar colisiones con los atajos del mezclador. Su implementación
-requirió extender el pipeline con un segundo elemento \texttt{textoverlay}, ampliar el
+requirió extender el \textit{pipeline} con un segundo elemento \texttt{textoverlay}, ampliar el
 protocolo de control con un segundo comando de texto y añadir el campo correspondiente
 en la interfaz gráfica.
 
 \subsection{Botón UPDATE: recarga dinámica de recursos}
 
-El botón UPDATE del panel de overlays permite recargar el directorio de
+El botón UPDATE del panel de \textit{overlays} permite recargar el directorio de
 recursos gráficos durante la emisión. Esta funcionalidad es crítica en entornos de
 directo: si el equipo de grafismo corrige un error ortográfico en una plantilla PNG o
 añade un nuevo rótulo de último minuto, el operador puede incorporarlo al sistema sin
 interrumpir la señal de vídeo ni reiniciar ningún proceso.
 
-\subsection{Auto-off de overlays}
+\subsection{Auto-off de \textit{overlays}}
 
 La funcionalidad \textit{auto-off} resuelve un problema frecuente en producción en
-directo: el operador realiza un corte de cámara olvidando retirar el overlay activo,
+directo: el operador realiza un corte de cámara olvidando retirar el \textit{overlay} activo,
 que queda superpuesto sobre la nueva fuente de forma inapropiada (por ejemplo, el
 nombre de un ponente apareciendo sobre la imagen de otro).
 
 Con esta opción activa, cada vez que el realizador realiza un corte de cámara el
-sistema retira automáticamente el overlay y el texto dinámico con un fundido de salida,
+sistema retira automáticamente el \textit{overlay} y el texto dinámico con un fundido de salida,
 sin que el operador tenga que hacerlo manualmente. La funcionalidad puede activarse de
 forma permanente en la configuración o exponerse como un botón de alternancia en la
 interfaz para que el operador decida en tiempo real si la quiere habilitada.
@@ -81,7 +81,7 @@ interfaz para que el operador decida en tiempo real si la quiere habilitada.
   \includegraphics[width=0.59\textwidth]{figuras/señal_programa_overlays_rotulacion}
   \par\vspace{0.4cm}
   \includegraphics[width=0.85\textwidth]{figuras/panel_control_overlays_rotulacion}
-  \caption{Señal de programa con overlay y rotulación activos (arriba) y panel de
+  \caption{Señal de programa con \textit{overlay} y rotulación activos (arriba) y panel de
            control correspondiente en la interfaz (abajo).}
   \label{fig:panel_overlays}
 \end{figure}

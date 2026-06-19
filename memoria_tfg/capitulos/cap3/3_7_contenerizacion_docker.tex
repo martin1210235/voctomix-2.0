@@ -25,7 +25,7 @@ el tamaño de la imagen:
         \textit{ugly}.
   \item FFmpeg, para la inyección de fuentes de vídeo.
   \item \textit{Bindings} Python de GObject (\texttt{python3-gi}), la biblioteca Cairo
-        para renderizado de overlays, y la librería AMQP (\texttt{pika}) para la
+        para renderizado de \textit{overlays}, y la librería AMQP (\texttt{pika}) para la
         integración con RabbitMQ.
   \item Utilidades de red (\texttt{netcat}, \texttt{iproute2}) necesarias para el
         \textit{healthcheck} y el autodescubrimiento de IP.
@@ -100,10 +100,10 @@ Tras evaluar las opciones de virtualización de interfaces gráficas (X11/Waylan
 en contenedores), se decidió mantener la GUI (\texttt{voctogui}) ejecutándose
 de forma \textbf{nativa} en el sistema anfitrión, conectándose al núcleo Docker
 a través del puerto 9999 expuesto. Esta arquitectura híbrida evita los graves
-problemas de latencia y aceleración por hardware (GPU/VAAPI) que surgen al
+problemas de latencia y aceleración por \textit{hardware} (GPU/VAAPI) que surgen al
 intentar virtualizar servidores gráficos en contenedores.
 
-Durante el desarrollo se experimentó con la aceleración por hardware VAAPI para
+Durante el desarrollo se experimentó con la aceleración por \textit{hardware} VAAPI para
 la compresión de previsualizaciones. El sistema intentaba delegar la codificación
 de vídeo a la GPU mediante el elemento \texttt{vaapipostproc}, que no estaba
 disponible en el entorno de pruebas. Se resolvió desactivando la directiva

@@ -11,7 +11,7 @@ latencia, calidad y escalabilidad.
 \subsection{Protocolos de distribución}
 
 Los protocolos de distribución gobiernan cómo la señal de programa viaja desde el
-mezclador hasta las plataformas de streaming y, desde ahí, hasta el reproductor del
+mezclador hasta las plataformas de \textit{streaming} y, desde ahí, hasta el reproductor del
 espectador. Dos de ellos, HLS y MPEG-DASH, delegan su transporte en HTTP~\cite{rfc9110_http},
 lo que les permite aprovechar la infraestructura CDN existente sin configuración
 específica de \textit{media}.
@@ -35,7 +35,7 @@ específica de \textit{media}.
   abierto ISO/IEC~23009-1~\cite{iso_mpegdash} equivalente a HLS pero sin dependencia de
   proveedor. Divide el contenido en segmentos HTTP con ajuste adaptativo de calidad
   (\ac{ABR}) y es empleado por YouTube, Netflix y Amazon Prime. Puede generarse con FFmpeg
-  como alternativa abierta a HLS en el pipeline de Voctomix.
+  como alternativa abierta a HLS en el \textit{pipeline} de Voctomix.
 
   \item \textbf{WebRTC (\textit{Web Real-Time Communication}):} estándar W3C para
   comunicación multimedia en tiempo real desde el navegador, con latencias de
@@ -67,12 +67,12 @@ audio codificados para su transporte hasta el reproductor final.
 
 \begin{itemize}
   \item \textbf{MPEG-TS (\textit{Transport Stream}, ISO~13818-1)}~\cite{iso_mpegts}:
-  estándar diseñado específicamente para transmisión broadcast con tolerancia a errores.
+  estándar diseñado específicamente para transmisión \textit{broadcast} con tolerancia a errores.
   Es el contenedor asociado a HLS, la emisión por satélite y la TDT. Su robustez frente
-  a pérdidas de paquetes lo hace el formato de referencia para distribución broadcast.
+  a pérdidas de paquetes lo hace el formato de referencia para distribución \textit{broadcast}.
 
   \item \textbf{MP4 / ISOBMFF (\textit{ISO Base Media File Format})}~\cite{iso_isobmff}:
-  contenedor de referencia para distribución por HTTP progresivo y streaming adaptativo
+  contenedor de referencia para distribución por HTTP progresivo y \textit{streaming} adaptativo
   (MPEG-DASH, HLS fragmentado). Es el formato de almacenamiento estándar para
   grabaciones y distribución bajo demanda.
 
@@ -93,7 +93,7 @@ audio codificados para su transporte hasta el reproductor final.
   \item \textbf{FLV (\textit{Flash Video}):} contenedor legado asociado a RTMP. Aunque
   técnicamente obsoleto como formato de reproducción desde la retirada de Adobe Flash en
   2020, sigue siendo el contenedor utilizado internamente en el protocolo RTMP para la
-  ingesta hacia plataformas de streaming en directo.
+  ingesta hacia plataformas de \textit{streaming} en directo.
 \end{itemize}
 
 \subsection{Códecs de distribución}
@@ -105,37 +105,37 @@ pérdida de calidad a cambio de viabilizar el transporte.
 \begin{itemize}
   \item \textbf{H.264 / AVC (\textit{Advanced Video Coding})\acused{AVC}}~\cite{itu_h264}:
   el códec de vídeo más extendido en la actualidad y la línea de base de la industria
-  del streaming. Introdujo herramientas avanzadas de predicción inter-fotograma (CABAC,
+  del \textit{streaming}. Introdujo herramientas avanzadas de predicción inter-fotograma (CABAC,
   transformada adaptativa 4$\times$4/8$\times$8) que establecieron en 2003 el estándar
   de eficiencia vigente durante dos décadas. H.264 se organiza en perfiles que
   determinan el conjunto de herramientas de codificación disponibles; en producción
   audiovisual se emplea principalmente el perfil \textit{High}, que activa CABAC y
   transformadas 8$\times$8 y es soportado por la totalidad de plataformas CDN y
-  decodificadores hardware desde 2010.
+  decodificadores \textit{hardware} desde 2010.
 
   Voctomix emplea H.264 como códec de salida por defecto a través de FFmpeg y la
-  biblioteca de software libre \texttt{libx264}. La señal de programa RAW~I420 que
+  biblioteca de \textit{software} libre \texttt{libx264}. La señal de programa RAW~I420 que
   emite voctocore es consumida directamente por FFmpeg para codificación en tiempo real,
   sin etapa de conversión de formato intermedia. La salida se encapsula en MPEG-TS para
   ingesta mediante RTMP o se segmenta en HLS para distribución adaptativa. La
   universalidad del perfil \textit{High} garantiza compatibilidad con YouTube Live,
   Twitch y cualquier CDN comercial sin configuración adicional, mientras que la
   velocidad de codificación de \texttt{libx264} permite realizar la codificación en
-  tiempo real sin aceleración hardware en CPU de gama media.
+  tiempo real sin aceleración \textit{hardware} en CPU de gama media.
 
   \item \textbf{H.265 / HEVC}\acused{HEVC} (\textit{High Efficiency Video Coding}): sucesor de
   H.264 que aproximadamente duplica la eficiencia de compresión, permitiendo la misma
   calidad perceptual a la mitad del bitrate~\cite{itu_h265}. Su codificación es 5--8
-  veces más lenta que H.264, lo que lo hace adecuado para streaming en tiempo real
-  cuando se dispone de aceleración hardware (\ac{GPU} o ASIC).
+  veces más lenta que H.264, lo que lo hace adecuado para \textit{streaming} en tiempo real
+  cuando se dispone de aceleración \textit{hardware} (\ac{GPU} o ASIC).
 
   \item \textbf{AV1}: códec abierto desarrollado por la Alliance for Open Media que
   mejora la eficiencia de H.265 en aproximadamente un 50\% adicional~\cite{chen2024_codec_comparison}.
   Su limitación histórica en producción en directo ha sido la velocidad de codificación:
   AV1 tarda entre 5 y 10 veces más que H.265 en encoders de referencia, aunque el
-  encoder SVT-AV1 (Intel/Netflix) permite ya codificación en tiempo real en software
+  encoder SVT-AV1 (Intel/Netflix) permite ya codificación en tiempo real en \textit{software}
   sobre CPU modernas de gama alta. YouTube, Netflix y Meta ya codifican gran parte
-  de su contenido en AV1 para streaming bajo demanda.
+  de su contenido en AV1 para \textit{streaming} bajo demanda.
 
   \item \textbf{H.266 / VVC (\textit{Versatile Video Coding})\acused{VVC}}~\cite{itu_h266}: sucesor
   de H.265 publicado en 2020 por el Joint Video Experts Team (JVET) de \ac{ITU-T} e
@@ -143,7 +143,7 @@ pérdida de calidad a cambio de viabilizar el transporte.
   la misma calidad perceptual a la mitad del bitrate~\cite{chen2024_codec_comparison}.
   Diseñado para contenidos 4K, 8K, vídeo de 360° y HDR. Su principal limitación actual
   es la velocidad de codificación, significativamente superior a la de H.265, lo que
-  restringe su uso en tiempo real a entornos con aceleración hardware especializada.
+  restringe su uso en tiempo real a entornos con aceleración \textit{hardware} especializada.
   Plataformas como Netflix y Disney$+$ lo evalúan para distribución OTT de próxima
   generación.
 
@@ -155,7 +155,7 @@ pérdida de calidad a cambio de viabilizar el transporte.
   reducidos.
 
   \item \textbf{AC-3 / AC-4 (Dolby):} AC-3 (\textit{Dolby Digital},
-  ATSC~A/52)~\cite{atsc_a52} es el códec de audio dominante en distribución broadcast
+  ATSC~A/52)~\cite{atsc_a52} es el códec de audio dominante en distribución \textit{broadcast}
   lineal: estándar en la norma ATSC de televisión digital en Norteamérica y ampliamente
   empleado en cable, satélite, DVD y Blu-ray. Soporta hasta 5.1 canales a tasas de
   entre 192 y 640~kbit/s y es soportado de forma nativa por FFmpeg para la generación

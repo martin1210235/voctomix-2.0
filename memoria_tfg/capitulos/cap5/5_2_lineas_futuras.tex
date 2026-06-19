@@ -9,7 +9,7 @@ para continuar el proyecto.
 
   \item \textbf{Integración de tarjetas de captura SDI y NDI.}
   Las pruebas de este trabajo se han realizado con fuentes de vídeo generadas por
-  software. En un entorno de producción profesional las cámaras se conectan mediante
+  \textit{software}. En un entorno de producción profesional las cámaras se conectan mediante
   tarjetas de captura SDI o a través del protocolo NDI sobre red. Incorporar estos
   modos de entrada en voctocore acercaría el sistema a los flujos de trabajo reales
   de televisión y producción en directo, eliminando la dependencia de conversores
@@ -17,8 +17,8 @@ para continuar el proyecto.
 
   \item \textbf{Escalabilidad: número máximo de cámaras soportadas.}
   Los experimentos realizados cubren hasta cuatro fuentes activas simultáneas. Sería
-  de interés estudiar el límite práctico del sistema en función del hardware disponible,
-  caracterizando el comportamiento del pipeline de GStreamer más allá de cuatro cámaras.
+  de interés estudiar el límite práctico del sistema en función del \textit{hardware} disponible,
+  caracterizando el comportamiento del \textit{pipeline} de GStreamer más allá de cuatro cámaras.
   Como referencia, el equipo utilizado en este trabajo (Intel Core i9-10900X,
   128\,GB RAM) tiene capacidad de cómputo suficiente para explorar configuraciones
   de 8 o más fuentes sin saturar el procesador.
@@ -27,7 +27,7 @@ para continuar el proyecto.
   Actualmente el sistema opera a 1080p25 en formato RAW I420. La industria avanza
   hacia resoluciones 4K (3840$\times$2160), frecuencias de 50 y 60 fps y color HDR.
   Adaptar la configuración de voctocore a estos parámetros implicaría validar la
-  capacidad del hardware para procesar el mayor ancho de banda resultante (cuatro
+  capacidad del \textit{hardware} para procesar el mayor ancho de banda resultante (cuatro
   veces el de 1080p para 4K) y ajustar el compositor de GStreamer para trabajar con
   los nuevos espacios de color.
 
@@ -56,7 +56,7 @@ para continuar el proyecto.
 
   \item \textbf{Mejora de la interfaz gráfica.}
   La interfaz actual de voctogui, aunque funcional, requiere reinicios del sistema
-  para aplicar cambios en los assets (logos, overlays, vídeos). Una mejora
+  para aplicar cambios en los assets (logos, \textit{overlays}, vídeos). Una mejora
   relevante sería añadir recarga en caliente de recursos sin interrumpir la
   emisión, junto con funcionalidades como arrastrar y soltar para reordenar
   fuentes y una visualización más dinámica e intuitiva del estado de la
@@ -72,7 +72,7 @@ para continuar el proyecto.
   \item \textbf{Subtitulación automática en tiempo real.}
   La arquitectura de eventos de la telemetría facilita integrar un módulo de
   reconocimiento de voz que genere subtítulos automáticos y los publique como
-  overlay de texto dinámico. El flujo conectaría el audio del programa con un
+  \textit{overlay} de texto dinámico. El flujo conectaría el audio del programa con un
   modelo de transcripción local como Whisper, alimentando el mecanismo de
   rotulación ya existente y añadiendo accesibilidad a las retransmisiones sin
   intervención manual del operador.
