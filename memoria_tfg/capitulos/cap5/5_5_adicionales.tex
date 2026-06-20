@@ -110,8 +110,7 @@ penaliza los tiempos de recuperación sucesivos.
     \end{axis}
   \end{tikzpicture}
   \caption{Tiempo de recuperación del contenedor cam1 en cada iteración
-           en Docker~Compose
-           (el eje Y empieza en 510\,ms para mostrar la variación entre mediciones).}
+           en Docker~Compose.}
   \label{fig:resiliencia_docker}
 \end{figure}
 
@@ -135,11 +134,14 @@ penaliza los tiempos de recuperación sucesivos.
     \end{axis}
   \end{tikzpicture}
   \caption{Tiempo de recuperación del contenedor cam1 en cada iteración
-           en Kubernetes (Minikube)
-           (el eje Y empieza en 545\,ms para mostrar la variación entre mediciones).}
+           en Kubernetes (Minikube).}
   \label{fig:resiliencia_k8s}
 \end{figure}
 
+Los ejes Y de las figuras~\ref{fig:resiliencia_docker}
+y~\ref{fig:resiliencia_k8s} parten de 510\,ms y 545\,ms respectivamente para
+hacer visible la pequeña dispersión entre iteraciones; en términos absolutos
+todos los tiempos se concentran en una banda de apenas 20\,ms.
 En Docker~Compose el sistema se recuperó siempre en torno a 520\,ms, con una
 variación máxima de 10\,ms entre iteraciones. En Kubernetes la recuperación fue
 algo más lenta, con una mediana de 566\,ms y una variación de 21\,ms, lo que
