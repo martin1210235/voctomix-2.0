@@ -7,10 +7,9 @@
 
 \normalsize{Este anexo reúne en un solo lugar los ficheros principales del proyecto, para
 consultarlos sin necesidad de acceder al repositorio. C2 compara la estructura de directorios
-antes y después del desarrollo; C3 indica qué ficheros se reproducen y dónde encontrarlos;
-C4 muestra la interfaz gráfica original; C5 recoge los ficheros de configuración INI; C6
-los ficheros de infraestructura Docker; C7 los manifiestos de Kubernetes, y C8 las
-herramientas con las que se obtuvieron los datos del
+antes y después del desarrollo; C3 muestra la interfaz gráfica original; C4 recoge los
+ficheros de configuración INI; C5 los ficheros de infraestructura Docker; C6 los manifiestos
+de Kubernetes, y C7 las herramientas con las que se obtuvieron los datos del
 Capítulo~\ref{chap:pruebas}.}
 \vspace{0.4cm}
 
@@ -153,42 +152,8 @@ voctomix/
 
 \vspace{0.5cm}
 
-% ── C3. Módulos desarrollados ────────────────────────────────────────
-\Large{\textsc{\textcolor{nar}{C3. Módulos incorporados en este trabajo}}}
-\vspace{0.2cm}
-
-\normalsize{La tabla siguiente indica qué ficheros se reproducen en este anexo y en qué sección
-encontrarlos.}
-\vspace{0.2cm}
-
-\begin{table}[H]
-  \centering
-  \small
-  \begin{tabular}{|l|c|}
-    \hline
-    \textbf{Fichero} & \textbf{Sección} \\
-    \hline
-    \texttt{voctocore/default-config.ini}               & \S{}C5 \\
-    \texttt{voctogui/default-config.ini}                & \S{}C5 \\
-    \texttt{Dockerfile}                                 & \S{}C6 \\
-    \texttt{docker-compose.yml}                         & \S{}C6 \\
-    \texttt{k8s/configmap.yaml}                         & \S{}C7 \\
-    \texttt{k8s/pvc.yaml}                               & \S{}C7 \\
-    \texttt{k8s/rabbitmq.yaml}                          & \S{}C7 \\
-    \texttt{k8s/studio.yaml}                            & \S{}C7 \\
-    \texttt{tools/measure\_composite\_latency.py}       & \S{}C8 \\
-    \texttt{tools/measure\_resilience.py}               & \S{}C8 \\
-    \texttt{tools/analyze\_stability.py}                & \S{}C8 \\
-    \hline
-  \end{tabular}
-  \caption{Ficheros reproducidos en este anexo y sección donde encontrarlos.}
-  \label{tab:indice_anexo}
-\end{table}
-
-\vspace{0.4cm}
-
-% ── C4. Evolución de la interfaz gráfica ────────────────────────────
-\Large{\textsc{\textcolor{nar}{C4. Evolución de la interfaz gráfica}}}
+% ── C3. Evolución de la interfaz gráfica ────────────────────────────
+\Large{\textsc{\textcolor{nar}{C3. Evolución de la interfaz gráfica}}}
 \vspace{0.2cm}
 
 \normalsize{La figura siguiente muestra la interfaz original, tal como aparecía al clonar
@@ -206,8 +171,8 @@ los cambios realizados.}
 
 \vspace{0.4cm}
 
-% ── C5. Ficheros de configuración ────────────────────────────────────
-\Large{\textsc{\textcolor{nar}{C5. Ficheros de configuración del sistema}}}
+% ── C4. Ficheros de configuración ────────────────────────────────────
+\Large{\textsc{\textcolor{nar}{C4. Ficheros de configuración del sistema}}}
 \vspace{0.2cm}
 
 \lstdefinelanguage{iniconf}{%
@@ -479,8 +444,8 @@ trans.key     = space
 \clearpage
 \vspace{0.4cm}
 
-% ── C6. Ficheros de infraestructura Docker ───────────────────────────
-\Large{\textsc{\textcolor{nar}{C6. Ficheros de infraestructura Docker}}}
+% ── C5. Ficheros de infraestructura Docker ───────────────────────────
+\Large{\textsc{\textcolor{nar}{C5. Ficheros de infraestructura Docker}}}
 \vspace{0.2cm}
 
 \lstdefinelanguage{dockerfile}{%
@@ -823,8 +788,8 @@ services:
 \clearpage
 \vspace{0.4cm}
 
-% ── C7. Manifiestos Kubernetes ───────────────────────────────────────
-\Large{\textsc{\textcolor{nar}{C7. Manifiestos de despliegue en Kubernetes}}}
+% ── C6. Manifiestos Kubernetes ───────────────────────────────────────
+\Large{\textsc{\textcolor{nar}{C6. Manifiestos de despliegue en Kubernetes}}}
 \vspace{0.2cm}
 
 \normalsize{El despliegue en Kubernetes usa cuatro ficheros. \texttt{configmap.yaml} guarda
@@ -1241,8 +1206,8 @@ spec:
 \clearpage
 \vspace{0.4cm}
 
-% ── C8. Herramientas de medición experimental ────────────────────────
-\Large{\textsc{\textcolor{nar}{C8. Herramientas de medición experimental}}}
+% ── C7. Herramientas de medición experimental ────────────────────────
+\Large{\textsc{\textcolor{nar}{C7. Herramientas de medición experimental}}}
 \vspace{0.2cm}
 
 \lstdefinelanguage{python3}{%
