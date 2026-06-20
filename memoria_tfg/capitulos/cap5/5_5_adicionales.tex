@@ -81,22 +81,21 @@ independientemente del entorno de despliegue utilizado.
 \section{Resiliencia y recuperación}
 \label{sec:resiliencia}
 
-Se midió cuánto tarda el sistema en recuperarse de forma autónoma cuando una
-cámara falla. Para ello se terminó el proceso principal del contenedor cam1
-mediante \texttt{kill -9}, simulando un fallo real, y se cronometró el tiempo
-hasta que el sistema lo reinició y lo declaró operativo de nuevo.
+Se midió cuánto tarda el sistema en recuperarse cuando falla una cámara. Para
+ello se mató el proceso principal del contenedor cam1 con \texttt{kill -9},
+simulando un fallo real, y se cronometró el tiempo hasta que el contenedor
+volvió a estar operativo.
 
-En Docker~Compose el demonio de contenedores reinicia el proceso de forma
-inmediata sin penalización, por lo que fue posible realizar las 10 iteraciones
-de forma consecutiva. En Kubernetes, en cambio, fue necesario esperar
-12 minutos entre cada \textit{kill}. El motivo es el mecanismo
-\textit{CrashLoopBackOff}: cuando Kubernetes detecta que un contenedor se
-reinicia con demasiada frecuencia, impone esperas exponenciales crecientes
-(de 10 a 300 segundos) para evitar que un proceso defectuoso consuma recursos
-indefinidamente. Este contador se resetea solo cuando el contenedor lleva más
-de 10 minutos en ejecución estable, de modo que respetar esa ventana entre
-mediciones garantiza que cada cronometrado refleja el tiempo de recuperación
-real, sin penalización acumulada. Se realizaron 5 iteraciones en Kubernetes.
+En Docker~Compose la recuperación es inmediata y sin penalización, por lo que
+las 10 iteraciones se realizaron de forma consecutiva. En Kubernetes fue
+necesario esperar 12 minutos entre cada \textit{kill}. Esto se debe al
+mecanismo \textit{CrashLoopBackOff}: si un contenedor se reinicia demasiadas
+veces seguidas, Kubernetes lo penaliza con esperas cada vez más largas para
+evitar que un proceso con fallos consuma recursos sin control. El contador de
+penalización se resetea después de 10 minutos de funcionamiento estable, así
+que esperar 12 minutos entre mediciones garantiza que cada cronometrado refleja
+el tiempo real de recuperación, sin distorsión acumulada. Se realizaron
+10 iteraciones en Kubernetes.
 
 \begin{figure}[H]
   \centering
@@ -127,18 +126,18 @@ real, sin penalización acumulada. Se realizaron 5 iteraciones en Kubernetes.
   \begin{tikzpicture}
     \begin{axis}[
       ybar,
-      width=9cm, height=5.5cm,
+      width=12cm, height=5.5cm,
       xlabel={Iteración},
       ylabel={Tiempo de recuperación (ms)},
-      xtick={1,2,3,4,5},
+      xtick={1,2,3,4,5,6,7,8,9,10},
       xticklabel style={font=\small},
-      xmin=0.3, xmax=5.7,
-      ymin=545, ymax=585,
+      xmin=0.3, xmax=10.7,
+      ymin=545, ymax=595,
       ymajorgrids=true, grid style=dashed,
-      bar width=0.8cm,
+      bar width=0.6cm,
     ]
       \addplot[fill=orange!30, draw=orange!70]
-        coordinates {(1,568)(2,555)(3,563)(4,566)(5,576)};
+        coordinates {(1,568)(2,555)(3,563)(4,566)(5,576)(6,563)(7,574)(8,572)(9,584)(10,574)};
     \end{axis}
   \end{tikzpicture}
   \caption{Tiempo de recuperación del contenedor cam1 en cada iteración
@@ -147,17 +146,17 @@ real, sin penalización acumulada. Se realizaron 5 iteraciones en Kubernetes.
 \end{figure}
 
 Los ejes Y de las figuras~\ref{fig:resiliencia_docker}
-y~\ref{fig:resiliencia_k8s} parten de 510\,ms y 545\,ms respectivamente para
-hacer visible la pequeña dispersión entre iteraciones; en términos absolutos
-todos los tiempos se concentran en una banda de apenas 20\,ms.
-En Docker~Compose el sistema se recuperó siempre en torno a 520\,ms, con una
-variación máxima de 10\,ms entre iteraciones. En Kubernetes la recuperación fue
-algo más lenta, con una mediana de 566\,ms y una variación de 21\,ms, lo que
-supone un incremento del 9\,\% respecto a Docker. Esta diferencia se debe a que
-Kubernetes no detecta el fallo del contenedor de forma inmediata, sino que lo
-hace a través de ciclos de supervisión del \textit{kubelet}
-que añaden unos 40--50\,ms de latencia. En ambos casos el resultado es positivo
-para una retransmisión en directo: si una cámara cae en medio de una emisión,
-el sistema la devuelve automáticamente en menos de un segundo, sin intervención
-del operador. El espectador difícilmente lo percibiría, ya que el mezclador
-puede seguir emitiendo con las otras cámaras mientras tanto.
+y~\ref{fig:resiliencia_k8s} no empiezan en cero: parten de 510\,ms y 545\,ms
+respectivamente para que la pequeña variación entre iteraciones sea visible;
+en términos absolutos todos los valores caen en una banda de 29\,ms.
+En Docker~Compose la recuperación fue siempre de unos 520\,ms, con apenas
+10\,ms de variación entre las 10 iteraciones. En Kubernetes fue algo más
+lento: la mediana es de 570\,ms y la variación de 29\,ms, un 10\,\% por encima
+de Docker. Esto se debe a que Kubernetes no detecta el fallo en el momento
+exacto en que ocurre, sino a través de ciclos de supervisión del
+\textit{kubelet} que añaden entre 40 y 50\,ms de latencia.
+En cualquier caso el resultado es bueno para una retransmisión en directo:
+si una cámara cae en plena emisión, el sistema la recupera solo en menos de
+un segundo, sin que el operador tenga que hacer nada. El mezclador puede
+seguir emitiendo con las demás cámaras durante ese tiempo, por lo que el
+espectador prácticamente no lo notaría.
