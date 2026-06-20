@@ -7,7 +7,7 @@ simultánea por dos puertos:
 
 \begin{itemize}
   \item \textbf{Puerto 11000}: salida de la mezcla en bruto (vídeo sin comprimir en
-        formato I420), utilizada principalmente por encoders externos como FFmpeg para
+        formato I420), utilizada principalmente por \textit{encoders} externos como FFmpeg para
         grabación local. La interfaz gráfica solo se conecta aquí cuando las
         previsualizaciones están desactivadas; en la configuración predeterminada
         utiliza el puerto~12000 (JPEG comprimido). Esta salida refleja siempre el
@@ -18,7 +18,7 @@ simultánea por dos puertos:
         correspondiente en lugar de la mezcla real.
 \end{itemize}
 
-El encoder de salida (típicamente FFmpeg) se conecta al puerto 15000 y produce el
+El \textit{encoder} de salida (típicamente FFmpeg) se conecta al puerto 15000 y produce el
 flujo H.264/AAC que se ingesta en la plataforma de distribución mediante los protocolos
 \acs{RTMP} o \acs{SRT}, ampliamente soportados por las plataformas de \textit{streaming} en directo. La separación entre los puertos 11000 y
 15000 garantiza que la grabación local refleje siempre la mezcla real del realizador,

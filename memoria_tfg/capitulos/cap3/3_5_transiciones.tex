@@ -2,7 +2,7 @@
 \label{sec:transiciones}
 
 Las transiciones controlan cómo se realiza el cambio de una fuente o \textit{composite} a otro
-en el flujo de programa. Voctomix 2.0 ofrece tres modos de transición que el realizador
+en el flujo de programa. Voctomix~2.0 ofrece tres modos de transición que el realizador
 activa desde la barra de herramientas de la interfaz gráfica.
 
 \subsection{Cut (corte instantáneo)}
@@ -21,7 +21,7 @@ transparencia durante un tiempo configurable (por defecto 750~ms, definido en la
 sección \texttt{[transitions]} del fichero de configuración). La transición se implementa
 modificando progresivamente los valores de los pads del compositor de GStreamer.
 
-Voctomix 2.0 define múltiples trayectorias de transición según el estado de origen y
+Voctomix~2.0 define múltiples trayectorias de transición según el estado de origen y
 destino (por ejemplo, de \texttt{fs} a \texttt{pip} la transición pasa por el \textit{composite}
 intermedio \texttt{fs-pip} antes de llegar a \texttt{pip}), garantizando que la
 animación sea visualmente coherente independientemente del cambio solicitado.
