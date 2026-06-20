@@ -6,7 +6,7 @@ El punto de partida fue el repositorio oficial de Voctomix~\cite{voctomix_github
 alojado en GitHub bajo la organización \texttt{voc}, a partir del cual se realizó el
 clon inicial sobre el que se aplicaron todas las extensiones descritas en este capítulo.
 El trabajo comenzó con una fase de exploración sobre Voctomix~1.0, que permitió
-familiarizarse con el \textit{pipeline} GStreamer, la comunicación cliente-servidor y
+familiarizarse con el \textit{pipeline} GStreamer~\cite{gstreamer_docs}, la comunicación cliente-servidor y
 el funcionamiento de los \textit{composites}. La evolución completa de la estructura del
 repositorio, desde el estado inicial hasta el estado final de Voctomix~2.0, se
 documenta en el Anexo~C.
@@ -22,7 +22,7 @@ La tabla~\ref{tab:puertos_sistema} recoge los puertos TCP/UDP del sistema y su f
     \textbf{Puerto} & \textbf{Protocolo} & \textbf{Función} \\
     \hline
     9998         & UDP  & Sincronización de reloj de red GStreamer \\
-    9999         & TCP  & Protocolo de control (\acs{GUI}, scripts, telemetría) \\
+    9999         & TCP  & Protocolo de control (GUI, scripts, telemetría) \\
     10000--10003 & TCP  & Entradas de cámara 1--4 \\
     10004        & TCP  & Entrada fuente break (vídeo de pausa) \\
     10005        & TCP  & Entrada fuente intro (vídeo introductorio) \\
@@ -67,7 +67,7 @@ los parámetros globales del sistema: vídeo a 1920$\times$1080 píxeles en form
 a 25~fotogramas por segundo, y audio PCM S16LE a 48~kHz estéreo. Todas las fuentes de
 señal deben ajustarse a estos parámetros para garantizar la compatibilidad con el
 \textit{pipeline}. El contenido íntegro de ambos ficheros de configuración se reproduce en
-la sección~C4 del Anexo~C.
+la sección~\ref{sec:anexoC4} del Anexo~C.
 
 El puerto~9999 expone el protocolo de control mediante comandos de texto plano como
 \texttt{set\_video\_a cam2} o \texttt{set\_composite\_mode pip}. Cada cambio de

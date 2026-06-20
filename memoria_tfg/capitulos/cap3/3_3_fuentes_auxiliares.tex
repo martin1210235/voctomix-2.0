@@ -8,7 +8,7 @@ independiente para música de fondo.
 
 \subsection{Fuente break e intro}
 
-\texttt{break} e \texttt{intro} son fuentes de vídeo pregrabadas que voctocore trata
+\texttt{break} e \texttt{intro} son fuentes de vídeo pregrabadas que \texttt{voctocore} trata
 como dos entradas adicionales en los puertos 10004 y 10005. Al no aportar información
 relevante durante la producción, se ocultan en la interfaz gráfica sin perder
 funcionalidad en el núcleo.
@@ -18,7 +18,7 @@ funcionalidad en el núcleo.
         como pantalla animada durante los descansos. El realizador puede seleccionarlo
         directamente en el mezclador, al igual que cualquier cámara.
   \item \textbf{intro}: vídeo de reproducción única. Al asignar intro a cualquier
-        canal del mezclador (A o B), voctogui detiene el proceso FFmpeg que alimenta
+        canal del mezclador (A o B), \texttt{voctogui} detiene el proceso FFmpeg que alimenta
         esa entrada y lanza uno nuevo que reproduce el vídeo desde el principio sin
         bucle. Una vez que la nueva señal está estabilizada, la interfaz envía el
         comando de corte al núcleo para que la intro comience a emitirse desde el
@@ -32,7 +32,7 @@ para inyectar música de fondo durante los estados de pausa o fuera de emisión.
 entrada acepta un flujo Matroska de sólo audio (PCM S16LE, 48~kHz, estéreo) y su
 nivel de salida puede controlarse desde el protocolo de control.
 
-\subsection{\textit{Stream Blanker}: estados de emisión}
+\subsection{\textit{stream blanker}: estados de emisión}
 
 El \textit{stream blanker} es el mecanismo que permite interrumpir la señal de programa hacia el
 exterior sin interrumpir el flujo de trabajo interno del realizador. Se implementa en
@@ -40,10 +40,10 @@ exterior sin interrumpir el flujo de trabajo interno del realizador. Se implemen
 entre la mezcla y el puerto de salida de \textit{streaming} (puerto 15000).
 
 El sistema define tres estados de emisión, controlables desde la barra de herramientas
-de voctogui:
+de \texttt{voctogui}:
 
 \begin{itemize}
-  \item \textbf{LIVE:} se emite la mezcla activa producida por voctocore. El realizador
+  \item \textbf{LIVE:} se emite la mezcla activa producida por \texttt{voctocore}. El realizador
         controla en todo momento lo que ve el espectador.
   \item \textbf{PAUSE:} se emite el vídeo de pausa procedente del puerto 17000,
         acompañado de la música de fondo del puerto 18000.

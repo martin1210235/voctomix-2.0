@@ -10,13 +10,13 @@ la emisión.
 \subsection{Arquitectura del servicio}
 
 El servicio (\texttt{telemetry\_service.py}) es un proceso independiente que se conecta
-a voctocore en el puerto~9999 como un cliente TCP ordinario y consulta su estado cada
-segundo. Sin embargo, voctocore no tiene acceso a la información gestionada por la
+a \texttt{voctocore} en el puerto~9999 como un cliente TCP ordinario y consulta su estado cada
+segundo. Sin embargo, \texttt{voctocore} no tiene acceso a la información gestionada por la
 interfaz gráfica: qué fuentes están en \textit{preview}, qué logos están activos o el contenido
 de los rótulos.
 
 Para capturar también esta información, el módulo \texttt{gui\_state\_exporter.py} de
-voctogui exporta el estado completo de la interfaz cada segundo. En el escenario de un
+\texttt{voctogui} exporta el estado completo de la interfaz cada segundo. En el escenario de un
 PC lo escribe en un fichero local; en escenarios en red (Docker o dos PCs) lo envía al
 servicio mediante HTTP POST al puerto~8080.
 
@@ -113,7 +113,7 @@ El servicio mantiene una conexión TCP persistente al servidor y reconecta autom
 ante cualquier caída de red, sin bloquear el procesamiento de eventos. El \textit{exchange}
 es de tipo \textit{fanout} (difusión a todos los suscriptores): cualquier consumidor externo
 que se suscriba recibe todos los eventos sin necesidad de modificar el código del servicio
-de telemetría ni el de voctocore. En el marco del proyecto europeo CyberNEMO (UPM),
+de telemetría ni el de \texttt{voctocore}. En el marco del proyecto europeo CyberNEMO (UPM),
 el servidor RabbitMQ de Voctomix~2.0 fue integrado en el clúster Kubernetes, donde la
 cola \texttt{vproduction-uc-media} recibió los eventos del mezclador en tiempo real.
 
