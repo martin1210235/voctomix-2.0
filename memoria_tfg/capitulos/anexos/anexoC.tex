@@ -11,8 +11,9 @@ que se remonta a 2016. Este anexo documenta la evolución del repositorio a lo l
 trabajo: la sección~C2 compara la estructura de directorios antes y después del desarrollo,
 la sección~C3 detalla los módulos incorporados, la sección~C4 muestra la evolución de
 la interfaz gráfica, la sección~C5 reproduce los ficheros de configuración INI del
-sistema, la sección~C6 los ficheros de infraestructura Docker y la
-sección~C7 los manifiestos de despliegue en Kubernetes.}
+sistema, la sección~C6 los ficheros de infraestructura Docker, la
+sección~C7 los manifiestos de despliegue en Kubernetes y la sección~C8 las herramientas
+de medición experimental empleadas para obtener los resultados del Capítulo~\ref{chap:pruebas}.}
 \vspace{0.4cm}
 
 % ── C2. Comparativa de estructura ───────────────────────────────────
@@ -218,6 +219,15 @@ voctomix/
     \texttt{Makefile}
       & Automatización de tareas de desarrollo y despliegue
       & Cap.~\ref{chap:despliegue} \\
+    \texttt{tools/measure\_composite\_latency.py}
+      & Medición de la latencia de conmutación y transición de composición
+      & §C8 \\
+    \texttt{tools/measure\_resilience.py}
+      & Medición del tiempo de recuperación ante fallo de contenedor
+      & §C8 \\
+    \texttt{tools/analyze\_stability.py}
+      & Generación de gráficas de estabilidad a partir de los datos de telemetría
+      & §C8 \\
     \hline
   \end{tabularx}
   \caption{Módulos y ficheros incorporados en Voctomix~2.0.}
@@ -1178,4 +1188,350 @@ spec:
       targetPort: 14000
       nodePort: 31400
     # preview-1 a preview-5: mismo patron, puertos 14001-14005 / 31401-31405
+\end{lstlisting}
+
+\clearpage
+\vspace{0.4cm}
+
+% ── C8. Herramientas de medición experimental ────────────────────────
+\Large{\textsc{\textcolor{nar}{C8. Herramientas de medición experimental}}}
+\vspace{0.2cm}
+
+\lstdefinelanguage{python3}{%
+  keywords={def,class,import,from,return,if,else,elif,while,for,in,
+            and,or,not,True,False,None,break,continue,pass,with,as,
+            try,except,raise,lambda,global,del},
+  keywordstyle=\bfseries\color{nar},
+  morecomment=[l]{\#},
+  commentstyle=\color{gray!60}\itshape,
+  sensitive=true,
+}
+
+\normalsize{Los tres scripts que generan los resultados experimentales del
+Capítulo~\ref{chap:pruebas} se reproducen íntegramente a continuación.
+\texttt{measure\_composite\_latency.py} conecta al puerto~9999 de \texttt{voctocore}
+mediante TCP, envía órdenes de transición entre los cuatro modos de composición y
+cronometra con \texttt{time.monotonic()} el tiempo hasta recibir la confirmación del
+cambio aplicado.
+\texttt{measure\_resilience.py} fuerza el fallo del contenedor seleccionado mediante
+\texttt{docker exec kill -9 1}, que termina el proceso raíz del contenedor de forma
+inmediata, y mide el tiempo hasta que \texttt{docker inspect} declara el estado
+\texttt{running healthy}; este mecanismo es equivalente a un fallo real, a diferencia
+de \texttt{docker stop}, que enviaría SIGTERM y evitaría que la política
+\texttt{restart: on-failure} se activase.
+\texttt{analyze\_stability.py} lee los ficheros JSONL de telemetría generados por el
+sistema, extrae los eventos de tipo \texttt{STATE} con sus métricas de CPU y RAM y
+genera las gráficas de estabilidad a largo plazo incluidas en el Capítulo~\ref{chap:pruebas}.}
+\vspace{0.3cm}
+
+\noindent\textbf{\small tools/measure\_composite\_latency.py}
+\vspace{0.1cm}
+
+\begin{lstlisting}[style=codefile, language=python3]
+#!/usr/bin/env python3
+
+import socket
+import time
+import argparse
+import json
+import numpy as np
+from datetime import datetime
+
+MODES = ["fs", "sbs", "pip", "lec"]
+SRC_A = "cam1"
+SRC_B = "cam2"
+
+
+def send_recv(sock, cmd, expected_prefix, timeout=3.0):
+    sock.sendall((cmd + "\n").encode())
+    buf = ""
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        try:
+            chunk = sock.recv(4096).decode(errors="replace")
+            buf += chunk
+            for line in buf.split("\n"):
+                line = line.strip()
+                if line.startswith(expected_prefix):
+                    return line
+        except socket.timeout:
+            continue
+    return None
+
+
+def measure(host, port, n_measurements):
+    results = []
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(0.5)
+    sock.connect((host, port))
+
+    for i in range(n_measurements):
+        mode = MODES[i % len(MODES)]
+        cmd = f"transition {mode}({SRC_A},{SRC_B})"
+        expected = f"composite {mode}"
+
+        t0 = time.monotonic()
+        response = send_recv(sock, cmd, expected)
+        t1 = time.monotonic()
+
+        if response is None:
+            continue
+
+        ms = (t1 - t0) * 1000
+        results.append({"mode": mode, "latency_ms": round(ms, 3)})
+        time.sleep(0.15)
+
+    sock.close()
+    return results
+
+
+def stats(results):
+    if not results:
+        return {}
+    vals = [r["latency_ms"] for r in results]
+    return {
+        "n": len(vals),
+        "min_ms":    round(float(np.min(vals)), 2),
+        "median_ms": round(float(np.median(vals)), 2),
+        "mean_ms":   round(float(np.mean(vals)), 2),
+        "max_ms":    round(float(np.max(vals)), 2),
+        "std_ms":    round(float(np.std(vals)), 2),
+        "p95_ms":    round(float(np.percentile(vals, 95)), 2),
+    }
+
+
+def histogram(results, bins=None):
+    if bins is None:
+        bins = [1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 6.0, 8.0]
+    vals = [r["latency_ms"] for r in results]
+    hist = {}
+    for lo, hi in zip(bins[:-1], bins[1:]):
+        hist[f"{lo}-{hi}"] = sum(1 for v in vals if lo <= v < hi)
+    return hist
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--host",  default="localhost")
+    parser.add_argument("--port",  type=int, default=9999)
+    parser.add_argument("--n",     type=int, default=32)
+    parser.add_argument("--label", default="docker")
+    args = parser.parse_args()
+
+    results = measure(args.host, args.port, args.n)
+    s = stats(results)
+    h = histogram(results)
+
+    output = {
+        "label":     args.label,
+        "timestamp": datetime.now().isoformat(),
+        "host":      args.host,
+        "port":      args.port,
+        "stats":     s,
+        "histogram": h,
+        "raw":       results,
+    }
+    out_path = f"sessions/composite_latency_{args.label}.json"
+    with open(out_path, "w") as f:
+        json.dump(output, f, indent=2)
+
+
+if __name__ == "__main__":
+    main()
+\end{lstlisting}
+
+\clearpage
+\vspace{0.3cm}
+\noindent\textbf{\small tools/measure\_resilience.py}
+\vspace{0.1cm}
+
+\begin{lstlisting}[style=codefile, language=python3]
+#!/usr/bin/env python3
+
+import subprocess
+import time
+import json
+import argparse
+import numpy as np
+from datetime import datetime
+
+
+def container_is_healthy(name):
+    out = subprocess.run(
+        ["docker", "inspect", "--format",
+         "{{.State.Status}} {{.State.Health.Status}}", name],
+        capture_output=True, text=True
+    ).stdout.strip()
+    return out == "running healthy"
+
+
+def measure_recovery(container, n):
+    results = []
+
+    for i in range(n):
+        # Kill PID 1 inside the container to simulate a real crash.
+        # docker stop would send SIGTERM and skip the restart policy.
+        subprocess.run(["docker", "exec", container, "kill", "-9", "1"],
+                       capture_output=True)
+        t_stop = time.monotonic()
+
+        deadline = t_stop + 60
+        recovered = False
+        while time.monotonic() < deadline:
+            time.sleep(0.5)
+            if container_is_healthy(container):
+                t_healthy = time.monotonic()
+                recovered = True
+                break
+
+        if not recovered:
+            continue
+
+        ms = round((t_healthy - t_stop) * 1000)
+        results.append(ms)
+        time.sleep(2)
+
+    return results
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--container", default="cam1")
+    parser.add_argument("--n", type=int, default=10)
+    args = parser.parse_args()
+
+    results = measure_recovery(args.container, args.n)
+
+    if not results:
+        return
+
+    vals = np.array(results)
+    output = {
+        "container": args.container,
+        "timestamp": datetime.now().isoformat(),
+        "stats": {
+            "n":         int(len(vals)),
+            "min_ms":    int(np.min(vals)),
+            "median_ms": float(np.median(vals)),
+            "mean_ms":   float(np.mean(vals)),
+            "max_ms":    int(np.max(vals)),
+            "p95_ms":    float(np.percentile(vals, 95)),
+        },
+        "raw_ms": list(map(int, vals)),
+    }
+    out_path = f"sessions/resilience_{args.container}.json"
+    with open(out_path, "w") as f:
+        json.dump(output, f, indent=2)
+
+
+if __name__ == "__main__":
+    main()
+\end{lstlisting}
+
+\clearpage
+\vspace{0.3cm}
+\noindent\textbf{\small tools/analyze\_stability.py}
+\vspace{0.1cm}
+
+\begin{lstlisting}[style=codefile, language=python3]
+#!/usr/bin/env python3
+
+import sys
+import json
+import os
+import argparse
+from datetime import datetime
+
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
+import numpy as np
+
+
+DEFAULT_OUTPUT = os.path.join(
+    os.path.dirname(__file__), "..", "memoria_tfg", "figuras",
+    "estabilidad_30min.png"
+)
+
+
+def parse_jsonl(path, max_minutes=None):
+    timestamps, cpu, ram = [], [], []
+    t0 = None
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                obj = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if obj.get("type") != "state":
+                continue
+            ts_str = obj.get("timestamp", "")
+            health  = obj.get("system_health", {})
+            cpu_val = health.get("cpu_usage_percent")
+            ram_val = health.get("ram_usage_percent")
+            if ts_str and cpu_val is not None and ram_val is not None:
+                try:
+                    ts = datetime.fromisoformat(ts_str)
+                    if t0 is None:
+                        t0 = ts
+                    elapsed_min = (ts - t0).total_seconds() / 60.0
+                    if max_minutes is not None and elapsed_min > max_minutes:
+                        break
+                    timestamps.append(ts)
+                    cpu.append(float(cpu_val))
+                    ram.append(float(ram_val))
+                except ValueError:
+                    continue
+    return timestamps, cpu, ram
+
+
+def to_minutes(timestamps):
+    if not timestamps:
+        return []
+    t0 = timestamps[0]
+    return [(t - t0).total_seconds() / 60.0 for t in timestamps]
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("session", help="Path to JSONL session file")
+    parser.add_argument("--output",      default=None)
+    parser.add_argument("--max-minutes", type=float, default=None)
+    parser.add_argument("--label",       default="Docker Compose")
+    args = parser.parse_args()
+
+    out_path = os.path.abspath(
+        args.output if args.output else DEFAULT_OUTPUT
+    )
+
+    timestamps, cpu, ram = parse_jsonl(args.session, args.max_minutes)
+    if not timestamps:
+        sys.exit(1)
+
+    minutes = to_minutes(timestamps)
+
+    fig, ax = plt.subplots(figsize=(13 / 2.54, 6 / 2.54))
+    ax.plot(minutes, cpu, color="#CC5500", linewidth=1.2, label="CPU (%)")
+    ax.plot(minutes, ram, color="#1a6faf", linewidth=1.2, label="RAM (%)")
+    ax.set_xlabel("Tiempo transcurrido (min)", fontsize=9)
+    ax.set_ylabel("Uso del sistema (%)", fontsize=9)
+    ax.set_xlim(0, max(minutes) * 1.01)
+    ax.set_ylim(0, 85)
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(5))
+    ax.yaxis.set_major_locator(ticker.MultipleLocator(10))
+    ax.grid(True, linestyle="--", linewidth=0.5, alpha=0.7)
+    ax.legend(fontsize=8, loc="upper right")
+    ax.tick_params(labelsize=8)
+    fig.tight_layout(pad=0.4)
+
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    fig.savefig(out_path, dpi=300, bbox_inches="tight")
+
+
+if __name__ == "__main__":
+    main()
 \end{lstlisting}
