@@ -2,25 +2,25 @@
 
 La producción audiovisual en directo ha experimentado en los últimos años una profunda
 transformación, impulsada por la democratización del \textit{hardware} de bajo coste y el
-crecimiento exponencial del \textit{streaming} (transmisión en flujo) en Internet. Eventos técnicos de referencia como
+crecimiento exponencial del \textit{streaming} (transmisión en flujo) en Internet~\cite{ericsson_mobility_2024}. Eventos técnicos de referencia como
 el Chaos Communication Congress (CCC)\acused{CCC}, organizado por el Chaos Computer Club en Alemania,
 han puesto de manifiesto la necesidad de disponer de herramientas de realización
 profesional que sean al mismo tiempo económicas, fiables y auditables.
 
 En este contexto surge Voctomix~\cite{voctomix_github,delRio2025ugc}, desarrollado por el equipo C3VOC (\textit{Chaos Communication
 Congress Video Operations Crew}). Frente a soluciones previas como \textit{dvswitch}~\cite{dvswitch_project}, limitada
-en resolución y escalabilidad, o herramientas como vMix (comercial) u \ac{OBS}~Studio
-(código abierto), cuya arquitectura monolítica concentra captura, procesamiento y
+en resolución y escalabilidad, o herramientas como vMix~\cite{vmix_software} (comercial) u \ac{OBS}~Studio
+(código abierto)~\cite{obs_studio}, cuya arquitectura monolítica concentra captura, procesamiento y
 emisión en un único nodo de operación, Voctomix adopta una arquitectura
 cliente-servidor desacoplada que separa el motor de mezcla multimedia de la interfaz
 de control, permitiendo distribuir la carga de procesamiento en distintos nodos de red.
 
-El presente Trabajo de Fin de Grado (TFG)\acused{TFG} toma como punto de partida la versión original
+El presente Trabajo Fin de Grado (TFG)\acused{TFG} toma como punto de partida la versión original
 de Voctomix y propone una serie de extensiones orientadas a su uso en producciones
 en directo de mediana escala: rotulación dinámica sobre el vídeo, un sistema de control de estados de emisión
-(\textit{stream blanker}), composites avanzados de vídeo, telemetría en tiempo real
+(\textit{stream blanker}), \textit{composites} avanzados de vídeo, telemetría en tiempo real
 mediante un \textit{broker} de mensajería, y la contenerización completa del sistema mediante
-Docker y Docker Compose. El resultado es Voctomix~2.0, una plataforma más versátil,
+Docker~Compose y Kubernetes. El resultado es Voctomix~2.0, una plataforma más versátil,
 desplegable y adaptada a flujos de trabajo profesionales.
 
 Un elemento diferenciador de este proyecto es su validación en un entorno real:
@@ -34,4 +34,6 @@ y el sistema de telemetría con RabbitMQ proporciona la monitorización en tiemp
 del sistema. Además, responde a las necesidades de retransmisión de seminarios y
 eventos técnicos con calidad profesional sin depender de \textit{hardware} costoso, y puede
 desplegarse de forma sencilla en cualquier equipo Linux estándar.
+
+Las secciones siguientes detallan los objetivos concretos de este trabajo y la organización de la memoria.
 
