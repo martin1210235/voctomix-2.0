@@ -125,14 +125,17 @@ ocupa entre 50 y 80\,MB.
 \end{figure}
 
 El consumo neto de Voctomix es similar en los dos entornos: entre 25 y 32\,W
-en Docker, y entre 25 y 36\,W en Kubernetes. El valor de 36{,}1\,W que aparece
-en Kubernetes con tres cámaras no refleja un consumo real más alto, sino un
-problema en la medición de la línea base de esa sesión: el clúster de Minikube
-en reposo consumía 59{,}2\,W en lugar de los 62\,W habituales. Al restar una
-referencia más baja de lo normal, el consumo neto calculado queda inflado. Si
-se corrige con la base habitual de 62\,W, el valor estimado sería de unos
-26\,W, en línea con el resto de mediciones. No es, por tanto, una tendencia
-real del sistema.
+en Docker, y entre 25 y 27\,W en Kubernetes si se excluye el dato atípico de
+tres cámaras. Ese valor atípico (36{,}1\,W) se explica por un problema en la
+medición de la línea base de esa sesión concreta: el consumo del clúster de
+Minikube en reposo se midió en 59{,}2\,W en lugar de los 62\,W que registró
+en el resto de sesiones. El consumo neto se calcula restando esa línea base
+al total medido con Voctomix en marcha; si la referencia es más baja de lo
+habitual, el resultado de la resta queda inflado. Corrigiendo con los 62\,W
+habituales, el valor para tres cámaras sería de unos 33\,W, más acorde con las
+otras mediciones. Las tres sesiones restantes de Kubernetes (N=1, 2 y 4) dan
+valores de entre 25 y 27\,W, lo que confirma que 36{,}1\,W no es representativo
+del comportamiento real del sistema.
 
 En cuanto al margen disponible, el pico de 32\,W con cuatro cámaras en Docker
 representa menos del 20\,\% del \ac{TDP} del procesador (165\,W), lo que
