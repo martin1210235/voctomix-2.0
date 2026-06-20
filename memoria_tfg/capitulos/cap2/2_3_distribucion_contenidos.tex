@@ -35,13 +35,15 @@ específica de \textit{media}.
   abierto ISO/IEC~23009-1~\cite{iso_mpegdash} equivalente a HLS pero sin dependencia de
   proveedor. Divide el contenido en segmentos HTTP con ajuste adaptativo de calidad
   (\ac{ABR}) y es empleado por YouTube, Netflix y Amazon Prime. Puede generarse con FFmpeg
-  como alternativa abierta a HLS en el \textit{pipeline} de Voctomix.
+  como alternativa abierta a HLS, siendo compatible con el \textit{pipeline} de salida del sistema.
 
   \item \textbf{WebRTC (\textit{Web Real-Time Communication}):} estándar W3C para
   comunicación multimedia en tiempo real desde el navegador, con latencias de
   100--500~ms. Su escalabilidad para audiencias masivas es limitada, pero resulta ideal
   para monitorización remota del sistema de producción y retornos entre el equipo técnico.
 \end{itemize}
+
+La tabla~\ref{tab:distribucion_protocolos} compara los parámetros clave de cada protocolo.
 
 \begin{table}[H]
   \centering
@@ -165,6 +167,9 @@ pérdida de calidad a cambio de viabilizar el transporte.
   mayor eficiencia de compresión que AC-3 a calidad perceptual equivalente.
 
 \end{itemize}
+
+La tabla~\ref{tab:codecs_distribucion} resume la eficiencia de compresión relativa
+y la viabilidad en tiempo real de cada códec de vídeo.
 
 \begin{table}[H]
   \centering

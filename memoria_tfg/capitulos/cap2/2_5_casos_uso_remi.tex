@@ -27,7 +27,7 @@ arquitectura cliente-servidor de voctocore originalmente diseñada para este ent
 
 Los Juegos Olímpicos de Tokio 2020, celebrados en 2021, constituyeron uno de los mayores
 despliegues de producción remota en la historia del olimpismo. Olympic Broadcasting
-Services (OBS) implementó un modelo REMI a gran escala en el que la señal de las
+Services implementó un modelo REMI a gran escala en el que la señal de las
 cámaras de todas las sedes olímpicas se transportó a un centro de producción centralizado
 en Tokio, reduciendo drásticamente el número de equipos y personal técnico desplazado
 a cada instalación~\cite{obs_tokyo_2021}.
@@ -66,9 +66,8 @@ suprimiendo el desplazamiento de la unidad móvil de producción.
 La latencia de transporte medida en la red de acceso de Telefónica fue de 3--5~ms,
 cumpliendo el requisito de tiempo real para producción en directo. Este
 resultado demostró que la infraestructura de \textit{edge computing} puede sustituir
-funcionalmente a la unidad móvil en eventos de cobertura local. La industria estima
-ahorros superiores al 30\,\% respecto al modelo tradicional en implantaciones REMI de
-escala comparable~\cite{tmbroadcast_remi}.
+funcionalmente a la unidad móvil en eventos de cobertura local. La industria ha documentado
+reducciones de coste relevantes en implantaciones REMI de escala comparable~\cite{tmbroadcast_remi,remi_workflow_ibc2023}.
 
 \subsection{Proyectos europeos de investigación de la UPM}
 
@@ -100,6 +99,10 @@ aplicada a entornos multimedia distribuidos:
         telemetría de Voctomix~2.0 en un entorno real.
 \end{itemize}
 
+La tabla~\ref{tab:casos_uso_remi} resume los cinco casos de uso presentados, indicando
+la escala de despliegue, la tecnología clave empleada y la aportación de cada uno al
+contexto del presente trabajo.
+
 \begin{table}[H]
   \centering
   \caption{Casos de uso representativos de producción remota audiovisual.}
@@ -117,3 +120,8 @@ aplicada a entornos multimedia distribuidos:
     \hline
   \end{tabularx}
 \end{table}
+
+Los casos anteriores ilustran que el modelo REMI ha alcanzado madurez tecnológica en
+entornos de producción real, desde eventos masivos hasta proyectos europeos de
+investigación. El diseño e implementación del sistema que aborda este trabajo se
+presenta en el Capítulo~\ref{chap:diseno}.
