@@ -5,25 +5,22 @@
 \Large{\textsc{\textcolor{nar}{C1. Introducción}}}
 \vspace{0.2cm}
 
-\normalsize{El punto de partida del proyecto fue el repositorio oficial de Voctomix~\cite{voctomix_github},
-alojado en GitHub bajo la organización \texttt{voc}, con una historia de \textit{commits}
-que se remonta a 2016. Este anexo documenta la evolución del repositorio a lo largo del
-trabajo: la sección~C2 compara la estructura de directorios antes y después del desarrollo,
-la sección~C3 detalla los módulos incorporados, la sección~C4 muestra la evolución de
-la interfaz gráfica, la sección~C5 reproduce los ficheros de configuración INI del
-sistema, la sección~C6 los ficheros de infraestructura Docker, la
-sección~C7 los manifiestos de despliegue en Kubernetes y la sección~C8 las herramientas
-de medición experimental empleadas para obtener los resultados del Capítulo~\ref{chap:pruebas}.}
+\normalsize{Este anexo reúne en un solo lugar los ficheros principales del proyecto, para
+consultarlos sin necesidad de acceder al repositorio. C2 compara la estructura de directorios
+antes y después del desarrollo; C3 indica qué ficheros se reproducen y dónde encontrarlos;
+C4 muestra la interfaz gráfica original; C5 recoge los ficheros de configuración INI; C6
+los ficheros de infraestructura Docker; C7 los manifiestos de Kubernetes, y C8 las
+herramientas con las que se obtuvieron los datos del
+Capítulo~\ref{chap:pruebas}.}
 \vspace{0.4cm}
 
 % ── C2. Comparativa de estructura ───────────────────────────────────
 \Large{\textsc{\textcolor{nar}{C2. Evolución de la estructura del repositorio}}}
 \vspace{0.2cm}
 
-\normalsize{Los árboles siguientes muestran la estructura del repositorio inmediatamente
-después del clonado (izquierda) y tras el desarrollo completo de Voctomix~2.0 (derecha).
-Los ficheros marcados con \texttt{[N]} fueron incorporados íntegramente en el marco de
-este trabajo.}
+\normalsize{Los dos árboles muestran el repositorio tal como estaba al descargarlo (izquierda) y
+como quedó tras el desarrollo (derecha). Los ficheros marcados con \texttt{[N]} son los que
+se incorporaron en este trabajo.}
 \vspace{0.3cm}
 
 \noindent%
@@ -140,7 +137,7 @@ voctomix/
 |-- example-scripts/
 |   |-- control-server/
 |   `-- ffmpeg/
-|       `-- telemetry_srv.py [N]
+|       `-- telemetry_service.py [N]
 |-- docker-compose.yml   [N]
 |-- Dockerfile           [N]
 |-- k8s_escenario/       [N]
@@ -160,78 +157,32 @@ voctomix/
 \Large{\textsc{\textcolor{nar}{C3. Módulos incorporados en este trabajo}}}
 \vspace{0.2cm}
 
-\normalsize{La tabla~\ref{tab:modulos_nuevos} recoge todos los ficheros marcados con
-\texttt{[N]}, con su función y el apartado de la memoria donde se documenta en detalle.}
+\normalsize{La tabla siguiente indica qué ficheros se reproducen en este anexo y en qué sección
+encontrarlos.}
 \vspace{0.2cm}
 
 \begin{table}[H]
   \centering
   \small
-  \begin{tabularx}{\textwidth}{|l|X|c|}
+  \begin{tabular}{|l|c|}
     \hline
-    \textbf{Módulo / fichero} & \textbf{Descripción} & \textbf{Sección} \\
+    \textbf{Fichero} & \textbf{Sección} \\
     \hline
-    \texttt{voctocore/lib/overlay.py}
-      & Inyección de gráficos sobre la señal de vídeo en tiempo real
-      & §\ref{sec:overlays} \\
-    \texttt{voctocore/lib/scene.py}
-      & Grafo de escenas y gestión de estados del compositor
-      & §\ref{sec:transiciones} \\
-    \texttt{voctocore/lib/streamblanker.py}
-      & Control de los estados LIVE, PAUSE y NOSTREAM
-      & §\ref{sec:senal_programa} \\
-    \texttt{voctocore/lib/transitions.py}
-      & Motor de transiciones animadas entre fuentes de vídeo
-      & §\ref{sec:transiciones} \\
-    \texttt{voctogui/lib/gui\_state\_exporter.py}
-      & Exportación del estado del mezclador como JSON por HTTP
-      & §\ref{sec:telemetria} \\
-    \texttt{voctogui/lib/toolbar/overlay.py}
-      & Panel de control de \textit{overlays} en la interfaz gráfica
-      & §\ref{sec:overlays} \\
-    \texttt{voctogui/lib/toolbar/streamblank.py}
-      & Botones LIVE, PAUSE y NOSTREAM en la barra de herramientas
-      & §\ref{sec:senal_programa} \\
-    \texttt{example-scripts/.../telemetry\_service.py}
-      & Publicación de eventos de telemetría en RabbitMQ
-      & §\ref{sec:telemetria} \\
-    \texttt{docker-compose.yml}
-      & Orquestación del \textit{stack} Docker de diez servicios
-      & §\ref{sec:docker} \\
-    \texttt{Dockerfile}
-      & Imagen base del sistema para todos los contenedores
-      & §\ref{sec:docker} \\
-    \texttt{k8s\_escenario/}
-      & Scripts y manifiestos para el despliegue en Kubernetes
-      & §\ref{sec:kubernetes} \\
-    \texttt{tools/}
-      & Herramientas de medición y análisis de rendimiento
-      & Cap.~\ref{chap:pruebas} \\
-    \texttt{images/}
-      & Recursos visuales para \textit{overlays} (logos y fondos)
-      & §\ref{sec:overlays} \\
-    \texttt{1pc\_escenario1/}
-      & Scripts de arranque para el escenario de un PC
-      & §\ref{sec:despliegue_nativo} \\
-    \texttt{2pc\_escenario2/}
-      & Scripts de arranque para el escenario de dos PC
-      & §\ref{sec:despliegue_nativo} \\
-    \texttt{Makefile}
-      & Automatización de tareas de desarrollo y despliegue
-      & Cap.~\ref{chap:despliegue} \\
-    \texttt{tools/measure\_composite\_latency.py}
-      & Medición de la latencia de conmutación y transición de composición
-      & §C8 \\
-    \texttt{tools/measure\_resilience.py}
-      & Medición del tiempo de recuperación ante fallo de contenedor
-      & §C8 \\
-    \texttt{tools/analyze\_stability.py}
-      & Generación de gráficas de estabilidad a partir de los datos de telemetría
-      & §C8 \\
+    \texttt{voctocore/default-config.ini}               & \S{}C5 \\
+    \texttt{voctogui/default-config.ini}                & \S{}C5 \\
+    \texttt{Dockerfile}                                 & \S{}C6 \\
+    \texttt{docker-compose.yml}                         & \S{}C6 \\
+    \texttt{k8s/configmap.yaml}                         & \S{}C7 \\
+    \texttt{k8s/pvc.yaml}                               & \S{}C7 \\
+    \texttt{k8s/rabbitmq.yaml}                          & \S{}C7 \\
+    \texttt{k8s/studio.yaml}                            & \S{}C7 \\
+    \texttt{tools/measure\_composite\_latency.py}       & \S{}C8 \\
+    \texttt{tools/measure\_resilience.py}               & \S{}C8 \\
+    \texttt{tools/analyze\_stability.py}                & \S{}C8 \\
     \hline
-  \end{tabularx}
-  \caption{Módulos y ficheros incorporados en Voctomix~2.0.}
-  \label{tab:modulos_nuevos}
+  \end{tabular}
+  \caption{Ficheros reproducidos en este anexo y sección donde encontrarlos.}
+  \label{tab:indice_anexo}
 \end{table}
 
 \vspace{0.4cm}
@@ -240,11 +191,10 @@ voctomix/
 \Large{\textsc{\textcolor{nar}{C4. Evolución de la interfaz gráfica}}}
 \vspace{0.2cm}
 
-\normalsize{La figura~\ref{fig:voctomix_inicial} muestra la interfaz gráfica de Voctomix
-en el estado original del repositorio clonado, sin ninguna de las extensiones desarrolladas
-en este trabajo. La comparación con la figura~\ref{fig:gui_completa} del
-Capítulo~\ref{chap:diseno} ilustra el alcance de las mejoras realizadas sobre la
-interfaz de control.}
+\normalsize{La figura siguiente muestra la interfaz original, tal como aparecía al clonar
+el repositorio y antes de ninguna modificación. La comparación con la
+figura~\ref{fig:gui_completa} del Capítulo~\ref{chap:diseno} permite ver el alcance de
+los cambios realizados.}
 \vspace{0.2cm}
 
 \begin{figure}[H]
@@ -283,13 +233,10 @@ interfaz de control.}
   belowskip=6pt,
 }
 
-\normalsize{El sistema emplea dos ficheros de configuración INI.
-\texttt{voctocore/default-config.ini} define los parámetros del núcleo de procesamiento:
-resolución, formato de vídeo y audio, geometría de los composites, secuencias de
-transición, configuración del \textit{stream blanker} y de los \textit{overlays}.
-\texttt{voctogui/default-config.ini} configura la interfaz gráfica: dirección del
-servidor, resolución de las previsualizaciones, atajos de teclado y disposición de
-la barra de herramientas.}
+\normalsize{El sistema utiliza dos ficheros de configuración INI. El de \texttt{voctocore}
+define el formato de vídeo y audio, las fuentes activas, los modos de composición, las
+transiciones y los \textit{overlays}. El de \texttt{voctogui} indica dónde está el
+servidor, el tamaño de las previsualizaciones y los atajos de teclado.}
 \vspace{0.3cm}
 
 \noindent\textbf{\small voctocore/default-config.ini}
@@ -559,14 +506,12 @@ trans.key     = space
   belowskip=6pt,
 }
 
-\normalsize{El despliegue en contenedores se define en dos ficheros.
-El \texttt{Dockerfile} parte de Ubuntu~22.04~\ac{LTS} e instala en una sola capa
-todas las dependencias del sistema: GStreamer~1.0 con sus \textit{plugins}, Python~3,
-FFmpeg y la librería \texttt{pika} para la integración con RabbitMQ.
-El fichero \texttt{docker-compose.yml} declara los diez servicios del \textit{stack}:
-voctocore, RabbitMQ, el servicio de telemetría, cuatro contenedores de cámara
-(\texttt{cam1}--\texttt{cam4}), el \textit{stream blanker}, el intro y el gestor
-de audio, con sus relaciones de dependencia, puertos expuestos y configuración de red.}
+\normalsize{El \texttt{Dockerfile} construye la imagen base instalando GStreamer, FFmpeg,
+Python y la librería \texttt{pika}. El \texttt{docker-compose.yml} arranca los diez
+servicios del sistema. La clave de la arquitectura es \texttt{network\_mode:
+"service:voctocore"}: con esta opción todos los contenedores de cámara comparten la
+red de voctocore y se comunican por \texttt{localhost}, sin modificar ninguna línea
+del código original.}
 \vspace{0.3cm}
 
 \noindent\textbf{\small Dockerfile}
@@ -882,16 +827,13 @@ services:
 \Large{\textsc{\textcolor{nar}{C7. Manifiestos de despliegue en Kubernetes}}}
 \vspace{0.2cm}
 
-\normalsize{El despliegue en Kubernetes se define en cinco ficheros YAML.
-\texttt{configmap.yaml} centraliza todos los parámetros del sistema como variables
-de entorno. \texttt{pvc.yaml} reserva almacenamiento persistente para los registros
-de telemetría. \texttt{rabbitmq.yaml} despliega el broker como pod independiente con
-su Service interno. \texttt{studio.yaml} define el pod principal con todos los
-contenedores de la aplicación, un \textit{initContainer} que espera a RabbitMQ, una
-\textit{readinessProbe} sobre el puerto~9999 de voctocore y un Service de tipo
-NodePort para exponer los puertos al exterior. Las credenciales se almacenan en un
-\texttt{Secret} referenciado por los manifiestos pero no reproducido aquí por seguridad;
-el fichero \texttt{secret.yaml.example} del repositorio sirve de plantilla.}
+\normalsize{El despliegue en Kubernetes usa cuatro ficheros. \texttt{configmap.yaml} guarda
+todos los parámetros en un solo lugar. \texttt{pvc.yaml} reserva espacio en disco para
+los registros de telemetría. \texttt{rabbitmq.yaml} arranca el broker de mensajería.
+\texttt{studio.yaml} define el pod principal con todos los contenedores y el servicio de
+red para exponerlos al exterior. Las contraseñas se guardan en un \texttt{Secret}
+independiente que no se reproduce aquí por seguridad; el fichero
+\texttt{secret.yaml.example} del repositorio sirve de plantilla.}
 \vspace{0.3cm}
 
 \noindent\textbf{\small k8s/configmap.yaml}
@@ -1096,9 +1038,43 @@ spec:
             - configMapRef:
                 name: voctomix-config
 
-        # cam2, cam3: identicos a cam1 con sus respectivos puertos y fuentes.
+        - name: cam2
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
+          imagePullPolicy: Always
+          command:
+            - sh
+            - -c
+            - >-
+              ffmpeg -y -nostdin
+              -i "${CAM2_SOURCE}"
+              -ac 2
+              -filter_complex "[0:v] scale=${WIDTH}:${HEIGHT},fps=${FRAMERATE} [v]; [0:a] aresample=${AUDIORATE} [a]"
+              -map "[v]" -map "[a]"
+              -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le
+              -f matroska tcp://localhost:${CAM2_PORT}
+          envFrom:
+            - configMapRef:
+                name: voctomix-config
 
-        - name: cam4   # con conversion de colorimetria BT.709 explicita
+        - name: cam3
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
+          imagePullPolicy: Always
+          command:
+            - sh
+            - -c
+            - >-
+              ffmpeg -y -nostdin
+              -i "${CAM3_SOURCE}"
+              -ac 2
+              -filter_complex "[0:v] scale=${WIDTH}:${HEIGHT},fps=${FRAMERATE} [v]; [0:a] aresample=${AUDIORATE} [a]"
+              -map "[v]" -map "[a]"
+              -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le
+              -f matroska tcp://localhost:${CAM3_PORT}
+          envFrom:
+            - configMapRef:
+                name: voctomix-config
+
+        - name: cam4   # conversion de colorimetria BT.709 explicita
           image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
           imagePullPolicy: Always
           command:
@@ -1116,6 +1092,46 @@ spec:
               -colorspace bt709 -color_range tv
               -c:v rawvideo -c:a pcm_s16le
               -f matroska tcp://localhost:${CAM4_PORT}
+          envFrom:
+            - configMapRef:
+                name: voctomix-config
+
+        - name: break
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
+          imagePullPolicy: Always
+          command:
+            - sh
+            - -c
+            - >-
+              ffmpeg -y -nostdin -stream_loop -1
+              -i "${BREAK_VIDEO}"
+              -re -stream_loop -1 -i "${BREAK_AUDIO}"
+              -filter_complex "[0:v] format=yuv420p,scale=${WIDTH}:${HEIGHT}:out_range=tv,fps=${FRAMERATE},setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709 [v]; [1:a] aresample=${AUDIORATE},pan=stereo|c0=c0|c1=c1 [a]"
+              -map "[v]" -map "[a]"
+              -c:v rawvideo -c:a pcm_s16le
+              -f matroska tcp://localhost:${BREAK_PORT}
+          envFrom:
+            - configMapRef:
+                name: voctomix-config
+
+        - name: intro
+          image: ${VOCTOMIX_IMAGE:-martin1210235/voctomix:latest}
+          imagePullPolicy: Always
+          command:
+            - bash
+            - -c
+            - |
+              while true; do
+                ffmpeg -loglevel quiet -nostats -re \
+                  -i "${INTRO_VIDEO}" \
+                  -f lavfi -i anullsrc=r=${AUDIORATE}:cl=stereo \
+                  -pix_fmt yuv420p -s "${WIDTH}x${HEIGHT}" -r "${FRAMERATE}" \
+                  -c:v rawvideo -c:a pcm_s16le \
+                  -map 0:v:0 -map 1:a:0 \
+                  -shortest \
+                  -f matroska tcp://127.0.0.1:${INTRO_PORT} 2>/dev/null
+                sleep 1
+              done
           envFrom:
             - configMapRef:
                 name: voctomix-config
@@ -1175,10 +1191,23 @@ spec:
       port: 9999
       targetPort: 9999
       nodePort: 30999
+    - name: clock-udp
+      protocol: UDP
+      port: 9998
+      targetPort: 9998
+      nodePort: 30998
+    - name: telemetry
+      port: 8080
+      targetPort: 8080
+      nodePort: 30808
     - name: program-out
       port: 15000
       targetPort: 15000
       nodePort: 31500
+    - name: mix-out
+      port: 11000
+      targetPort: 11000
+      nodePort: 31100
     - name: mix-preview
       port: 12000
       targetPort: 12000
@@ -1187,7 +1216,26 @@ spec:
       port: 14000
       targetPort: 14000
       nodePort: 31400
-    # preview-1 a preview-5: mismo patron, puertos 14001-14005 / 31401-31405
+    - name: preview-1
+      port: 14001
+      targetPort: 14001
+      nodePort: 31401
+    - name: preview-2
+      port: 14002
+      targetPort: 14002
+      nodePort: 31402
+    - name: preview-3
+      port: 14003
+      targetPort: 14003
+      nodePort: 31403
+    - name: preview-4
+      port: 14004
+      targetPort: 14004
+      nodePort: 31404
+    - name: preview-5
+      port: 14005
+      targetPort: 14005
+      nodePort: 31405
 \end{lstlisting}
 
 \clearpage
@@ -1207,21 +1255,12 @@ spec:
   sensitive=true,
 }
 
-\normalsize{Los tres scripts que generan los resultados experimentales del
-Capítulo~\ref{chap:pruebas} se reproducen íntegramente a continuación.
-\texttt{measure\_composite\_latency.py} conecta al puerto~9999 de \texttt{voctocore}
-mediante TCP, envía órdenes de transición entre los cuatro modos de composición y
-cronometra con \texttt{time.monotonic()} el tiempo hasta recibir la confirmación del
-cambio aplicado.
-\texttt{measure\_resilience.py} fuerza el fallo del contenedor seleccionado mediante
-\texttt{docker exec kill -9 1}, que termina el proceso raíz del contenedor de forma
-inmediata, y mide el tiempo hasta que \texttt{docker inspect} declara el estado
-\texttt{running healthy}; este mecanismo es equivalente a un fallo real, a diferencia
-de \texttt{docker stop}, que enviaría SIGTERM y evitaría que la política
-\texttt{restart: on-failure} se activase.
-\texttt{analyze\_stability.py} lee los ficheros JSONL de telemetría generados por el
-sistema, extrae los eventos de tipo \texttt{STATE} con sus métricas de CPU y RAM y
-genera las gráficas de estabilidad a largo plazo incluidas en el Capítulo~\ref{chap:pruebas}.}
+\normalsize{Estas son las tres herramientas con las que se obtuvieron los datos del
+Capítulo~\ref{chap:pruebas}. \texttt{measure\_composite\_latency.py} mide cuánto tarda
+el mezclador en aplicar cada cambio de fuente o modo de composición.
+\texttt{measure\_resilience.py} fuerza el fallo de un contenedor y mide el tiempo hasta
+que el sistema lo recupera. \texttt{analyze\_stability.py} lee los registros de
+telemetría y genera las gráficas de CPU y RAM.}
 \vspace{0.3cm}
 
 \noindent\textbf{\small tools/measure\_composite\_latency.py}
