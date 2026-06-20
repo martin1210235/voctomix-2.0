@@ -57,7 +57,7 @@ La tabla~\ref{tab:distribucion_protocolos} compara los parámetros clave de cada
     RTMP      & 2--5~s      & TCP    & No (RTMPS sí) & Ingesta a plataformas \\
     HLS       & 2--30~s     & HTTP   & HTTPS         & Reproducción masiva (CDN) \\
     MPEG-DASH & 2--30~s     & HTTP   & HTTPS         & \textit{Streaming} adaptativo abierto \\
-    WebRTC    & 100--500~ms & UDP    & DTLS/SRTP     & Monitorización, retornos \\
+    WebRTC    & 100--500~ms & UDP    & Sí (integrado) & Monitorización, retornos \\
     \hline
   \end{tabularx}
 \end{table}
@@ -70,7 +70,7 @@ audio codificados para su transporte hasta el reproductor final.
 \begin{itemize}
   \item \textbf{MPEG-TS (\textit{Transport Stream}, ISO~13818-1)}~\cite{iso_mpegts}:
   estándar diseñado específicamente para transmisión \textit{broadcast} con tolerancia a errores.
-  Es el contenedor asociado a HLS, la emisión por satélite y la TDT. Su robustez frente
+  Es el contenedor asociado a HLS, la emisión por satélite y la \ac{TDT}. Su robustez frente
   a pérdidas de paquetes lo hace el formato de referencia para distribución \textit{broadcast}.
 
   \item \textbf{MP4 / ISOBMFF (\textit{ISO Base Media File Format})}~\cite{iso_isobmff}:
@@ -79,12 +79,12 @@ audio codificados para su transporte hasta el reproductor final.
   grabaciones y distribución bajo demanda.
 
   \item \textbf{IMF (\textit{Interoperable Master Format}, serie SMPTE ST~2067)}\acused{IMF}~\cite{smpte_st2067_1,ebu_tech3381}:
-  estándar de mastering desarrollado por la SMPTE y adoptado por la EBU. Construido sobre MXF,
+  estándar de mastering desarrollado por la SMPTE y adoptado por la \ac{EBU}. Construido sobre MXF,
   incorpora una \textit{Composition Playlist} en XML que permite gestionar variantes lingüísticas,
   de resolución y de rango dinámico como paquetes suplementarios sobre un maestro base, sin
   duplicar la esencia de vídeo. Soporta vídeo JPEG~2000 o HEVC, audio PCM y subtítulos TTML.
   Plataformas como Netflix, Amazon Prime Video y Disney$+$ lo exigen para la entrega de contenido
-  original, consolidándolo como referencia en distribución OTT de alta calidad.
+  original, consolidándolo como referencia en distribución \ac{OTT} de alta calidad.
 
   \item \textbf{MOV (\textit{QuickTime Movie})}~\cite{apple_quicktime}: contenedor
   desarrollado por Apple, ampliamente utilizado en cámaras de producción profesional
@@ -107,13 +107,11 @@ pérdida de calidad a cambio de viabilizar el transporte.
 \begin{itemize}
   \item \textbf{H.264 / AVC (\textit{Advanced Video Coding})\acused{AVC}}~\cite{itu_h264}:
   el códec de vídeo más extendido en la actualidad y la línea de base de la industria
-  del \textit{streaming}. Introdujo herramientas avanzadas de predicción inter-fotograma (CABAC,
-  transformada adaptativa 4$\times$4/8$\times$8) que establecieron en 2003 el estándar
-  de eficiencia vigente durante dos décadas. H.264 se organiza en perfiles que
-  determinan el conjunto de herramientas de codificación disponibles; en producción
-  audiovisual se emplea principalmente el perfil \textit{High}, que activa CABAC y
-  transformadas 8$\times$8 y es soportado por la totalidad de plataformas CDN y
-  decodificadores \textit{hardware} desde 2010.
+  del \textit{streaming}. Introdujo herramientas avanzadas de predicción inter-fotograma que
+  establecieron en 2003 el estándar de eficiencia vigente durante dos décadas. H.264
+  se organiza en perfiles que determinan el conjunto de herramientas de codificación
+  disponibles; en producción audiovisual se emplea principalmente el perfil \textit{High},
+  soportado por la totalidad de plataformas CDN y decodificadores \textit{hardware} desde 2010.
 
   Voctomix emplea H.264 como códec de salida por defecto a través de FFmpeg y la
   biblioteca de \textit{software} libre \texttt{libx264}. La señal de programa RAW~I420 que
@@ -143,10 +141,10 @@ pérdida de calidad a cambio de viabilizar el transporte.
   de H.265 publicado en 2020 por el Joint Video Experts Team (JVET) de \ac{ITU-T} e
   ISO/IEC. Aproximadamente duplica la eficiencia de compresión de H.265, permitiendo
   la misma calidad perceptual a la mitad del bitrate~\cite{chen2024_codec_comparison}.
-  Diseñado para contenidos 4K, 8K, vídeo de 360° y HDR. Su principal limitación actual
+  Diseñado para contenidos 4K, 8K, vídeo de 360° y \ac{HDR}. Su principal limitación actual
   es la velocidad de codificación, significativamente superior a la de H.265, lo que
   restringe su uso en tiempo real a entornos con aceleración \textit{hardware} especializada.
-  Plataformas como Netflix y Disney$+$ lo evalúan para distribución OTT de próxima
+  Plataformas como Netflix y Disney$+$ lo evalúan para distribución \acs{OTT} de próxima
   generación.
 
   \item \textbf{AAC / Opus}: códecs de audio para distribución por Internet. AAC
@@ -160,7 +158,7 @@ pérdida de calidad a cambio de viabilizar el transporte.
   ATSC~A/52)~\cite{atsc_a52} es el códec de audio dominante en distribución \textit{broadcast}
   lineal: estándar en la norma ATSC de televisión digital en Norteamérica y ampliamente
   empleado en cable, satélite, DVD y Blu-ray. Soporta hasta 5.1 canales a tasas de
-  entre 192 y 640~kbit/s y es soportado de forma nativa por FFmpeg para la generación
+  entre 192~kbit/s y 640~kbit/s y es soportado de forma nativa por FFmpeg para la generación
   de flujos MPEG-TS con audio envolvente. AC-4 (ETSI TS~103~190)~\cite{etsi_ac4} es su
   sucesor de nueva generación, adoptado en el estándar ATSC~3.0 (\textit{NextGen TV}),
   con soporte para audio inmersivo de hasta 7.1.4 canales compatible con Dolby Atmos y
