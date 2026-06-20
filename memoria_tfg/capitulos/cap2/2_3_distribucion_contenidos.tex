@@ -82,7 +82,7 @@ audio codificados para su transporte hasta el reproductor final.
   estándar de mastering desarrollado por la SMPTE y adoptado por la \ac{EBU}. Construido sobre MXF,
   incorpora una \textit{Composition Playlist} en XML que permite gestionar variantes lingüísticas,
   de resolución y de rango dinámico como paquetes suplementarios sobre un maestro base, sin
-  duplicar la esencia de vídeo. Soporta vídeo JPEG~2000 o HEVC, audio PCM y subtítulos TTML.
+  duplicar la esencia de vídeo. Soporta vídeo JPEG~2000 o HEVC, audio PCM y subtítulos TTML (\textit{Timed Text Markup Language}).
   Plataformas como Netflix, Amazon Prime Video y Disney$+$ lo exigen para la entrega de contenido
   original, consolidándolo como referencia en distribución \ac{OTT} de alta calidad.
 
@@ -125,22 +125,22 @@ pérdida de calidad a cambio de viabilizar el transporte.
 
   \item \textbf{H.265 / HEVC}\acused{HEVC} (\textit{High Efficiency Video Coding}): sucesor de
   H.264 que aproximadamente duplica la eficiencia de compresión, permitiendo la misma
-  calidad perceptual a la mitad del bitrate~\cite{itu_h265}. Su codificación es 5--8
+  calidad perceptual a la mitad del \textit{bitrate}~\cite{itu_h265}. Su codificación es 5--8
   veces más lenta que H.264, lo que lo hace adecuado para \textit{streaming} en tiempo real
-  cuando se dispone de aceleración \textit{hardware} (\ac{GPU} o ASIC).
+  cuando se dispone de aceleración \textit{hardware} (\ac{GPU} o \ac{ASIC}).
 
   \item \textbf{AV1}: códec abierto desarrollado por la Alliance for Open Media que
   mejora la eficiencia de H.265 en aproximadamente un 50\% adicional~\cite{chen2024_codec_comparison}.
   Su limitación histórica en producción en directo ha sido la velocidad de codificación:
-  AV1 tarda entre 5 y 10 veces más que H.265 en encoders de referencia, aunque el
-  encoder SVT-AV1 (Intel/Netflix) permite ya codificación en tiempo real en \textit{software}
+  AV1 tarda entre 5 y 10 veces más que H.265 en \textit{encoders} de referencia, aunque el
+  \textit{encoder} SVT-AV1 (Intel/Netflix) permite ya codificación en tiempo real en \textit{software}
   sobre CPU modernas de gama alta. YouTube, Netflix y Meta ya codifican gran parte
   de su contenido en AV1 para \textit{streaming} bajo demanda.
 
   \item \textbf{H.266 / VVC (\textit{Versatile Video Coding})\acused{VVC}}~\cite{itu_h266}: sucesor
   de H.265 publicado en 2020 por el Joint Video Experts Team (JVET) de \ac{ITU-T} e
   ISO/IEC. Aproximadamente duplica la eficiencia de compresión de H.265, permitiendo
-  la misma calidad perceptual a la mitad del bitrate~\cite{chen2024_codec_comparison}.
+  la misma calidad perceptual a la mitad del \textit{bitrate}~\cite{chen2024_codec_comparison}.
   Diseñado para contenidos 4K, 8K, vídeo de 360° y \ac{HDR}. Su principal limitación actual
   es la velocidad de codificación, significativamente superior a la de H.265, lo que
   restringe su uso en tiempo real a entornos con aceleración \textit{hardware} especializada.
@@ -151,7 +151,7 @@ pérdida de calidad a cambio de viabilizar el transporte.
   (\textit{Advanced Audio Coding})\acused{AAC} es el estándar en plataformas de
   \textit{streaming} (YouTube, Twitch, Apple Music) y en HLS; Opus es el códec de
   audio obligatorio en WebRTC (RFC~7874) y el preferido en aplicaciones de
-  comunicación en tiempo real por su baja latencia y alta eficiencia a bitrates
+  comunicación en tiempo real por su baja latencia y alta eficiencia a \textit{bitrates}
   reducidos~\cite{rfc7874}.
 
   \item \textbf{AC-3 / AC-4 (Dolby):} AC-3 (\textit{Dolby Digital},
@@ -179,8 +179,8 @@ y la viabilidad en tiempo real de cada códec de vídeo.
     \textbf{Códec} & \textbf{Eficiencia vs H.264} & \textbf{Vel. encoding} & \textbf{Compatibilidad} & \textbf{RT posible} \\
     \hline
     H.264/AVC  & Base       & Muy rápido             & Universal          & Sí \\
-    H.265/HEVC & $\times$2  & 5--8$\times$ más lento & Alta (post 2015)   & Sí (con HW) \\
-    AV1        & $\times$3  & 5--10$\times$ más lento & Media (creciendo) & Sí (HW o SVT-AV1) \\
+    H.265/HEVC & $\times$2  & 5--8$\times$ más lento & Alta (post 2015)   & Sí (con hardware) \\
+    AV1        & $\times$3  & 5--10$\times$ más lento & Media (creciendo) & Sí (hardware o SVT-AV1) \\
     H.266/VVC  & $\times$4  & Muy lento              & Emergente (2024+)  & No \\
     \hline
   \end{tabularx}

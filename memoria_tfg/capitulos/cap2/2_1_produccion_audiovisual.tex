@@ -6,8 +6,8 @@ contribución de señal (Sección~\ref{sec:contribucion_av}), los protocolos
 y códecs empleados en la distribución del contenido al espectador final
 (Sección~\ref{sec:distribucion_av}), y los casos de uso reales de producción remota que
 contextualizan la adopción industrial de estas tecnologías
-(Sección~\ref{sec:casos_uso_remi}). El objetivo es que el lector comprenda el contexto
-técnico necesario antes de abordar el diseño e implementación del sistema en el
+(Sección~\ref{sec:casos_uso_remi}). El objetivo de este capítulo es proporcionar el contexto
+técnico necesario para abordar el diseño e implementación del sistema en el
 Capítulo~\ref{chap:diseno}.
 
 \section{Producción audiovisual}
@@ -134,7 +134,7 @@ reales~\cite{tmbroadcast_remi,remi_workflow_ibc2023}.
     Latencia        & Viable con SRT ($<$1~s en WAN)  & Coordinación realizador-cámaras difícil \\
     Escalabilidad   & Un centro atiende múltiples eventos       & Número de fuentes de cámara simultáneas limitado por ancho de banda y capacidad de procesamiento \\
     Red             & Producción desde cualquier ubicación IP   & Corte de red detiene la producción \\
-    Calidad         & Hardware ilimitado en el centro remoto    & Artefactos con ancho de banda insuficiente \\
+    Calidad         & \textit{hardware} ilimitado en el centro remoto    & Artefactos con ancho de banda insuficiente \\
     Sincronía A/V   & Procesamiento centralizado facilita la sincronía entre fuentes & \textit{jitter} (fluctuación) puede desincronizar fuentes \\
     Seguridad       & Cifrado AES-256 disponible en transporte SRT & Mayor superficie de ataque expuesta \\
     Complejidad     & Herramientas maduras (FFmpeg, GStreamer)   & Diagnóstico de \textit{pipelines} distribuidos \\
@@ -142,7 +142,6 @@ reales~\cite{tmbroadcast_remi,remi_workflow_ibc2023}.
     \hline
   \end{tabularx}
 \end{table}
-
 
 \subsubsection*{Herramientas de producción remota por \textit{software}}
 
