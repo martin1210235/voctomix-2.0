@@ -39,13 +39,14 @@ de las gráficas descuentan el consumo en reposo de cada entorno para mostrar
   \label{fig:cpu_camaras}
 \end{figure}
 
-En Docker la CPU sube ligeramente al añadir cámaras, de 33{,}5\,\% con una a
-38{,}8\,\% con cuatro, porque cada fuente añade trabajo real a GStreamer. En
-Kubernetes, en cambio, la CPU se mantiene fija en torno al 50\,\%
-independientemente del número de cámaras. Esto ocurre porque Minikube ejecuta en el mismo equipo los
-cuatro procesos de gestión del clúster, que consumen ese 50\,\% por sí solos
-incluso con una sola cámara activa. El trabajo de mezcla de vídeo es idéntico en
-los dos entornos, pero en Kubernetes queda oculto detrás de ese consumo fijo.
+En Docker la CPU escala con el número de cámaras, de 33{,}5\,\% con una a
+38{,}8\,\% con cuatro (+5{,}3\,pp), porque cada fuente añade trabajo real al
+\textit{pipeline} de GStreamer. En Kubernetes, en cambio, la CPU se mantiene
+fija en torno al 50\,\% independientemente del número de cámaras. Esto ocurre
+porque Minikube ejecuta en el mismo equipo los cuatro procesos de gestión del
+clúster, que consumen ese 50\,\% por sí solos incluso con una sola cámara
+activa. El trabajo de mezcla de vídeo es idéntico en los dos entornos, pero en
+Kubernetes queda oculto detrás de ese consumo fijo del plano de control.
 
 \begin{figure}[H]
   \centering
@@ -80,7 +81,10 @@ El uso de RAM es prácticamente plano en los dos entornos: Docker se mantiene
 entre 9{,}7\,\% y 10{,}1\,\%, y Kubernetes entre 12{,}8\,\% y 13{,}4\,\%.
 La diferencia de unos 3 puntos entre ambos corresponde a la memoria que ocupa
 el plano de control de Kubernetes. Añadir cámaras no incrementa el consumo de
-forma significativa porque GStreamer reutiliza sus búferes internos.
+forma significativa porque voctocore reserva al arrancar las cuatro entradas
+del \textit{pipeline} de GStreamer independientemente de cuántas cámaras estén
+activas; cada cámara adicional solo incorpora un proceso FFmpeg de captura que
+ocupa entre 50 y 80\,MB.
 
 \begin{figure}[H]
   \centering
@@ -114,9 +118,13 @@ forma significativa porque GStreamer reutiliza sus búferes internos.
 
 El consumo neto de Voctomix es similar en los dos entornos, entre 25 y 32\,W en
 Docker y entre 25 y 36\,W en Kubernetes. La mayor dispersión en Kubernetes se
-debe a que el consumo base del clúster de Minikube no es constante; el pico de
-36\,W con tres cámaras refleja un momento de mayor actividad interna del clúster
-durante esa sesión concreta, no una tendencia sistemática. En términos de
+debe a que el consumo base del clúster de Minikube no es constante entre
+sesiones: la línea base medida con tres cámaras fue de 59{,}2\,W frente a los
+62\,W registrados en el resto de mediciones; al descontar un valor base menor,
+el consumo neto aparece inflado hasta 36{,}1\,W. Corrigiendo con la base media
+de 62\,W, el valor estimado sería de aproximadamente 26\,W, coherente con el
+resto de puntos de la curva de Kubernetes y comparable al escalado de Docker.
+No se trata, por tanto, de una tendencia sistemática. En términos de
 consumo atribuible a Voctomix, el pico de 32\,W con cuatro cámaras en Docker
 representa menos del 20\,\% del \ac{TDP} del procesador (165\,W), lo que garantiza
 margen de operación suficiente. En Kubernetes el consumo total es
