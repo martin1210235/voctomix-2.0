@@ -69,7 +69,22 @@ separator
 # ── Restart minikube for Phase 2 ──────────────────────────────────────────────
 log "Restarting minikube for K8s experiments..."
 minikube start --driver=docker --cpus=max --memory=max 2>&1 | tail -5 | tee -a "$LOG"
-log "Waiting 30s for control plane to stabilize..."
+log "Waiting 60s for control plane to stabilize..."
+sleep 60
+
+# ── Scale down studio pod (CRITICAL: prevents baseline contamination) ──────────
+# When minikube restarts, existing deployments (in 'default' or 'voctomix')
+# auto-restore. The studio pod consumes ~25W (RAPL), inflating the K8s idle
+# baseline and producing wrong or negative net energy values.
+log "Scaling down studio deployments to isolate K8s baseline..."
+for NS in default voctomix; do
+    if kubectl get deployment studio -n "$NS" 2>/dev/null | grep -q "studio"; then
+        log "  Scaling down studio in namespace: $NS"
+        kubectl scale deployment studio -n "$NS" --replicas=0 2>/dev/null | tee -a "$LOG" || true
+        kubectl wait --for=delete pods -l app=studio -n "$NS" --timeout=120s 2>/dev/null | tee -a "$LOG" || true
+    fi
+done
+log "Waiting 30s for RAPL/CPU to settle after studio pod exit..."
 sleep 30
 
 # ════════════════════════════════════════════════════════════════════════════════
@@ -80,6 +95,12 @@ log "PHASE 2 — Kubernetes / minikube (N=1 to 4)"
 separator
 
 for N in 1 2 3 4; do
+    # Guard: ensure previous voctomix-exp namespace is fully gone before applying the next
+    if kubectl get namespace voctomix-exp 2>/dev/null | grep -q "Terminating"; then
+        log "Waiting for voctomix-exp namespace to fully terminate before N=$N..."
+        kubectl wait --for=delete namespace/voctomix-exp --timeout=120s 2>/dev/null | tee -a "$LOG" || true
+        sleep 10
+    fi
     K8S_IDX[$N]=$(next_session)
     log "Starting K8s N=$N  →  session${K8S_IDX[$N]}.jsonl"
     bash "$SCRIPT_DIR/run_k8s_experiment.sh" "$N" 2>&1 | tee -a "$LOG"
