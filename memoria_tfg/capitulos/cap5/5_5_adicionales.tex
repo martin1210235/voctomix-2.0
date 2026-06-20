@@ -7,13 +7,14 @@ crezca de forma silenciosa hasta agotar los recursos del equipo. Estos
 problemas, conocidos como \textit{CPU creep} y fuga de memoria~\cite{huang1995software}, no aparecen
 en pruebas cortas y solo se detectan dejando el sistema en marcha durante un
 periodo prolongado. El objetivo de esta prueba es comprobar que Voctomix no
-presenta ninguno de estos comportamientos.
+presenta ninguno de estos comportamientos, tanto en Docker~Compose como en
+Kubernetes.
 
-Se arrancó el sistema completo en Docker~Compose con las cuatro cámaras activas
-y se dejó funcionando 31 minutos seguidos. Las fuentes de vídeo se generaron
-con FFmpeg directamente en el equipo para que nada externo pudiera fallar.
-Cada 5 segundos la telemetría anotaba el uso de CPU y RAM, acumulando 377
-muestras en total.
+Se arrancó el sistema completo con las cuatro cámaras activas y se dejó
+funcionando 31 minutos seguidos en cada entorno. Las fuentes de vídeo se
+generaron con FFmpeg directamente en el equipo para que nada externo pudiera
+fallar. Cada 5 segundos la telemetría anotaba el uso de CPU y RAM del sistema,
+acumulando 377 muestras en Docker~Compose y 372 en Kubernetes.
 
 \begin{figure}[H]
   \centering
@@ -34,27 +35,62 @@ muestras en total.
       \legend{CPU (\%), RAM (\%)}
     \end{axis}
   \end{tikzpicture}
-  \caption{Uso de CPU y RAM durante la prueba de estabilidad.}
-  \label{fig:estabilidad}
+  \caption{Uso de CPU y RAM durante la prueba de estabilidad en Docker~Compose.}
+  \label{fig:estabilidad_docker}
 \end{figure}
 
-La CPU se estabilizó en la banda del 50--60\,\% pasados los primeros minutos
-de arranque y se mantuvo estable sin ninguna tendencia creciente. El valor
-es algo superior al registrado en la sección~\ref{sec:rendimiento_sistema} porque en
-esta prueba los procesos FFmpeg de generación de vídeo también corren en el
-mismo equipo, añadiendo su carga a la de Voctomix. La RAM se mantuvo
-completamente plana durante toda la sesión, lo que confirma que no hay fuga de
-memoria. Durante toda la prueba no se registró ningún reinicio de contenedor ni
-ningún fallo, lo que confirma que el sistema es apto para retransmisiones de
-larga duración sin necesidad de supervisión continua.
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=13cm, height=6cm,
+      xlabel={Tiempo (min)},
+      ylabel={Uso (\%)},
+      xmin=0, xmax=31.5,
+      ymin=0, ymax=105,
+      ymajorgrids=true, grid style=dashed,
+      legend style={at={(0.97,0.97)}, anchor=north east, font=\scriptsize},
+    ]
+      \addplot[color=orange!80!black, thick, no marks]
+        coordinates {(0.00,26.5) (0.25,98.8) (0.50,98.7) (0.75,97.6) (1.00,54.8) (1.25,55.4) (1.50,53.7) (1.75,56.0) (2.00,54.5) (2.25,53.7) (2.50,55.8) (2.75,55.5) (3.00,56.6) (3.25,62.8) (3.50,56.4) (3.75,53.9) (4.00,56.6) (4.25,58.8) (4.50,56.3) (4.75,54.4) (5.00,54.0) (5.25,57.5) (5.50,55.5) (5.75,53.4) (6.00,56.9) (6.25,55.1) (6.50,55.7) (6.75,55.5) (7.00,54.1) (7.27,55.6) (7.52,56.6) (7.77,53.7) (8.02,58.0) (8.27,54.8) (8.52,54.8) (8.77,55.4) (9.02,53.9) (9.27,59.2) (9.52,54.8) (9.77,55.3) (10.02,56.4) (10.27,59.2) (10.52,59.5) (10.77,56.3) (11.02,55.0) (11.27,57.7) (11.52,55.7) (11.77,54.4) (12.02,56.9) (12.27,55.4) (12.52,54.0) (12.77,54.9) (13.02,58.1) (13.27,55.3) (13.52,55.5) (13.77,55.5) (14.02,55.0) (14.27,55.1) (14.52,53.5) (14.77,54.9) (15.02,55.9) (15.27,53.5) (15.52,55.0) (15.77,54.1) (16.02,57.6) (16.27,56.8) (16.52,53.8) (16.77,54.2) (17.02,56.4) (17.27,56.7) (17.52,55.2) (17.77,55.6) (18.02,56.7) (18.27,54.7) (18.52,54.8) (18.77,53.8) (19.02,59.3) (19.27,54.1) (19.52,54.9) (19.77,55.5) (20.02,56.7) (20.27,56.2) (20.52,54.6) (20.78,53.5) (21.03,58.6) (21.28,55.1) (21.53,54.3) (21.78,59.6) (22.03,57.2) (22.28,54.0) (22.53,55.7) (22.78,57.6) (23.03,58.5) (23.28,54.2) (23.53,53.8) (23.78,55.1) (24.03,55.9) (24.28,54.5) (24.53,55.6) (24.78,55.3) (25.03,57.1) (25.28,54.9) (25.53,55.1) (25.78,57.4) (26.03,55.3) (26.28,54.1) (26.53,56.7) (26.78,54.4) (27.03,56.3) (27.28,55.3) (27.53,57.5) (27.78,57.7) (28.03,55.8) (28.28,53.9) (28.53,59.6) (28.78,57.0) (29.03,53.4) (29.28,55.8) (29.53,57.3) (29.78,57.5) (30.03,55.7) (30.28,57.0) (30.53,56.1) (30.78,57.5)};
+      \addplot[color=blue!70!black, thick, no marks]
+        coordinates {(0.00,21.3) (0.25,24.2) (0.50,24.0) (0.75,23.1) (1.00,21.5) (1.25,21.6) (1.50,21.6) (1.75,21.7) (2.00,21.7) (2.25,21.7) (2.50,21.7) (2.75,21.7) (3.00,21.7) (3.25,21.9) (3.50,21.8) (3.75,21.9) (4.00,21.8) (4.25,22.0) (4.50,21.8) (4.75,21.8) (5.00,21.9) (5.25,21.9) (5.50,21.9) (5.75,21.9) (6.00,21.9) (6.25,21.9) (6.50,21.9) (6.75,21.9) (7.00,21.8) (7.27,21.9) (7.52,21.8) (7.77,21.8) (8.02,21.9) (8.27,21.9) (8.52,21.9) (8.77,21.9) (9.02,21.9) (9.27,21.7) (9.52,21.8) (9.77,21.8) (10.02,21.9) (10.27,21.8) (10.52,21.9) (10.77,21.9) (11.02,21.9) (11.27,21.9) (11.52,21.9) (11.77,21.8) (12.02,22.0) (12.27,21.9) (12.52,22.0) (12.77,21.8) (13.02,22.0) (13.27,21.9) (13.52,22.0) (13.77,22.0) (14.02,22.0) (14.27,21.6) (14.52,21.7) (14.77,21.9) (15.02,21.8) (15.27,21.8) (15.52,21.8) (15.77,21.8) (16.02,21.7) (16.27,21.8) (16.52,21.8) (16.77,21.9) (17.02,21.8) (17.27,21.9) (17.52,21.9) (17.77,21.8) (18.02,21.8) (18.27,21.9) (18.52,21.8) (18.77,21.9) (19.02,21.8) (19.27,21.9) (19.52,21.8) (19.77,21.9) (20.02,21.9) (20.27,21.8) (20.52,22.0) (20.78,22.0) (21.03,21.9) (21.28,21.8) (21.53,21.8) (21.78,21.7) (22.03,21.8) (22.28,21.8) (22.53,21.8) (22.78,21.5) (23.03,21.7) (23.28,21.7) (23.53,21.9) (23.78,21.8) (24.03,21.8) (24.28,21.7) (24.53,21.8) (24.78,21.8) (25.03,21.8) (25.28,21.6) (25.53,21.9) (25.78,21.8) (26.03,21.9) (26.28,21.9) (26.53,21.8) (26.78,21.8) (27.03,21.8) (27.28,21.8) (27.53,21.8) (27.78,21.8) (28.03,21.9) (28.28,22.0) (28.53,21.8) (28.78,21.9) (29.03,21.8) (29.28,21.6) (29.53,21.6) (29.78,21.7) (30.03,21.6) (30.28,21.6) (30.53,21.6) (30.78,21.8)};
+      \legend{CPU (\%), RAM (\%)}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Uso de CPU y RAM durante la prueba de estabilidad en Kubernetes (Minikube).
+           El pico de CPU en los primeros 60 segundos corresponde a la inicialización
+           simultánea de los diez contenedores del \textit{pod}.}
+  \label{fig:estabilidad_k8s}
+\end{figure}
+
+En Docker~Compose la CPU se estabilizó en la banda del 50--60\,\% pasados los
+primeros minutos de arranque y se mantuvo estable sin ninguna tendencia
+creciente. En Kubernetes el comportamiento fue análogo: pasado el primer minuto
+de inicialización, en el que la carga sube momentáneamente hasta casi el
+100\,\% mientras los diez contenedores del \textit{pod} arrancan de forma
+simultánea, la CPU se estabilizó igualmente en torno al 55--57\,\%. La
+diferencia de aproximadamente 3 puntos porcentuales respecto a Docker se debe
+al \textit{overhead} añadido por el \textit{kubelet} y el \textit{runtime} de
+contenedores de Kubernetes, que ejecutan procesos de supervisión y gestión de
+forma continua. En ambos casos la RAM se mantuvo completamente plana durante
+toda la sesión, lo que confirma que no hay fuga de memoria en ninguno de los
+dos entornos. Durante toda la prueba no se registró ningún reinicio de
+contenedor ni ningún fallo, lo que confirma que el sistema es apto para
+retransmisiones de larga duración sin necesidad de supervisión continua,
+independientemente del entorno de despliegue utilizado.
 
 \section{Resiliencia y recuperación}
 \label{sec:resiliencia}
 
-Se midió cuánto tarda el sistema en recuperarse de forma autónoma cuando una cámara falla.
-Para ello se terminó el proceso principal del contenedor cam1 mediante \texttt{kill -9},
-simulando un fallo real, y se cronometró el tiempo hasta que Docker lo reinició
-y lo declaró \textit{healthy}. Se repitió 10 veces.
+Se midió cuánto tarda el sistema en recuperarse de forma autónoma cuando una
+cámara falla. Para ello se terminó el proceso principal del contenedor cam1
+mediante \texttt{kill -9}, simulando un fallo real, y se cronometró el tiempo
+hasta que el sistema lo reinició y lo declaró operativo de nuevo. La prueba se
+realizó en ambos entornos: 10 iteraciones en Docker~Compose y 5 iteraciones en
+Kubernetes, con una espera de 12 minutos entre cada \textit{kill} para garantizar
+que el contador de reintentos del sistema se reinicia entre mediciones y no
+penaliza los tiempos de recuperación sucesivos.
 
 \begin{figure}[H]
   \centering
@@ -76,13 +112,44 @@ y lo declaró \textit{healthy}. Se repitió 10 veces.
     \end{axis}
   \end{tikzpicture}
   \caption{Tiempo de recuperación del contenedor cam1 en cada iteración
+           en Docker~Compose
            (el eje Y empieza en 510\,ms para mostrar la variación entre mediciones).}
-  \label{fig:resiliencia}
+  \label{fig:resiliencia_docker}
 \end{figure}
 
-El sistema se recuperó siempre en torno a 520\,ms, con una variación máxima de
-10\,ms entre iteraciones. Este resultado es positivo para una retransmisión en directo: si una cámara
-cae en medio de una emisión, el sistema la devuelve automáticamente en menos
-de un segundo, sin intervención del operador. El espectador difícilmente lo
-percibiría, ya que el mezclador puede seguir emitiendo con las otras cámaras
-mientras tanto.
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      ybar,
+      width=9cm, height=5.5cm,
+      xlabel={Iteración},
+      ylabel={Tiempo de recuperación (ms)},
+      xtick={1,2,3,4,5},
+      xticklabel style={font=\small},
+      xmin=0.3, xmax=5.7,
+      ymin=545, ymax=585,
+      ymajorgrids=true, grid style=dashed,
+      bar width=0.8cm,
+    ]
+      \addplot[fill=orange!30, draw=orange!70]
+        coordinates {(1,568)(2,555)(3,563)(4,566)(5,576)};
+    \end{axis}
+  \end{tikzpicture}
+  \caption{Tiempo de recuperación del contenedor cam1 en cada iteración
+           en Kubernetes (Minikube)
+           (el eje Y empieza en 545\,ms para mostrar la variación entre mediciones).}
+  \label{fig:resiliencia_k8s}
+\end{figure}
+
+En Docker~Compose el sistema se recuperó siempre en torno a 520\,ms, con una
+variación máxima de 10\,ms entre iteraciones. En Kubernetes la recuperación fue
+algo más lenta, con una mediana de 566\,ms y una variación de 21\,ms, lo que
+supone un incremento del 9\,\% respecto a Docker. Esta diferencia se debe a que
+Kubernetes no detecta el fallo del contenedor de forma inmediata, sino que lo
+hace a través de ciclos de supervisión del \textit{kubelet}
+que añaden unos 40--50\,ms de latencia. En ambos casos el resultado es positivo
+para una retransmisión en directo: si una cámara cae en medio de una emisión,
+el sistema la devuelve automáticamente en menos de un segundo, sin intervención
+del operador. El espectador difícilmente lo percibiría, ya que el mezclador
+puede seguir emitiendo con las otras cámaras mientras tanto.
