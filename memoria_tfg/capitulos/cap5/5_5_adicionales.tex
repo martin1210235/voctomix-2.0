@@ -58,9 +58,7 @@ acumulando 377 muestras en Docker~Compose y 372 en Kubernetes.
       \legend{CPU (\%), RAM (\%)}
     \end{axis}
   \end{tikzpicture}
-  \caption{Uso de CPU y RAM durante la prueba de estabilidad en Kubernetes (Minikube).
-           El pico de CPU en los primeros 60 segundos corresponde a la inicialización
-           simultánea de los diez contenedores del \textit{pod}.}
+  \caption{Uso de CPU y RAM durante la prueba de estabilidad en Kubernetes Minikube.}
   \label{fig:estabilidad_k8s}
 \end{figure}
 
@@ -70,7 +68,7 @@ creciente. En Kubernetes el comportamiento fue análogo: pasado el primer minuto
 de inicialización, en el que la carga sube momentáneamente hasta casi el
 100\,\% mientras los diez contenedores del \textit{pod} arrancan de forma
 simultánea, la CPU se estabilizó igualmente en torno al 55--57\,\%. La
-diferencia de aproximadamente 3 puntos porcentuales respecto a Docker se debe
+diferencia de aproximadamente 3\,\% respecto a Docker se debe
 al \textit{overhead} añadido por el \textit{kubelet} y el \textit{runtime} de
 contenedores de Kubernetes, que ejecutan procesos de supervisión y gestión de
 forma continua. En ambos casos la RAM se mantuvo completamente plana durante
