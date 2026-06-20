@@ -54,7 +54,7 @@ específica de \textit{media}.
     \hline
     RTMP      & 2--5~s      & TCP    & No (RTMPS sí) & Ingesta a plataformas \\
     HLS       & 2--30~s     & HTTP   & HTTPS         & Reproducción masiva (CDN) \\
-    MPEG-DASH & 2--30~s     & HTTP   & HTTPS         & Streaming adaptativo abierto \\
+    MPEG-DASH & 2--30~s     & HTTP   & HTTPS         & \textit{Streaming} adaptativo abierto \\
     WebRTC    & 100--500~ms & UDP    & DTLS/SRTP     & Monitorización, retornos \\
     \hline
   \end{tabularx}
@@ -152,7 +152,7 @@ pérdida de calidad a cambio de viabilizar el transporte.
   \textit{streaming} (YouTube, Twitch, Apple Music) y en HLS; Opus es el códec de
   audio obligatorio en WebRTC (RFC~7874) y el preferido en aplicaciones de
   comunicación en tiempo real por su baja latencia y alta eficiencia a bitrates
-  reducidos.
+  reducidos~\cite{rfc7874}.
 
   \item \textbf{AC-3 / AC-4 (Dolby):} AC-3 (\textit{Dolby Digital},
   ATSC~A/52)~\cite{atsc_a52} es el códec de audio dominante en distribución \textit{broadcast}

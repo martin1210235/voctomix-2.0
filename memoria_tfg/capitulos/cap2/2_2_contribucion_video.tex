@@ -88,7 +88,7 @@ contribución son:
   mayoría de fabricantes de cámaras y sistemas de archivo profesionales. Encapsula
   vídeo comprimido (MPEG-2, AVC-Intra, ProRes), audio multicanal y metadatos de
   producción en un único fichero con soporte de \textit{timecode frame-accurate}.
-  Fabricantes como Sony (XDCAM), Panasonic~(P2), Canon~(XF-AVC) y Grass Valley
+  Fabricantes como Sony (XDCAM), Panasonic~(P2), Canon~(XF-AVC~\cite{canon_xf_avc}) y Grass Valley
   utilizan MXF como formato de grabación y contribución nativo, convirtiéndolo en el
   contenedor de intercambio estándar entre el lugar del evento y el centro de producción.
 
@@ -172,7 +172,7 @@ múltiples etapas de procesamiento.
     \hline
     \textbf{Códec} & \textbf{Compresión} & \textbf{Latencia enc.} & \textbf{Uso típico} \\
     \hline
-    RAW (I420/UYVY)     & Sin compresión & Nula           & Vídeo interno Voctomix / estudio \\
+    RAW (I420)          & Sin compresión & Nula           & Vídeo interno Voctomix / estudio \\
     PCM S16LE (audio)   & Sin compresión & Nula           & Audio interno Voctomix \\
     Apple ProRes        & 4:1 -- 8:1     & $<$1 fotograma & Producción TV, postproducción \\
     VC-3 / DNxHD        & 4:1 -- 7:1     & $<$1 fotograma & Broadcast, Avid workflows \\
