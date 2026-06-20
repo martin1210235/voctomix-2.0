@@ -148,7 +148,8 @@ el tiempo real de recuperación, sin distorsión acumulada. Se realizaron
 Los ejes Y de las figuras~\ref{fig:resiliencia_docker}
 y~\ref{fig:resiliencia_k8s} no empiezan en cero: parten de 510\,ms y 545\,ms
 respectivamente para que la pequeña variación entre iteraciones sea visible;
-en términos absolutos todos los valores caen en una banda de 29\,ms.
+en términos absolutos, todos los tiempos de Docker se sitúan entre 516 y 526\,ms,
+y los de Kubernetes entre 555 y 584\,ms.
 En Docker~Compose la recuperación fue siempre de unos 520\,ms, con apenas
 10\,ms de variación entre las 10 iteraciones. En Kubernetes fue algo más
 lento: la mediana es de 570\,ms y la variación de 29\,ms, un 10\,\% por encima
