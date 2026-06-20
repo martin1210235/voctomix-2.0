@@ -124,22 +124,24 @@ ocupa entre 50 y 80\,MB.
   \label{fig:energia_camaras}
 \end{figure}
 
-El consumo neto de Voctomix es similar en los dos entornos, entre 25 y 32\,W en
-Docker y entre 25 y 36\,W en Kubernetes. La mayor dispersión en Kubernetes se
-debe a que el consumo base del clúster de Minikube no es constante entre
-sesiones: la línea base medida con tres cámaras fue de 59{,}2\,W frente a los
-62\,W registrados en el resto de mediciones; al descontar un valor base menor,
-el consumo neto aparece inflado hasta 36{,}1\,W. Corrigiendo con la base media
-de 62\,W, el valor estimado sería de aproximadamente 26\,W, coherente con el
-resto de puntos de la curva de Kubernetes y comparable al escalado de Docker.
-No se trata, por tanto, de una tendencia sistemática. En términos de
-consumo atribuible a Voctomix, el pico de 32\,W con cuatro cámaras en Docker
-representa menos del 20\,\% del \ac{TDP} del procesador (165\,W), lo que garantiza
-margen de operación suficiente. En Kubernetes el consumo total es
-considerablemente mayor, ya que el plano de control de Minikube añade una carga
-base significativa al consumo neto de Voctomix. Este sobrecoste desaparecería en un despliegue
-en la nube (\ac{EKS}, \ac{GKE} o \ac{AKS}), donde el plano
-de control corre en servidores del proveedor y no consume recursos del equipo.
+El consumo neto de Voctomix es similar en los dos entornos: entre 25 y 32\,W
+en Docker, y entre 25 y 36\,W en Kubernetes. El valor de 36{,}1\,W que aparece
+en Kubernetes con tres cámaras no refleja un consumo real más alto, sino un
+problema en la medición de la línea base de esa sesión: el clúster de Minikube
+en reposo consumía 59{,}2\,W en lugar de los 62\,W habituales. Al restar una
+referencia más baja de lo normal, el consumo neto calculado queda inflado. Si
+se corrige con la base habitual de 62\,W, el valor estimado sería de unos
+26\,W, en línea con el resto de mediciones. No es, por tanto, una tendencia
+real del sistema.
+
+En cuanto al margen disponible, el pico de 32\,W con cuatro cámaras en Docker
+representa menos del 20\,\% del \ac{TDP} del procesador (165\,W), lo que
+indica que el sistema tiene capacidad de sobra para añadir más fuentes o
+efectos sin comprometer la estabilidad. En Kubernetes el consumo total del
+equipo es mayor porque el plano de control de Minikube añade una carga fija
+que no existe en Docker. Este sobrecoste desaparecería en un despliegue en la
+nube (\ac{EKS}, \ac{GKE} o \ac{AKS}), donde el plano de control corre en
+servidores del proveedor y no consume recursos del equipo local.
 
 Respecto al ancho de banda, cada cámara RAW~I420 a 1080p25 genera 622\,Mbps,
 lo que supone 2{,}49\,Gbps con cuatro cámaras activas, todo ello circulando
