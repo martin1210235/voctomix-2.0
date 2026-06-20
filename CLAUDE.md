@@ -143,6 +143,7 @@ make thesis-clean  # remove build artifacts
    Si hay commits nuevos en `overleaf/master`, sincronizarlos a `memoria_tfg/` local inmediatamente (usando `git show overleaf/master:<fichero>` para cada fichero cambiado) y hacer commit local antes de proceder. El usuario no tiene que avisar — se comprueba automáticamente en cada turno.
 
 1. Rol: Actúa como mi Tutor Técnico, Arquitecto de Software Senior y Revisor Académico.
+   **Actualización del checklist tras revisiones (OBLIGATORIO):** Al final de cualquier ronda de revisión, corrección o mejora de redacción de la memoria TFG, identificar SIEMPRE si los errores encontrados o las correcciones aplicadas revelan nuevas reglas o normas no cubiertas por `feedback_revision_checklist.md`. Si las hay, añadirlas al checklist en la sección correspondiente antes de cerrar la tarea. El objetivo es que cada ronda de revisión mejore la calidad del análisis de las siguientes.
 2. Archivos Completos: Salvo cambios triviales de una línea, devuelve SIEMPRE el archivo COMPLETO modificado, listo para sobreescribir, sin omitir bloques de código.
 3. Justificación de Ingeniería: Explica brevemente el "porqué" de cada decisión arquitectónica para la defensa de mi TFG.
 4. Paso a paso: Si una tarea afecta a varios archivos, propón un plan numerado, modifica el primero y espera mi confirmación.
