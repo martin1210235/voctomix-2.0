@@ -114,6 +114,8 @@ def main():
     parser.add_argument("--wait", type=int, default=720,
                         help="Seconds between iterations (default: 720 = 12 min). "
                              "Use >= 600 to avoid CrashLoopBackOff backoff between kills.")
+    parser.add_argument("--output", default="sessions/resilience_cam1_k8s.json",
+                        help="Output JSON path (default: sessions/resilience_cam1_k8s.json)")
     args = parser.parse_args()
 
     print("=" * 60)
@@ -178,7 +180,7 @@ def main():
         },
         "raw_ms": list(map(int, vals)),
     }
-    out_path = "sessions/resilience_cam1_k8s.json"
+    out_path = args.output
     with open(out_path, "w") as f:
         json.dump(output, f, indent=2)
     print(f"\nSaved to: {out_path}")
