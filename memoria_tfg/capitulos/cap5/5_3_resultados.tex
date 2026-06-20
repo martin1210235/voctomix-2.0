@@ -47,6 +47,14 @@ porque Minikube ejecuta en el mismo equipo los cuatro procesos de gestión del
 clúster, que consumen ese 50\,\% por sí solos incluso con una sola cámara
 activa. El trabajo de mezcla de vídeo es idéntico en los dos entornos, pero en
 Kubernetes queda oculto detrás de ese consumo fijo del plano de control.
+El incremento de 5{,}3\,pp distribuido en tres cámaras adicionales supone un coste medio
+de 1{,}8\,pp por fuente activa, lo que refleja la eficiencia del procesado de GStreamer:
+con cuatro cámaras, el sistema ocupa únicamente el 38{,}8\,\% de la capacidad del
+procesador, dejando margen amplio para incorporar más fuentes o efectos en tiempo real
+sin comprometer la estabilidad. En un despliegue en la nube, donde el plano de control
+de Kubernetes se ejecuta en servidores del proveedor sin compartir recursos con
+\texttt{voctocore}, el perfil de escalado de CPU sería equivalente al observado en
+Docker~Compose.
 
 \begin{figure}[H]
   \centering

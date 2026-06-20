@@ -84,11 +84,19 @@ independientemente del entorno de despliegue utilizado.
 Se midió cuánto tarda el sistema en recuperarse de forma autónoma cuando una
 cámara falla. Para ello se terminó el proceso principal del contenedor cam1
 mediante \texttt{kill -9}, simulando un fallo real, y se cronometró el tiempo
-hasta que el sistema lo reinició y lo declaró operativo de nuevo. La prueba se
-realizó en ambos entornos: 10 iteraciones en Docker~Compose y 5 iteraciones en
-Kubernetes, con una espera de 12 minutos entre cada \textit{kill} para garantizar
-que el contador de reintentos del sistema se reinicia entre mediciones y no
-penaliza los tiempos de recuperación sucesivos.
+hasta que el sistema lo reinició y lo declaró operativo de nuevo.
+
+En Docker~Compose el demonio de contenedores reinicia el proceso de forma
+inmediata sin penalización, por lo que fue posible realizar las 10 iteraciones
+de forma consecutiva. En Kubernetes, en cambio, fue necesario esperar
+12 minutos entre cada \textit{kill}. El motivo es el mecanismo
+\textit{CrashLoopBackOff}: cuando Kubernetes detecta que un contenedor se
+reinicia con demasiada frecuencia, impone esperas exponenciales crecientes
+(de 10 a 300 segundos) para evitar que un proceso defectuoso consuma recursos
+indefinidamente. Este contador se resetea solo cuando el contenedor lleva más
+de 10 minutos en ejecución estable, de modo que respetar esa ventana entre
+mediciones garantiza que cada cronometrado refleja el tiempo de recuperación
+real, sin penalización acumulada. Se realizaron 5 iteraciones en Kubernetes.
 
 \begin{figure}[H]
   \centering
