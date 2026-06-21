@@ -19,24 +19,26 @@ Se han implementado los cuatro modos de composición de imagen con transiciones
 animadas entre ellos, la rotulación dinámica con fundido de entrada y salida
 configurable y desactivación automática en cada corte, el gestor de estados de
 emisión con tres modos (LIVE, PAUSE y NOSTREAM) que permiten interrumpir la señal
-de salida sin detener el procesamiento interno, y la sincronización automática del
-audio con la fuente activa, que elimina la gestión manual del audio durante la
-producción.
+de salida sin detener el procesamiento interno, y la selección automática del audio según la fuente de vídeo activa (Audio Follows Video),
+que elimina la gestión manual del audio durante la producción.
 
 \vspace{0.2cm}
 \noindent\textbf{OE-2: Servicio de telemetría.}
 El servicio de telemetría registra en tiempo real los eventos de operación del mezclador
 (tipo CHANGE) y el estado periódico del sistema (tipo STATE, cada 5 segundos) en
 formato JSON Lines. Los eventos se publican simultáneamente en un \textit{broker} RabbitMQ
-mediante AMQP, lo que permite su integración con sistemas externos de monitorización
-o análisis sin modificar el núcleo de la aplicación. Los datos obtenidos han permitido caracterizar el comportamiento del sistema en los
-cuatro escenarios de despliegue.
+mediante \acs{AMQP}, lo que permite su integración con sistemas externos de monitorización
+o análisis sin modificar el núcleo de la aplicación; los datos obtenidos han permitido además
+caracterizar el comportamiento del sistema en los cuatro escenarios de despliegue.
 
 \vspace{0.2cm}
 \noindent\textbf{OE-3: Contenerización con Docker.}
-El sistema completo se ha empaquetado en una pila de diez contenedores Docker orquestada
-con Docker Compose, incluyendo voctocore, cuatro fuentes de cámara sintéticas, el \textit{stream blanker}, el gestor de audio, el \textit{broker} RabbitMQ y el servicio de telemetría. El despliegue completo se realiza con un único comando (\texttt{docker compose up}),
-eliminando la instalación manual de dependencias de GStreamer y Python.
+El sistema completo se ha empaquetado en una pila de once contenedores Docker orquestada
+con Docker Compose, incluyendo voctocore, seis fuentes de vídeo, el \textit{stream blanker},
+el gestor de audio, el \textit{broker} RabbitMQ y el servicio de telemetría.
+El sistema arranca ejecutando \texttt{make docker-up}: el comando levanta los once servicios,
+espera a que voctocore esté listo y lanza voctogui de forma nativa en el equipo, sin
+necesidad de instalar manualmente GStreamer ni Python.
 
 \vspace{0.2cm}
 \noindent\textbf{OE-4: Despliegue en Kubernetes.}
