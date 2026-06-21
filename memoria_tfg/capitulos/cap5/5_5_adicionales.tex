@@ -15,6 +15,7 @@ funcionando 31 minutos seguidos en cada entorno. Las fuentes de vídeo se
 generaron con FFmpeg directamente en el equipo para que nada externo pudiera
 fallar. Cada 5 segundos la telemetría anotaba el uso de CPU y RAM del sistema,
 acumulando 377 muestras en Docker~Compose y 372 en Kubernetes.
+Las figuras~\ref{fig:estabilidad_docker} y~\ref{fig:estabilidad_k8s} muestran la evolución temporal del uso de CPU y RAM en cada entorno.
 
 \begin{figure}[H]
   \centering
@@ -62,12 +63,13 @@ acumulando 377 muestras en Docker~Compose y 372 en Kubernetes.
   \label{fig:estabilidad_k8s}
 \end{figure}
 
-En Docker~Compose la CPU se estabilizó en la banda del 50--60\,\% pasados los
-primeros minutos de arranque y se mantuvo estable sin ninguna tendencia
-creciente. En Kubernetes el comportamiento fue análogo: pasado el primer minuto
+En Docker~Compose la CPU presentó valores de hasta el 63\,\% durante los
+primeros ocho minutos de arranque y se estabilizó a continuación en la banda
+del 49--58\,\%, sin ninguna tendencia creciente a lo largo de toda la sesión.
+En Kubernetes el comportamiento fue análogo: pasado el primer minuto
 de inicialización, en el que la carga sube momentáneamente hasta casi el
-100\,\% mientras los diez contenedores del \textit{pod} arrancan de forma
-simultánea, la CPU se estabilizó igualmente en torno al 55--57\,\%. La
+100\,\% mientras los diez contenedores del pod arrancan de forma
+simultánea, la CPU se estabilizó igualmente en la banda del 54--60\,\%. La
 diferencia de aproximadamente 3\,\% respecto a Docker se debe
 al \textit{overhead} añadido por el \textit{kubelet} y el \textit{runtime} de
 contenedores de Kubernetes, que ejecutan procesos de supervisión y gestión de
@@ -96,6 +98,7 @@ penalización se reinicia después de 10 minutos de funcionamiento estable, así
 que esperar 12 minutos entre mediciones garantiza que cada cronometrado refleja
 el tiempo real de recuperación, sin distorsión acumulada. Se realizaron
 10 iteraciones en Kubernetes.
+Las figuras~\ref{fig:resiliencia_docker} y~\ref{fig:resiliencia_k8s} muestran el tiempo de recuperación en cada iteración.
 
 \begin{figure}[H]
   \centering

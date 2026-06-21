@@ -42,7 +42,7 @@ La figura~\ref{fig:cpu_camaras} muestra el uso de CPU en cada entorno.
 
 En Docker la CPU escala con el número de cámaras, de 33{,}5\,\% con una a
 38{,}8\,\% con cuatro (+5{,}3\,pp), porque cada fuente añade trabajo real al
-\textit{pipeline} de GStreamer. En Kubernetes, en cambio, la CPU se mantiene
+pipeline de GStreamer. En Kubernetes, en cambio, la CPU se mantiene
 fija en torno al 50\,\% independientemente del número de cámaras. Esto ocurre
 porque Minikube ejecuta en el mismo equipo los cuatro procesos de gestión del
 clúster, que consumen ese 50\,\% por sí solos incluso con una sola cámara
@@ -92,7 +92,7 @@ entre 9{,}7\,\% y 10{,}1\,\%, y Kubernetes entre 12{,}8\,\% y 13{,}4\,\%.
 La diferencia de unos 3 puntos entre ambos corresponde a la memoria que ocupa
 el plano de control de Kubernetes. Añadir cámaras no incrementa el consumo de
 forma significativa porque voctocore reserva al arrancar las cuatro entradas
-del \textit{pipeline} de GStreamer independientemente de cuántas cámaras estén
+del pipeline de GStreamer independientemente de cuántas cámaras estén
 activas; cada cámara adicional solo incorpora un proceso FFmpeg de captura que
 ocupa entre 50 y 80\,MB.
 La figura~\ref{fig:energia_camaras} muestra el consumo energético neto.
@@ -224,7 +224,7 @@ conocer cuánto tarda en cambiar el modo de composición, es decir, pasar por ej
 ver una sola cámara en pantalla completa a verlas en pantalla dividida. Esta
 operación es diferente a un corte de cámara porque GStreamer tiene que animar
 la mezcla fotograma a fotograma, y para hacerlo de forma sincronizada espera al
-siguiente ciclo de procesado del \textit{pipeline}, que ocurre cada 40\,ms a 25\,fps.
+siguiente ciclo de procesado del pipeline, que ocurre cada 40\,ms a 25\,fps.
 Conocer esta latencia permite evaluar si el operador percibirá retraso
 al usar los modos de composición durante una retransmisión.
 

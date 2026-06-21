@@ -26,7 +26,7 @@ la gestión manual durante la producción.
 \noindent\textbf{OE-2: Servicio de telemetría.}
 El servicio de telemetría registra en tiempo real los eventos de operación del mezclador
 (tipo \texttt{CHANGE}) y el estado periódico del sistema (tipo \texttt{STATE}, cada 5~segundos) en
-formato JSON Lines. Los eventos se publican simultáneamente en un \textit{broker} RabbitMQ
+formato JSON Lines. Los eventos se publican simultáneamente en un broker RabbitMQ
 mediante \acs{AMQP}, lo que permite su integración con sistemas externos de monitorización
 o análisis sin modificar el núcleo de la aplicación; los datos obtenidos han permitido además
 caracterizar el comportamiento del sistema en los cuatro escenarios de despliegue.
@@ -34,8 +34,8 @@ caracterizar el comportamiento del sistema en los cuatro escenarios de despliegu
 \vspace{0.2cm}
 \noindent\textbf{OE-3: Contenerización con Docker.}
 El sistema completo se ha empaquetado en una pila de once contenedores Docker orquestada
-con Docker Compose, incluyendo voctocore, seis fuentes de vídeo, el \textit{stream blanker},
-el gestor de audio, el \textit{broker} RabbitMQ y el servicio de telemetría.
+con Docker Compose, incluyendo voctocore, seis fuentes de vídeo, el stream blanker,
+el gestor de audio, el broker RabbitMQ y el servicio de telemetría.
 El sistema arranca ejecutando \texttt{make docker-up}: el comando levanta los once servicios,
 espera a que voctocore esté listo y lanza voctogui de forma nativa en el equipo, sin
 necesidad de instalar manualmente GStreamer ni Python.
@@ -79,7 +79,7 @@ y las secciones de la memoria donde se documentan.
     \hline
     \textbf{Obj.} & \textbf{Descripción} & \textbf{Estado} & \textbf{Sección} \\
     \hline
-    OE-1 & Composición, rotulación, \textit{stream blanker} y AFV & Cumplido & \S\ref{sec:overlays}, \S\ref{sec:fuentes_auxiliares} \\
+    OE-1 & Composición, rotulación, stream blanker y AFV & Cumplido & \S\ref{sec:overlays}, \S\ref{sec:fuentes_auxiliares} \\
     OE-2 & Telemetría JSON + RabbitMQ        & Cumplido & \S\ref{sec:telemetria} \\
     OE-3 & Contenerización Docker Compose    & Cumplido & \S\ref{sec:docker} \\
     OE-4 & Despliegue en Kubernetes          & Cumplido & \S\ref{sec:kubernetes} \\
@@ -92,8 +92,8 @@ y las secciones de la memoria donde se documentan.
 \vspace{0.3cm}
 
 El trabajo ha demostrado que es posible construir una plataforma de producción
-audiovisual profesional íntegramente sobre \textit{software} libre. GStreamer ha sido la pieza
-central: su modelo de \textit{pipeline} modular ha permitido integrar cada nueva
+audiovisual profesional íntegramente sobre software libre. GStreamer ha sido la pieza
+central: su modelo de pipeline modular ha permitido integrar cada nueva
 funcionalidad como un módulo independiente sin modificar el núcleo original, lo que
 facilita el mantenimiento y la extensión del sistema.
 
