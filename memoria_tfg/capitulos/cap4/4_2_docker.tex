@@ -40,10 +40,10 @@ Voctogui se conecta a voctocore a través del puerto~9999 y comparte los recurso
 visuales como logos e imágenes de fondo mediante un volumen Docker, por lo que se
 pueden modificar sin tener que reconstruir la imagen. Durante las pruebas se detectó
 que algunos contenedores intentaban conectarse a voctocore antes de que estuviera
-listo, lo que causaba fallos en el arranque. Para resolverlo, Docker reinicia
-automáticamente cualquier contenedor que falle y antes de lanzar cada servicio se
-verifica que el puerto~9999 está disponible, lo que garantiza un despliegue robusto
-y repetible en cualquier máquina con Docker instalado
+listo, lo que causaba fallos en el arranque. Para resolverlo se aplican dos medidas
+independientes: Docker reinicia automáticamente cualquier contenedor que falle; además,
+antes de lanzar cada servicio se comprueba que el puerto~9999 está disponible. Ambas
+garantizan un despliegue robusto y repetible en cualquier máquina con Docker instalado
 (figura~\ref{fig:escenario_docker}).
 
 \begin{figure}[H]
@@ -52,3 +52,6 @@ y repetible en cualquier máquina con Docker instalado
   \caption{Escenario de despliegue con Docker Compose.}
   \label{fig:escenario_docker}
 \end{figure}
+
+La Sección~\ref{sec:kubernetes} describe cómo este mismo sistema se despliega sobre
+un clúster Kubernetes para entornos de investigación como el proyecto CyberNEMO.

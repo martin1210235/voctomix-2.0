@@ -15,7 +15,7 @@ se agrupan en el mismo pod, comparten automáticamente la interfaz de red, es de
 ven el mismo \texttt{localhost}. Este comportamiento resuelve de forma nativa el mismo
 problema de aislamiento de red que en Docker se solucionó con el espacio de red compartido.
 El pod principal, llamado \texttt{studio}, agrupa voctocore, todas las fuentes de vídeo
-(cam1--4, break, intro, \textit{stream blanker} y audio manager) y el servicio de telemetría. Al compartir pod, todas las conexiones
+(cam1--4, break, intro, \textit{stream blanker} y \textit{audio manager}) y el servicio de telemetría. Al compartir pod, todas las conexiones
 TCP internas funcionan sin modificar una sola línea de código. RabbitMQ se despliega en un
 pod independiente; la telemetría le publica sus eventos mediante \acs{AMQP}.
 
