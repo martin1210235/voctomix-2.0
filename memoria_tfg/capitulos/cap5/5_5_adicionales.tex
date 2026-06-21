@@ -88,7 +88,7 @@ ello se mató el proceso principal del contenedor cam1 con \texttt{kill -9},
 simulando un fallo real, y se cronometró el tiempo hasta que el contenedor
 volvió a estar operativo.
 
-En Docker~Compose la recuperación es inmediata y sin penalización, por lo que
+En Docker~Compose no existe penalización entre reinicios consecutivos, por lo que
 las 10 iteraciones se realizaron de forma consecutiva. En Kubernetes fue
 necesario esperar 12 minutos entre cada \textit{kill}. Esto se debe al
 mecanismo \textit{CrashLoopBackOff}: si un contenedor se reinicia demasiadas
