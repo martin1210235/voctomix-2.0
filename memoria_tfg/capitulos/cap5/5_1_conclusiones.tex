@@ -27,14 +27,15 @@ del audio durante la producción.
 El servicio de telemetría registra en tiempo real los eventos de operación del mezclador:
 el tipo CHANGE, emitido de forma inmediata ante cualquier acción, y el tipo STATE, que
 publica el estado completo del sistema cada 5 segundos. Los eventos se almacenan
-localmente en formato JSON Lines y se publican en un \textit{broker} RabbitMQ mediante AMQP,
+localmente en formato JSON Lines y se publican en un \textit{broker} RabbitMQ mediante \acs{AMQP},
 lo que permite integrar el sistema con herramientas externas sin modificar el núcleo
 de la aplicación.
 
 \vspace{0.2cm}
 \noindent\textbf{OE-3: Contenerización con Docker.}
-El sistema completo se ha empaquetado en diez contenedores Docker orquestados con
-Docker Compose: voctocore, cuatro fuentes sintéticas, el \textit{stream blanker}, el gestor
+El sistema completo se ha empaquetado en once servicios Docker orquestados con
+Docker Compose: voctocore, cuatro cámaras sintéticas, las fuentes de pausa
+(\texttt{break}) e introducción (\texttt{intro}), el \textit{stream blanker}, el gestor
 de audio, el \textit{broker} RabbitMQ y el servicio de telemetría. El despliegue completo se
 realiza con un único comando (\texttt{docker compose up}), eliminando la instalación
 manual de dependencias de GStreamer y Python.
@@ -51,8 +52,9 @@ natural sin necesidad de modificar el código del núcleo ni de la interfaz grá
 \noindent\textbf{OE-5: Validación en múltiples escenarios.}
 El sistema ha sido validado en cuatro escenarios: un único PC, dos PCs en red local,
 Docker Compose y Kubernetes con Minikube. La latencia de conmutación medida fue
-inferior a 3\,ms en el 100\,\% de las mediciones (mediana de 1{,}5\,ms en Docker y
-1{,}8\,ms en Kubernetes), muy por debajo del umbral de un fotograma a 25\,fps (40\,ms).
+inferior a 5\,ms en el 100\,\% de las mediciones y por debajo de 3\,ms en más del
+93\,\% de ellas (mediana de 1{,}5\,ms en Docker y 1{,}8\,ms en Kubernetes), muy por
+debajo del umbral de un fotograma a 25\,fps (40\,ms).
 El consumo de CPU con cuatro cámaras activas se mantuvo por debajo del 40\,\%, con
 crecimiento sub-lineal al añadir nuevas fuentes.
 
@@ -81,7 +83,7 @@ objetivos y las secciones donde se documentan.
     OE-3 & Contenerización Docker Compose    & Cumplido & \S\ref{sec:docker} \\
     OE-4 & Despliegue en Kubernetes          & Cumplido & \S\ref{sec:kubernetes} \\
     OE-5 & Validación multi-escenario        & Cumplido & Cap.~\ref{chap:pruebas} \\
-    OE-6 & Despliegue real en CyberNEMO      & Cumplido & \S\ref{sec:escenarios_despliegue} \\
+    OE-6 & Despliegue real en CyberNEMO      & Cumplido & \S\ref{sec:kubernetes} \\
     \hline
   \end{tabular}
 \end{table}

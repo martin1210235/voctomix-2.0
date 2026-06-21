@@ -55,19 +55,18 @@ para continuar el proyecto.
   por otros grupos de investigación.
 
   \item \textbf{Mejora de la interfaz gráfica.}
-  La interfaz actual de voctogui, aunque funcional, requiere reinicios del sistema
-  para aplicar cambios en los assets (logos, \textit{overlays}, vídeos). Una mejora
-  relevante sería añadir recarga en caliente de recursos sin interrumpir la
-  emisión, junto con funcionalidades como arrastrar y soltar para reordenar
-  fuentes y una visualización más dinámica e intuitiva del estado de la
-  realización en tiempo real.
+  La interfaz actual requiere reiniciar el sistema para cambiar los ficheros de
+  logos o los vídeos de las fuentes auxiliares (\texttt{break}, \texttt{intro}).
+  Una mejora relevante sería añadir recarga en caliente de estos recursos, junto
+  con funcionalidades de arrastrar y soltar para reordenar fuentes y una
+  visualización más dinámica del estado de la realización en tiempo real.
 
   \item \textbf{Distribución de salida con SRT y HLS.}
   La señal de programa se expone actualmente como flujo TCP sin comprimir. Una
   mejora natural sería añadir una etapa de transcodificación con FFmpeg que
-  publique la señal simultáneamente en SRT para ingesta profesional de baja
-  latencia y en HLS para distribución masiva a través de CDN, integrando ambas
-  salidas como servicios adicionales en el \textit{stack} Docker existente.
+  publique la señal simultáneamente en \acs{SRT} para distribución de baja
+  latencia y en \acs{HLS} para distribución masiva a través de \acs{CDN},
+  integrando ambas salidas como servicios adicionales en el \textit{stack} Docker existente.
 
   \item \textbf{Subtitulación automática en tiempo real.}
   La arquitectura de eventos de la telemetría facilita integrar un módulo de

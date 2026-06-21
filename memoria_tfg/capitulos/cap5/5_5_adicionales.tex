@@ -92,7 +92,7 @@ necesario esperar 12 minutos entre cada \textit{kill}. Esto se debe al
 mecanismo \textit{CrashLoopBackOff}: si un contenedor se reinicia demasiadas
 veces seguidas, Kubernetes lo penaliza con esperas cada vez más largas para
 evitar que un proceso con fallos consuma recursos sin control. El contador de
-penalización se resetea después de 10 minutos de funcionamiento estable, así
+penalización se reinicia después de 10 minutos de funcionamiento estable, así
 que esperar 12 minutos entre mediciones garantiza que cada cronometrado refleja
 el tiempo real de recuperación, sin distorsión acumulada. Se realizaron
 10 iteraciones en Kubernetes.

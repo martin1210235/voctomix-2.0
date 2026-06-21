@@ -9,6 +9,7 @@ de las muestras recogidas cada 5\,s por la telemetría. El consumo energético
 se midió con el sensor \ac{RAPL}~\cite{khan2018rapl} del procesador; los valores
 de las gráficas descuentan el consumo en reposo de cada entorno para mostrar
 únicamente el coste atribuible a Voctomix.
+La figura~\ref{fig:cpu_camaras} muestra el uso de CPU en cada entorno.
 
 \begin{figure}[H]
   \centering
@@ -55,6 +56,7 @@ sin comprometer la estabilidad. En un despliegue en la nube, donde el plano de c
 de Kubernetes se ejecuta en servidores del proveedor sin compartir recursos con
 \texttt{voctocore}, el perfil de escalado de CPU sería equivalente al observado en
 Docker~Compose.
+La figura~\ref{fig:ram_camaras} muestra el uso de RAM.
 
 \begin{figure}[H]
   \centering
@@ -93,6 +95,7 @@ forma significativa porque voctocore reserva al arrancar las cuatro entradas
 del \textit{pipeline} de GStreamer independientemente de cuántas cámaras estén
 activas; cada cámara adicional solo incorpora un proceso FFmpeg de captura que
 ocupa entre 50 y 80\,MB.
+La figura~\ref{fig:energia_camaras} muestra el consumo energético neto.
 
 \begin{figure}[H]
   \centering
@@ -177,6 +180,7 @@ y se cronometró el tiempo entre el envío de la orden y la confirmación de
 \texttt{voctocore} de que GStreamer había aplicado el cambio. Al no haber ningún proceso
 de codificación que introduzca retardo adicional, las latencias medidas reflejan
 únicamente el tiempo de procesado interno de GStreamer.
+La figura~\ref{fig:latencia} muestra la distribución de los resultados.
 
 \begin{figure}[H]
   \centering
@@ -228,6 +232,7 @@ Se midió enviando la orden de cambio de modo de composición al mezclador y
 cronometrando el tiempo hasta recibir la confirmación de que el cambio se había
 aplicado. Se realizaron 32 mediciones en cada entorno cambiando entre los cuatro
 modos disponibles.
+La figura~\ref{fig:latencia_transicion} recoge las medianas obtenidas.
 
 \begin{figure}[H]
   \centering
