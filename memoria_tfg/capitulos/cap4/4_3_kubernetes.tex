@@ -17,7 +17,7 @@ problema de aislamiento de red que en Docker se solucionó con el espacio de red
 El pod principal, llamado \texttt{studio}, agrupa voctocore, todas las fuentes de vídeo
 (cam1--4, break, intro, \textit{stream blanker} y audio manager) y el servicio de telemetría. Al compartir pod, todas las conexiones
 TCP internas funcionan sin modificar una sola línea de código. RabbitMQ se despliega en un
-pod independiente; la telemetría le publica sus eventos mediante AMQP.
+pod independiente; la telemetría le publica sus eventos mediante \acs{AMQP}.
 
 El despliegue se define en cinco ficheros \ac{YAML}:
 \texttt{studio.yaml} define el pod principal con todos sus contenedores y los puertos
@@ -31,7 +31,7 @@ forma segura, sin escribirlas directamente en los manifiestos. A diferencia del 
 Docker, donde la imagen se construye en el propio equipo, Kubernetes descarga la imagen
 directamente de Docker Hub (\texttt{martin1210235/voctomix:latest}), lo que permite
 desplegar el sistema en cualquier nodo del clúster sin necesidad de construirla localmente.
-Los manifiestos completos se reproducen en la sección~C6 del Anexo~C.
+Los manifiestos completos se reproducen en la sección~\ref{sec:anexoC6} del Anexo~C.
 
 El orden de arranque también requiere coordinación. Si el pod \texttt{studio} intentase
 arrancar antes de que RabbitMQ estuviera listo, la telemetría fallaría al intentar

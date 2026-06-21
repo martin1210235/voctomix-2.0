@@ -6,7 +6,7 @@ El despliegue con Docker~\cite{merkel2014docker,docker_compose_docs} se basa en
 sobre Ubuntu~22.04~\ac{LTS}. Esa imagen incluye todo lo necesario para ejecutar el
 sistema: GStreamer~1.0 con sus \textit{plugins}, FFmpeg~\cite{ffmpeg_project}, las
 librerías Python y \texttt{pika} para RabbitMQ. No hay una imagen por servicio ni
-una imagen separada para el núcleo y para la interfaz: todos los contenedores del
+una imagen separada para el núcleo y para la interfaz: los diez servicios del
 \textit{stack} parten de esa misma imagen y ejecutan un proceso diferente sobre
 ella, voctocore como núcleo de mezcla, los contenedores de cámara inyectando señal
 con FFmpeg, el servicio de telemetría registrando eventos, etc.
@@ -16,7 +16,7 @@ La única imagen externa que se utiliza es la oficial de RabbitMQ
 (\texttt{rabbitmq:3-management}), descargada automáticamente de Docker Hub.
 La imagen propia se construye de forma automática la primera vez que se arranca
 el sistema. Ambos ficheros de configuración se reproducen íntegramente en la
-sección~C5 del Anexo~C.
+sección~\ref{sec:anexoC5} del Anexo~C.
 
 Para arrancar el sistema completo basta con ejecutar \texttt{make docker-up}.
 Internamente, el comando detiene cualquier contenedor previo para partir de un

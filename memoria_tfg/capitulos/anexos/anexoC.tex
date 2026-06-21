@@ -446,6 +446,7 @@ trans.key     = space
 \vspace{0.4cm}
 
 % ── C5. Ficheros de infraestructura Docker ───────────────────────────
+\phantomsection\label{sec:anexoC5}%
 \Large{\textsc{\textcolor{nar}{C5. Ficheros de infraestructura Docker}}}
 \vspace{0.2cm}
 
@@ -790,10 +791,11 @@ services:
 \vspace{0.4cm}
 
 % ── C6. Manifiestos Kubernetes ───────────────────────────────────────
+\phantomsection\label{sec:anexoC6}%
 \Large{\textsc{\textcolor{nar}{C6. Manifiestos de despliegue en Kubernetes}}}
 \vspace{0.2cm}
 
-\normalsize{El despliegue en Kubernetes usa cuatro ficheros. \texttt{configmap.yaml} guarda
+\normalsize{El despliegue en Kubernetes usa cinco ficheros. \texttt{configmap.yaml} guarda
 todos los parámetros en un solo lugar. \texttt{pvc.yaml} reserva espacio en disco para
 los registros de telemetría. \texttt{rabbitmq.yaml} arranca el broker de mensajería.
 \texttt{studio.yaml} define el pod principal con todos los contenedores y el servicio de

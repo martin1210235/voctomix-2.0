@@ -37,20 +37,16 @@ El despliegue nativo ejecuta los procesos de voctocore y voctogui directamente s
 Linux, sin ninguna capa intermedia. Es el escenario de referencia para el desarrollo
 y las pruebas funcionales del sistema.
 
-\begin{itemize}
-
-  \item \textbf{Escenario de un PC.}
-  Este fue el escenario utilizado durante el desarrollo del proyecto y el que permitió
-  comprender en profundidad la arquitectura del sistema. El arranque sigue tres pasos:
-  primero se lanza \texttt{voctocore.py}, que abre el puerto de control~(9999) y los
-  puertos de entrada de señal (10000--10005, uno por fuente), y comienza a escuchar
-  conexiones; a continuación se inyectan las señales de vídeo y audio en esos puertos
-  mediante FFmpeg; por último se arranca \texttt{voctogui.py}, que se conecta a
-  voctocore a través de \texttt{localhost} (configurado como \texttt{host=localhost}
-  en el fichero de configuración de voctogui), y muestra en la interfaz todas las
-  fuentes activas. Al cerrar la interfaz, los procesos auxiliares se terminan automáticamente (figura~\ref{fig:escenario_1pc}).
-
-\end{itemize}
+\medskip\noindent\textbf{Escenario de un PC.}
+Este fue el escenario utilizado durante el desarrollo del proyecto y el que permitió
+comprender en profundidad la arquitectura del sistema. El arranque sigue tres pasos:
+primero se lanza \texttt{voctocore.py}, que abre el puerto de control~(9999) y los
+puertos de entrada de señal (10000--10005, uno por fuente), y comienza a escuchar
+conexiones; a continuación se inyectan las señales de vídeo y audio en esos puertos
+mediante FFmpeg; por último se arranca \texttt{voctogui.py}, que se conecta a
+voctocore a través de \texttt{localhost} (configurado como \texttt{host=localhost}
+en el fichero de configuración de voctogui), y muestra en la interfaz todas las
+fuentes activas. Al cerrar la interfaz, los procesos auxiliares se terminan automáticamente (figura~\ref{fig:escenario_1pc}).
 
 \begin{figure}[H]
   \centering
@@ -59,21 +55,17 @@ y las pruebas funcionales del sistema.
   \label{fig:escenario_1pc}
 \end{figure}
 
-\begin{itemize}
-
-  \item \textbf{Escenario de dos PCs.}
-  En este escenario la carga de trabajo se reparte entre dos equipos conectados por
-  red local. El proceso de arranque es análogo al de un PC pero distribuido: en el
-  PC servidor se lanza \texttt{voctocore.py} y se inyectan todas las señales de
-  vídeo y audio mediante FFmpeg, exactamente igual que en el escenario anterior.
-  En el PC del realizador se lanza únicamente \texttt{voctogui.py}, que recibe como
-  parámetro la dirección IP del servidor (\texttt{IP\_SERVER}) para conectarse al
-  puerto de control~9999 a través de la red local, en lugar de \texttt{localhost}.
-  Adicionalmente, el PC del realizador abre un monitor de programa conectándose al
-  puerto de salida~15000 del servidor, lo que permite supervisar la señal de programa
-  en tiempo real desde el puesto del operador (figura~\ref{fig:escenario_2pc}).
-
-\end{itemize}
+\medskip\noindent\textbf{Escenario de dos PCs.}
+En este escenario la carga de trabajo se reparte entre dos equipos conectados por
+red local. El proceso de arranque es análogo al de un PC pero distribuido: en el
+PC servidor se lanza \texttt{voctocore.py} y se inyectan todas las señales de
+vídeo y audio mediante FFmpeg, exactamente igual que en el escenario anterior.
+En el PC del realizador se lanza únicamente \texttt{voctogui.py}, que recibe como
+parámetro la dirección IP del servidor (\texttt{IP\_SERVER}) para conectarse al
+puerto de control~9999 a través de la red local, en lugar de \texttt{localhost}.
+Adicionalmente, el PC del realizador abre un monitor de programa conectándose al
+puerto de salida~15000 del servidor, lo que permite supervisar la señal de programa
+en tiempo real desde el puesto del operador (figura~\ref{fig:escenario_2pc}).
 
 \begin{figure}[H]
   \centering
