@@ -6,8 +6,8 @@ El despliegue con Docker~\cite{merkel2014docker,docker_compose_docs} se basa en
 sobre Ubuntu~22.04~\ac{LTS}. Esa imagen incluye todo lo necesario para ejecutar el
 sistema: GStreamer~1.0 con sus \textit{plugins}, FFmpeg~\cite{ffmpeg_project}, las
 librerías Python y \texttt{pika} para RabbitMQ. No hay una imagen por servicio ni
-una imagen separada para el núcleo y para la interfaz: los diez servicios del
-\textit{stack} parten de esa misma imagen y ejecutan un proceso diferente sobre
+una imagen separada para el núcleo y para la interfaz: los once servicios del
+conjunto de servicios parten de esa misma imagen y ejecutan un proceso diferente sobre
 ella, voctocore como núcleo de mezcla, los contenedores de cámara inyectando señal
 con FFmpeg, el servicio de telemetría registrando eventos, etc.
 Voctogui \textbf{no tiene imagen Docker}: corre directamente en el equipo anfitrión
