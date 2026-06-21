@@ -376,9 +376,9 @@ use=true
 playaudio=false
 
 [videodisplay]
-; system=gl   (OpenGL, mayor rendimiento)
-; system=xv   (XVideo, modo clasico)
-system=x       (X-Images, compatible universal)
+; system=gl
+; system=xv
+system=x
 
 [misc]
 close=true
@@ -474,7 +474,7 @@ trans.key     = space
 }
 
 \normalsize{El \texttt{Dockerfile} construye la imagen base instalando GStreamer, FFmpeg,
-Python y la librería \texttt{pika}. El \texttt{docker-compose.yml} arranca los once
+Python y la librería \texttt{pika}. El \texttt{docker-compose.yml} arranca los 11
 servicios del sistema. La clave de la arquitectura es \texttt{network\_mode:
 "service:voctocore"}: con esta opción todos los contenedores de cámara comparten la
 red de voctocore y se comunican por \texttt{localhost}, sin modificar ninguna línea
