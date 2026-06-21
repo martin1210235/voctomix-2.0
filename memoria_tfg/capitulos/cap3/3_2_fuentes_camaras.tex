@@ -81,10 +81,10 @@ calidad que toda fuente debe satisfacer:
         una pista de silencio generada en tiempo real por FFmpeg mediante el filtro
         \texttt{-f lavfi -i aevalsrc=0}. Sin este ajuste, el motor GStreamer cierra la
         conexión en el \textit{handshake} inicial.
-  \item \textbf{Colorimetría televisiva (BT.709~\cite{itu_bt709}):} se recomienda que los metadatos del
+  \item \textbf{Colorimetría televisiva (BT.709)}~\cite{itu_bt709}: se recomienda que los metadatos del
         flujo declaren el espacio de color estándar de alta definición
         (\texttt{colorimetry=bt709}) y el rango de luz televisivo (\texttt{tv range}).
-        Los archivos grabados con cámaras convencionales o editados con \textit{software} de
+        Los archivos grabados con cámaras convencionales o editados con software de
         consumo suelen emplear el rango \texttt{pc} (full range). Sin la conversión
         adecuada, los colores presentan una desviación perceptible en la mezcla, aunque
         la conexión se establece correctamente. Para convertirlos, se aplican los

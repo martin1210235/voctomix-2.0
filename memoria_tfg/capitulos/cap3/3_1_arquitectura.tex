@@ -86,9 +86,9 @@ intervención manual del operador.
 \texttt{voctogui} es el cliente de control. Implementado en Python con GTK3 mediante PyGObject, proporciona al
 realizador la interfaz visual para operar el sistema en tiempo real. Se conecta al
 núcleo por TCP y recibe las previsualizaciones de cada fuente en formato JPEG
-comprimido (puertos 14000--14005), mientras que el monitor principal recibe la
-mezcla por el puerto~12000 en formato JPEG comprimido (configuración predeterminada)
-o por el puerto~11000 en bruto cuando las previsualizaciones están desactivadas.
+comprimido desde los puertos 14000--14005. El monitor principal recibe la mezcla
+por el puerto~12000 en JPEG (configuración predeterminada) o por el puerto~11000
+en bruto cuando las previsualizaciones están desactivadas.
 El estado de la interfaz en el repositorio original, antes de iniciar el desarrollo,
 se recoge en la figura~\ref{fig:voctomix_inicial} del Anexo~C. La figura~\ref{fig:gui_completa}
 muestra la interfaz gráfica completa resultante tras el desarrollo del sistema.
