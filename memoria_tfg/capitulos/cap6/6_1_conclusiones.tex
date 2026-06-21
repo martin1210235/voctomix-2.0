@@ -1,8 +1,8 @@
 En este capítulo se resumen las principales aportaciones del trabajo y se evalúa el
 grado de consecución de los objetivos planteados en el Capítulo~1. La
-Sección~\ref{sec:conclusiones} recoge las conclusiones del desarrollo e
-implementación del sistema. La Sección~\ref{sec:lineas_futuras} identifica las líneas
-de trabajo futuro que podrían ampliar las capacidades de Voctomix~2.0 o adaptarla a
+sección~\ref{sec:conclusiones} recoge las conclusiones del desarrollo e
+implementación del sistema. La sección~\ref{sec:lineas_futuras} identifica las líneas
+de trabajo futuro que podrían ampliar las capacidades de Voctomix~2.0 o adaptarlo a
 nuevos casos de uso.
 
 \section{Conclusiones}
@@ -16,16 +16,16 @@ consecución de cada uno de los seis objetivos específicos planteados.
 \vspace{0.3cm}
 \noindent\textbf{OE-1: Funcionalidades de producción profesional.}
 Se han implementado los cuatro modos de composición de imagen con transiciones
-animadas entre ellos, la rotulación dinámica con fundido de entrada y salida
-configurable y desactivación automática en cada corte, el gestor de estados de
-emisión con tres modos (LIVE, PAUSE y NOSTREAM) que permiten interrumpir la señal
-de salida sin detener el procesamiento interno, y la selección automática del audio según la fuente de vídeo activa (Audio Follows Video),
-que elimina la gestión manual del audio durante la producción.
+animadas y la rotulación dinámica con fundido configurable y desactivación automática
+en cada corte. El gestor de estados de emisión con tres modos (LIVE, PAUSE y NOSTREAM)
+permite interrumpir la señal de salida sin detener el procesamiento interno; la selección
+automática del audio según la fuente de vídeo activa (Audio Follows Video) elimina
+la gestión manual durante la producción.
 
 \vspace{0.2cm}
 \noindent\textbf{OE-2: Servicio de telemetría.}
 El servicio de telemetría registra en tiempo real los eventos de operación del mezclador
-(tipo CHANGE) y el estado periódico del sistema (tipo STATE, cada 5 segundos) en
+(tipo \texttt{CHANGE}) y el estado periódico del sistema (tipo \texttt{STATE}, cada 5~segundos) en
 formato JSON Lines. Los eventos se publican simultáneamente en un \textit{broker} RabbitMQ
 mediante \acs{AMQP}, lo que permite su integración con sistemas externos de monitorización
 o análisis sin modificar el núcleo de la aplicación; los datos obtenidos han permitido además
@@ -42,7 +42,7 @@ necesidad de instalar manualmente GStreamer ni Python.
 
 \vspace{0.2cm}
 \noindent\textbf{OE-4: Despliegue en Kubernetes.}
-El sistema se desplegó sobre un clúster local Minikube mediante manifiestos declarativos
+El sistema se ha desplegado sobre un clúster local Minikube mediante manifiestos declarativos
 que reproducen la misma funcionalidad que el escenario Docker Compose en una
 infraestructura orquestada. El orden de arranque controlado y las sondas de preparación
 garantizan que las dependencias entre servicios se respetan automáticamente. La
@@ -54,14 +54,14 @@ sin necesidad de modificar el código del núcleo ni de la interfaz gráfica.
 El sistema ha sido validado en cuatro escenarios de despliegue: monopuesto nativo,
 dos PCs en red local, Docker Compose y Kubernetes. Los resultados confirman que
 el sistema cumple los requisitos de rendimiento para producción en directo, con
-latencia de conmutación muy por debajo del umbral tolerado, estabilidad a largo
-plazo sin fugas de memoria y correcto funcionamiento del sistema de telemetría
-en todos los entornos.
+latencia de conmutación y de transición entre modos de composición muy por debajo
+del umbral tolerado, estabilidad a largo plazo sin fugas de memoria y correcto
+funcionamiento del sistema de telemetría en todos los entornos.
 
 \vspace{0.2cm}
 \noindent\textbf{OE-6: Despliegue en producción real.}
-El sistema fue desplegado en un entorno de producción real dentro del proyecto
-europeo de investigación CyberNEMO (UPM), donde actuó como motor de
+El sistema ha sido desplegado en un entorno de producción real dentro del proyecto
+europeo de investigación CyberNEMO (UPM), donde ha actuado como motor de
 producción audiovisual. Este despliegue acredita la madurez del sistema más allá
 del prototipo académico y lo posiciona como una contribución directamente aplicable
 a infraestructuras de investigación y producción audiovisual profesional.
@@ -72,13 +72,14 @@ y las secciones de la memoria donde se documentan.
 
 \begin{table}[H]
   \centering
+  \small
   \caption{Consecución de los objetivos específicos del TFG.}
   \label{tab:objetivos_cumplidos}
-  \begin{tabular}{|c|l|c|l|}
+  \begin{tabular}{|c|p{5.5cm}|c|p{3.2cm}|}
     \hline
     \textbf{Obj.} & \textbf{Descripción} & \textbf{Estado} & \textbf{Sección} \\
     \hline
-    OE-1 & Rotulación, \textit{stream blanker} y AFV  & Cumplido & \S\ref{sec:overlays}, \S\ref{sec:fuentes_auxiliares} \\
+    OE-1 & Composición, rotulación, \textit{stream blanker} y AFV & Cumplido & \S\ref{sec:overlays}, \S\ref{sec:fuentes_auxiliares} \\
     OE-2 & Telemetría JSON + RabbitMQ        & Cumplido & \S\ref{sec:telemetria} \\
     OE-3 & Contenerización Docker Compose    & Cumplido & \S\ref{sec:docker} \\
     OE-4 & Despliegue en Kubernetes          & Cumplido & \S\ref{sec:kubernetes} \\
