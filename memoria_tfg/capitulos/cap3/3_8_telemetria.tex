@@ -102,7 +102,7 @@ La conexión con el servidor se configura mediante cuatro variables de entorno.
 dirección IP, un nombre de dominio o, en entornos Docker y Kubernetes, el nombre del
 servicio, que el sistema DNS interno del clúster traduce automáticamente a la IP del
 contenedor correspondiente. \texttt{RABBITMQ\_PORT} fija el puerto TCP de escucha, cuyo
-valor estándar \ac{AMQP} es 5672. Las variables \texttt{RABBITMQ\_USER} y
+valor estándar \acs{AMQP} es 5672. Las variables \texttt{RABBITMQ\_USER} y
 \texttt{RABBITMQ\_PASS} aportan las credenciales de autenticación: RabbitMQ requiere
 usuario y contraseña en todas sus conexiones y desactiva la cuenta de invitado por defecto
 en entornos en red por razones de seguridad. La integración solo se activa cuando
@@ -110,12 +110,13 @@ en entornos en red por razones de seguridad. La integración solo se activa cuan
 el log local sin penalización de rendimiento.
 
 El servicio mantiene una conexión TCP persistente al servidor y reconecta automáticamente
-ante cualquier caída de red, sin bloquear el procesamiento de eventos. El \textit{exchange}
+ante cualquier caída de red, sin bloquear el procesamiento de eventos. El exchange
 es de tipo \textit{fanout} (difusión a todos los suscriptores): cualquier consumidor externo
 que se suscriba recibe todos los eventos sin necesidad de modificar el código del servicio
 de telemetría ni el de \texttt{voctocore}. En el marco del proyecto europeo CyberNEMO (UPM),
 el servidor RabbitMQ de Voctomix~2.0 fue integrado en el clúster Kubernetes, donde la
-cola \texttt{vproduction-uc-media} recibió los eventos del mezclador en tiempo real.
+cola \texttt{vproduction-uc-media} recibió los eventos del mezclador en tiempo real,
+como muestra la figura~\ref{fig:rabbitmq_cybernemo}.
 
 \begin{figure}[h]
   \centering
