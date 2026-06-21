@@ -43,6 +43,7 @@ de control. Cada miniatura incluye:
 El realizador selecciona la fuente activa haciendo clic sobre la miniatura
 correspondiente, lo que envía el comando \texttt{set\_video\_a <fuente>} o
 \texttt{set\_video\_b <fuente>} al núcleo mediante el protocolo de control TCP.
+La figura~\ref{fig:panel_camaras} muestra el aspecto de este panel.
 
 \begin{figure}[H]
   \centering
@@ -81,7 +82,7 @@ calidad que toda fuente debe satisfacer:
         una pista de silencio generada en tiempo real por FFmpeg mediante el filtro
         \texttt{-f lavfi -i aevalsrc=0}. Sin este ajuste, el motor GStreamer cierra la
         conexión en el \textit{handshake} inicial.
-  \item \textbf{Colorimetría televisiva (BT.709)}~\cite{itu_bt709}: se recomienda que los metadatos del
+  \item \textbf{Colorimetría televisiva (BT.709):}~\cite{itu_bt709} se recomienda que los metadatos del
         flujo declaren el espacio de color estándar de alta definición
         (\texttt{colorimetry=bt709}) y el rango de luz televisivo (\texttt{tv range}).
         Los archivos grabados con cámaras convencionales o editados con software de
