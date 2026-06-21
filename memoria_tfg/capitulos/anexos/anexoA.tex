@@ -5,7 +5,7 @@
 \Large{\textsc{\textcolor{nar}{A1. Introducción}}}
 \vspace{0.2cm}
 
-\normalsize{Este Trabajo de Fin de Grado desarrolla y optimiza Voctomix~2.0, un sistema de código
+\normalsize{Este Trabajo Fin de Grado desarrolla y optimiza Voctomix~2.0, un sistema de código
 abierto para la producción remota de vídeo en tiempo real. El proyecto amplía la herramienta
 Voctomix con nuevas funcionalidades: composición de vídeo multicámara, \textit{overlays} dinámicos,
 telemetría basada en RabbitMQ y despliegue con Docker y Kubernetes, con el objetivo de que
@@ -38,14 +38,15 @@ grabación simultánea, usando equipos convencionales, sin \textit{hardware} ded
 
 \vspace{0.15cm}
 \noindent\textbf{Aspectos éticos}\\
-\normalsize{El sistema se construye sobre \textit{software} libre publicado bajo licencias GPL~\cite{gpl_v2} y
-Apache~2.0~\cite{apache2_license}, lo que garantiza que el código es auditable y no depende de
-ningún proveedor propietario.
+\normalsize{El sistema está construido sobre \textit{software} libre: Voctomix tiene licencia MIT,
+GStreamer es LGPL~2.1 y Docker y Kubernetes usan Apache~2.0~\cite{apache2_license}.
+Que todo el código sea abierto y auditable significa que no hay dependencia de ningún
+proveedor propietario.
 
 Dicho esto, el modelo de producción remota tiene implicaciones que conviene señalar. Al poder
 gestionar toda la producción desde un equipo centralizado, se reduce la necesidad de personal
 técnico presente en el lugar del evento: operadores de cámara, técnicos de audio o encargados de
-la mezcla que antes viajaban in situ. Esto no significa que esos puestos vayan a desaparecer,
+la mezcla que antes viajaban \textit{in situ}. Esto no significa que esos puestos vayan a desaparecer,
 pero sí que el sector tendrá que adaptarse, y es responsabilidad de quienes adoptan estas
 tecnologías que ese cambio no derive en precariedad laboral~\cite{acemoglu2019automation}.
 
@@ -65,7 +66,7 @@ emitido.}
 \vspace{0.15cm}
 \noindent\textbf{Aspectos económicos}\\
 \normalsize{La ventaja económica principal de Voctomix~2.0 es que hace posible el modelo de
-producción remota (REMI): el núcleo de procesamiento corre en un servidor centralizado y no hace
+producción remota (\ac{REMI}): el núcleo de procesamiento corre en un servidor centralizado y no hace
 falta desplazar a todo el equipo técnico al lugar del evento. Eso reduce directamente los costes
 de desplazamiento, alojamiento y logística, que en producciones de varios días o en localizaciones
 lejanas suelen ser el gasto más importante.
@@ -122,7 +123,7 @@ gestionar activamente.}
   \item \textbf{Reducción de personal desplazado} En una producción multicámara convencional,
   todo el equipo técnico viaja al lugar del evento. Con el modelo REMI, el realizador, el técnico
   de audio y el operador de gráficos trabajan desde una sala de control centralizada; solo los
-  operadores de cámara necesitan estar presentes in situ.
+  operadores de cámara necesitan estar presentes \textit{in situ}.
 
   \item \textbf{Eliminación de hardware dedicado} Voctomix~2.0 sustituye mezcladores, matrices
   de vídeo y sistemas de grabación profesional por \textit{software} ejecutado en \textit{hardware} convencional. El
