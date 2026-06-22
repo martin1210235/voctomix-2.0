@@ -19,7 +19,10 @@ Capítulo~\ref{chap:pruebas}.}
 
 \normalsize{Los dos árboles muestran el repositorio tal como estaba al descargarlo (izquierda) y
 como quedó tras el desarrollo (derecha). Los ficheros marcados con \texttt{[N]} son los que
-se incorporaron en este trabajo.}
+se incorporaron en este trabajo. Los árboles muestran los ficheros principales; se omiten
+módulos auxiliares (gestión de argumentos, reloj de sincronización, captura de
+fotogramas, atajos de teclado, construcción de la interfaz y previsualización de
+vídeo) y ficheros \texttt{\_\_init\_\_.py} por brevedad.}
 \vspace{0.3cm}
 
 \noindent%
@@ -202,7 +205,9 @@ los cambios realizados.}
 \normalsize{El sistema utiliza dos ficheros de configuración INI. El de \texttt{voctocore}
 define el formato de vídeo y audio, las fuentes activas, los modos de composición, las
 transiciones y los \textit{overlays}. El de \texttt{voctogui} indica dónde está el
-servidor, el tamaño de las previsualizaciones y los atajos de teclado.}
+servidor, el tamaño de las previsualizaciones y los atajos de teclado. Se muestran los
+parámetros funcionales; se omiten los campos de posición y \textit{tooltip} de los
+botones de la barra de herramientas por brevedad.}
 \vspace{0.3cm}
 
 \noindent\textbf{\small voctocore/default-config.ini}
@@ -236,6 +241,10 @@ file = ../images/logos/logo1.png
 [logo2]
 file = ../images/logos/logo2.png
 
+[source.background]
+kind = img
+file = ../images/backgrounds/bg.png
+
 [source.background1]
 kind=test
 pattern=black
@@ -250,6 +259,9 @@ composites=sbs,pip,lec
 enabled=true
 sources=pause,nostream
 volume=1.0
+
+[source.stream-blanker]
+kind=tcp
 
 [source.stream-blanker-pause]
 kind=tcp
@@ -836,14 +848,16 @@ data:
   BLANKER_PAUSE_PORT: "17000"
   BLANKER_OFFLINE_PORT: "17001"
   AUDIO_PORT: "18000"
+  BG_PORT: "16000"
+  BG_IMAGE: "/opt/voctomix/images/backgrounds/bg.png"
   CAM1_SOURCE: "http://cdn.media.ccc.de/.../talk1_hd.mp4"
   CAM2_SOURCE: "http://cdn.media.ccc.de/.../talk2_hd.mp4"
-  CAM3_SOURCE: "http://cdn.media.ccc.de/.../talk3_hd.mp4"
+  CAM3_SOURCE: "http://cdn.media.ccc.de/.../talk2_hd.mp4"
   CAM4_SOURCE: "https://www.w3schools.com/html/mov_bbb.mp4"
-  BREAK_VIDEO: "/opt/voctomix/videos/video_pausa.mp4"
+  BREAK_VIDEO: "/opt/voctomix/videos/video_cuenta_regresiva_10s.mp4"
   BREAK_AUDIO: "/opt/voctomix/videos/musica_pausa.mp3"
   INTRO_VIDEO: "/opt/voctomix/videos/intro.mp4"
-  PAUSE_VIDEO: "/opt/voctomix/videos/starting_soon.mp4"
+  PAUSE_VIDEO: "/opt/voctomix/videos/SLIDES_video_starting_soon.mp4"
   OFFLINE_VIDEO: "/opt/voctomix/videos/stream_offline.mp4"
   BACKGROUND_MUSIC: "/opt/voctomix/videos/musica_pausa.mp3"
 \end{lstlisting}
@@ -1377,7 +1391,7 @@ def measure_recovery(container, n):
 
     for i in range(n):
         # Kill PID 1 inside the container to simulate a real crash.
-        # docker stop would send SIGTERM and skip the restart policy.
+        # docker stop would set desired-state=stopped and skip restart policy.
         subprocess.run(["docker", "exec", container, "kill", "-9", "1"],
                        capture_output=True)
         t_stop = time.monotonic()

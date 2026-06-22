@@ -97,11 +97,11 @@ emisiones de CO\textsubscript{2} asociadas al transporte. Sustituir \textit{hard
 dedicados y alarga la vida útil del equipamiento existente.
 
 El lado negativo es que el servidor que ejecuta voctocore trabaja a alta carga de CPU durante toda
-la retransmisión. Las mediciones realizadas en este trabajo muestran un consumo de entre 42,8~W y
-49,9~W con cuatro cámaras activas medido con el sensor RAPL~\cite{khan2018rapl}, bastante por encima
-de los 17,7~W en reposo. El procesamiento de vídeo RAW en tiempo real consume más energía que una
-solución con \textit{hardware} dedicado de bajo consumo, algo habitual en infraestructuras de
-servidor~\cite{iea_datacentres_2023}.
+la retransmisión. Las mediciones realizadas en este trabajo muestran un consumo neto, medido con el
+sensor RAPL~\cite{khan2018rapl}, que crece de 25,1~W con una cámara activa a 32,2~W con cuatro,
+siempre por encima del consumo en reposo del servidor. El procesamiento de vídeo RAW en tiempo real
+consume más energía que una solución con \textit{hardware} dedicado de bajo consumo, algo habitual
+en infraestructuras de servidor~\cite{iea_datacentres_2023}.
 
 Aun así, el balance global es positivo: el ahorro en emisiones por reducir desplazamientos es
 mayor que el aumento de consumo eléctrico del servidor, especialmente en producciones con muchas
@@ -189,4 +189,8 @@ organizaciones que de otro modo no tendrían acceso a ella.
 
 Medioambientalmente, reducir los desplazamientos implica una bajada real en emisiones de
 CO\textsubscript{2}, y ese ahorro supera el aumento en consumo eléctrico del servidor. El balance
-ambiental es positivo, siendo el ahorro en transporte el factor determinante.}
+ambiental es positivo, siendo el ahorro en transporte el factor determinante.
+
+En conjunto, los riesgos identificados (exposición de puertos, impacto sobre el empleo presencial y
+mayor consumo eléctrico del servidor) son gestionables con medidas conocidas de seguridad,
+formación y eficiencia, y no cuestionan la viabilidad del modelo REMI que propone este proyecto.}
