@@ -8,12 +8,13 @@ han puesto de manifiesto la necesidad de disponer de herramientas de realizació
 profesional que sean al mismo tiempo económicas, fiables y auditables.
 
 En este contexto surge Voctomix~\cite{voctomix_github,delRio2025ugc}, desarrollado por el equipo C3VOC (\textit{Chaos Communication
-Congress Video Operations Crew}). Frente a soluciones previas como \textit{dvswitch}~\cite{dvswitch_project}, limitada
-en resolución y escalabilidad, o herramientas como vMix~\cite{vmix_software} (comercial) u \ac{OBS}~Studio
-(código abierto)~\cite{obs_studio}, cuya arquitectura monolítica concentra captura, procesamiento y
-emisión en un único nodo de operación, Voctomix adopta una arquitectura
-cliente-servidor desacoplada que separa el motor de mezcla multimedia de la interfaz
-de control, permitiendo distribuir la carga de procesamiento en distintos nodos de red.
+Congress Video Operations Crew}). Una solución previa, \textit{dvswitch}~\cite{dvswitch_project}, estaba limitada en
+resolución y escalabilidad. Otras herramientas como vMix~\cite{vmix_software} (comercial)
+u \ac{OBS}~Studio (código abierto)~\cite{obs_studio} concentran captura, procesamiento
+y emisión en un único nodo de operación, debido a su arquitectura monolítica. Voctomix,
+en cambio, adopta una arquitectura cliente-servidor desacoplada que separa el motor de
+mezcla multimedia de la interfaz de control, lo que permite distribuir la carga de
+procesamiento en distintos nodos de red.
 
 El presente Trabajo Fin de Grado (TFG)\acused{TFG} toma como punto de partida la versión original
 de Voctomix y propone una serie de extensiones orientadas a su uso en producciones
