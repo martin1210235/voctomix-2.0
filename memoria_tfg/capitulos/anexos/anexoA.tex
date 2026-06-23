@@ -51,7 +51,7 @@ pero sí que el sector tendrá que adaptarse, y es responsabilidad de quienes ad
 tecnologías que ese cambio no derive en precariedad laboral~\cite{acemoglu2019automation}.
 
 Por otro lado, al exponer puertos de control por red, como el puerto~9999 de voctocore, la
-consola de RabbitMQ o la API de telemetría, aumenta el número de puntos de acceso que un atacante podría intentar explotar.
+consola de RabbitMQ o la \ac{API} de telemetría, aumenta el número de puntos de acceso que un atacante podría intentar explotar.
 Un acceso no autorizado podría interferir con una retransmisión en directo. Por ello, quien despliega el
 sistema debe aplicar autenticación en RabbitMQ, restringir los puertos mediante cortafuegos y no
 exponer el sistema a Internet sin protección adicional, siguiendo las recomendaciones del
@@ -141,7 +141,7 @@ gestionar activamente.}
 \begin{enumerate}
   \item \textbf{Superficie de ataque en red} El sistema expone varios puertos TCP: control en
   9999, entradas de cámara en 10000--10005, salidas en 11000--15000, consola RabbitMQ en 15672 y
-  API de telemetría en 8080. En una red no controlada, cada puerto accesible es un vector de
+  \acs{API} de telemetría en 8080. En una red no controlada, cada puerto accesible es un vector de
   ataque potencial. El ingeniero que despliega el sistema debe aplicar reglas de cortafuegos que
   restrinjan el acceso a los equipos autorizados.
 
@@ -193,4 +193,4 @@ ambiental es positivo, siendo el ahorro en transporte el factor determinante.
 
 En conjunto, los riesgos identificados (exposición de puertos, impacto sobre el empleo presencial y
 mayor consumo eléctrico del servidor) son gestionables con medidas conocidas de seguridad,
-formación y eficiencia, y no cuestionan la viabilidad del modelo REMI que propone este proyecto.}
+formación y eficiencia, y no cuestionan la viabilidad del modelo REMI que habilita este proyecto.}
