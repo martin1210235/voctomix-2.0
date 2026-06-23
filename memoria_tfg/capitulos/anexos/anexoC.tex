@@ -813,7 +813,9 @@ los registros de telemetría. \texttt{rabbitmq.yaml} arranca el broker de mensaj
 \texttt{studio.yaml} define el pod principal con todos los contenedores y el servicio de
 red para exponerlos al exterior. Las contraseñas se guardan en un \texttt{Secret}
 independiente que no se reproduce aquí por seguridad; el fichero
-\texttt{secret.yaml.example} del repositorio sirve de plantilla.}
+\texttt{secret.yaml.example} del repositorio sirve de plantilla. La duplicidad entre
+\texttt{CAM2\_SOURCE} y \texttt{CAM3\_SOURCE} en el listado siguiente está presente en el
+fichero original del repositorio y se reproduce tal cual.}
 \vspace{0.3cm}
 
 \noindent\textbf{\small k8s/configmap.yaml}
@@ -1224,6 +1226,7 @@ spec:
 \vspace{0.4cm}
 
 % ── C7. Herramientas de medición experimental ────────────────────────
+\phantomsection\label{sec:anexoC7}%
 \Large{\textsc{\textcolor{nar}{C7. Herramientas de medición experimental}}}
 \vspace{0.2cm}
 
