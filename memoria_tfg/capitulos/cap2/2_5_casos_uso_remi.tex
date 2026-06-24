@@ -38,13 +38,13 @@ reducción de la huella de carbono asociada al transporte de equipos fue uno de 
 argumentos adicionales que aceleraron la adopción del modelo remoto como estándar para
 ediciones futuras.
 
-\subsection{UEFA Champions League (Telefónica Servicios Audiovisuales)}
+\subsection{LaLiga (Telefónica Servicios Audiovisuales)}
 
-Telefónica Servicios Audiovisuales implementó producción REMI para la retransmisión de
-partidos de la UEFA Champions League jugados en el estadio Santiago Bernabéu de
-Madrid~\cite{tsa_remi_2022}. Las cámaras del estadio enviaban la señal mediante SRT
+Telefónica Servicios Audiovisuales fue seleccionada junto con Appear para desplegar la
+nueva red de contribución y distribución de LaLiga desde Madrid, basada en
+SRT~\cite{tsa_laliga_srt_2025}. Las cámaras de los estadios envían la señal mediante SRT
 sobre Internet pública hasta el centro de producción remoto, donde los realizadores
-operaban el sistema como si estuvieran físicamente presentes en el estadio.
+operan el sistema como si estuvieran físicamente presentes en el estadio.
 
 Este caso de uso demuestra la madurez del protocolo SRT para contribución \textit{broadcast}
 en condiciones de red reales: el cifrado AES-256 garantiza la seguridad del contenido
@@ -114,7 +114,7 @@ contexto del presente trabajo.
     \hline
     CCC / C3VOC          & Múltiples salas   & Voctomix, MKV/TCP    & Origen del proyecto \\
     JJ.OO. Tokio 2020    & Decenas de sedes  & REMI cloud           & Validación olímpica \\
-    UEFA CL (Telefónica) & Estadio único     & SRT + AES-256        & REMI sobre Internet \\
+    LaLiga (Telefónica)  & Red de estadios   & SRT + AES-256        & REMI sobre Internet \\
     5G Media (UPM/RTVE)  & Red de acceso     & Edge computing, fibra & Latencia de red 3--5~ms \\
     CyberNEMO (UPM)      & Clúster Kubernetes & RabbitMQ, telemetría & Validación académica \\
     \hline
