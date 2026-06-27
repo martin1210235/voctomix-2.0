@@ -42,9 +42,13 @@ from top open-source projects.
 - [x] TROUBLESHOOTING.md — common issues per scenario
 - [x] Root `CONTRIBUTING.md`, `CHANGELOG.md`, `.env.example`
 - [x] README: badges, Quick Links, four scenarios, Documentation/Contributing sections
+- [x] `.github/workflows/ci.yml` — lint CI (pycodestyle). Test job omitted: the
+      unit suite currently fails in a clean environment (no Makefile either).
+- [x] Clean public export via `tools/export_public.sh` (allowlist; excludes
+      thesis, paper, internal notes, sessions).
 - [ ] Add screenshots/GIF (show, don't tell) — needs media assets
-- [ ] Add real `.github/workflows/` (CI) or remove the reference from top README
 - [ ] Set the real public repository URL (also used in the paper's data-availability)
+- [ ] Fix/triage the failing voctocore unit tests, then add a test job to CI
 - [ ] (Future) Zenodo DOI badge so the repo is citable from the paper
 
 ## README audit (2026-06-27, resolved)
