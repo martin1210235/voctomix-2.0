@@ -37,9 +37,8 @@ PUBLIC=(
   CHANGELOG.md CONTRIBUTING.md LICENSE.txt .env.example
 )
 
-# --- OPTIONAL (reproducibility): measurement scripts + raw logs, no TFG write-ups ---
-# Uncomment to include experiments (the *_CAP5.md write-ups are excluded below).
-# PUBLIC+=( experiments )
+# --- Reproducibility: measurement scripts + raw logs (TFG write-ups excluded below) ---
+PUBLIC+=( experiments )
 
 echo "Source : $SRC"
 echo "Target : $DST"
