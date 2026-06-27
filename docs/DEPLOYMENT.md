@@ -50,7 +50,6 @@ services launched with a single command.
 ```bash
 xhost +local:$(id -un)     # allow the host GUI to receive the voctogui window
 ./launch_docker_studio.sh
-# or: make docker-up
 ```
 
 Camera containers use `network_mode: service:voctocore`, sharing the mixer's
@@ -61,7 +60,7 @@ containers, making the same Compose file portable across hosts.
 Stop the stack:
 
 ```bash
-make docker-down     # or: sudo docker compose down
+sudo docker compose down
 ```
 
 ## 4. Kubernetes (Minikube)

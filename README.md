@@ -426,8 +426,8 @@ comments), commit-message rules (Conventional Commits) and the test/lint flow.
 Before opening a pull request:
 
 ```bash
-make test    # voctocore unit tests (mock GI bindings, no display needed)
-make lint    # pycodestyle
+sh voctocore/test.sh   # voctocore unit tests (mock GI bindings; needs: pip install mock)
+sh check_pep8.sh       # pycodestyle lint
 ```
 
 ## Support

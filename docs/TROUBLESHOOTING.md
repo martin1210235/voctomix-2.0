@@ -30,7 +30,7 @@ the relevant logs.
 
 - The stack relies on health-check ordering (RabbitMQ → telemetry; `voctocore`
   → cameras). If a camera container exits, check that `voctocore` is healthy
-  first: `make docker-ps`.
+  first: `docker compose ps`.
 - Camera containers use `network_mode: service:voctocore`; if `voctocore` is not
   up, they have no network namespace to join.
 
@@ -58,5 +58,5 @@ the relevant logs.
 
 ## Tests fail locally
 
-- `make test` uses mock GI bindings (`fake-gi.sh`) — no display or GStreamer
+- `sh voctocore/test.sh` uses mock GI bindings (`fake-gi.sh`) — no display or GStreamer
   install is required. If it fails, run from `voctocore/` and check Python 3.10+.

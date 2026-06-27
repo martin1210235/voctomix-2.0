@@ -22,16 +22,16 @@ Install the native prerequisites listed in the [README](README.md#prerequisites)
 stack is the fastest way to run the whole system:
 
 ```bash
-make docker-up      # build + launch the full stack
-make docker-down    # stop everything
-make docker-logs    # follow logs
+./launch_docker_studio.sh    # build + launch the full stack
+sudo docker compose down     # stop everything
+docker compose logs -f       # follow logs
 ```
 
 ## Before opening a pull request
 
 ```bash
-make test    # voctocore unit tests — mock GI bindings, no display/GStreamer needed
-make lint    # pycodestyle (ignores E402 for gi import order, E501 in tests)
+sh voctocore/test.sh   # voctocore unit tests (mock GI bindings; needs: pip install mock)
+sh check_pep8.sh       # pycodestyle (ignores E402 for gi import order, E501 in tests)
 ```
 
 Run a single test from `voctocore/`:

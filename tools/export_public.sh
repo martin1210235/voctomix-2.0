@@ -28,6 +28,8 @@ PUBLIC=(
   images
   # documentation (paper-workbench is removed below)
   docs
+  # CI
+  .github
   # container / infra files
   Dockerfile docker-compose.yml docker-compose.experiments.yml docker-compose.stability.yml
   docker-ep.sh check_pep8.sh
