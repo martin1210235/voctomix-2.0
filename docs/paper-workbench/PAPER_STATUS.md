@@ -11,11 +11,17 @@ figuras**. No es "escribir de cero", es "auditar y pulir".
 
 ## Bloqueos prioritarios (orden de impacto)
 
-1. ⛔ **Datos externos pendientes** — ORCID de los 4 autores y URL del repo
-   público (ver sección siguiente). Sin esto no se puede enviar.
-2. ⚠️ **Refuerzo bibliográfico** — `references.bib` aún algo fino; añadir 1-2
+1. ⛔ **Publicar el código en ambas URLs antes del envío** — el `dataavailability`
+   cita `gitlab.com/GATV/nemo/voctomix` y `github.com/martin1210235/voctomix-2.0`.
+   Verificado 2026-06-27: **ninguna de las dos resuelve todavía** (GATV solo tiene
+   `voctomix1`; el GitHub no existe). Un revisor comprueba estas URLs. Hay que
+   publicar voctomix2 en GATV GitLab y crear/espejar el repo GitHub, y confirmar
+   que ambas URLs cargan, antes de enviar.
+2. ⛔ **ORCID de los 4 autores** — decisión del usuario (2026-06-27): dejar los
+   placeholders `000X` y el TODO en `main.tex` L.28-32; rellenar antes del envío.
+3. ⚠️ **Refuerzo bibliográfico** — `references.bib` aún algo fino; añadir 1-2
    papers académicos (ver RELATED_WORK_NOTES.md).
-3. ⚠️ **Decisión de revista** — confirmar Electronics vs Future Internet.
+4. ⚠️ **Decisión de revista** — confirmar Electronics vs Future Internet.
 
 ## Hecho
 

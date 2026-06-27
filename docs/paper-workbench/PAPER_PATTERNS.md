@@ -84,11 +84,39 @@ IoT/cloud)
 - **Limitaciones de escalado** explícitas (host único, sin red física entre
   nodos). ✅ ya en Limitations.
 
+> Corrección: el paper "gemelo" nº1 (PMC11723310) está en **MDPI Sensors**
+> (ISSN 1424-8220), no en Electronics. El paper nº2 (microservicios bancarios,
+> 2079-9292) sí es **Electronics**.
+
+## Paper nº3 — Remote rendering QUIC vs WebRTC (arXiv 2505.22132, 2025)
+
+Kubernetes + GStreamer + evaluación de streaming en tiempo real. Texto completo
+accesible (HTML), lo que permite contar con precisión.
+
+**Datos de calibración (muy útiles):**
+- **~24 referencias**, 2 figuras + 3 tablas, **abstract ~140 palabras / 3 frases**.
+- Estructura IMRaD con Related Work en subsecciones temáticas.
+- **Resultados solo en tablas** (latencia, jitter, pérdida, CPU/GPU), por
+  protocolo × red × bitrate. Confirma que tablas-por-configuración es aceptado;
+  nosotros combinamos tablas + pgfplots (más rico).
+- Reproducibilidad: VM 8 CPU / 32 GB / vGPU, Helm chart, bandas de red explícitas,
+  NTP, tcpdump/PCAP. ⇒ Nuestro equivalente: telemetría STATE + tab:testenv. ✅
+
+## Métricas objetivo para NUESTRO paper (de los 3 analizados)
+
+| Elemento | Rango observado | Nuestro estado |
+|---|---|---|
+| Abstract | 140 (arXiv) – 175 (Sensors) palabras | **~250 → recortar a ≤200** |
+| Referencias | 24 (arXiv) – 40+ (MDPI) | bib fina; subir a **~35-45** peer-reviewed |
+| Figuras+tablas | 5 (arXiv) – 22 (Sensors) | ~10; aceptable, +1-2 opcional |
+| Results | tablas por configuración | ✅ tablas + pgfplots |
+| Discussion | subsecciones temáticas nombradas | ✅ Interpretation/Comparison/Security/Limitations/Future |
+
 ## Por analizar (cola de trabajo)
 
-- [ ] 1-2 papers más del número de Electronics (longitud objetivo, nº de citas).
+- [x] arXiv 2505.22132 (Kubernetes+GStreamer) — calibración longitud/citas.
+- [ ] 1 paper más de Electronics (2079-9292) para nº de citas típico MDPI.
 - [ ] Un paper IEEE de live media / SRT para calibrar Background.
-- [ ] Un paper con sección "Security" en Discussion (ver si elevamos la nuestra).
 
 ---
 
