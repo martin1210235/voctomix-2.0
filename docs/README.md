@@ -18,31 +18,45 @@ This `docs/` tree is the in-depth documentation complementing the top-level
 | [CONFIGURATION.md](CONFIGURATION.md) | `default-config.ini` reference (core and GUI) |
 | [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Known issues and fixes |
 
+## Organization (Diátaxis)
+
+The docs follow the [Diátaxis](https://diataxis.fr/) model, separating content by
+user need so readers find what they want without wading through the rest:
+
+| Type | Need | Here |
+|---|---|---|
+| **Tutorial** (learning) | "guide me the first time" | README Quick Start, [DEPLOYMENT.md](DEPLOYMENT.md) |
+| **How-to** (task) | "how do I do X" | [TROUBLESHOOTING.md](TROUBLESHOOTING.md), deployment steps |
+| **Reference** (facts) | "what is the exact command/port" | [CONTROL_PROTOCOL.md](CONTROL_PROTOCOL.md), [CONFIGURATION.md](CONFIGURATION.md) |
+| **Explanation** (why) | "why is it designed this way" | [ARCHITECTURE.md](ARCHITECTURE.md), [TELEMETRY.md](TELEMETRY.md) |
+
+See [DOC_PATTERNS.md](DOC_PATTERNS.md) for the documentation patterns we follow
+from top open-source projects.
+
 ## Documentation plan (status)
 
-This is a living plan for publishing complete, public, GATV-grade documentation.
+- [x] `docs/` index (this file) + Diátaxis organization
+- [x] ARCHITECTURE.md, CONTROL_PROTOCOL.md, TELEMETRY.md
+- [x] DEPLOYMENT.md — per-scenario walkthrough (4 scenarios)
+- [x] CONFIGURATION.md — `default-config.ini` reference
+- [x] TROUBLESHOOTING.md — common issues per scenario
+- [x] Root `CONTRIBUTING.md`, `CHANGELOG.md`, `.env.example`
+- [x] README: badges, Quick Links, four scenarios, Documentation/Contributing sections
+- [ ] Add screenshots/GIF (show, don't tell) — needs media assets
+- [ ] Add real `.github/workflows/` (CI) or remove the reference from top README
+- [ ] Set the real public repository URL (also used in the paper's data-availability)
+- [ ] (Future) Zenodo DOI badge so the repo is citable from the paper
 
-- [x] `docs/` index (this file)
-- [x] ARCHITECTURE.md — first draft
-- [x] CONTROL_PROTOCOL.md — first draft
-- [x] TELEMETRY.md — first draft
-- [ ] DEPLOYMENT.md — expand beyond README quick start (per-scenario, screenshots)
-- [ ] CONFIGURATION.md — full INI key reference
-- [ ] TROUBLESHOOTING.md — port from `.claude/TROUBLESHOOTING.md`, make public
-- [ ] Root `CONTRIBUTING.md`, `CHANGELOG.md` (1.x → 2.0), `.env.example`
-- [ ] Add real `.github/workflows/` or remove the reference from top README
+## README audit (2026-06-27, resolved)
 
-## README audit (2026-06-27)
+Gaps detected and fixed between the top-level `README.md` and the repository:
 
-Gaps detected between the top-level `README.md` and the actual repository:
-
-- README references `docs/`, `.github/workflows/`, `.env.example` — **these did
-  not exist** (this `docs/` tree starts to close the gap).
-- README says *"validated across three real deployment scenarios"* — the paper
-  and TFG validate **four** (Single-PC, Two-PC, Docker, Kubernetes). Align to four.
-- README "Quick Start" clone URL is a placeholder (`<your-username>/voctomix2.0`);
-  set it to the real public repository URL used in the paper's data-availability
-  statement.
+- ✅ `docs/`, `.env.example` now exist; `CONTRIBUTING.md`/`CHANGELOG.md` added.
+- ✅ "three deployment scenarios" corrected to **four** (Single-PC, Two-PC,
+  Docker, Kubernetes).
+- ⚠️ Still pending: `.github/workflows/` referenced in the project structure;
+  add CI or drop the reference. Quick Start clone URL still a placeholder —
+  set the real public repository URL.
 
 ## Comparison with prior documentation
 

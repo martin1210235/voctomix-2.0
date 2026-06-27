@@ -2,7 +2,21 @@
 
 > **Full-HD Software Live Video Mixer** — extended and containerized as part of a Bachelor's Thesis (TFG) in Engineering.
 
-Voctomix 2.0 is an evolution of the open-source live video mixing system originally developed by [C3VOC](https://c3voc.de/). It follows the same client-server architecture — a **voctocore** GStreamer processing engine and a **voctogui** GTK operator interface — and adds a set of production-focused features plus a complete Docker deployment stack, validated across three real deployment scenarios.
+![License](https://img.shields.io/badge/license-MIT-green)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![GStreamer](https://img.shields.io/badge/GStreamer-1.20%2B-orange)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
+![Status](https://img.shields.io/badge/status-active-success)
+
+Voctomix 2.0 is an evolution of the open-source live video mixing system originally developed by [C3VOC](https://c3voc.de/). It follows the same client-server architecture — a **voctocore** GStreamer processing engine and a **voctogui** GTK operator interface — and adds a set of production-focused features plus a complete Docker deployment stack, validated across four real deployment scenarios (single PC, two PCs, Docker Compose and Kubernetes).
+
+> **Used in production** within the **CyberNEMO** European research project at Universidad Politécnica de Madrid (UPM).
+
+### Quick Links
+
+- 📖 **[Full documentation](docs/)** — architecture, control protocol, telemetry, deployment
+- 🏗️ [Architecture](docs/ARCHITECTURE.md) · 🎛️ [Control protocol](docs/CONTROL_PROTOCOL.md) · 📡 [Telemetry](docs/TELEMETRY.md)
+- 🤝 [Contributing](CONTRIBUTING.md) · 🗒️ [Changelog](CHANGELOG.md) · ⚖️ [License](LICENSE.txt)
 
 ---
 
@@ -15,10 +29,13 @@ Voctomix 2.0 is an evolution of the open-source live video mixing system origina
   - [Scenario 1 — Single PC (native)](#scenario-1--single-pc-native)
   - [Scenario 2 — Two PCs (native)](#scenario-2--two-pcs-native)
   - [Scenario 3 — Docker (recommended)](#scenario-3--docker-recommended)
+  - [Scenario 4 — Kubernetes](#scenario-4--kubernetes)
+- [Documentation](#documentation)
 - [Project Structure](#project-structure)
 - [Port Reference](#port-reference)
 - [Configuration](#configuration)
 - [Telemetry JSON format](#telemetry-json-format)
+- [Contributing](#contributing)
 - [License](#license)
 
 ---
@@ -209,6 +226,37 @@ sudo docker compose down
 
 ---
 
+### Scenario 4 — Kubernetes
+
+Orchestrated deployment on a local Minikube cluster, mirroring the two-PC roles at the orchestration level.
+
+```bash
+# PC 1 (server): starts Minikube, applies manifests, opens port-forward
+./k8s_escenario/start_server_pc1.sh
+
+# PC 2 (operator): runs voctogui against the forwarded address
+./k8s_escenario/start_operator_pc2.sh
+```
+
+All containers in the `studio` Pod share one network namespace (same loopback pattern as Docker Compose). RabbitMQ runs as a StatefulSet with a PersistentVolumeClaim for queue durability. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the full walkthrough.
+
+---
+
+## Documentation
+
+In-depth documentation lives in [`docs/`](docs/):
+
+| Document | Contents |
+|---|---|
+| [ARCHITECTURE.md](docs/ARCHITECTURE.md) | System architecture, GStreamer pipeline, modules, data flow |
+| [CONTROL_PROTOCOL.md](docs/CONTROL_PROTOCOL.md) | TCP control protocol (port 9999), full command reference |
+| [TELEMETRY.md](docs/TELEMETRY.md) | RabbitMQ AMQP chain, CHANGE/STATE events, JSON schema |
+| [DEPLOYMENT.md](docs/DEPLOYMENT.md) | The four deployment scenarios, step by step |
+| [CONFIGURATION.md](docs/CONFIGURATION.md) | `default-config.ini` reference |
+| [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Known issues and fixes |
+
+---
+
 ## Project Structure
 
 ```
@@ -368,6 +416,24 @@ Every second, `GuiStateExporter` publishes a full snapshot of the mixer state. E
 This project is a fork and extension of [voc/voctomix](https://github.com/voc/voctomix) (branch `voctomix2`), originally developed by the C3VOC team. New features, Docker containerization, launch scripts and this documentation were developed as part of a Bachelor's Thesis in Telecommunication Engineering, 2025–2026.
 
 ---
+
+## Contributing
+
+Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) for the
+development setup, coding conventions (clean, modular, English-only code and
+comments), commit-message rules (Conventional Commits) and the test/lint flow.
+
+Before opening a pull request:
+
+```bash
+make test    # voctocore unit tests (mock GI bindings, no display needed)
+make lint    # pycodestyle
+```
+
+## Support
+
+- 🐛 Found a bug or have a question? Open an [issue](../../issues).
+- 🔧 Stuck on setup? See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
 
 ## License
 
