@@ -1,3 +1,5 @@
+<div align="center">
+
 # Voctomix 2.0
 
 **Full-HD software live video mixer, extended and containerized for reproducible remote production.**
@@ -7,6 +9,10 @@
 ![GStreamer](https://img.shields.io/badge/GStreamer-1.20%2B-orange)
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-Minikube-326CE5)
+
+<img src="docs/assets/voctogui.png" alt="Voctomix 2.0 operator interface" width="90%">
+
+</div>
 
 Voctomix 2.0 is an evolution of the open-source live video mixing system originally developed by [C3VOC](https://c3voc.de/). It preserves the original client-server architecture, a **voctocore** GStreamer processing engine and a **voctogui** GTK operator interface, and adds a set of production-oriented features together with a complete containerized deployment stack, validated across four real deployment scenarios: single PC, two PCs, Docker Compose and Kubernetes.
 
@@ -22,20 +28,16 @@ The system has been used within the **CyberNEMO** European research project at t
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [What's New in 2.0](#whats-new-in-20)
+- [Key Features](#key-features)
 - [Architecture](#architecture)
+- [Deployment Scenarios](#deployment-scenarios)
 - [Prerequisites](#prerequisites)
 - [Quick Start](#quick-start)
-  - [Scenario 1 — Single PC (native)](#scenario-1--single-pc-native)
-  - [Scenario 2 — Two PCs (native)](#scenario-2--two-pcs-native)
-  - [Scenario 3 — Docker (recommended)](#scenario-3--docker-recommended)
-  - [Scenario 4 — Kubernetes](#scenario-4--kubernetes)
 - [Documentation](#documentation)
 - [Project Structure](#project-structure)
 - [Port Reference](#port-reference)
 - [Configuration](#configuration)
-- [Telemetry JSON Format](#telemetry-json-format)
+- [Telemetry](#telemetry)
 - [Validation and Reproducibility](#validation-and-reproducibility)
 - [Based On](#based-on)
 - [Contributing](#contributing)
@@ -43,17 +45,7 @@ The system has been used within the **CyberNEMO** European research project at t
 
 ---
 
-## Overview
-
-**voctocore** accepts incoming audio/video streams over TCP (Matroska container, UYVY video plus PCM S16LE audio), mixes them through GStreamer's `compositor` element, and exposes the program output on TCP port 15000. It is driven by a line-based text-command interface on TCP port 9999.
-
-**voctogui** is a GTK client that connects to voctocore, renders live previews of every source and of the program mix, and provides the complete operator toolbar (source selection, composite modes, stream blanker, overlays and on-air titling).
-
-The contribution of this work is twofold: a set of production features built on top of the original mixer, and a reproducible deployment methodology that takes the same system from a single workstation to a Kubernetes cluster without changes to the core code.
-
----
-
-## What's New in 2.0
+## Key Features
 
 | Feature | Implementation |
 |---|---|
@@ -65,53 +57,61 @@ The contribution of this work is twofold: a set of production features built on 
 | Full container deployment | `Dockerfile`, `docker-compose.yml`, `launch_docker_studio.sh`, `k8s/` |
 | Intro / VTR pre-loaded sources | `example-scripts/ffmpeg/auto_launch_intro.sh` |
 
-### Stream Blanker (LIVE / PAUSE / NOSTREAM)
+### Stream Blanker: LIVE / PAUSE / NOSTREAM
+
 A three-state output control replaces the original binary on/off switch. The operator switches between a live program feed, a branded pause slate with background music, and a full offline screen, without stopping or restarting the pipeline.
 
-### Dynamic on-air titling
-Two independent text layers (lower-thirds, speaker names, event titles) are typed in the GUI and composited directly over the live program in real time.
+<div align="center">
 
-### Telemetry service
-A background thread in voctogui exports the complete mixer state (active sources, composite mode, stream blanker status, overlay text and audio levels) as a structured JSON document every second. In single-machine deployments it is written to `registros/gui_state.json`; in multi-machine and containerized deployments it is delivered over HTTP POST to the telemetry service, which exposes an HTTP endpoint on port 8080 and publishes the events to a RabbitMQ broker over AMQP.
+| PAUSE slate | NOSTREAM screen |
+|:---:|:---:|
+| <img src="docs/assets/blanker_pause.png" width="380"> | <img src="docs/assets/blanker_nostream.png" width="380"> |
+
+</div>
+
+### Composite modes
+
+Full-screen, picture-in-picture, side-by-side and lecture layouts, switchable live from the GUI:
+
+<div align="center">
+<img src="docs/assets/composites.png" alt="Composite modes" width="70%">
+</div>
+
+### Dynamic on-air titling
+Two independent text layers (lower-thirds, speaker names, event titles) are typed in the GUI and composited directly over the live program in real time. Overlays and titles are dismissed automatically on every cut or composite change, preventing stale on-air graphics from carrying over.
 
 ### Audio Follows Video
 When the operator switches the program source, the audio mix follows automatically: the outgoing source fades out and the incoming source fades in, with no manual action on the audio toolbar.
-
-### Auto-off overlays
-Overlays and dynamic titles are dismissed automatically on every cut or composite change, preventing stale on-air graphics from carrying over to the next segment.
-
-### Container deployment
-The full production stack (core, sources, stream blanker, telemetry, audio manager and RabbitMQ broker) starts with a single command. Health checks enforce the correct startup order; camera containers share the voctocore network namespace and therefore communicate over loopback without virtual-network overhead.
 
 ---
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                       voctogui (GTK)                         │
-│   Sources A/B · Composites · Blanker · Overlays · Titling    │
-└──────────────────────────┬──────────────────────────────────┘
-                           │  TCP :9999 (control)
-                           │  TCP :14000-14005 (source previews)
-┌──────────────────────────▼──────────────────────────────────┐
-│                  voctocore  (Python + GStreamer)             │
-│                                                              │
-│   cam1   :10000 ─┐                                           │
-│   cam2   :10001 ─┤                                           │
-│   cam3   :10002 ─┼──► compositor ──► stream-blanker ────────►│ :15000  program out
-│   cam4   :10003 ─┤                 └────────────────────────►│ :11000  raw mix
-│   break  :10004 ─┤                                           │
-│   intro  :10005 ─┘                                           │
-└──────────────────────────┬──────────────────────────────────┘
-                           │
-          ┌────────────────▼────────────────┐
-          │       Telemetry / RabbitMQ       │
-          │   HTTP :8080  ·  AMQP :5672       │
-          └──────────────────────────────────┘
-```
+**voctocore** accepts incoming audio/video streams over TCP (Matroska container, UYVY video plus PCM S16LE audio), mixes them through GStreamer's `compositor` element, and exposes the program output on TCP port 15000. It is driven by a line-based text-command interface on TCP port 9999. **voctogui** is a GTK client that connects to voctocore, renders live previews of every source and of the program mix, and provides the complete operator toolbar.
+
+<div align="center">
+<img src="docs/assets/architecture.png" alt="System architecture" width="85%">
+</div>
 
 A detailed description of the GStreamer pipeline, modules and data flow is provided in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+---
+
+## Deployment Scenarios
+
+The same system was validated, without changes to the core code, across four deployments of increasing orchestration:
+
+<div align="center">
+
+| 1 — Single PC | 2 — Two PCs |
+|:---:|:---:|
+| <img src="docs/assets/scenario_1pc.png" width="380"> | <img src="docs/assets/scenario_2pc.png" width="380"> |
+| **3 — Docker Compose** | **4 — Kubernetes** |
+| <img src="docs/assets/scenario_docker.png" width="380"> | <img src="docs/assets/scenario_kubernetes.png" width="380"> |
+
+</div>
+
+The full step-by-step walkthrough for each scenario is in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ---
 
@@ -137,18 +137,12 @@ pip3 install pika==1.3.2
 
 ### Docker (Scenario 3)
 
-- **Docker:** 24.0 or newer
-- **Docker Compose plugin:** v2.20 or newer (`docker compose`, not `docker-compose`)
+- **Docker:** 24.0 or newer, with the **Compose plugin** v2.20 or newer (`docker compose`)
 - A working **X11 display** on the host (voctogui runs natively, not in a container)
-
-```bash
-docker compose version   # verify installation
-```
 
 ### Kubernetes (Scenario 4)
 
-- **Minikube** with a working container runtime
-- **kubectl** configured against the local cluster
+- **Minikube** with a working container runtime, and **kubectl** configured against the cluster
 
 ---
 
@@ -163,73 +157,33 @@ cd voctomix-2.0
 > `videos/intro.mp4`, `videos/SLIDES_video_starting_soon.mp4`,
 > `videos/stream_offline.mp4`, `videos/musica_pausa.mp3`.
 
-### Scenario 1 — Single PC (native)
-
-Runs voctocore, all test sources, the telemetry service, a program monitor and voctogui on one machine.
+**Scenario 1 — Single PC (native).** Runs voctocore, all test sources, telemetry, a program monitor and voctogui on one machine:
 
 ```bash
 ./start_studio_single_pc.sh
 ```
 
-The script auto-detects the LAN IP, cleans up any previous processes, waits for port 9999 to be listening, and then opens the GUI. Closing the GUI window shuts the whole studio down cleanly. A self-contained variant is also available under `1pc_escenario1/`.
-
-### Scenario 2 — Two PCs (native)
-
-**PC 1 (server):** runs voctocore and all sources.
+**Scenario 2 — Two PCs (native).** PC 1 runs the core and sources; PC 2 runs the operator GUI:
 
 ```bash
-# Optional: override LAN IP if auto-detection fails
-# LOCAL_IP=10.0.0.5 ./2pc_escenario2/start_voctocore_pc1.sh
-./2pc_escenario2/start_voctocore_pc1.sh
+./2pc_escenario2/start_voctocore_pc1.sh                 # PC 1 (server)
+IP_SERVER=<IP_OF_PC1> ./2pc_escenario2/start_voctogui_pc2.sh   # PC 2 (operator)
 ```
 
-**PC 2 (operator):** runs voctogui pointing at PC 1.
+**Scenario 3 — Docker (recommended).** One script builds the image, starts all services in order, waits for the health checks, then opens voctogui:
 
 ```bash
-IP_SERVER=<IP_OF_PC1> ./2pc_escenario2/start_voctogui_pc2.sh
-```
-
-Both machines must share a LAN, with the ports in the [Port Reference](#port-reference) reachable between them.
-
-### Scenario 3 — Docker (recommended)
-
-The most reproducible deployment. A single script builds the image, starts all services in order, waits for the health checks to pass, and then opens voctogui on the host.
-
-```bash
-# Allow the host GUI to receive the voctogui window
 xhost +local:$(id -un)
 ./launch_docker_studio.sh
+# stop: sudo docker compose down
 ```
 
-To override the LAN IP used by the telemetry service: `MI_IP_REAL=10.0.0.5 ./launch_docker_studio.sh`.
-Stop the stack with `sudo docker compose down`.
-
-**Services started by `docker compose up`:**
-
-| Container | Role | Exposed ports |
-|---|---|---|
-| `voctocore` | GStreamer mixer core | 9999, 9998/udp, 10000–10005, 11000, 12000, 13000–13005, 14000–14005, 15000 |
-| `rabbitmq` | AMQP message broker | 5672, 15672 (web UI) |
-| `telemetry` | GUI-state HTTP endpoint and RabbitMQ publisher | 8080 |
-| `cam1`–`cam4` | Synthetic test video sources | internal (share voctocore network) |
-| `break` | Break / pause video source | internal |
-| `intro` | Intro video loop (port 10005) | internal |
-| `stream_blanker` | Blanker video source | internal |
-| `audio_manager` | Dynamic audio controller | internal |
-
-### Scenario 4 — Kubernetes
-
-Orchestrated deployment on a local Minikube cluster, mirroring the two-PC roles at the orchestration level.
+**Scenario 4 — Kubernetes.** Orchestrated deployment on a local Minikube cluster:
 
 ```bash
-# PC 1 (server): starts Minikube, applies the manifests, opens the port-forward
-./k8s_escenario/start_server_pc1.sh
-
-# PC 2 (operator): runs voctogui against the forwarded address
-./k8s_escenario/start_operator_pc2.sh
+./k8s_escenario/start_server_pc1.sh     # PC 1 (server): minikube + manifests + port-forward
+./k8s_escenario/start_operator_pc2.sh   # PC 2 (operator): voctogui against the forwarded address
 ```
-
-All containers in the `studio` Pod share a single network namespace (the same loopback pattern used by Docker Compose). RabbitMQ runs as a StatefulSet backed by a PersistentVolumeClaim for queue durability. The complete walkthrough is in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ---
 
@@ -266,7 +220,6 @@ voctomix-2.0/
 │
 ├── voctogui/                       # GTK operator interface (Python)
 │   ├── voctogui.py                 # Entry point
-│   ├── default-config.ini          # GUI configuration
 │   └── lib/
 │       ├── gui_state_exporter.py   # Telemetry JSON exporter
 │       └── toolbar/
@@ -274,15 +227,7 @@ voctomix-2.0/
 │           └── overlay.py          # Dynamic titling and auto-off
 │
 ├── vocto/                          # Shared library (composite command enum)
-│
 ├── example-scripts/ffmpeg/         # Source injection and utility scripts
-│   ├── source-testvideo-as-cam*.sh # Synthetic cameras via FFmpeg
-│   ├── stream_blanker_source.sh    # Blanker source
-│   ├── auto_launch_intro.sh        # Intro VTR watchdog
-│   ├── stream-hd-to-youtube.sh     # H.264 stream to YouTube Live
-│   ├── record-mixed-ffmpeg.sh      # Program recording
-│   ├── telemetry_service.py        # HTTP + RabbitMQ telemetry backend
-│   └── audio_control.sh            # Dynamic audio controller
 │
 ├── 1pc_escenario1/                 # Scenario 1: single-PC scripts
 ├── 2pc_escenario2/                 # Scenario 2: server + operator scripts
@@ -299,7 +244,7 @@ voctomix-2.0/
 ├── launch_k8s.sh                   # Scenario 4: Kubernetes launcher
 ├── start_studio_single_pc.sh       # Scenario 1: single-PC native launcher
 ├── .github/workflows/              # Continuous integration (tests, lint, Docker build)
-└── docs/                           # Project documentation
+└── docs/                           # Project documentation and assets
 ```
 
 ---
@@ -337,55 +282,36 @@ audiocaps = audio/x-raw,format=S16LE,channels=2,layout=interleaved,rate=48000
 [stream-blanker]
 enabled = true
 sources = pause,nostream   ; drives the PAUSE and NOSTREAM buttons in the GUI
-volume = 1.0
 
 [overlay]
 path = ./images
 auto-off = true
 blend-time = 300           ; milliseconds for overlay fade in/out
-
-[previews]
-enabled = true
-videocaps = video/x-raw,width=1024,height=576,framerate=25/1
-
-[mirrors]
-enabled = true
 ```
 
 Any value defined in the core configuration overrides the GUI's equivalent, keeping all connected GUI instances in sync. The full reference is in [docs/CONFIGURATION.md](docs/CONFIGURATION.md).
 
 ---
 
-## Telemetry JSON Format
+## Telemetry
 
-Every second, `GuiStateExporter` publishes a full snapshot of the mixer state. Example:
+Every second, `GuiStateExporter` publishes a full snapshot of the mixer state. In single-machine deployments it is written to `registros/gui_state.json`; in containerized deployments it is delivered over HTTP POST to the telemetry service (port 8080), which publishes the events to a RabbitMQ broker over AMQP.
+
+<div align="center">
+<img src="docs/assets/telemetry_queues.png" alt="RabbitMQ telemetry queues in the CyberNEMO deployment" width="80%">
+</div>
 
 ```json
 {
   "last_update": "2026-04-22 14:35:01",
-  "gui_ip": "192.168.1.10",
-  "preview": { "channel_a": "cam1", "channel_b": "cam2" },
   "mode": "live",
-  "composite": {
-    "name": "full_screen",
-    "fullscreen": true, "side_by_side": false, "pip": false, "lecture": false
-  },
-  "mirror": false,
-  "insertion": {
-    "overlay": false, "auto_off": true, "overlay_selected": "logo_event.png",
-    "text1_active": true, "text1_value": "Speaker Name", "text2_active": false, "text2_value": ""
-  },
-  "audio": {
-    "cam1_db": -18.5, "cam2_db": -42.0, "cam3_db": null,
-    "cam4_db": null, "break_db": null, "intro_db": null
-  }
+  "composite": { "name": "full_screen", "fullscreen": true },
+  "insertion": { "text1_active": true, "text1_value": "Speaker Name", "auto_off": true },
+  "audio": { "cam1_db": -18.5, "cam2_db": -42.0 }
 }
 ```
 
-- **Docker / network mode:** available at `http://localhost:8080/gui_state`
-- **Native mode:** written to `registros/gui_state.json`
-
-The complete AMQP event chain and schema are documented in [docs/TELEMETRY.md](docs/TELEMETRY.md).
+The complete AMQP event chain and JSON schema are documented in [docs/TELEMETRY.md](docs/TELEMETRY.md).
 
 ---
 
@@ -400,6 +326,11 @@ The system was validated across the four deployment scenarios. Resilience was me
 
 The measurement scripts and the raw logs behind these figures are kept under [`experiments/`](experiments/) so the results can be reproduced. The complete experimental methodology and the full set of results are reported in the thesis.
 
+<div align="center">
+<img src="docs/assets/production_cybernemo.png" alt="Voctomix 2.0 in production during a CyberNEMO trial" width="80%">
+<br><em>Voctomix 2.0 in production during a CyberNEMO trial.</em>
+</div>
+
 ---
 
 ## Based On
@@ -411,8 +342,6 @@ This project is a fork and extension of [voc/voctomix](https://github.com/voc/vo
 ## Contributing
 
 Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) for the development setup, coding conventions (clean, modular, English-only code and comments), commit-message rules (Conventional Commits) and the test and lint workflow.
-
-Before opening a pull request:
 
 ```bash
 sh voctocore/test.sh   # voctocore unit tests (mock GI bindings; needs: pip install mock)
