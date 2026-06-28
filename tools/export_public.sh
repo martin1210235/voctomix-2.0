@@ -36,7 +36,7 @@ PUBLIC=(
   launch_docker_studio.sh launch_k8s.sh start_server.sh start_studio_single_pc.sh
   # project meta
   README.md README_DOCKER.md README-TRANSITIONS.md
-  CHANGELOG.md CONTRIBUTING.md LICENSE.txt .env.example
+  CHANGELOG.md CONTRIBUTING.md CODE_OF_CONDUCT.md SECURITY.md LICENSE.txt .env.example
 )
 
 # --- Reproducibility: measurement scripts + raw logs (TFG write-ups excluded below) ---
