@@ -1,0 +1,93 @@
+# Stability test override — use with:
+#   docker compose -f docker-compose.yml -f docker-compose.stability.yml up -d
+#
+# Changes vs. default compose:
+#  - SAVE_LOGS=true on telemetry  → writes sessions/session1.jsonl
+#  - Cameras 1-4: local FFmpeg lavfi sources (no internet, infinite)
+#  - break, audio_manager: local lavfi sources (avoids missing-file restart loops)
+
+services:
+  telemetry:
+    environment:
+      - SAVE_LOGS=true
+      - TELEMETRY_USE_UDP=1
+      - HOST_IP=${HOST_IP}
+      - VOCTOCORE_HOST=voctocore
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_USER=${RABBITMQ_USER:-voctomix}
+      - RABBITMQ_PASS=${RABBITMQ_PASS:-voctomix123}
+
+  cam1:
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin
+        -f lavfi -i "smptebars=size=1920x1080:rate=25"
+        -f lavfi -i "anullsrc=r=48000:cl=stereo"
+        -filter_complex "[0:v] fps=25 [v]; [1:a] aresample=48000 [a]"
+        -map "[v]" -map "[a]"
+        -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le
+        -f matroska tcp://localhost:10000
+
+  cam2:
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin
+        -f lavfi -i "testsrc2=size=1920x1080:rate=25"
+        -f lavfi -i "anullsrc=r=48000:cl=stereo"
+        -filter_complex "[0:v] fps=25 [v]; [1:a] aresample=48000 [a]"
+        -map "[v]" -map "[a]"
+        -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le
+        -f matroska tcp://localhost:10001
+
+  cam3:
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin
+        -f lavfi -i "color=c=green:size=1920x1080:rate=25"
+        -f lavfi -i "anullsrc=r=48000:cl=stereo"
+        -filter_complex "[0:v] fps=25 [v]; [1:a] aresample=48000 [a]"
+        -map "[v]" -map "[a]"
+        -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le
+        -f matroska tcp://localhost:10002
+
+  cam4:
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin
+        -f lavfi -i "color=c=blue:size=1920x1080:rate=25"
+        -f lavfi -i "anullsrc=r=48000:cl=stereo"
+        -filter_complex "[0:v] fps=25 [v]; [1:a] aresample=48000 [a]"
+        -map "[v]" -map "[a]"
+        -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le
+        -f matroska tcp://localhost:10003
+
+  break:
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin
+        -f lavfi -i "color=c=black:size=1920x1080:rate=25"
+        -f lavfi -i "anullsrc=r=48000:cl=stereo"
+        -filter_complex "[0:v] fps=25 [v]; [1:a] aresample=48000 [a]"
+        -map "[v]" -map "[a]"
+        -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le
+        -f matroska tcp://localhost:10004
+
+  audio_manager:
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin
+        -f lavfi -i "anullsrc=r=48000:cl=stereo"
+        -c:a pcm_s16le -ar 48000 -ac 2 -vn
+        -f matroska tcp://127.0.0.1:18000

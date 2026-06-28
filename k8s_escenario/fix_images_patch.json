@@ -1,0 +1,20 @@
+{
+  "spec": {
+    "template": {
+      "spec": {
+        "containers": [
+          {"name": "voctocore",      "image": "martin1210235/voctomix:latest"},
+          {"name": "telemetry",      "image": "martin1210235/voctomix:latest"},
+          {"name": "cam1",           "image": "martin1210235/voctomix:latest"},
+          {"name": "cam2",           "image": "martin1210235/voctomix:latest"},
+          {"name": "cam3",           "image": "martin1210235/voctomix:latest"},
+          {"name": "cam4",           "image": "martin1210235/voctomix:latest"},
+          {"name": "break",          "image": "martin1210235/voctomix:latest"},
+          {"name": "intro",          "image": "martin1210235/voctomix:latest"},
+          {"name": "stream-blanker", "image": "martin1210235/voctomix:latest"},
+          {"name": "audio-manager",  "image": "martin1210235/voctomix:latest"}
+        ]
+      }
+    }
+  }
+}
