@@ -149,6 +149,32 @@ Acciones en GitHub (ajustes del repo, las haces tú en la web):
 
 ---
 
+## Guion del GIF demo (pendiente de grabar)
+
+Objetivo: 15-20 s, en bucle, mostrando el producto en acción. Va arriba del README como hero
+(un GIF convierte más que una captura estática). Ruta reservada: `docs/assets/demo.gif`.
+
+Secuencia a grabar (con la GUI en marcha):
+1. (0-3 s) Vista general de la GUI, programa en FULL SCREEN, modo LIVE.
+2. (3-7 s) Seleccionar CAM2 en Channel A y hacer CUT/TRANS → el programa cambia de cámara.
+3. (7-12 s) Cambiar el composite a SIDE BY SIDE y luego PIP → se ve en directo.
+4. (12-16 s) Escribir un nombre en TEXT 1 e INSERT 1 → aparece el rótulo inferior; al cortar,
+   AUTO-OFF lo retira solo.
+5. (16-20 s) Pulsar PAUSE (slate de pausa) → NOSTREAM (pantalla offline) → volver a LIVE.
+
+Cómo grabarlo (Linux): **Peek**, **Byzanz** (`byzanz-record -d 18 demo.gif`) u **OBS** capturando la
+ventana de voctogui. Exportar a ~900 px de ancho, < 5 MB, en bucle.
+
+Snippet listo para incrustar como hero (sustituye o acompaña a la captura estática):
+```html
+<p align="center"><img src="docs/assets/demo.gif" alt="Voctomix 2.0 demo" width="90%"></p>
+```
+
+> Estado: ⬜ pendiente de que el usuario grabe el GIF. Cuando lo tenga, se sube a
+> `docs/assets/demo.gif` y se incrusta en el README (1 minuto, push por la integración).
+
+---
+
 ## Fuentes
 - awesome-readme (matiassingers) · Best-README-Template (othneildrew)
 - "GitHub README Template: Complete 2026 Guide to Get More Stars" (DEV)
