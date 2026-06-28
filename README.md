@@ -244,7 +244,7 @@ voctomix-2.0/
 ├── launch_docker_studio.sh         # Scenario 3: one-command Docker launcher
 ├── launch_k8s.sh                   # Scenario 4: Kubernetes launcher
 ├── start_studio_single_pc.sh       # Scenario 1: single-PC native launcher
-├── .github/workflows/              # Continuous integration (tests, lint, Docker build)
+├── .github/workflows/              # Continuous integration (pycodestyle lint)
 └── docs/                           # Project documentation and assets
 ```
 
