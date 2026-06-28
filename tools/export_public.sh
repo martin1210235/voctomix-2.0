@@ -70,8 +70,9 @@ rm -rf "$DST/docs/paper-workbench"
 rm -f "$DST/docs/DOC_PATTERNS.md"
 # Drop TFG-flavoured write-ups if experiments/ was included
 rm -f "$DST/experiments/"*_CAP5.md 2>/dev/null || true
-# Drop junk asset
+# Drop junk assets
 rm -f "$DST/images/bg(feoooo).png" 2>/dev/null || true
+rm -f "$DST/images/backgrounds/bg(feooooo).png" 2>/dev/null || true
 
 # Public-facing .gitignore for the new repo
 cat > "$DST/.gitignore" <<'EOF'
