@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Voctomix 2.0 — Full-HD software live video mixer for reproducible remote production"
+abstract: >-
+  An evolution of the C3VOC voctomix live video mixer (voctocore + voctogui),
+  extended with a three-state stream blanker, dynamic on-air titling, audio-follows-video,
+  a telemetry service over HTTP and RabbitMQ, and a containerized deployment stack
+  validated across single-PC, two-PC, Docker Compose and Kubernetes scenarios.
+type: software
+authors:
+  - family-names: "Herranz Sánchez"
+    given-names: "Martín"
+    affiliation: "ETSIT, Universidad Politécnica de Madrid (UPM)"
+date-released: 2026
+license: MIT
+repository-code: "https://github.com/martin1210235/voctomix-2.0"
+keywords:
+  - live video mixing
+  - GStreamer
+  - remote production
+  - broadcasting
+  - Docker
+  - Kubernetes
+  - telemetry

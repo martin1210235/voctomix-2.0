@@ -4,6 +4,7 @@
 
 **Full-HD software live video mixer, extended and containerized for reproducible remote production.**
 
+[![CI](https://github.com/martin1210235/voctomix-2.0/actions/workflows/ci.yml/badge.svg)](https://github.com/martin1210235/voctomix-2.0/actions/workflows/ci.yml)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![GStreamer](https://img.shields.io/badge/GStreamer-1.20%2B-orange)
@@ -243,7 +244,7 @@ voctomix-2.0/
 ├── launch_docker_studio.sh         # Scenario 3: one-command Docker launcher
 ├── launch_k8s.sh                   # Scenario 4: Kubernetes launcher
 ├── start_studio_single_pc.sh       # Scenario 1: single-PC native launcher
-├── .github/workflows/              # Continuous integration (tests, lint, Docker build)
+├── .github/workflows/              # Continuous integration (pycodestyle lint)
 └── docs/                           # Project documentation and assets
 ```
 

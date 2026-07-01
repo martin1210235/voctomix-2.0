@@ -36,7 +36,7 @@ PUBLIC=(
   launch_docker_studio.sh launch_k8s.sh start_server.sh start_studio_single_pc.sh
   # project meta
   README.md README_DOCKER.md README-TRANSITIONS.md
-  CHANGELOG.md CONTRIBUTING.md LICENSE.txt .env.example
+  CHANGELOG.md CONTRIBUTING.md CODE_OF_CONDUCT.md SECURITY.md LICENSE.txt CITATION.cff .env.example
 )
 
 # --- Reproducibility: measurement scripts + raw logs (TFG write-ups excluded below) ---
@@ -70,8 +70,9 @@ rm -rf "$DST/docs/paper-workbench"
 rm -f "$DST/docs/DOC_PATTERNS.md"
 # Drop TFG-flavoured write-ups if experiments/ was included
 rm -f "$DST/experiments/"*_CAP5.md 2>/dev/null || true
-# Drop junk asset
+# Drop junk assets
 rm -f "$DST/images/bg(feoooo).png" 2>/dev/null || true
+rm -f "$DST/images/backgrounds/bg(feooooo).png" 2>/dev/null || true
 
 # Public-facing .gitignore for the new repo
 cat > "$DST/.gitignore" <<'EOF'
