@@ -32,6 +32,7 @@
 \usetikzlibrary{babel,shapes.geometric,arrows.meta,positioning,fit,backgrounds,calc}
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.18}
+\usepackage{pdfpages}
 
 \makeatletter
 \definecolor{nar}{HTML}{FF8000}
@@ -221,5 +222,8 @@
 \chapter{Anexo C. Evolución del repositorio}
     \import{capitulos/anexos/}{anexoC.tex}
 \newpage
+
+% Presentacion de defensa (diapositivas en horizontal, a partir de la pagina 101)
+\includepdf[pages=-,fitpaper=true,link=false]{presentacion.pdf}
 
 \end{document}
