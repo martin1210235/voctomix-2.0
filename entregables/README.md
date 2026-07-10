@@ -1,11 +1,15 @@
 # Entregables
 
-Documentos y material de defensa del proyecto Voctomix 2.0.
+Documentos y material académico del proyecto Voctomix 2.0.
 
-| Documento | Fichero | Descripción |
-|-----------|---------|-------------|
+| Documento | Ubicación | Descripción |
+|-----------|-----------|-------------|
 | Memoria TFG | [`TFG_Voctomix2.0_Martin_Herranz.pdf`](TFG_Voctomix2.0_Martin_Herranz.pdf) | Trabajo Fin de Grado completo (ETSIT-UPM). |
-| Presentación de defensa | [`Presentacion_Defensa_Voctomix2.0.pptx`](Presentacion_Defensa_Voctomix2.0.pptx) | Diapositivas de la defensa (plantilla oficial ETSIT). |
-| Vídeo demo | [`demo_voctomix.mp4`](demo_voctomix.mp4) | Demostración del sistema en funcionamiento: mesa del realizador, señal de programa y telemetría en vivo. |
+| Presentación de defensa | [Releases](../../releases/latest) | Diapositivas de la defensa (`.pptx`), adjuntas al release por tamaño. |
+| Vídeo demo | [Releases](../../releases/latest) | Demostración completa del sistema (`.mp4`), adjunta al release por tamaño. |
+
+> Los ficheros pesados (presentación y vídeo) se distribuyen como **assets de la
+> [última release](../../releases/latest)** para mantener el repositorio ligero.
+> En el README principal hay un GIF de la demostración.
 
 Para el código, la infraestructura y la documentación técnica, véase la raíz del repositorio.

@@ -11,7 +11,9 @@
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-Minikube-326CE5)
 
-<img src="docs/assets/voctogui.png" alt="Voctomix 2.0 operator interface" width="90%">
+<img src="docs/assets/demo.gif" alt="Voctomix 2.0 — live multi-camera mixing, program output and telemetry" width="92%">
+
+<sub>Live demo — multi-camera switching, on-air overlays and real-time telemetry. Full video and slides in the <a href="../../releases">Releases</a>.</sub>
 
 </div>
 
