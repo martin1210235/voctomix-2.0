@@ -16,7 +16,7 @@ part of a Bachelor's Thesis in Telecommunication Engineering (UPM).
 - **Dynamic on-air titling** — two independent text layers (lower-thirds)
   composited over the program output in real time.
 - **Telemetry service** — exports the complete mixer state as JSON every second;
-  writes to `registros/gui_state.json` (native) or HTTP-POSTs to the telemetry
+  writes to `sessions/gui_state.json` (native) or HTTP-POSTs to the telemetry
   container, which publishes `CHANGE` and `STATE` events to RabbitMQ over AMQP.
 - **Audio Follows Video (AFV)** — automatic audio cross-fade on every source
   switch.
@@ -26,7 +26,7 @@ part of a Bachelor's Thesis in Telecommunication Engineering (UPM).
   health-check ordering; camera containers share the `voctocore` network
   namespace (localhost communication, no virtual-network overhead).
 - **Kubernetes deployment** — Minikube manifests; `studio` Pod with camera
-  sidecars and RabbitMQ as a StatefulSet.
+  sidecars and RabbitMQ as a Deployment.
 - **Intro / VTR pre-loaded sources.**
 - **In-depth documentation** — `docs/` tree (architecture, control protocol,
   telemetry, deployment, configuration, troubleshooting).

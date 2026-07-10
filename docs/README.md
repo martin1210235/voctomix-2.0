@@ -30,43 +30,9 @@ user need so readers find what they want without wading through the rest:
 | **Reference** (facts) | "what is the exact command/port" | [CONTROL_PROTOCOL.md](CONTROL_PROTOCOL.md), [CONFIGURATION.md](CONFIGURATION.md) |
 | **Explanation** (why) | "why is it designed this way" | [ARCHITECTURE.md](ARCHITECTURE.md), [TELEMETRY.md](TELEMETRY.md) |
 
-See [DOC_PATTERNS.md](DOC_PATTERNS.md) for the documentation patterns we follow
-from top open-source projects.
+## Scope
 
-## Documentation plan (status)
-
-- [x] `docs/` index (this file) + Diátaxis organization
-- [x] ARCHITECTURE.md, CONTROL_PROTOCOL.md, TELEMETRY.md
-- [x] DEPLOYMENT.md — per-scenario walkthrough (4 scenarios)
-- [x] CONFIGURATION.md — `default-config.ini` reference
-- [x] TROUBLESHOOTING.md — common issues per scenario
-- [x] Root `CONTRIBUTING.md`, `CHANGELOG.md`, `.env.example`
-- [x] README: badges, Quick Links, four scenarios, Documentation/Contributing sections
-- [x] `.github/workflows/ci.yml` — lint CI (pycodestyle). Test job omitted: the
-      unit suite currently fails in a clean environment (no Makefile either).
-- [x] Clean public export via `tools/export_public.sh` (allowlist; excludes
-      thesis, paper, internal notes, sessions).
-- [ ] Add screenshots/GIF (show, don't tell) — needs media assets
-- [ ] Set the real public repository URL (also used in the paper's data-availability)
-- [ ] Fix/triage the failing voctocore unit tests, then add a test job to CI
-- [ ] (Future) Zenodo DOI badge so the repo is citable from the paper
-
-## README audit (2026-06-27, resolved)
-
-Gaps detected and fixed between the top-level `README.md` and the repository:
-
-- ✅ `docs/`, `.env.example` now exist; `CONTRIBUTING.md`/`CHANGELOG.md` added.
-- ✅ "three deployment scenarios" corrected to **four** (Single-PC, Two-PC,
-  Docker, Kubernetes).
-- ⚠️ Still pending: `.github/workflows/` referenced in the project structure;
-  add CI or drop the reference. Quick Start clone URL still a placeholder —
-  set the real public repository URL.
-
-## Comparison with prior documentation
-
-- The original **C3VOC Voctomix** README is correct but minimal (subproject
-  split, dependency install, Docker readme).
-- The **GATV `voctomix1`** README is an unfinished placeholder (GitLab default
-  template + unresolved git merge-conflict markers). Not a model to imitate.
-- This documentation aims to exceed both: modular, task-oriented, with a full
-  control-protocol and telemetry reference that neither prior version documents.
+The documents in this directory are intended for users and contributors of the
+public software repository. Internal thesis notes, paper workbench files,
+presentation material and private experiment logs are intentionally kept outside
+the public documentation export.

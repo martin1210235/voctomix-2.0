@@ -55,16 +55,30 @@ log "voctocore is operational"
 
 log "Opening voctogui..."
 cd "$BASE_DIR/voctogui"
-PYTHONWARNINGS="ignore::DeprecationWarning" python3 voctogui.py 2>/dev/null &
+GUI_TARGET_IP="127.0.0.1" TELEMETRY_HTTP_PORT="8080" \
+    PYTHONWARNINGS="ignore::DeprecationWarning" python3 voctogui.py 2>/dev/null &
 
 log "Opening program monitor (port 15000)..."
 ffplay -hide_banner -loglevel error -window_title "PROGRAM" tcp://127.0.0.1:15000 &
 
+log "Opening telemetry logs in a separate window..."
+TELEMETRY_LOGS_CMD="cd '$BASE_DIR' && docker compose logs -f telemetry"
+# xterm first: OBS XComposite window-capture renders it reliably, while
+# GPU-accelerated terminals (gnome-terminal) can appear black in the capture.
+if command -v xterm >/dev/null 2>&1; then
+    xterm -T "TELEMETRY" -fa "Monospace" -fs 14 -bg black -fg white \
+          -geometry 120x30 -e bash -lc "$TELEMETRY_LOGS_CMD" &
+elif command -v gnome-terminal >/dev/null 2>&1; then
+    gnome-terminal --title="TELEMETRY" -- bash -lc "$TELEMETRY_LOGS_CMD" &
+else
+    x-terminal-emulator -e bash -lc "$TELEMETRY_LOGS_CMD" &
+fi
+
 log "System live and ready."
 echo "--------------------------------------------------------"
-log "Showing telemetry service logs..."
-log "(Press Ctrl+C to shut down the studio and close the GUI)"
+log "Telemetry logs are shown in the separate 'TELEMETRY' window."
+log "(Press Ctrl+C here to shut down the studio and close the GUI)"
 echo "--------------------------------------------------------"
 
-cd "$BASE_DIR"
-sudo docker compose logs -f telemetry
+# Keep this terminal alive so the cleanup trap runs on Ctrl+C.
+while true; do sleep 3600; done

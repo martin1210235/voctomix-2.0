@@ -1,8 +1,9 @@
 # Troubleshooting
 
 Common issues and fixes, grouped by deployment scenario. If your problem is not
-here, open an [issue](../../issues) with the scenario, the failing command and
-the relevant logs.
+here, open an issue at
+<https://github.com/martin1210235/voctomix-2.0/issues> with the scenario, the
+failing command and the relevant logs.
 
 ## voctogui cannot connect to voctocore
 
@@ -44,10 +45,11 @@ the relevant logs.
 
 ## RabbitMQ / telemetry: no events
 
-- Management UI: `http://localhost:15672` (default guest/guest in dev).
+- Management UI: `http://localhost:15672` (Docker Compose defaults:
+  `voctomix` / `voctomix123`, unless overridden through `.env`).
 - Expect two queues: `CHANGE` (immediate) and `STATE` (every 5 s heartbeat).
-- Native mode writes to `registros/gui_state.json` instead of POSTing; check the
-  file is being appended.
+- Native mode writes the latest GUI-state snapshot to `sessions/gui_state.json`
+  instead of POSTing; check that the file is being refreshed.
 
 ## High CPU on Kubernetes vs Docker
 

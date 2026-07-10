@@ -37,6 +37,7 @@ PUBLIC=(
   # project meta
   README.md README_DOCKER.md README-TRANSITIONS.md
   CHANGELOG.md CONTRIBUTING.md CODE_OF_CONDUCT.md SECURITY.md LICENSE.txt CITATION.cff .env.example
+  requirements-dev.txt
 )
 
 # --- Reproducibility: measurement scripts + raw logs (TFG write-ups excluded below) ---
@@ -54,7 +55,7 @@ copy() {
   local item="$1"
   [ -e "$SRC/$item" ] || { echo "  skip (missing): $item"; return; }
   if [ -d "$SRC/$item" ]; then
-    rsync -a --exclude '__pycache__' --exclude '*.pyc' --exclude '.DS_Store' \
+    rsync -a --exclude '__pycache__' --exclude '*.pyc' --exclude '*.log' --exclude '.DS_Store' \
           "$SRC/$item" "$DST/"
   else
     cp -p "$SRC/$item" "$DST/"

@@ -4,7 +4,7 @@ set -euo pipefail
 BASE_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 # IP of PC 1 (Kubernetes server). Defaults to localhost for single-PC use.
 #   IP_SERVER=10.0.0.5 ./start_operator_pc2.sh
-IP_SERVER="${IP_SERVER:-192.168.0.47}"
+IP_SERVER="${IP_SERVER:-127.0.0.1}"
 
 log() {
     echo "[$(date +%H:%M:%S)] $*"
