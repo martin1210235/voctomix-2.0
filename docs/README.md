@@ -33,6 +33,7 @@ user need so readers find what they want without wading through the rest:
 ## Scope
 
 The documents in this directory are intended for users and contributors of the
-public software repository. Internal thesis notes, paper workbench files,
-presentation material and private experiment logs are intentionally kept outside
-the public documentation export.
+public software repository. The final thesis report, defense slides and
+published paper are available in [`entregables/`](../entregables/). Internal
+thesis drafts, paper workbench files and private experiment logs are
+intentionally kept outside the public documentation export.

@@ -11,7 +11,8 @@ authors:
   - family-names: "Herranz Sánchez"
     given-names: "Martín"
     affiliation: "ETSIT, Universidad Politécnica de Madrid (UPM)"
-date-released: 2026-07-06
+version: 2.0.0
+date-released: 2026-07-13
 license: MIT
 repository-code: "https://github.com/martin1210235/voctomix-2.0"
 keywords:

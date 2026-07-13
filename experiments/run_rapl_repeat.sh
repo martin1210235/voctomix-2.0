@@ -195,4 +195,3 @@ echo "Docker session indices: N1=${DOCKER_IDX[1]} N2=${DOCKER_IDX[2]} N3=${DOCKE
 echo "K8s    session indices: N1=${K8S_IDX[1]} N2=${K8S_IDX[2]} N3=${K8S_IDX[3]} N4=${K8S_IDX[4]}" | tee -a "$LOG"
 echo "" | tee -a "$LOG"
 log "ALL DONE. Update RESULTADOS_CAP5.md and 5_3_resultados.tex with the values above."
-log "Then run Claude to update the LaTeX graph and text."
