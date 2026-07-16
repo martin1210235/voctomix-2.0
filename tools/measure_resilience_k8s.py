@@ -29,6 +29,7 @@ def get_pod_name():
     result = subprocess.run(
         ["kubectl", "get", "pods", "-l", "app=studio",
          "--field-selector=status.phase=Running",
+         "-n", "voctomix-exp",
          "-o", "jsonpath={.items[0].metadata.name}"],
         capture_output=True, text=True
     )
@@ -36,14 +37,14 @@ def get_pod_name():
     if not name:
         raise RuntimeError(
             "No running studio pod found. Is Minikube running? "
-            "Check: kubectl get pods -l app=studio"
+            "Check: kubectl get pods -l app=studio -n voctomix-exp"
         )
     return name
 
 
 def container_is_ready(pod, container):
     result = subprocess.run(
-        ["kubectl", "get", "pod", pod, "-o", "json"],
+        ["kubectl", "get", "pod", pod, "-n", "voctomix-exp", "-o", "json"],
         capture_output=True, text=True
     )
     if result.returncode != 0:
@@ -65,7 +66,7 @@ def measure_recovery(pod, container, n, wait_between):
     for i in range(n):
         print(f"[{i+1:02d}/{n}] Killing PID 1 in container '{container}'...")
         kill_result = subprocess.run(
-            ["kubectl", "exec", pod, "-c", container, "--", "kill", "-9", "1"],
+            ["kubectl", "exec", pod, "-n", "voctomix-exp", "-c", container, "--", "kill", "-9", "1"],
             capture_output=True, text=True
         )
         t_kill = time.monotonic()
