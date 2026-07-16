@@ -30,6 +30,7 @@ user need so readers find what they want without wading through the rest:
 | **Reference** (facts) | "what is the exact command/port" | [CONTROL_PROTOCOL.md](CONTROL_PROTOCOL.md), [CONFIGURATION.md](CONFIGURATION.md) |
 | **Explanation** (why) | "why is it designed this way" | [ARCHITECTURE.md](ARCHITECTURE.md), [TELEMETRY.md](TELEMETRY.md) |
 
+<<<<<<< HEAD
 See [DOC_PATTERNS.md](DOC_PATTERNS.md) for the documentation patterns we follow
 from top open-source projects.
 
@@ -70,3 +71,12 @@ Gaps detected and fixed between the top-level `README.md` and the repository:
   template + unresolved git merge-conflict markers). Not a model to imitate.
 - This documentation aims to exceed both: modular, task-oriented, with a full
   control-protocol and telemetry reference that neither prior version documents.
+=======
+## Scope
+
+The documents in this directory are intended for users and contributors of the
+public software repository. The final thesis report, defense slides and
+published paper are available in [`entregables/`](../entregables/). Internal
+thesis drafts, paper workbench files and private experiment logs are
+intentionally kept outside the public documentation export.
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30

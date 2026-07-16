@@ -1,0 +1,21 @@
+# LaTeX build artifacts
+presentacion.aux
+presentacion.log
+presentacion.nav
+presentacion.out
+presentacion.snm
+presentacion.toc
+presentacion.fdb_latexmk
+presentacion.fls
+presentacion.bbl
+presentacion.blg
+
+# Plantilla oficial descargada (pesada; se conserva local, no se versiona)
+SFS17721.pptx
+SFS17721.pdf
+
+# Copias de seguridad locales (el historial git ya versiona el .pptx)
+backups/
+
+# Bloqueos de LibreOffice
+.~lock.*

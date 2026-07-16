@@ -1,0 +1,73 @@
+# PATCH for voctocore/lib/videomix.py
+# Adds frame counter for measuring frame drop rate
+# Apply after PASO 2 completes and before PASO 5 execution
+
+# Add these lines to __init__ method (after line 39):
+        self.frames_in = 0         # Total frames received from sources
+        self.frames_out = 0        # Total frames output to tee
+        self.start_time = None     # Session start time
+
+# Add this method to VideoMix class:
+    def get_frame_drop_stats(self):
+        """Return frame drop statistics for telemetry"""
+        if self.frames_in == 0:
+            return {"frames_in": 0, "frames_out": 0, "drop_rate_pct": 0.0}
+
+        drop_rate = 100.0 * (self.frames_in - self.frames_out) / self.frames_in
+        return {
+            "frames_in": self.frames_in,
+            "frames_out": self.frames_out,
+            "dropped": self.frames_in - self.frames_out,
+            "drop_rate_pct": round(drop_rate, 4)
+        }
+
+# In launch() method, after creating the pipeline (after line 144):
+        # Setup frame counting on compositor sink
+        # This counts frames entering the mixer
+        mix_elem = self.mixingPipeline.get_by_name('mix')
+        if mix_elem:
+            mix_sink_pad = mix_elem.get_static_pad('sink_0')
+            if mix_sink_pad:
+                mix_sink_pad.add_probe(
+                    Gst.PadProbeType.BUFFER,
+                    self._on_mixer_input_buffer
+                )
+
+        # Setup frame counting on tee output
+        # This counts frames leaving the mixer
+        tee_elem = self.mixingPipeline.get_by_name('tee')
+        if tee_elem:
+            tee_src_pad = tee_elem.get_static_pad('src_0')
+            if tee_src_pad:
+                tee_src_pad.add_probe(
+                    Gst.PadProbeType.BUFFER,
+                    self._on_tee_output_buffer
+                )
+
+# Add these callback methods to VideoMix class:
+    def _on_mixer_input_buffer(self, pad, info):
+        """Callback: count frame entering compositor"""
+        self.frames_in += 1
+        return Gst.PadProbeReturn.OK
+
+    def _on_tee_output_buffer(self, pad, info):
+        """Callback: count frame exiting to output"""
+        self.frames_out += 1
+        return Gst.PadProbeReturn.OK
+
+# In telemetry STATE dict generation, add:
+        # Frame statistics
+        frame_stats = self.get_frame_drop_stats()
+        state_dict.update({
+            "frames_in": frame_stats["frames_in"],
+            "frames_out": frame_stats["frames_out"],
+            "frames_dropped": frame_stats["dropped"],
+            "frame_drop_rate_pct": frame_stats["drop_rate_pct"]
+        })
+
+# NOTES:
+# - Counting on sink_0 only counts first source; ideally probe all sinks
+# - Alternative: use identity element in pipeline with buffer-probe
+# - For simplicity, this version counts main compositor input/output
+# - Expected result: 0.0% drop rate in lab conditions
+# - SMPTE standard: acceptable if < 0.1%

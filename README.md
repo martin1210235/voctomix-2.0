@@ -11,7 +11,13 @@
 ![Docker](https://img.shields.io/badge/Docker-Compose-2496ED)
 ![Kubernetes](https://img.shields.io/badge/Kubernetes-Minikube-326CE5)
 
+<<<<<<< HEAD
 <img src="docs/assets/voctogui.png" alt="Voctomix 2.0 operator interface" width="90%">
+=======
+<img src="docs/assets/demo.gif" alt="Voctomix 2.0 — live multi-camera mixing, program output and telemetry" width="92%">
+
+<sub>Live demo — multi-camera switching, on-air overlays and real-time telemetry. Full thesis, defense slides and paper in <a href="entregables/">entregables/</a>.</sub>
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 
 </div>
 
@@ -88,7 +94,11 @@ When the operator switches the program source, the audio mix follows automatical
 
 ## Architecture
 
+<<<<<<< HEAD
 **voctocore** accepts incoming audio/video streams over TCP (Matroska container, UYVY video plus PCM S16LE audio), mixes them through GStreamer's `compositor` element, and exposes the program output on TCP port 15000. It is driven by a line-based text-command interface on TCP port 9999. **voctogui** is a GTK client that connects to voctocore, renders live previews of every source and of the program mix, and provides the complete operator toolbar.
+=======
+**voctocore** accepts incoming audio/video streams over TCP (Matroska container, raw I420 video plus PCM S16LE audio), mixes them through GStreamer's `compositor` element, and exposes the program output on TCP port 15000. It is driven by a line-based text-command interface on TCP port 9999. **voctogui** is a GTK client that connects to voctocore, renders live previews of every source and of the program mix, and provides the complete operator toolbar.
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 
 <div align="center">
 <img src="docs/assets/architecture.png" alt="System architecture" width="85%">
@@ -154,9 +164,16 @@ git clone https://github.com/martin1210235/voctomix-2.0.git
 cd voctomix-2.0
 ```
 
+<<<<<<< HEAD
 > Place the VTR assets in `videos/` before launching:
 > `videos/intro.mp4`, `videos/SLIDES_video_starting_soon.mp4`,
 > `videos/stream_offline.mp4`, `videos/musica_pausa.mp3`.
+=======
+> Place the VTR assets in `videos/` before launching native, Docker or Kubernetes scenarios:
+> `videos/intro.mp4`, `videos/SLIDES_video_starting_soon.mp4`,
+> `videos/stream_offline.mp4`, `videos/musica_pausa.mp3`,
+> `videos/video_cuenta_regresiva_10s.mp4`.
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 
 **Scenario 1 — Single PC (native).** Runs voctocore, all test sources, telemetry, a program monitor and voctogui on one machine:
 
@@ -182,8 +199,15 @@ xhost +local:$(id -un)
 **Scenario 4 — Kubernetes.** Orchestrated deployment on a local Minikube cluster:
 
 ```bash
+<<<<<<< HEAD
 ./k8s_escenario/start_server_pc1.sh     # PC 1 (server): minikube + manifests + port-forward
 ./k8s_escenario/start_operator_pc2.sh   # PC 2 (operator): voctogui against the forwarded address
+=======
+cp k8s/secret.yaml.example k8s/secret.yaml
+# edit k8s/secret.yaml and set RabbitMQ credentials
+./k8s_escenario/start_server_pc1.sh     # PC 1 (server): minikube + manifests + port-forward
+IP_SERVER=<IP_OF_PC1> ./k8s_escenario/start_operator_pc2.sh   # PC 2 (operator)
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 ```
 
 ---
@@ -201,6 +225,17 @@ In-depth documentation is provided in [`docs/`](docs/):
 | [CONFIGURATION.md](docs/CONFIGURATION.md) | `default-config.ini` reference |
 | [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Known issues and fixes |
 
+<<<<<<< HEAD
+=======
+The Bachelor's Thesis report, defense slides and the associated scientific paper are in [`entregables/`](entregables/):
+
+| File | Contents |
+|---|---|
+| [TFG_Voctomix2.0_Martin_Herranz.pdf](entregables/TFG_Voctomix2.0_Martin_Herranz.pdf) | Full thesis report |
+| [Presentacion_Defensa_Voctomix2.0.pptx](entregables/Presentacion_Defensa_Voctomix2.0.pptx) | Defense presentation slides |
+| [Paper_Voctomix2.0_MDPI.pdf](entregables/Paper_Voctomix2.0_MDPI.pdf) | MDPI scientific paper |
+
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 ---
 
 ## Project Structure
@@ -245,7 +280,12 @@ voctomix-2.0/
 ├── launch_k8s.sh                   # Scenario 4: Kubernetes launcher
 ├── start_studio_single_pc.sh       # Scenario 1: single-PC native launcher
 ├── .github/workflows/              # Continuous integration (pycodestyle lint)
+<<<<<<< HEAD
 └── docs/                           # Project documentation and assets
+=======
+├── docs/                           # Project documentation and assets
+└── entregables/                    # Thesis report, defense slides, scientific paper
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 ```
 
 ---
@@ -256,10 +296,17 @@ voctomix-2.0/
 |------|----------|-----------|-------------|
 | 9999 | TCP | → voctocore | Control protocol (text commands) |
 | 9998 | UDP | broadcast | GStreamer `GstNetTimeProvider` (A/V sync clock) |
+<<<<<<< HEAD
 | 10000–10003 | TCP | → voctocore | Camera inputs cam1–cam4 (MKV / UYVY + S16LE) |
 | 10004 | TCP | → voctocore | Break / pause source |
 | 10005 | TCP | → voctocore | Intro video source |
 | 11000 | TCP | ← voctocore | Raw program mix (MKV / UYVY + S16LE) |
+=======
+| 10000–10003 | TCP | → voctocore | Camera inputs cam1–cam4 (MKV / I420 + S16LE) |
+| 10004 | TCP | → voctocore | Break / pause source |
+| 10005 | TCP | → voctocore | Intro video source |
+| 11000 | TCP | ← voctocore | Raw program mix (MKV / I420 + S16LE) |
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 | 12000 | TCP | ← voctocore | Mix preview (JPEG / MKV) |
 | 13000–13005 | TCP | ← voctocore | Per-source recording outputs |
 | 14000–14005 | TCP | ← voctocore | Per-source preview outputs (GUI) |
@@ -277,7 +324,11 @@ voctocore is configured through `voctocore/default-config.ini`. Key sections:
 ```ini
 [mix]
 sources = cam1,cam2,cam3,cam4,break,intro
+<<<<<<< HEAD
 videocaps = video/x-raw,format=UYVY,width=1920,height=1080,framerate=25/1
+=======
+videocaps = video/x-raw,format=I420,width=1920,height=1080,framerate=25/1,pixel-aspect-ratio=1/1,interlace-mode=progressive,colorimetry=bt709
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 audiocaps = audio/x-raw,format=S16LE,channels=2,layout=interleaved,rate=48000
 
 [stream-blanker]
@@ -296,7 +347,11 @@ Any value defined in the core configuration overrides the GUI's equivalent, keep
 
 ## Telemetry
 
+<<<<<<< HEAD
 Every second, `GuiStateExporter` publishes a full snapshot of the mixer state. In single-machine deployments it is written to `registros/gui_state.json`; in containerized deployments it is delivered over HTTP POST to the telemetry service (port 8080), which publishes the events to a RabbitMQ broker over AMQP.
+=======
+Every second, `GuiStateExporter` publishes a full snapshot of the mixer state. In single-machine deployments it is written to `sessions/gui_state.json`; in containerized deployments it is delivered over HTTP POST to the telemetry service (port 8080), which publishes the events to a RabbitMQ broker over AMQP.
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 
 <div align="center">
 <img src="docs/assets/telemetry_queues.png" alt="RabbitMQ telemetry queues in the CyberNEMO deployment" width="80%">
@@ -325,7 +380,11 @@ The system was validated across the four deployment scenarios. Resilience was me
 | Docker Compose | ≈ 520 ms |
 | Kubernetes (Minikube) | ≈ 570 ms |
 
+<<<<<<< HEAD
 The measurement scripts and the raw logs behind these figures are kept under [`experiments/`](experiments/) so the results can be reproduced. The complete experimental methodology and the full set of results are reported in the thesis.
+=======
+The measurement scripts used to reproduce these figures are kept under [`experiments/`](experiments/). Selected result artifacts are kept under `sessions/` in the development repository; large runtime logs are not bundled in the public export by default. The complete experimental methodology and the full set of results are reported in the thesis.
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 
 <div align="center">
 <img src="docs/assets/production_cybernemo.png" alt="Voctomix 2.0 in production during a CyberNEMO trial" width="80%">
@@ -345,7 +404,12 @@ This project is a fork and extension of [voc/voctomix](https://github.com/voc/vo
 Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) for the development setup, coding conventions (clean, modular, English-only code and comments), commit-message rules (Conventional Commits) and the test and lint workflow.
 
 ```bash
+<<<<<<< HEAD
 sh voctocore/test.sh   # voctocore unit tests (mock GI bindings; needs: pip install mock)
+=======
+pip3 install -r requirements-dev.txt
+sh voctocore/test.sh   # voctocore unit tests (mock GI bindings)
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 sh check_pep8.sh       # pycodestyle lint
 ```
 

@@ -22,6 +22,13 @@ Install the native prerequisites listed in the [README](README.md#prerequisites)
 stack is the fastest way to run the whole system:
 
 ```bash
+<<<<<<< HEAD
+=======
+pip3 install -r requirements-dev.txt
+```
+
+```bash
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 ./launch_docker_studio.sh    # build + launch the full stack
 sudo docker compose down     # stop everything
 docker compose logs -f       # follow logs
@@ -30,7 +37,11 @@ docker compose logs -f       # follow logs
 ## Before opening a pull request
 
 ```bash
+<<<<<<< HEAD
 sh voctocore/test.sh   # voctocore unit tests (mock GI bindings; needs: pip install mock)
+=======
+sh voctocore/test.sh   # voctocore unit tests (mock GI bindings)
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 sh check_pep8.sh       # pycodestyle (ignores E402 for gi import order, E501 in tests)
 ```
 
@@ -63,6 +74,12 @@ Messages should explain the *what* and the *why*, not only the *how*.
 
 ## Reporting issues
 
+<<<<<<< HEAD
 Open an [issue](../../issues) with: what you expected, what happened, the
 deployment scenario (single-PC, two-PC, Docker, Kubernetes), and relevant logs.
+=======
+Open an issue at <https://github.com/martin1210235/voctomix-2.0/issues> with:
+what you expected, what happened, the deployment scenario (single-PC, two-PC,
+Docker, Kubernetes), and relevant logs.
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 For setup problems, check [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) first.

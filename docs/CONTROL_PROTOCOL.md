@@ -37,16 +37,29 @@ Grounded in `voctocore/lib/commands.py`.
 | `set_video_a` | `<source>` | Assign a source slot to channel A |
 | `set_video_b` | `<source>` | Assign a source slot to channel B |
 | `get_composite_mode` | — | Current composite mode |
+<<<<<<< HEAD
 | `get_composite_modes` | — | List of available modes |
 | `set_composite_mode` | `<mode>` | Change the layout |
+=======
+| `get_composite_modes` | — | Legacy mode-list query |
+| `set_composite_mode` | `<mode>` | Change the layout using a configured composite identifier |
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 | `set_videos_and_composite` | `<src_a> <src_b> <mode>` | Set A, B and mode atomically |
 | `get_composite` | — | Full composite state |
 | `transition` | `<command>` | Animated transition to a new state |
 | `cut` | `<command>` | Hard cut to a new state |
 
+<<<<<<< HEAD
 `<source>` ∈ `cam1..cam4`, `break`, `intro`. Composite modes are listed by
 `get_composite_modes` (fullscreen, picture-in-picture, side-by-side,
 side-by-side-preview, lecture and variants).
+=======
+`<source>` ∈ `cam1..cam4`, `break`, `intro`. The shipped configuration uses the
+composite identifiers `fs`, `sbs`, `pip`, `lec` and `lec_43`, plus mirrored
+variants with the `|` prefix where configured. The `cut` and `transition`
+commands accept the composite-command form used internally by voctogui, for
+example `cut fs(cam1,*)` or `transition sbs(cam1,cam2)`.
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 
 ### Audio
 

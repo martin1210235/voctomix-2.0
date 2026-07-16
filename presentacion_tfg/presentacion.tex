@@ -1,0 +1,268 @@
+%==============================================================
+%  Presentacion TFG - Voctomix 2.0
+%  Defensa ETSIT - UPM
+%  Tema: metropolis  |  Identidad: UPM/ETSIT
+%  Compilar con XeLaTeX o LuaLaTeX (recomendado, fuentes Fira)
+%  Compatible tambien con pdfLaTeX (sin tipografia Fira)
+%==============================================================
+\documentclass[aspectratio=169,10pt]{beamer}
+
+\usetheme{metropolis}
+\metroset{progressbar=frametitle, sectionpage=progressbar, numbering=fraction}
+
+\usepackage[spanish,es-tabla]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+%--------------------------------------------------------------
+%  Identidad corporativa ETSIT-UPM
+%  Colores extraidos de la plantilla oficial ETSIT (SFS17721.pptx).
+%--------------------------------------------------------------
+\definecolor{UPMblue}{HTML}{08447C}
+\definecolor{UPMaccent}{HTML}{2899F9}
+\definecolor{UPMgray}{HTML}{464747}
+
+\setbeamercolor{frametitle}{bg=UPMblue, fg=white}
+\setbeamercolor{progress bar}{fg=UPMaccent, bg=UPMgray!30}
+\setbeamercolor{title separator}{fg=UPMaccent}
+\setbeamercolor{alerted text}{fg=UPMaccent}
+\setbeamercolor{section title}{fg=UPMblue}
+
+%--------------------------------------------------------------
+%  Metadatos
+%--------------------------------------------------------------
+\title{Voctomix 2.0}
+\subtitle{Desarrollo y optimizaci\'on de un sistema modular de c\'odigo
+abierto para la producci\'on remota de v\'ideo en tiempo real}
+\author{Mart\'in Herranz S\'anchez}
+\institute{Tutor: \'Alvaro Llorente G\'omez\\[2pt]
+Escuela T\'ecnica Superior de Ingenieros de Telecomunicaci\'on\\
+Universidad Polit\'ecnica de Madrid}
+\date{Defensa de Trabajo Fin de Grado \textemdash{} 2026}
+
+% El logo aparece automaticamente al guardar figuras/logo_etsit.png
+\titlegraphic{\IfFileExists{figuras/logo_etsit.png}%
+  {\hfill\includegraphics[height=1.3cm]{figuras/logo_etsit}}{}}
+
+\begin{document}
+
+%==============================================================
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+%==============================================================
+\begin{frame}{\'Indice}
+  \tableofcontents
+\end{frame}
+
+%==============================================================
+\section{Contexto y motivaci\'on}
+
+\begin{frame}{Contexto y motivaci\'on}
+  \begin{itemize}
+    \item La producci\'on audiovisual en directo depende de mezcladores
+          hardware de coste muy elevado.
+    \item Necesidad de personal especializado y dependencia de fabricante.
+    \item Las alternativas software (OBS, vMix) son monol\'iticas y de un
+          solo operador.
+    \item \alert{Oportunidad}: democratizar la producci\'on broadcast con
+          software libre, contenedores y control programable.
+  \end{itemize}
+\end{frame}
+
+%==============================================================
+\section{Objetivos}
+
+\begin{frame}{Objetivos del trabajo}
+  \begin{itemize}
+    \item Extender Voctomix con capacidades de producci\'on profesional.
+    \item Contenerizar el sistema completo para despliegue reproducible.
+    \item A\~nadir telemetr\'ia en tiempo real para monitorizaci\'on.
+    \item Validar el sistema en m\'ultiples escenarios de despliegue.
+  \end{itemize}
+\end{frame}
+
+%==============================================================
+\section{Estado del arte}
+
+\begin{frame}{Estado del arte}
+  \begin{itemize}
+    \item Mezcladores hardware (Blackmagic ATEM): fiables pero costosos.
+    \item Software monol\'itico (OBS Studio, vMix): sin API ni modo headless.
+    \item Modelo REMI: producci\'on remota sobre IP.
+    \item Voctomix v1.3: arquitectura cliente--servidor; desplegado como
+          \emph{Production Core} en un evento deportivo real.
+  \end{itemize}
+\end{frame}
+
+%==============================================================
+\section{Arquitectura del sistema}
+
+\begin{frame}{Arquitectura del sistema}
+  \begin{columns}[c]
+    \begin{column}{0.62\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{figuras/diagrama_sistema}
+    \end{column}
+    \begin{column}{0.38\textwidth}
+      \footnotesize
+      \begin{itemize}
+        \item \texttt{voctocore}: motor GStreamer (compositor, audio, salida).
+        \item \texttt{voctogui}: interfaz de control GTK 3.
+        \item Separaci\'on estricta cliente--servidor sobre TCP.
+        \item Telemetr\'ia desacoplada v\'ia RabbitMQ.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%==============================================================
+\section{Contribuciones}
+
+\begin{frame}{Contribuci\'on 1 \textemdash{} Sistema de overlays}
+  \begin{itemize}
+    \item Overlay PNG y dos capas de texto independientes.
+    \item Fundido configurable (fade-in/fade-out).
+    \item Desactivaci\'on autom\'atica en cada corte de fuente.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Contribuci\'on 2 \textemdash{} Stream Blanker}
+  \begin{itemize}
+    \item Tres estados de salida: LIVE / PAUSE / NOSTREAM.
+    \item Control de la se\~nal de programa independiente de la mezcla interna.
+    \item Transiciones limpias en frontera de buffer GStreamer.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Contribuci\'on 3 \textemdash{} Audio Follows Video}
+  \begin{itemize}
+    \item Fundido cruzado autom\'atico de audio al cambiar de fuente.
+    \item Reduce la carga cognitiva del operador en directo.
+    \item Independiente del modo de composici\'on.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Contribuci\'on 4 \textemdash{} Telemetr\'ia RabbitMQ}
+  \begin{itemize}
+    \item Exporta el estado completo del mezclador como JSON.
+    \item Eventos CHANGE (inmediatos) y STATE (peri\'odicos) v\'ia AMQP.
+    \item Sin modificar el n\'ucleo de la aplicaci\'on.
+  \end{itemize}
+\end{frame}
+
+%==============================================================
+\section{Despliegue}
+
+\begin{frame}{Despliegue con Docker Compose}
+  \begin{itemize}
+    \item Stack de 10 servicios desplegable con un \'unico comando.
+    \item \texttt{network\_mode: service:voctocore}: comunicaci\'on por loopback.
+    \item Reproducibilidad total del entorno de ejecuci\'on.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Despliegue en Kubernetes}
+  \begin{itemize}
+    \item Pod multi-contenedor con \texttt{voctocore} y c\'amaras sidecar.
+    \item RabbitMQ como StatefulSet con almacenamiento persistente.
+    \item Orquestaci\'on y auto-recuperaci\'on declarativa.
+  \end{itemize}
+\end{frame}
+
+%==============================================================
+\section{Resultados}
+
+\begin{frame}{Resultados \textemdash{} Consumo de CPU}
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{axis}[
+        width=11cm, height=5.4cm,
+        xlabel={N\'umero de c\'amaras activas},
+        ylabel={Uso de CPU (\%)},
+        xtick={1,2,3,4}, xmin=0.5, xmax=4.5,
+        ymin=20, ymax=70,
+        ymajorgrids=true, grid style=dashed, mark size=2.5pt,
+        legend style={at={(0.03,0.97)}, anchor=north west, font=\scriptsize},
+      ]
+        \addplot[color=UPMaccent, mark=*, thick, nodes near coords,
+                 every node near coord/.style={font=\scriptsize, anchor=north}]
+          coordinates {(1,33.5) (2,35.2) (3,35.8) (4,38.8)};
+        \addplot[color=violet!80!black, mark=square*, thick, nodes near coords,
+                 every node near coord/.style={font=\scriptsize, anchor=south}]
+          coordinates {(1,50.2) (2,49.4) (3,50.8) (4,51.2)};
+        \legend{Docker Compose, Kubernetes}
+      \end{axis}
+    \end{tikzpicture}
+  \end{center}
+  \footnotesize
+  En Docker la CPU escala de 33{,}5\,\% a \alert{38{,}8\,\%} con cuatro c\'amaras
+  (+5{,}3\,pp). El 50\,\% fijo en Kubernetes es el plano de control de Minikube
+  en el mismo equipo.
+\end{frame}
+
+\begin{frame}{Resultados \textemdash{} Latencia de conmutaci\'on}
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{axis}[
+        ybar interval,
+        width=11cm, height=5.4cm,
+        xlabel={Latencia de conmutaci\'on (ms)},
+        ylabel={Frecuencia},
+        xtick={1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0},
+        xticklabel style={font=\scriptsize},
+        xmin=0.8, xmax=5.0, ymin=0, ymax=18,
+        ymajorgrids=true, grid style=dashed, bar width=0.5,
+        legend style={at={(0.97,0.97)}, anchor=north east, font=\scriptsize},
+      ]
+        \addplot[fill=UPMaccent!40, draw=UPMaccent]
+          coordinates {(1.0,13) (1.5,15) (2.0,1) (2.5,1) (3.0,0) (3.5,0) (4.0,0) (4.5,0) (5.0,0)};
+        \addplot[fill=violet!30, draw=violet!60]
+          coordinates {(1.0,4) (1.5,15) (2.0,7) (2.5,2) (3.0,1) (3.5,0) (4.0,0) (4.5,1) (5.0,0)};
+        \legend{Docker Compose, Kubernetes}
+      \end{axis}
+    \end{tikzpicture}
+  \end{center}
+  \footnotesize
+  Mediana de \alert{1{,}5\,ms} (Docker) y 1{,}8\,ms (K8s), muy por debajo del
+  umbral de 45\,ms del estándar ITU-R BT.1359-1. El cambio de c\'amara es
+  imperceptible.
+\end{frame}
+
+%==============================================================
+\section{Caso real: CyberNEMO}
+
+\begin{frame}{Despliegue en producci\'on: CyberNEMO}
+  \begin{itemize}
+    \item Uso real en el proyecto europeo CyberNEMO en la UPM.
+    \item Sesiones de investigaci\'on y difusi\'on con participantes remotos.
+    \item Valida el sistema m\'as all\'a de condiciones de laboratorio.
+  \end{itemize}
+\end{frame}
+
+%==============================================================
+\section{Conclusiones}
+
+\begin{frame}{Conclusiones y l\'ineas futuras}
+  \begin{itemize}
+    \item Voctomix 2.0 ofrece producci\'on broadcast con software libre y
+          contenedores, a coste de licencia cero.
+    \item Validado en cuatro escenarios y en un despliegue real.
+    \item \alert{L\'ineas futuras}: c\'amaras f\'isicas (DeckLink/NDI),
+          salida SRT, interfaz web y monitorizaci\'on Grafana.
+  \end{itemize}
+\end{frame}
+
+%==============================================================
+\begin{frame}[standout]
+  Gracias por su atenci\'on\\[6pt]
+  \small \textnormal{\'Ano de preguntas}
+\end{frame}
+
+\end{document}

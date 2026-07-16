@@ -9,8 +9,13 @@ it.
 |---|---|---|---|
 | Single-PC native | `start_studio_single_pc.sh` | 1 | Native processes |
 | Two-PC native | `start_voctocore_pc1.sh` + `start_voctogui_pc2.sh` | 2 | Native processes |
+<<<<<<< HEAD
 | Docker Compose | `docker compose up` | 1 | 10 containers |
 | Kubernetes | `start_server_pc1.sh` + `start_operator_pc2.sh` | 2 | Pod + StatefulSet |
+=======
+| Docker Compose | `docker compose up` | 1 | 11 services |
+| Kubernetes | `start_server_pc1.sh` + `start_operator_pc2.sh` | 2 | Multi-container Pod + RabbitMQ Deployment |
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 
 ## 1. Single-PC native
 
@@ -44,8 +49,13 @@ TCP control protocol keeps all operators in a consistent state.
 
 ## 3. Docker Compose (recommended)
 
+<<<<<<< HEAD
 The most reproducible deployment — the entire system as ten containerized
 services launched with a single command.
+=======
+The most reproducible deployment — the entire system as eleven Compose services
+launched with a single command.
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 
 ```bash
 xhost +local:$(id -un)     # allow the host GUI to receive the voctogui window
@@ -69,28 +79,50 @@ Orchestrated deployment mirroring the two-PC roles at the orchestration level.
 
 ```bash
 # PC 1: starts Minikube, applies manifests, opens kubectl port-forward
+<<<<<<< HEAD
 ./k8s_escenario/start_server_pc1.sh
 
 # PC 2: runs voctogui against the forwarded address
 ./k8s_escenario/start_operator_pc2.sh
+=======
+cp k8s/secret.yaml.example k8s/secret.yaml
+# edit k8s/secret.yaml and set RabbitMQ credentials
+./k8s_escenario/start_server_pc1.sh
+
+# PC 2: runs voctogui against the forwarded address
+IP_SERVER=<IP_OF_PC1> ./k8s_escenario/start_operator_pc2.sh
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 ```
 
 Key manifests in `k8s/`:
 
 | File | Purpose |
 |---|---|
+<<<<<<< HEAD
 | `studio.yaml` | `studio` Deployment: multi-container Pod (`voctocore` + 4 camera sidecars) |
 | `rabbitmq.yaml` | RabbitMQ StatefulSet |
 | `pvc.yaml` | PersistentVolumeClaim for queue durability |
+=======
+| `studio.yaml` | `studio` Deployment: multi-container Pod (`voctocore`, telemetry, source sidecars and auxiliary media sources) |
+| `rabbitmq.yaml` | RabbitMQ Deployment and Service |
+| `pvc.yaml` | PersistentVolumeClaim for session and telemetry artifacts |
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 | `configmap.yaml` | Mixer configuration |
 | `secret.yaml.example` | Template for broker credentials (copy to `secret.yaml`) |
 
 All Pod containers share one network namespace, replicating the
 `network_mode: service:voctocore` pattern: intra-Pod TCP traffic stays on
+<<<<<<< HEAD
 loopback without `hostNetwork: true`. Camera video is injected on demand via
 `inject_cam.sh` (`kubectl exec` → FFmpeg inside the target sidecar). The launch
 script enforces deployment order with `kubectl rollout status` so RabbitMQ is
 Ready before the `studio` Pod is applied.
+=======
+loopback without `hostNetwork: true`. Camera and auxiliary sources run as
+sidecar containers in the same Pod and feed `voctocore` through localhost TCP
+ports. The launch script applies RabbitMQ first, waits for it to become Ready,
+then applies the `studio` Deployment.
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 
 ## Production note: CyberNEMO at UPM
 

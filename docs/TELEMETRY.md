@@ -13,7 +13,11 @@ the deployment mode:
 ```
 voctogui (GuiStateExporter, 1 s timer)
    │
+<<<<<<< HEAD
    ├─ native mode ─► registros/gui_state.json     (JSON Lines, one object/sample)
+=======
+   ├─ native mode ─► sessions/gui_state.json      (latest GUI-state snapshot)
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
    │
    └─ docker mode ─► HTTP POST :8080 ─► telemetry service ─► RabbitMQ AMQP :5672
                                                                   │
@@ -21,8 +25,15 @@ voctogui (GuiStateExporter, 1 s timer)
                                                   alerting, recording services…)
 ```
 
+<<<<<<< HEAD
 - **Native deployments**: appends JSON records to `registros/gui_state.json`
   (one object per sampling instant), a persistent log for post-event analysis.
+=======
+- **Native deployments**: writes the latest GUI-state snapshot to
+  `sessions/gui_state.json`. The telemetry service can read this file and append
+  periodic `STATE` and change-driven `CHANGE` events to session JSONL logs when
+  `SAVE_LOGS=true`.
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 - **Docker deployments**: HTTP-POSTs the same JSON to the telemetry container on
   port 8080, which forwards it to a RabbitMQ AMQP exchange.
 
@@ -88,8 +99,15 @@ A full snapshot published each second. Example:
 
 ## Access
 
+<<<<<<< HEAD
 - **Docker / network mode**: `http://localhost:8080/gui_state`
 - **Native mode**: `registros/gui_state.json`
+=======
+- **Docker / network mode**: `POST /gui_state` on port 8080 receives GUI-state
+  snapshots from `voctogui`.
+- **Native mode**: `sessions/gui_state.json` contains the latest local GUI-state
+  snapshot.
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
 
 ## Future integrations (roadmap)
 

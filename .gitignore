@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -122,3 +123,11 @@ k8s/secret.yaml
 
 # --- Paper (Overleaf git repo — managed separately, not nested in voctomix git) ---
 paper/
+=======
+__pycache__/
+*.pyc
+registros/
+sessions/
+*.log
+.env
+>>>>>>> 920adf625f85240b9410c616f7c7c875f625df30

@@ -1,0 +1,437 @@
+{
+ "1": [
+  "Martín Herranz Sánchez\nTutores: David Jiménez Bermejo y Álvaro Llorente Gómez\n\t\t\t",
+  "Desarrollo y optimización de un sistema modular de código abierto para la producción remota de vídeo en tiempo real",
+  "Beca de la Cátedra RTVE — ETSIT-UPM"
+ ],
+ "2": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Índice",
+  "01",
+  "Contexto y motivación",
+  "02",
+  "Estado del arte",
+  "03",
+  "Objetivos",
+  "04",
+  "Arquitectura del sistema",
+  "05",
+  "Contribuciones y demo",
+  "06",
+  "Resultados y validación",
+  "07",
+  "Impacto y méritos",
+  "08",
+  "Conclusiones"
+ ],
+ "3": [
+  "INTRODUCCIÓN"
+ ],
+ "4": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Producción audiovisual tradicional",
+  "El modelo clásico: toda la infraestructura y el equipo en el lugar del evento",
+  "SEÑAL SDI",
+  "Cableado SDI sin comprimir interconecta cámaras, mezclador y grabación: el estándar histórico del broadcast.",
+  "MEZCLADOR HARDWARE",
+  "Un switcher dedicado (Blackmagic ATEM, Ross, Grass Valley) elige la fuente en directo con latencia sub-imagen.",
+  "EJEMPLO: LA LIGA",
+  "Una retransmisión moviliza 20-30 cámaras, unidades móviles de varios millones de € y 50-100 personas in situ."
+ ],
+ "5": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Producción audiovisual remota (REMI)",
+  "Remote Integration Model: la realización se centraliza y solo la captura queda in situ",
+  "REALIZACIÓN CENTRALIZADA",
+  "Mezcla, gráficos y audio se procesan en un centro remoto; in situ solo quedan cámaras y contribución IP.",
+  "MENOS COSTE, MÁS ALCANCE",
+  "Menos desplazamientos, infraestructura reutilizable y realización desde cualquier lugar con red IP.",
+  "SOFTWARE DE MEZCLA",
+  "OBS o vMix abren el modelo, pero siguen atados al escritorio, sin operación headless ni contenedores."
+ ],
+ "6": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Producción tradicional frente a REMI",
+  "Por qué la producción remota abre la puerta a soluciones accesibles"
+ ],
+ "7": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Motivación",
+  "Por qué hace falta Voctomix 2.0",
+  "Producir vídeo profesional en directo sigue siendo caro y cerrado.\nEl hardware cuesta una fortuna y el software libre no está pensado para producción remota, distribuida y automatizada.",
+  "Coste prohibitivo",
+  "Los mezcladores profesionales cuestan de miles a millones, fuera del alcance de universidades y pequeños productores.",
+  "Software libre limitado",
+  "OBS y vMix no operan como servidor headless, ni multioperador, ni en contenedores.",
+  "Producción remota en auge",
+  "Eventos y proyectos como CyberNEMO exigen producir en directo con equipos distribuidos geográficamente."
+ ],
+ "8": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Objetivos",
+  "Objetivo general: una plataforma libre, modular y reproducible de producción remota",
+  "OE-1",
+  "Funcionalidades de producción profesional",
+  "OE-2",
+  "Servicio de telemetría en tiempo real",
+  "OE-3",
+  "Contenerización con Docker",
+  "OE-4",
+  "Despliegue en Kubernetes",
+  "OE-5",
+  "Validación en múltiples escenarios",
+  "OE-6",
+  "Despliegue en producción real",
+  "Propósito: democratizar la producción audiovisual   ·   ODS 9, 4 y 10 (innovación, educación e igualdad)"
+ ],
+ "9": [
+  "ARQUITECTURA"
+ ],
+ "10": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "¿Dónde encaja Voctomix 2.0?",
+  "La cadena de producción en directo, de la captación a la audiencia",
+  "Voctomix 2.0 es el mezclador de vídeo de esa cadena: recibe las fuentes en RAW I420, compone la señal de programa y la entrega a la etapa de codificación (H.264) y distribución (RTMP · SRT · HLS)."
+ ],
+ "11": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Arquitectura del sistema",
+  "Cliente-servidor modular sobre TCP"
+ ],
+ "12": [
+  "IMPLEMENTACIÓN"
+ ],
+ "13": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Demostración en vídeo",
+  "Tres vistas en directo: GUI, señal de programa y telemetría",
+  "GUI · voctogui",
+  "(insertar vídeo)",
+  "Señal de programa · TCP :15000",
+  "(insertar vídeo)",
+  "Logs de telemetría (terminal)",
+  "(insertar vídeo)"
+ ],
+ "14": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Telemetría en RabbitMQ",
+  "El estado del mezclador se publica en las colas AMQP, sin tocar el núcleo",
+  "Colas activas recibiendo el estado del sistema en tiempo real vía AMQP: mensajes acumulados y tasa de entrega, con el broker en marcha."
+ ],
+ "15": [
+  "ESCENARIOS DE DESPLIEGUE"
+ ],
+ "16": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Escenario 1: Monopuesto",
+  "Todo en un solo equipo",
+  "Todo en un portátil: fuentes, voctocore y voctogui. Sin red. El caso más simple."
+ ],
+ "17": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Escenario 2: Dos PCs",
+  "Producción remota en red local",
+  "voctocore en un PC servidor; el realizador controla desde otro PC por la LAN."
+ ],
+ "18": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Escenario 3: Docker Compose",
+  "11 contenedores con un comando",
+  "Las cámaras comparten la red de voctocore (localhost). Reproducible. Añade telemetría."
+ ],
+ "19": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Escenario 4: Kubernetes",
+  "Orquestación con Minikube",
+  "El mismo sistema en un pod orquestado. RabbitMQ aparte. El realizador entra por NodePort."
+ ],
+ "20": [
+  "RESULTADOS"
+ ],
+ "21": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Resultados: consumo de recursos",
+  "CPU, RAM y energía según el número de cámaras activas",
+  "CPU\n33,5 → 38,8 % (Docker). +1,8 pp por cámara.",
+  "RAM\nPlana ~10 %. Reserva las entradas al arrancar.",
+  "Energía (RAPL)\n25-32 W. < 20 % del TDP.",
+  "Consumo bajo y estable: amplio margen para más cámaras."
+ ],
+ "22": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Resultados: latencia",
+  "Conmutación de fuente y transición de modo de composición",
+  "Conmutación de fuente\nMediana 1,5 ms. Muy por debajo de los 45 ms perceptibles.",
+  "Transición de modo\n2,8 ms (Docker) / 79,8 ms (K8s, por Minikube).",
+  "Los cambios de cámara son imperceptibles en directo."
+ ],
+ "23": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Resultados: fiabilidad",
+  "Estabilidad a largo plazo y recuperación ante fallos",
+  "Estabilidad (31 min)\nSin CPU creep ni fugas de memoria; RAM plana.",
+  "Resiliencia\nRecuperación ~520 ms (Docker) / 570 ms (K8s), sola en <1 s.",
+  "Robusto para producción en directo real."
+ ],
+ "24": [
+  "CONCLUSIONES"
+ ],
+ "25": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Conclusiones",
+  "Los seis objetivos, cumplidos",
+  "✓",
+  "OE-1  Funcionalidades de producción profesional",
+  "✓",
+  "OE-2  Servicio de telemetría en tiempo real",
+  "✓",
+  "OE-3  Contenerización con Docker",
+  "✓",
+  "OE-4  Despliegue en Kubernetes",
+  "✓",
+  "OE-5  Validación en múltiples escenarios",
+  "✓",
+  "OE-6  Despliegue en producción real",
+  "Producción broadcast profesional, con software libre y coste de licencia cero."
+ ],
+ "26": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Impacto y méritos",
+  "Más allá de la memoria",
+  "Producción real",
+  "Desplegado y usado en CyberNEMO, con participantes remotos.",
+  "(insertar foto)\nlogo de CyberNEMO",
+  "Paper científico",
+  "Artículo Voctomix 2.0 enviado a la revista MDPI Electronics.",
+  "(insertar foto)\ncaptura del paper",
+  "Código abierto",
+  "Sistema completo publicado como software libre en GitHub.",
+  "github.com/martin1210235/voctomix-2.0",
+  "(insertar foto)\ncaptura del repositorio"
+ ],
+ "27": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Líneas futuras",
+  "Hacia dónde puede crecer Voctomix 2.0",
+  "1",
+  "Cámaras físicas   Validar con tarjetas de captura en un directo real",
+  "2",
+  "Salida H.265 / HEVC   Mitad de ancho de banda a igual calidad",
+  "3",
+  "Resolución 4K   Escalar de 1080p a 4K en el pipeline de GStreamer",
+  "4",
+  "GUI dinámica   Añadir y quitar fuentes en caliente, sin reiniciar",
+  "5",
+  "Más métricas   Ampliar el análisis de rendimiento y fiabilidad"
+ ],
+ "28": [
+  "GRACIAS POR SU ATENCIÓN"
+ ],
+ "29": [
+  "GRACIAS POR SU ATENCIÓN"
+ ],
+ "30": [
+  "CONTENIDO ADICIONAL"
+ ],
+ "31": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Contenido adicional",
+  "Qué encontrarás aquí (para responder preguntas)",
+  "1",
+  "Mapa de puertos",
+  "Interfaces de red del sistema",
+  "2",
+  "Implementación",
+  "Cómo funciona cada funcionalidad",
+  "3",
+  "Ficheros nuevos",
+  "Qué código se añadió y dónde",
+  "4",
+  "Contenerización",
+  "El truco de red de Docker",
+  "5",
+  "Herramientas",
+  "Cómo se midieron los resultados",
+  "6",
+  "Kubernetes",
+  "Los manifiestos de orquestación",
+  "7",
+  "Resultados ampliados",
+  "RAM, energía, transición, estabilidad",
+  "8",
+  "Estado del arte",
+  "Protocolos y códecs de contribución"
+ ],
+ "32": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Mapa de puertos del sistema",
+  "Interfaces de red de voctocore y servicios"
+ ],
+ "33": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Composición y transiciones",
+  "Contribución 1 · composites.py, transitions.py, scene.py",
+  "1",
+  "QUÉ",
+  "4 modos: Full Screen, PiP,\nSide-by-Side y Lecture.\nTransiciones animadas de 750 ms\nentre cualquier par de modos.",
+  "CÓMO",
+  "Cada modo se define por geometría\n(posición, escala, alpha) en config.\nEl motor interpola de la escena\ninicial a la final."
+ ],
+ "34": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Overlays: logos y rótulos",
+  "Contribución 2 · overlay.py, toolbar/overlay.py",
+  "2",
+  "QUÉ",
+  "Logo PNG con transparencia.\nDos capas de texto (lower-third).\nRótulos independientes.",
+  "CÓMO",
+  "Fundido de 300 ms.\nAuto-off automático en cada corte.\nSe controla desde la GUI."
+ ],
+ "35": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Stream Blanker",
+  "Contribución 3 · streamblanker.py, toolbar/streamblank.py",
+  "3",
+  "QUÉ",
+  "Tres estados de salida:\nLIVE / PAUSE / NOSTREAM.\nLa señal al público es distinta\nde la mezcla interna.",
+  "CÓMO",
+  "Fuentes TCP dedicadas para\nPAUSE y NOSTREAM.\nConmutación limpia en frontera\nde buffer GStreamer."
+ ],
+ "36": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Audio Follows Video y Telemetría",
+  "Contribuciones 4 y 5",
+  "Audio Follows Video",
+  "lib/audiomix.py\nFundido cruzado automático del\naudio al cambiar de fuente.\n \nQuita la gestión manual del audio\nen directo. Menos carga para el\nrealizador.",
+  "Telemetría",
+  "telemetry_service.py + gui_state_exporter.py\nEventos CHANGE (al instante) y STATE\n(cada 5 s) en JSON Lines.\n \nSe publican en RabbitMQ por AMQP,\nsin tocar el núcleo. Permiten\nmonitorizar y auditar desde fuera."
+ ],
+ "37": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Ficheros incorporados",
+  "Qué se añadió y dónde  ·  [N] = nuevo  ·  Anexo C",
+  "voctomix/\n├─ voctocore/lib/\n│    ├─ overlay.py  [N] logos y rótulos\n│    ├─ streamblanker.py  [N] LIVE / PAUSE / NOSTREAM\n│    ├─ transitions.py  [N] transiciones animadas\n│    └─ scene.py  [N] grafo de escena\n├─ voctogui/lib/\n│    ├─ gui_state_exporter.py  [N] estado → JSON\n│    └─ toolbar/\n│         ├─ overlay.py  [N] panel de overlays (GUI)\n│         └─ streamblank.py  [N] botones del blanker\n└─ example-scripts/ffmpeg/\n      └─ telemetry_service.py  [N] telemetría + RabbitMQ",
+  "+ infraestructura: docker-compose.yml · Dockerfile · k8s_escenario/ · tools/ · Makefile · 1pc/2pc"
+ ],
+ "38": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Contenerización: la clave",
+  "network_mode: service:voctocore",
+  "11 contenedores\nvoctocore, 6 fuentes, stream\nblanker, audio, RabbitMQ y\ntelemetría.\n \nLas cámaras comparten la red de\nvoctocore y hablan por localhost,\nsin tocar una línea del código.\n \nLa telemetría va en una red\naparte: sin punto único de fallo."
+ ],
+ "39": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Herramientas de medición",
+  "Cómo se obtuvieron los datos",
+  "measure_composite_latency.py",
+  "Mide la latencia de cada cambio de fuente y de modo.",
+  "measure_resilience.py",
+  "Mata el proceso de un contenedor y cronometra la recuperación.",
+  "analyze_stability.py",
+  "Lee la telemetría (JSONL) y genera las curvas de CPU y RAM."
+ ],
+ "40": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Despliegue en Kubernetes",
+  "Orquestación declarativa",
+  "Cinco manifiestos\nconfigmap, pvc, rabbitmq,\nstudio y secret.\n \nPod multi-contenedor con\nvoctocore y las cámaras como\nsidecars.\n \nSondas de preparación, arranque\nordenado y volumen persistente."
+ ],
+ "41": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Resultados: CPU",
+  "Consumo según el número de cámaras",
+  "POR QUÉ SE MIDE",
+  "Saber cuánto cuesta el sistema y si escala al añadir cámaras.",
+  "CÓMO",
+  "Sesión de 5 min con 1-4 cámaras; mediana de la telemetría (cada 5 s).",
+  "RESULTADO",
+  "Docker: 33,5→38,8 % (+5,3 pp). K8s ~50 % fijo = Minikube. Amplio margen."
+ ],
+ "42": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Resultados: RAM",
+  "Memoria según el número de cámaras",
+  "POR QUÉ SE MIDE",
+  "Comprobar que la memoria no se dispara al añadir fuentes.",
+  "CÓMO",
+  "Mismo test de 1-4 cámaras, medido por la telemetría.",
+  "RESULTADO",
+  "Plana: 9,7-10,1 % (Docker). voctocore reserva las 4 entradas al arrancar."
+ ],
+ "43": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Resultados: energía",
+  "Consumo eléctrico neto (RAPL)",
+  "POR QUÉ SE MIDE",
+  "Conocer el coste energético real atribuible a Voctomix.",
+  "CÓMO",
+  "Sensor RAPL del procesador, descontando el consumo en reposo.",
+  "RESULTADO",
+  "25-32 W con 4 cámaras: menos del 20 % del TDP. Sobra margen."
+ ],
+ "44": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Resultados: latencia de conmutación",
+  "Cuánto tarda un cambio de cámara",
+  "POR QUÉ SE MIDE",
+  "En directo se cambia de cámara sin parar; un retraso se nota.",
+  "CÓMO",
+  "30 cambios seguidos; tiempo desde la orden hasta que GStreamer lo aplica.",
+  "RESULTADO",
+  "Mediana 1,5 ms (Docker) / 1,8 ms (K8s). Umbral perceptible: 45 ms."
+ ],
+ "45": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Resultados: resiliencia",
+  "Recuperación ante fallo de una cámara",
+  "POR QUÉ SE MIDE",
+  "Si una cámara cae en directo, hay que recuperarla sola y rápido.",
+  "CÓMO",
+  "Se mata el proceso de cam1 con kill -9; 10 iteraciones por entorno.",
+  "RESULTADO",
+  "Docker ~520 ms, K8s ~570 ms. Menos de 1 s, sin intervención."
+ ],
+ "46": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Resultados: latencia de transición",
+  "Cambio de modo de composición",
+  "POR QUÉ SE MIDE",
+  "Cambiar de modo (p. ej. a pantalla dividida) se anima frame a frame.",
+  "CÓMO",
+  "32 medidas cambiando entre los 4 modos de composición.",
+  "RESULTADO",
+  "Docker 2,8 ms. K8s 79,8 ms (Minikube ocupa la CPU); en nube igualaría a Docker."
+ ],
+ "47": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Resultados: estabilidad",
+  "31 minutos en marcha, sin degradación",
+  "POR QUÉ SE MIDE",
+  "El CPU creep y las fugas de memoria solo salen a largo plazo.",
+  "CÓMO",
+  "31 min con 4 cámaras; CPU y RAM cada 5 s (≈375 muestras).",
+  "RESULTADO",
+  "CPU estable, RAM totalmente plana, cero reinicios. Sin fugas."
+ ],
+ "48": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Estado del arte: tecnologías",
+  "Protocolos y códecs de contribución audiovisual",
+  "Protocolos",
+  "Códecs",
+  "Voctomix usa RAW I420 + MKV/TCP: cero latencia de codificación en red local, frente al alto coste del SDI."
+ ],
+ "49": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Distribución de contenidos",
+  "Cómo la señal de programa llega a la audiencia",
+  "La salida de Voctomix\nLa señal de programa RAW I420 se codifica en H.264 con FFmpeg (libx264) en tiempo real,\nse encapsula en MPEG-TS para RTMP o se segmenta en HLS. Compatible con cualquier CDN,\nsin aceleración hardware. H.265/HEVC queda como línea futura para ahorrar ancho de banda."
+ ],
+ "50": [
+  "Defensa TFG  ·  ETSIT-UPM",
+  "Presupuesto económico",
+  "Anexo B  ·  coste de desarrollo del proyecto",
+  "0 €\nen licencias de software",
+  "Todo el sistema es software libre.\nEl coste es desarrollo y hardware,\nno licencias, frente a los miles de\neuros de un mezclador comercial."
+ ]
+}
