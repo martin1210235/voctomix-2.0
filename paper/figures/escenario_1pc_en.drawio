@@ -1,0 +1,40 @@
+<mxfile host="65bd71144e">
+    <diagram id="escenario_1pc" name="Single-PC Scenario">
+        <mxGraphModel dx="1063" dy="547" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="340" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="pc" value="&lt;font style=&quot;font-size: 23px;&quot;&gt;PC (single machine)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#6699FF;strokeWidth=2;dashed=1;fontSize=13;fontStyle=1;verticalAlign=top;spacingTop=6;align=center;" parent="1" vertex="1">
+                    <mxGeometry x="20" y="20" width="1160" height="310" as="geometry"/>
+                </mxCell>
+                <mxCell id="ffmpeg" value="&lt;font style=&quot;font-size: 19px;&quot;&gt;Signal Sources&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 19px;&quot;&gt;&lt;span style=&quot;color: rgb(63, 63, 63);&quot;&gt;(FFmpeg)&lt;/span&gt;&lt;/font&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="50" y="80" width="240" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="voctocore" value="&lt;div&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;Voctocore&lt;/font&gt;&lt;/div&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;(voctocore.py)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE6CC;strokeColor=#FF8800;fontColor=#333333;fontSize=13;fontStyle=1;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="470" y="90" width="280" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="output" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;Programme Output&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontColor=#333333;fontSize=11;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="490" y="240" width="240" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="voctogui" value="&lt;div&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;Voctogui&lt;/font&gt;&lt;/div&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;&lt;font style=&quot;&quot;&gt;(voctogui.py)&lt;br&gt;&lt;/font&gt;&lt;font style=&quot;&quot;&gt;(host = localhost)&lt;/font&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontColor=#333333;fontSize=12;fontStyle=1;strokeWidth=2;" parent="1" vertex="1">
+                    <mxGeometry x="920" y="80" width="240" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="a1" value="&lt;font style=&quot;&quot;&gt;&lt;font style=&quot;font-size: 17px;&quot;&gt;:10000–10005&lt;/font&gt;&lt;br&gt;&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;strokeWidth=2;strokeColor=#666666;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="ffmpeg" target="voctocore" edge="1">
+                    <mxGeometry y="20" relative="1" as="geometry">
+                        <mxPoint x="1" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="a2" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;:15000&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;strokeWidth=2;strokeColor=#6c8ebf;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="voctocore" target="output" edge="1">
+                    <mxGeometry x="-0.2" y="30" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="a3" value="&lt;font style=&quot;font-size: 18px;&quot;&gt;:9999&lt;/font&gt;" style="edgeStyle=orthogonalEdgeStyle;html=1;fontSize=11;strokeWidth=2;strokeColor=#82b366;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="voctogui" target="voctocore" edge="1">
+                    <mxGeometry x="-0.0588" y="-20" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

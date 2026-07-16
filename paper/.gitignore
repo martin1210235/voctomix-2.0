@@ -1,0 +1,13 @@
+# LaTeX build artifacts
+main.aux
+main.bbl
+main.blg
+main.fdb_latexmk
+main.fls
+main.log
+main.out
+main.pdf
+
+# Workbench notes & tooling now live in the main repo at docs/paper-workbench/
+# (kept out of the Overleaf manuscript). The pre-commit hook symlinks to
+# docs/paper-workbench/check_paper.sh.
