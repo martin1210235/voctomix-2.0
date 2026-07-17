@@ -63,3 +63,21 @@ Las siguientes mediciones no se completaron en esta sesión y quedan planificada
 **Objetivo:** obtener lecturas reales de consumo energético mediante los contadores de hardware Intel RAPL, sustituyendo cualquier estimación indirecta previa.
 
 **Procedimiento:** ejecutar la sesión de medición con permisos de superusuario, de forma que el proceso tenga acceso de lectura a `/sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj`.
+
+### 5.4 Latencia de conmutación de fuente
+
+**Objetivo:** confirmar en el equipo de referencia la latencia de conmutación simple entre fuentes de vídeo, en Docker Compose y en Kubernetes.
+
+**Procedimiento:** ejecutar `experiments/measure_latency.py`, que envía treinta comandos `set_video_a` por el canal de control TCP y mide el tiempo hasta la confirmación `video_status`, en ambos entornos de despliegue.
+
+### 5.5 Latencia de transición de composición
+
+**Objetivo:** confirmar en el equipo de referencia la latencia de las transiciones de composición (pantalla completa, side-by-side, picture-in-picture, lower-third), en Docker Compose y en Kubernetes.
+
+**Procedimiento:** ejecutar `tools/measure_composite_latency.py`, que envía comandos `transition` por el canal de control TCP y mide el tiempo hasta la confirmación `composite`, en ambos entornos de despliegue.
+
+### 5.6 Estabilidad a largo plazo
+
+**Objetivo:** confirmar en el equipo de referencia la ausencia de crecimiento progresivo de CPU o memoria durante una sesión prolongada con las cuatro fuentes de vídeo activas.
+
+**Procedimiento:** mantener el sistema en funcionamiento continuo durante 31 minutos bajo carga activa, capturando la telemetría de estado, y analizar la sesión resultante con `tools/analyze_stability.py`.
