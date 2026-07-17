@@ -50,7 +50,7 @@ Las siguientes mediciones no se completaron en esta sesión y quedan planificada
 
 **Objetivo:** confirmar en el equipo de referencia el consumo de CPU y RAM con las cuatro fuentes de vídeo activas simultáneamente, en Docker Compose y en Kubernetes.
 
-**Procedimiento:** ejecutar `experiments/run_rapl_repeat.sh` completando las cuatro sesiones de carga (N=1 a N=4) en ambos entornos, sin interrupciones, y analizar los ficheros de sesión resultantes con `experiments/analyze_cameras.py`.
+**Procedimiento:** ejecutar `experiments/run_rapl_repeat.sh` completando las cuatro sesiones de carga (N=1 a N=4) en ambos entornos, sin interrupciones, y analizar los ficheros de sesión resultantes con `experiments/analyze_cameras.py`. Se recomienda registrar en paralelo el consumo de CPU del proceso de `voctocore` de forma aislada (por ejemplo, con `pidstat`), para distinguir su huella real de la del resto de procesos del sistema.
 
 ### 5.2 Recuperación ante fallos en Kubernetes
 
@@ -80,4 +80,12 @@ Las siguientes mediciones no se completaron en esta sesión y quedan planificada
 
 **Objetivo:** confirmar en el equipo de referencia la ausencia de crecimiento progresivo de CPU o memoria durante una sesión prolongada con las cuatro fuentes de vídeo activas.
 
-**Procedimiento:** mantener el sistema en funcionamiento continuo durante 31 minutos bajo carga activa, capturando la telemetría de estado, y analizar la sesión resultante con `tools/analyze_stability.py`.
+**Duración recomendada:** 24 horas continuas, frente a los 31 minutos de la prueba original. Una fuga de memoria lenta, del orden de decenas de kilobytes por minuto, resulta indistinguible del ruido de medición en una ventana de 31 minutos, pero se acumula hasta un volumen claramente detectable a lo largo de 24 horas. Esta duración corresponde además a un escenario de uso realista, una jornada completa de producción o retransmisión continua, y es el estándar habitual para pruebas de estabilidad de larga duración ("soak tests") en sistemas de procesamiento en tiempo real. Si el calendario lo permite, extender la prueba a 48 horas reforzaría aún más la conclusión.
+
+**Procedimiento:** mantener el sistema en funcionamiento continuo durante 24 horas bajo carga activa, capturando la telemetría de estado de forma ininterrumpida, y analizar la sesión resultante con `tools/analyze_stability.py`.
+
+### 5.7 Contador de fotogramas perdidos
+
+**Objetivo:** verificar de forma directa que no se pierden fotogramas durante la mezcla, complementando las métricas de CPU, RAM y latencia con una medida específica de integridad de la señal.
+
+**Procedimiento:** instrumentar el pipeline de `voctocore/lib/videomix.py` para contabilizar los fotogramas de entrada y de salida de cada fuente, y calcular la tasa de pérdida como la diferencia relativa entre ambos contadores durante una sesión de carga activa. Esta medición no está implementada actualmente y requiere una modificación de código, no solo de script de prueba.
