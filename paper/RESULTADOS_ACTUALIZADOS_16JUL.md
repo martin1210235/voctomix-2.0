@@ -41,18 +41,32 @@ El tiempo de recuperación en Docker Compose (mediana de 527 ms) es coherente co
 
 ## 5. Mediciones pendientes
 
-Quedan por hacer varias mediciones que no dio tiempo a completar en esta sesión. Se han organizado por prioridad, pensando en qué necesita el paper primero.
+Quedan por hacer varias mediciones que no dio tiempo a completar en esta sesión, organizadas por prioridad según lo que necesita antes el paper.
 
-**Consumo de CPU y RAM bajo carga activa.** Es la más urgente, porque las cifras que hoy aparecen en el capítulo de resultados (con las cuatro cámaras funcionando a la vez, en Docker y en Kubernetes) todavía no se han vuelto a comprobar en este equipo. Para repetirla hace falta ejecutar `experiments/run_rapl_repeat.sh` completando las cuatro sesiones de carga, de N=1 a N=4, en los dos entornos y sin interrupciones, y luego analizar los ficheros resultantes con `experiments/analyze_cameras.py`. Sería buena idea aprovechar y registrar también, en paralelo, el consumo de CPU del propio proceso de `voctocore` por separado, por ejemplo con `pidstat`, para poder distinguir su huella real de la del resto de procesos del sistema.
+### 5.1 Consumo de CPU y RAM bajo carga activa
 
-**Recuperación ante fallos en Kubernetes.** El ciclo de `tools/measure_resilience_k8s.py --n 10 --wait 720` no se llegó a terminar en Kubernetes. Hay que tener en cuenta que dura unas dos horas, porque entre cada una de las diez iteraciones hace falta esperar doce minutos para que Kubernetes reinicie su contador interno de reinicios; conviene reservar ese tiempo sin interrupciones antes de lanzarlo.
+Es la más urgente, porque las cifras que hoy aparecen en el capítulo de resultados (con las cuatro cámaras funcionando a la vez, en Docker y en Kubernetes) todavía no se han vuelto a comprobar en este equipo. Para repetirla hace falta ejecutar `experiments/run_rapl_repeat.sh` completando las cuatro sesiones de carga, de N=1 a N=4, en los dos entornos y sin interrupciones, y luego analizar los ficheros resultantes con `experiments/analyze_cameras.py`. Sería buena idea aprovechar y registrar también, en paralelo, el consumo de CPU del propio proceso de `voctocore` por separado, por ejemplo con `pidstat`, para poder distinguir su huella real de la del resto de procesos del sistema.
 
-**Consumo energético real.** Los contadores RAPL no se pudieron leer porque el fichero `/sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj` solo es accesible con permisos de superusuario. Habría que repetir la sesión con `sudo`, o dando esos permisos al proceso de medición, para tener lecturas de potencia reales en vez de la estimación indirecta que se usó como respaldo.
+### 5.2 Recuperación ante fallos en Kubernetes
 
-**Latencia de conmutación entre fuentes.** Tampoco se ha comprobado en este equipo. Se mide con `experiments/measure_latency.py`, que envía treinta comandos `set_video_a` por el canal de control TCP y cronometra hasta que llega la confirmación `video_status`; habría que correrlo tanto en Docker como en Kubernetes.
+El ciclo de `tools/measure_resilience_k8s.py --n 10 --wait 720` no se llegó a terminar en Kubernetes. Hay que tener en cuenta que dura unas dos horas, porque entre cada una de las diez iteraciones hace falta esperar doce minutos para que Kubernetes reinicie su contador interno de reinicios; conviene reservar ese tiempo sin interrupciones antes de lanzarlo.
 
-**Latencia de las transiciones de composición.** De forma parecida, `tools/measure_composite_latency.py` envía comandos `transition` (pantalla completa, side-by-side, picture-in-picture, lower-third) y mide el tiempo hasta la confirmación `composite`. Igual que el punto anterior, falta repetirla en los dos entornos de despliegue.
+### 5.3 Consumo energético real
 
-**Estabilidad a largo plazo.** La prueba original duraba solo 31 minutos, y ese tiempo es demasiado corto para sacar conclusiones firmes sobre fugas de memoria: una fuga lenta, de unas pocas decenas de kilobytes por minuto, no se distinguiría del ruido normal de medición en media hora, pero sí se acumularía lo suficiente como para verse con claridad a lo largo de 24 horas. Además, 24 horas se corresponde con un caso de uso realista (una jornada completa de retransmisión) y es la duración que se suele usar en este tipo de pruebas de estabilidad prolongada. Si el calendario lo permite, alargarla hasta 48 horas dejaría la conclusión todavía más asentada. El procedimiento sería mantener el sistema en marcha de forma continua bajo carga activa, capturando la telemetría de estado sin interrupción, y analizar después la sesión con `tools/analyze_stability.py`.
+Los contadores RAPL no se pudieron leer porque el fichero `/sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj` solo es accesible con permisos de superusuario. Habría que repetir la sesión con `sudo`, o dando esos permisos al proceso de medición, para tener lecturas de potencia reales en vez de la estimación indirecta que se usó como respaldo.
 
-**Contador de fotogramas perdidos.** Esta es la única medición que no se puede hacer solo con un script; requiere tocar código. Ahora mismo no hay forma de comprobar de manera directa que no se pierden fotogramas durante la mezcla, así que habría que instrumentar `voctocore/lib/videomix.py` para contar los fotogramas de entrada y de salida de cada fuente, y calcular la tasa de pérdida como la diferencia relativa entre ambos contadores durante una sesión con carga activa. Es la medición más completa de las que quedan pendientes, pero también la que más tiempo llevaría implementar.
+### 5.4 Latencia de conmutación entre fuentes
+
+Tampoco se ha comprobado en este equipo. Se mide con `experiments/measure_latency.py`, que envía treinta comandos `set_video_a` por el canal de control TCP y cronometra hasta que llega la confirmación `video_status`; habría que correrlo tanto en Docker como en Kubernetes.
+
+### 5.5 Latencia de las transiciones de composición
+
+De forma parecida, `tools/measure_composite_latency.py` envía comandos `transition` (pantalla completa, side-by-side, picture-in-picture, lower-third) y mide el tiempo hasta la confirmación `composite`. Igual que el punto anterior, falta repetirla en los dos entornos de despliegue.
+
+### 5.6 Estabilidad a largo plazo
+
+La prueba original duraba solo 31 minutos, y ese tiempo es demasiado corto para sacar conclusiones firmes sobre fugas de memoria: una fuga lenta, de unas pocas decenas de kilobytes por minuto, no se distinguiría del ruido normal de medición en media hora, pero sí se acumularía lo suficiente como para verse con claridad a lo largo de 24 horas. Además, 24 horas se corresponde con un caso de uso realista (una jornada completa de retransmisión) y es la duración que se suele usar en este tipo de pruebas de estabilidad prolongada. Si el calendario lo permite, alargarla hasta 48 horas dejaría la conclusión todavía más asentada. El procedimiento sería mantener el sistema en marcha de forma continua bajo carga activa, capturando la telemetría de estado sin interrupción, y analizar después la sesión con `tools/analyze_stability.py`.
+
+### 5.7 Contador de fotogramas perdidos
+
+Esta es la única medición que no se puede hacer solo con un script; requiere tocar código. Ahora mismo no hay forma de comprobar de manera directa que no se pierden fotogramas durante la mezcla, así que habría que instrumentar `voctocore/lib/videomix.py` para contar los fotogramas de entrada y de salida de cada fuente, y calcular la tasa de pérdida como la diferencia relativa entre ambos contadores durante una sesión con carga activa. Es la medición más completa de las que quedan pendientes, pero también la que más tiempo llevaría implementar.
