@@ -81,20 +81,15 @@ services:
     user: "${COMPOSE_UID:-1000}:${COMPOSE_GID:-1000}"
     volumes:
       - ./:/opt/voctomix
-<<<<<<< HEAD
-=======
       # Match the host clock in log timestamps (no tzdata in image, so
       # bind-mount the host zone instead of setting TZ).
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
->>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
     working_dir: /opt/voctomix
     networks:
       - voctomix_net
     ports:
       - "8080:8080"
-<<<<<<< HEAD
-=======
     # Override the image's healthcheck: telemetry has no local 9999, it
     # reaches voctocore over the network. Probe its own HTTP port instead.
     healthcheck:
@@ -103,7 +98,6 @@ services:
       timeout: 3s
       retries: 12
       start_period: 20s
->>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
     depends_on:
       voctocore:
         condition: service_healthy
@@ -122,12 +116,8 @@ services:
       - sh
       - -c
       - >-
-<<<<<<< HEAD
-        ffmpeg -y -nostdin
-=======
         ffmpeg -y -nostdin -stream_loop -1
         -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5
->>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
         -i "$$CAM1_SOURCE"
         -ac 2
         -filter_complex "[0:v] scale=$$WIDTH:$$HEIGHT,fps=$$FRAMERATE [v]; [0:a] aresample=$$AUDIORATE [a]"
@@ -138,11 +128,7 @@ services:
       - ./:/opt/voctomix
     working_dir: /opt/voctomix
     network_mode: "service:voctocore"
-<<<<<<< HEAD
-    restart: on-failure
-=======
     restart: unless-stopped
->>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
     depends_on:
       voctocore:
         condition: service_healthy
@@ -159,12 +145,8 @@ services:
       - sh
       - -c
       - >-
-<<<<<<< HEAD
-        ffmpeg -y -nostdin
-=======
         ffmpeg -y -nostdin -stream_loop -1
         -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5
->>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
         -i "$$CAM2_SOURCE"
         -ac 2
         -filter_complex "[0:v] scale=$$WIDTH:$$HEIGHT,fps=$$FRAMERATE [v]; [0:a] aresample=$$AUDIORATE [a]"
@@ -175,11 +157,7 @@ services:
       - ./:/opt/voctomix
     working_dir: /opt/voctomix
     network_mode: "service:voctocore"
-<<<<<<< HEAD
-    restart: on-failure
-=======
     restart: unless-stopped
->>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
     depends_on:
       voctocore:
         condition: service_healthy
@@ -196,12 +174,8 @@ services:
       - sh
       - -c
       - >-
-<<<<<<< HEAD
-        ffmpeg -y -nostdin
-=======
         ffmpeg -y -nostdin -stream_loop -1
         -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5
->>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
         -i "$$CAM3_SOURCE"
         -ac 2
         -filter_complex "[0:v] scale=$$WIDTH:$$HEIGHT,fps=$$FRAMERATE [v]; [0:a] aresample=$$AUDIORATE [a]"
@@ -212,11 +186,7 @@ services:
       - ./:/opt/voctomix
     working_dir: /opt/voctomix
     network_mode: "service:voctocore"
-<<<<<<< HEAD
-    restart: on-failure
-=======
     restart: unless-stopped
->>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
     depends_on:
       voctocore:
         condition: service_healthy
@@ -234,10 +204,7 @@ services:
       - -c
       - >-
         ffmpeg -y -nostdin -stream_loop -1
-<<<<<<< HEAD
-=======
         -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5
->>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
         -i "$$CAM4_SOURCE"
         -filter_complex "[0:v] format=yuv420p,scale=$$WIDTH:$$HEIGHT:out_range=tv,fps=$$FRAMERATE,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709 [v]; [0:a] aresample=$$AUDIORATE [a]"
         -map "[v]" -map "[a]"
@@ -248,11 +215,7 @@ services:
       - ./:/opt/voctomix
     working_dir: /opt/voctomix
     network_mode: "service:voctocore"
-<<<<<<< HEAD
-    restart: on-failure
-=======
     restart: unless-stopped
->>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
     depends_on:
       voctocore:
         condition: service_healthy
@@ -281,11 +244,7 @@ services:
       - ./:/opt/voctomix
     working_dir: /opt/voctomix
     network_mode: "service:voctocore"
-<<<<<<< HEAD
-    restart: on-failure
-=======
     restart: unless-stopped
->>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
     depends_on:
       voctocore:
         condition: service_healthy
@@ -317,11 +276,7 @@ services:
       - ./:/opt/voctomix
     working_dir: /opt/voctomix
     network_mode: "service:voctocore"
-<<<<<<< HEAD
-    restart: on-failure
-=======
     restart: unless-stopped
->>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
     depends_on:
       voctocore:
         condition: service_healthy
@@ -353,11 +308,7 @@ services:
       - ./:/opt/voctomix
     working_dir: /opt/voctomix
     network_mode: "service:voctocore"
-<<<<<<< HEAD
-    restart: on-failure
-=======
     restart: unless-stopped
->>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
     depends_on:
       voctocore:
         condition: service_healthy
@@ -382,11 +333,7 @@ services:
       - ./:/opt/voctomix
     working_dir: /opt/voctomix
     network_mode: "service:voctocore"
-<<<<<<< HEAD
-    restart: on-failure
-=======
     restart: unless-stopped
->>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
     depends_on:
       voctocore:
         condition: service_healthy

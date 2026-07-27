@@ -1,0 +1,78 @@
+# Experiment override for the paper test suite.
+# Redirects cam1-4 to the SAME local 4K CC-BY master (Big Buck Bunny, Blender),
+# each with a distinct start offset (visual variety) and a distinct colour marker
+# (border + top-left corner block) so camera identity is unambiguous both to the
+# operator watching the GUI and to the automatic video-latency detector.
+#
+# Colour map:  cam1=red  cam2=lime  cam3=blue  cam4=yellow
+# Marker: full-frame border (40px) + solid 300x300 top-left corner block.
+# Colorimetry: bt709 is forced (setparams + output flags) to match voctocore's
+# configured source caps; otherwise voctocore rejects the stream (2:0:0:0 != bt709).
+#
+# Launch:  docker compose -f docker-compose.yml -f docker-compose.experiment.yml up -d
+# Format (WIDTH/HEIGHT/FRAMERATE) comes from .env, written by set_format.sh.
+
+services:
+  cam1:
+    environment:
+      CAM1_SOURCE: /opt/voctomix/videos/bbb_sunflower_2160p_60fps_normal.mp4
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin -stream_loop -1 -ss 0
+        -i "$$CAM1_SOURCE"
+        -ac 2
+        -filter_complex "[0:v] format=yuv420p,scale=$$WIDTH:$$HEIGHT:out_range=tv,fps=$$FRAMERATE,drawbox=x=0:y=0:w=iw:h=ih:color=red:t=40,drawbox=x=0:y=0:w=300:h=300:color=red:t=fill,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709 [v]; [0:a] aresample=$$AUDIORATE [a]"
+        -map "[v]" -map "[a]"
+        -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv
+        -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le
+        -f matroska tcp://localhost:10000
+
+  cam2:
+    environment:
+      CAM2_SOURCE: /opt/voctomix/videos/bbb_sunflower_2160p_60fps_normal.mp4
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin -stream_loop -1 -ss 150
+        -i "$$CAM2_SOURCE"
+        -ac 2
+        -filter_complex "[0:v] format=yuv420p,scale=$$WIDTH:$$HEIGHT:out_range=tv,fps=$$FRAMERATE,drawbox=x=0:y=0:w=iw:h=ih:color=lime:t=40,drawbox=x=0:y=0:w=300:h=300:color=lime:t=fill,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709 [v]; [0:a] aresample=$$AUDIORATE [a]"
+        -map "[v]" -map "[a]"
+        -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv
+        -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le
+        -f matroska tcp://localhost:10001
+
+  cam3:
+    environment:
+      CAM3_SOURCE: /opt/voctomix/videos/bbb_sunflower_2160p_60fps_normal.mp4
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin -stream_loop -1 -ss 300
+        -i "$$CAM3_SOURCE"
+        -ac 2
+        -filter_complex "[0:v] format=yuv420p,scale=$$WIDTH:$$HEIGHT:out_range=tv,fps=$$FRAMERATE,drawbox=x=0:y=0:w=iw:h=ih:color=blue:t=40,drawbox=x=0:y=0:w=300:h=300:color=blue:t=fill,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709 [v]; [0:a] aresample=$$AUDIORATE [a]"
+        -map "[v]" -map "[a]"
+        -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv
+        -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le
+        -f matroska tcp://localhost:10002
+
+  cam4:
+    environment:
+      CAM4_SOURCE: /opt/voctomix/videos/bbb_sunflower_2160p_60fps_normal.mp4
+    command:
+      - sh
+      - -c
+      - >-
+        ffmpeg -y -nostdin -stream_loop -1 -ss 450
+        -i "$$CAM4_SOURCE"
+        -ac 2
+        -filter_complex "[0:v] format=yuv420p,scale=$$WIDTH:$$HEIGHT:out_range=tv,fps=$$FRAMERATE,drawbox=x=0:y=0:w=iw:h=ih:color=yellow:t=40,drawbox=x=0:y=0:w=300:h=300:color=yellow:t=fill,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709 [v]; [0:a] aresample=$$AUDIORATE [a]"
+        -map "[v]" -map "[a]"
+        -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv
+        -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le
+        -f matroska tcp://localhost:10003

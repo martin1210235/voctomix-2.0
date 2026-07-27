@@ -122,7 +122,11 @@ k8s/secret.yaml
 .env
 
 # --- Paper (Overleaf git repo — managed separately, not nested in voctomix git) ---
-paper/
+paper/!paper/*.tex
+!paper/*.bib
+!paper/Definitions/
+!paper/figures/
+!paper/TESTING_AUDIT_20260716_FINAL.md
 =======
 __pycache__/
 *.pyc
@@ -131,3 +135,4 @@ sessions/
 *.log
 .env
 >>>>>>> 920adf625f85240b9410c616f7c7c875f625df30
+voctocore/default-config.ini.orig
