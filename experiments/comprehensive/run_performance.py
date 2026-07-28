@@ -68,6 +68,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("mode", choices=["escalado", "sostenida"])
     ap.add_argument("output_dir")
+    ap.add_argument("--idle-min", type=float, default=15.0,
+                    help="baseline a 0 cámaras al inicio del escalado")
     ap.add_argument("--step-min", type=float, default=15.0)
     ap.add_argument("--duration-min", type=float, default=120.0)
     ap.add_argument("--keep-up", action="store_true")
@@ -109,6 +111,8 @@ def main():
 
     if args.mode == "escalado":
         step = args.step_min * 60
+        print(f"[perf] baseline {args.idle_min} min con 0 cámaras (t={time.strftime('%H:%M:%S')})...")
+        time.sleep(args.idle_min * 60)
         for cam in CAMS:
             print(f"[perf] activando {cam} (t={time.strftime('%H:%M:%S')}), midiendo {args.step_min} min...")
             dc("up", "-d", cam)

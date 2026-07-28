@@ -45,6 +45,15 @@ SCENARIOS = {
             "2160p50": "paper/pruebas/local_2160p50/1-1_escalado/datos.csv",
         },
     },
+    "k8s": {
+        "title": "Kubernetes (k3s)",
+        "cells": {
+            "1080p25": "paper/pruebas/k8s_1080p25/1-1_escalado/datos.csv",
+            "1080p50": "paper/pruebas/k8s_1080p50/1-1_escalado/datos.csv",
+            "2160p25": "paper/pruebas/k8s_2160p25/1-1_escalado/datos.csv",
+            "2160p50": "paper/pruebas/k8s_2160p50/1-1_escalado/datos.csv",
+        },
+    },
 }
 
 FORMAT_LABELS = {

@@ -15,6 +15,7 @@
 set -u
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$ROOT"
+SELF="$ROOT/experiments/comprehensive/local_scenario.sh"
 MASTER="$ROOT/videos/bbb_sunflower_2160p_60fps_normal.mp4"
 
 [ -f "$ROOT/.env" ] && set -a && . "$ROOT/.env" && set +a
@@ -73,7 +74,16 @@ case "${1:-}" in
     echo "base_up OK (voctocore + cámaras de soporte)"
     ;;
   cam_up)  start_cam "${2:?N}" "${3:?cfg}" ;;
-  crash)   cam_params "${2:?N}" || exit 1; pkill -9 -f "voctolocal_cam${2}" 2>/dev/null; echo "  cam$2 matada" ;;
+  crash)
+    N="${2:?N}"; cam_params "$N" || exit 1
+    CFG="${3:-experiment}"
+    # Emulate a native process supervisor (systemd Restart=always): the source is
+    # killed and a detached watchdog respawns it after RESTART_SEC. The restarted
+    # ffmpeg reconnects to voctocore, the same recovery path as Docker's restart policy.
+    pkill -9 -f "voctolocal_cam${N}" 2>/dev/null
+    setsid bash -c "sleep ${RESTART_SEC:-0.3}; exec bash '$SELF' cam_up '$N' '$CFG'" </dev/null >/dev/null 2>&1 &
+    echo "  cam$N matada (supervisor reinicia en ${RESTART_SEC:-0.3}s)"
+    ;;
   down)
     pkill -f "voctolocal_" 2>/dev/null
     pkill -f "python3 voctocore.py" 2>/dev/null

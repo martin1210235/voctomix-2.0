@@ -17,7 +17,9 @@ WITH_GUI="${1:-}"
 pkill -f "gst-launch.*port=11000" 2>/dev/null
 sleep 0.5
 nohup gst-launch-1.0 tcpclientsrc host=127.0.0.1 port=11000 \
-    ! matroskademux ! videoconvert ! xvimagesink force-aspect-ratio=true \
+    ! queue max-size-buffers=0 max-size-time=0 max-size-bytes=0 \
+    ! matroskademux ! videoconvert ! queue \
+    ! xvimagesink force-aspect-ratio=true sync=false \
     >/tmp/gstmix.log 2>&1 &
 sleep 4
 

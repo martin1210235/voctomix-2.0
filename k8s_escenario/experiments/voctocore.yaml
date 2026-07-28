@@ -3,8 +3,13 @@ kind: Deployment
 metadata:
   name: voctocore
   namespace: voctomix-exp
+  labels:
+    app: voctocore
+    role: core
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: voctocore
@@ -12,6 +17,7 @@ spec:
     metadata:
       labels:
         app: voctocore
+        role: core
     spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
@@ -19,18 +25,23 @@ spec:
         - name: voctocore
           image: voctomix-voctocore:latest
           imagePullPolicy: Never
-          command: ["python3", "voctocore/voctocore.py"]
-          workingDir: /opt/voctomix
+          command: ["python3", "voctocore.py"]
+          workingDir: /opt/voctomix/voctocore
           readinessProbe:
             exec:
               command: ["bash", "-c", "echo '' | nc -zw1 localhost 9999"]
-            initialDelaySeconds: 15
+            initialDelaySeconds: 10
             periodSeconds: 5
-            failureThreshold: 12
+            failureThreshold: 24
+          volumeMounts:
+            - name: config
+              mountPath: /opt/voctomix/voctocore/default-config.ini
+              subPath: default-config.ini
           resources:
             requests:
               cpu: "1"
               memory: "512Mi"
-            limits:
-              cpu: "4"
-              memory: "2Gi"
+      volumes:
+        - name: config
+          configMap:
+            name: voctocore-config

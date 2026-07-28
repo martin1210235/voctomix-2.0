@@ -62,8 +62,9 @@ def main():
     ap.add_argument("--mix-port", type=int, default=11000)
     ap.add_argument("--loss-timeout", type=float, default=10.0)
     ap.add_argument("--recover-timeout", type=float, default=40.0)
-    ap.add_argument("--scenario", default="docker", choices=["docker", "local"],
-                    help="docker: crash vía docker exec; local: crash del ffmpeg nativo")
+    ap.add_argument("--scenario", default="docker", choices=["docker", "local", "k8s"],
+                    help="docker: crash vía docker exec; local: crash del ffmpeg nativo; "
+                         "k8s: kubectl delete pod (el Deployment lo recrea)")
     args = ap.parse_args()
 
     here = os.path.dirname(os.path.abspath(__file__))
@@ -72,6 +73,9 @@ def main():
         if args.scenario == "local":
             subprocess.run(["bash", os.path.join(here, "local_scenario.sh"), "crash", victim[-1]],
                            capture_output=True)
+        elif args.scenario == "k8s":
+            k8s = os.path.join(here, "..", "..", "k8s_escenario", "experiments", "k8s_scenario.sh")
+            subprocess.run(["bash", k8s, "crash", victim[-1]], capture_output=True)
         else:
             subprocess.run(["docker", "exec", victim, "pkill", "-9", "ffmpeg"],
                            capture_output=True)

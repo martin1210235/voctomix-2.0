@@ -1,19 +1,20 @@
 #!/usr/bin/env python3
-"""Análisis 1 (rendimiento) para el escenario LOCAL (nativo, sin Docker).
+"""Análisis 1 (rendimiento) para el escenario KUBERNETES (k3s).
 
-Mide CPU%/RAM% del host leyendo /proc directamente (no depende de la telemetría
-ni de RabbitMQ). Orquesta las cámaras nativas con local_scenario.sh y etiqueta
-cada muestra por el nº de cámaras activas según el instante de activación.
+Mide CPU%/RAM% del host leyendo /proc (mismo método que Local/Docker; los pods
+corren en el host con hostNetwork, así que /proc global = k3s + pods = consumo del
+despliegue). Orquesta el escenario con k8s_scenario.sh.
 
-  escalado  (1.1): activa cam1..4, una cada --step-min minutos.
-  sostenida (1.2): 4 cámaras durante --duration-min minutos.
+  escalado  (1.1): baseline de --idle-min min a 0 cámaras, luego activa cam1..4
+                   (kubectl scale) una cada --step-min min. Etiqueta por nº activas.
+  sostenida (1.2): 4 cámaras durante --duration-min min.
 
-Salidas: datos.csv, resumen.csv, datos.xlsx (mismo formato que la versión Docker).
+Salidas: datos.csv, resumen.csv, datos.xlsx (mismo formato que Local/Docker).
 
 Uso:
-  measure_performance_local.py <escalado|sostenida> <output_dir> [--step-min 15] [--duration-min 120]
+  measure_performance_k8s.py <escalado|sostenida> <output_dir> --format 1080p25 \
+      [--idle-min 15] [--step-min 15] [--duration-min 120]
 """
-
 import argparse
 import os
 import subprocess
@@ -25,13 +26,13 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lib_common import stats, write_csv, write_summary_csv, bundle_xlsx  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-LOCAL = os.path.join(HERE, "local_scenario.sh")
+K8S = os.path.join(HERE, "..", "..", "k8s_escenario", "experiments", "k8s_scenario.sh")
 
 
 def read_cpu():
     with open("/proc/stat") as f:
         parts = [float(x) for x in f.readline().split()[1:]]
-    return parts[3], sum(parts)  # idle, total
+    return parts[3], sum(parts)
 
 
 def read_ram():
@@ -43,40 +44,37 @@ def read_ram():
     return round(100.0 * (m["MemTotal"] - m["MemAvailable"]) / m["MemTotal"], 1)
 
 
-def local(*args, timeout=120):
-    """Ejecuta local_scenario.sh redirigiendo a fichero (NO pipe), para no colgarse
-    esperando a los procesos de fondo. Devuelve un objeto con .stdout (el log)."""
-    logf = "/tmp/local_scn_perf.log"
+def k8s(*args, timeout=300):
+    logf = "/tmp/k8s_scn_perf.log"
     try:
         with open(logf, "w") as f:
-            subprocess.run(["bash", LOCAL, *args],
+            subprocess.run(["bash", K8S, *args],
                            stdout=f, stderr=subprocess.STDOUT, timeout=timeout)
     except subprocess.TimeoutExpired:
         pass
     try:
-        out = open(logf, encoding="utf-8", errors="replace").read()
+        return open(logf, encoding="utf-8", errors="replace").read()
     except Exception:
-        out = ""
-    return subprocess.CompletedProcess(list(args), 0, out, "")
+        return ""
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("mode", choices=["escalado", "sostenida"])
     ap.add_argument("output_dir")
+    ap.add_argument("--format", required=True,
+                    choices=["1080p25", "1080p50", "2160p25", "2160p50"])
     ap.add_argument("--idle-min", type=float, default=15.0,
-                    help="baseline a 0 cámaras al inicio del escalado")
+                    help="baseline a 0 cámaras (solo escalado)")
     ap.add_argument("--step-min", type=float, default=15.0)
     ap.add_argument("--duration-min", type=float, default=120.0)
     args = ap.parse_args()
 
-    print("[perf-local] bajando restos y arrancando base nativa...", flush=True)
-    local("down")
-    r = local("base_up", timeout=180)
-    if "base_up OK" not in (r.stdout or ""):
-        print(f"ERROR: base_up falló: {r.stdout} {r.stderr}", file=sys.stderr)
-        local("down")
-        sys.exit(1)
+    print(f"[perf-k8s] up {args.format} (voctocore + soporte)...", flush=True)
+    out = k8s("up", args.format, timeout=300)
+    if "successfully rolled out" not in out and "esperando voctocore" not in out:
+        print(f"ERROR: up falló:\n{out}", file=sys.stderr)
+        k8s("down"); sys.exit(1)
 
     n_active = 0
     rows = []
@@ -98,31 +96,30 @@ def main():
 
     def measure_for(seconds):
         end = time.time() + seconds
-        read_cpu()  # cebar delta
+        read_cpu()
         while time.time() < end:
             time.sleep(5)
             sample()
 
     if args.mode == "escalado":
-        print(f"[perf-local] baseline {args.idle_min} min con 0 cámaras", flush=True)
+        k8s("apply-cams", args.format, "experiment", timeout=120)
+        print(f"[perf-k8s] baseline {args.idle_min} min con 0 cámaras", flush=True)
         n_active = 0
         measure_for(args.idle_min * 60)
         for cam in (1, 2, 3, 4):
-            print(f"[perf-local] activando cam{cam} (t={datetime.now():%H:%M:%S})", flush=True)
-            local("cam_up", str(cam), "experiment")
+            print(f"[perf-k8s] activando cam{cam} (t={datetime.now():%H:%M:%S})", flush=True)
+            k8s("scale", str(cam), "1", timeout=60)
             time.sleep(8)
             n_active = cam
             measure_for(args.step_min * 60 - 8)
     else:
-        for cam in (1, 2, 3, 4):
-            local("cam_up", str(cam), "experiment")
-            time.sleep(2)
+        k8s("cams", args.format, "experiment", timeout=240)
         n_active = 4
         time.sleep(6)
-        print(f"[perf-local] sostenida {args.duration_min} min con 4 cámaras", flush=True)
+        print(f"[perf-k8s] sostenida {args.duration_min} min con 4 cámaras", flush=True)
         measure_for(args.duration_min * 60)
 
-    local("down")
+    k8s("down", timeout=180)
 
     if not rows:
         print("ERROR: sin muestras", file=sys.stderr)
@@ -143,7 +140,7 @@ def main():
     write_summary_csv(os.path.join(args.output_dir, "resumen.csv"), summary)
     bundle_xlsx(os.path.join(args.output_dir, "datos.xlsx"),
                 {"datos": (fields, rows), "resumen": (sfields, summary)})
-    print(f"[perf-local] {len(rows)} muestras -> {args.output_dir}", flush=True)
+    print(f"[perf-k8s] {len(rows)} muestras -> {args.output_dir}", flush=True)
 
 
 if __name__ == "__main__":

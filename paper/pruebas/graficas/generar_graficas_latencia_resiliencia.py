@@ -53,6 +53,15 @@ SCENARIOS = {
             "2160p50": "paper/pruebas/local_2160p50",
         },
     },
+    "k8s": {
+        "title": "Kubernetes (k3s)",
+        "base": {
+            "1080p25": "paper/pruebas/k8s_1080p25",
+            "1080p50": "paper/pruebas/k8s_1080p50",
+            "2160p25": "paper/pruebas/k8s_2160p25",
+            "2160p50": "paper/pruebas/k8s_2160p50",
+        },
+    },
 }
 
 
