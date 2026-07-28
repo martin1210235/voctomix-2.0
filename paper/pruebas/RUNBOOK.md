@@ -117,7 +117,7 @@ Cerrar al terminar: `pkill -f "gst-launch.*port=11000"`.
 ---
 
 ## 5. ORDEN DE EJECUCIÓN (resumen; detalle en PLAN_PRUEBAS_DEFINITIVO.md §6-BIS)
-Docker (los 4 formatos, con smoke test antes de 2160p50) → Local (4 formatos) → Kubernetes con kind/k3s (4 formatos). 5 análisis por celda. Empezar por la **piloto Docker+1080p25** y enviarla a los tutores antes de escalar.
+Docker (los 4 formatos, con smoke test antes de 2160p50) → Local (4 formatos) → Kubernetes con kind/k3s (4 formatos). 5 análisis por celda. Empezar por la **Docker+1080p25** y enviarla a los tutores antes de escalar.
 
 ---
 

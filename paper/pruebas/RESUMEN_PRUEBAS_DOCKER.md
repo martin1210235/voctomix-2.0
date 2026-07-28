@@ -133,7 +133,7 @@ reinicia automáticamente y mido hasta que el feed vuelve a verse. Lo repito 100
 Tengo una carpeta por cada formato, y dentro una carpeta por cada prueba:
 ```
 /home/sonda/Documentos/voctomix/paper/pruebas/
-├── piloto_docker_1080p25/     (formato 1080p25)
+├── docker_1080p25/     (formato 1080p25)
 ├── docker_1080p50/            (formato 1080p50)
 ├── docker_2160p25/            (formato 2160p25)
 └── docker_2160p50/            (formato 2160p50)

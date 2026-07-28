@@ -53,7 +53,7 @@ def sh(cmd, timeout=600):
 
 def folder_for(scenario, fmt):
     if scenario == "docker" and fmt == "1080p25":
-        return os.path.join(ROOT, "paper/pruebas/piloto_docker_1080p25")
+        return os.path.join(ROOT, "paper/pruebas/docker_1080p25")
     return os.path.join(ROOT, f"paper/pruebas/{scenario}_{fmt}")
 
 
