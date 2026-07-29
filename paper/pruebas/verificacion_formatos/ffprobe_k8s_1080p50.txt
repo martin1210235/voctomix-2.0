@@ -1,0 +1,18 @@
+=== 2026-07-28 20:53:26 | K8s | pedido: 1080p50 (1920 x 1080 @ 50fps) ===
+width=1920
+height=1080
+r_frame_rate=50/1
+avg_frame_rate=50/1
+
+=== 2026-07-28 20:59:31 | K8s | pedido: 1080p50 (1920 x 1080 @ 50fps) ===
+width=1920
+height=1080
+r_frame_rate=50/1
+avg_frame_rate=50/1
+
+=== 2026-07-28 21:05:38 | K8s | pedido: 1080p50 (1920 x 1080 @ 50fps) ===
+width=1920
+height=1080
+r_frame_rate=50/1
+avg_frame_rate=50/1
+

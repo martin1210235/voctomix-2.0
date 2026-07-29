@@ -1,0 +1,32 @@
+# Pod mínimo que mantiene la imagen voctomix-voctocore:latest SIEMPRE en uso, para que
+# el garbage collector de imágenes de k3s no la borre (solo elimina imágenes sin usar).
+# Va en el namespace 'default' (la matriz nunca lo borra), así sobrevive a los teardowns.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: image-keepalive
+  namespace: default
+  labels:
+    app: image-keepalive
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: image-keepalive
+  template:
+    metadata:
+      labels:
+        app: image-keepalive
+    spec:
+      containers:
+        - name: keepalive
+          image: voctomix-voctocore:latest
+          imagePullPolicy: Never
+          command: ["sleep", "infinity"]
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "16Mi"
+            limits:
+              cpu: "50m"
+              memory: "64Mi"
