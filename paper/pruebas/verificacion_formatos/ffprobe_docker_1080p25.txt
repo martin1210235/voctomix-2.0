@@ -1,0 +1,6 @@
+=== 2026-07-30 01:59:15 | docker | 1080p25 ===
+width=1920
+height=1080
+r_frame_rate=25/1
+avg_frame_rate=25/1
+

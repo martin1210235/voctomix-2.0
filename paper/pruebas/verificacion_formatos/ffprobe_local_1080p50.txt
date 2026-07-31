@@ -1,0 +1,6 @@
+=== 2026-07-30 02:10:27 | local | 1080p50 ===
+width=1920
+height=1080
+r_frame_rate=50/1
+avg_frame_rate=50/1
+

@@ -1,0 +1,6 @@
+=== 2026-07-30 02:16:50 | local | 2160p50 ===
+width=3840
+height=2160
+r_frame_rate=50/1
+avg_frame_rate=50/1
+

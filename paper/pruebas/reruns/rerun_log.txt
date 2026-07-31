@@ -1,0 +1,47 @@
+[2026-07-29 10:47:23] 
+======================================================================
+[2026-07-29 10:47:23] ORQUESTADOR DE RE-EJECUCIONES (REAL)
+[2026-07-29 10:47:23] ======================================================================
+[2026-07-29 10:47:23] ### FASE 1: escalados de los 3 escenarios (agrupados por formato) ###
+[2026-07-29 10:47:23]   [RUN ] escalado docker 1080p25 (intento 1)
+[2026-07-29 12:03:10]   [OK  ] escalado docker 1080p25
+[2026-07-29 12:03:10]   [RUN ] escalado local 1080p25 (intento 1)
+[2026-07-29 13:18:41]   [OK  ] escalado local 1080p25
+[2026-07-29 13:18:41]   [RUN ] escalado k8s 1080p25 (intento 1)
+[2026-07-29 14:35:04]   [OK  ] escalado k8s 1080p25
+[2026-07-29 14:35:04]   [RUN ] escalado docker 1080p50 (intento 1)
+[2026-07-29 15:50:50]   [OK  ] escalado docker 1080p50
+[2026-07-29 15:50:50]   [RUN ] escalado local 1080p50 (intento 1)
+[2026-07-29 17:06:21]   [OK  ] escalado local 1080p50
+[2026-07-29 17:06:21]   [RUN ] escalado k8s 1080p50 (intento 1)
+[2026-07-29 18:22:45]   [OK  ] escalado k8s 1080p50
+[2026-07-29 18:22:45]   [RUN ] escalado docker 2160p25 (intento 1)
+[2026-07-29 19:38:33]   [OK  ] escalado docker 2160p25
+[2026-07-29 19:38:33]   [RUN ] escalado local 2160p25 (intento 1)
+[2026-07-29 20:54:04]   [OK  ] escalado local 2160p25
+[2026-07-29 20:54:04]   [RUN ] escalado k8s 2160p25 (intento 1)
+[2026-07-29 22:10:28]   [OK  ] escalado k8s 2160p25
+[2026-07-29 22:10:28]   [RUN ] escalado docker 2160p50 (intento 1)
+[2026-07-29 23:26:15]   [OK  ] escalado docker 2160p50
+[2026-07-29 23:26:15]   [RUN ] escalado local 2160p50 (intento 1)
+[2026-07-30 00:41:46]   [OK  ] escalado local 2160p50
+[2026-07-30 00:41:46]   [RUN ] escalado k8s 2160p50 (intento 1)
+[2026-07-30 01:58:11]   [OK  ] escalado k8s 2160p50
+[2026-07-30 01:58:11] ### FASE 2: verificacion ffprobe de formato Docker/Local (K8s ya verificado) ###
+[2026-07-30 01:59:39]   [ffprobe] docker 1080p25 capturado
+[2026-07-30 02:01:08]   [ffprobe] docker 1080p50 capturado
+[2026-07-30 02:02:38]   [ffprobe] docker 2160p25 capturado
+[2026-07-30 02:04:07]   [ffprobe] docker 2160p50 capturado
+[2026-07-30 02:07:19]   [ffprobe] local 1080p25 capturado
+[2026-07-30 02:10:31]   [ffprobe] local 1080p50 capturado
+[2026-07-30 02:13:43]   [ffprobe] local 2160p25 capturado
+[2026-07-30 02:16:55]   [ffprobe] local 2160p50 capturado
+[2026-07-30 02:16:55] ### FASE 3: latencia 2.2 Docker 2160p50 x3 (caracterizar inestabilidad) ###
+[2026-07-30 02:16:55]   [RUN ] lat22 docker 2160p50 run1
+[2026-07-30 02:23:45]   [RUN ] lat22 docker 2160p50 run2
+[2026-07-30 02:30:41]   [RUN ] lat22 docker 2160p50 run3
+[2026-07-30 02:37:25] ### FASE 4: sostenida 24h Docker 2160p50 (leak) ###
+[2026-07-30 02:37:25]   [RUN ] sostenida 1440.0 min docker 2160p50
+[2026-07-31 02:38:19] ======================================================================
+[2026-07-31 02:38:19] RE-EJECUCIONES COMPLETADAS
+[2026-07-31 02:38:19] ======================================================================
