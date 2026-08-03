@@ -38,15 +38,15 @@ def script(w, h, f):
            "-metadata comment=vocto_{tag} -f matroska tcp://localhost:{port}")
     lines = [
         "set -u",
-        "while true; do",
-        "  " + sb.format(vid="SLIDES_video_starting_soon.mp4", w=w, h=h, f=f, tag="sb1", port=17000) + " 2>/dev/null &",
-        "  " + sb.format(vid="stream_offline.mp4", w=w, h=h, f=f, tag="sb2", port=17001) + " 2>/dev/null &",
-        "  " + audio.format(ar=ar) + " 2>/dev/null &",
-        "  " + vid.format(vid="video_cuenta_regresiva_10s.mp4", ar=ar, w=w, h=h, f=f, tag="break", port=10004) + " 2>/dev/null &",
-        "  " + vid.format(vid="intro.mp4", ar=ar, w=w, h=h, f=f, tag="intro", port=10005) + " 2>/dev/null &",
-        "  wait",
-        "  sleep 1",
-        "done",
+        # Cada fuente en su PROPIO bucle de reintento: voctocore abre 17000/17001/18000 los
+        # ULTIMOS, asi que sb1/sb2/audio reintentan hasta que voctocore escuche (evita que un
+        # 'wait' comun deje sb/audio sin arrancar por timing).
+        "( while true; do " + sb.format(vid="SLIDES_video_starting_soon.mp4", w=w, h=h, f=f, tag="sb1", port=17000) + " 2>/dev/null; sleep 2; done ) &",
+        "( while true; do " + sb.format(vid="stream_offline.mp4", w=w, h=h, f=f, tag="sb2", port=17001) + " 2>/dev/null; sleep 2; done ) &",
+        "( while true; do " + audio.format(ar=ar) + " 2>/dev/null; sleep 2; done ) &",
+        "( while true; do " + vid.format(vid="video_cuenta_regresiva_10s.mp4", ar=ar, w=w, h=h, f=f, tag="break", port=10004) + " 2>/dev/null; sleep 2; done ) &",
+        "( while true; do " + vid.format(vid="intro.mp4", ar=ar, w=w, h=h, f=f, tag="intro", port=10005) + " 2>/dev/null; sleep 2; done ) &",
+        "wait",
     ]
     return "\n".join("              " + ln for ln in lines)
 
