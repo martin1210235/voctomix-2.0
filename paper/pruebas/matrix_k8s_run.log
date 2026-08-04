@@ -1,0 +1,89 @@
+[2026-07-28 11:33:53] 
+======================================================================
+[2026-07-28 11:33:53] ORQUESTADOR MATRIZ — escenario KUBERNETES (k3s)
+[2026-07-28 11:33:53] ======================================================================
+[2026-07-28 11:33:53]   SMOKE K8S: validando despliegue mínimo (voctocore + soporte + cam1 + mix)...
+[2026-07-28 11:35:22]   SMOKE K8S: OK ([k8s] ffprobe del mix (:11000)...
+width=1920
+height=1080
+r_frame_rate=25/1
+avg_frame_rate=25/1
+  ANCHO/ALTO OK (1920 x 1080) | frame OK: /tmp/k8s_mix_check.png)
+[2026-07-28 11:35:22] 
+########## CELDA k8s · 1080p25 ##########
+[2026-07-28 11:35:22]   [RUN ] 1-1_escalado (intento 1) ...
+[2026-07-28 12:51:43]   [OK  ] 1-1_escalado en 4580s — 896 muestras, hasta 4 cámaras
+[2026-07-28 12:51:43]   [RUN ] 1-2_sostenida (intento 1) ...
+[2026-07-28 14:37:07] 
+======================================================================
+[2026-07-28 14:37:07] ORQUESTADOR MATRIZ — escenario KUBERNETES (k3s)
+[2026-07-28 14:37:07] ======================================================================
+[2026-07-28 14:37:07]   SMOKE K8S: validando despliegue mínimo (voctocore + soporte + cam1 + mix)...
+[2026-07-28 14:40:25]   SMOKE K8S: FALLO (voctocore no ready)
+[2026-07-28 14:40:25] ABORTADO: el smoke K8s falló. No se ejecuta nada.
+[2026-07-28 14:57:57] 
+======================================================================
+[2026-07-28 14:57:57] ORQUESTADOR MATRIZ — escenario KUBERNETES (k3s)
+[2026-07-28 14:57:57] ======================================================================
+[2026-07-28 14:57:57]   SMOKE K8S: validando despliegue mínimo (voctocore + soporte + cam1 + mix)...
+[2026-07-28 15:00:19]   SMOKE K8S: OK ([k8s] ffprobe del mix (:11000)...
+width=1920
+height=1080
+r_frame_rate=25/1
+avg_frame_rate=25/1
+  ANCHO/ALTO OK (1920 x 1080) | frame OK: /tmp/k8s_mix_check.png)
+[2026-07-28 15:00:19] 
+########## CELDA k8s · 1080p25 ##########
+[2026-07-28 15:00:19]   [SKIP] 1-1_escalado ya hecho
+[2026-07-28 15:00:19]   [RUN ] 1-2_sostenida (intento 1) ...
+[2026-07-28 17:01:30]   [OK  ] 1-2_sostenida en 7270s — 1439 muestras
+[2026-07-28 17:01:30]   [RUN ] 2-1_lat_camara (intento 1) ...
+[2026-07-28 17:07:48]   [OK  ] 2-1_lat_camara en 378s — 100/100 ok
+[2026-07-28 17:07:48]   [RUN ] 2-2_lat_composicion (intento 1) ...
+[2026-07-28 17:14:05]   [OK  ] 2-2_lat_composicion en 377s — 100/100 ok
+[2026-07-28 17:14:05]   [RUN ] 3-1_resiliencia (intento 1) ...
+[2026-07-28 17:35:12]   [OK  ] 3-1_resiliencia en 1266s — 100/100 ok
+[2026-07-28 17:35:12] ########## FIN CELDA k8s · 1080p25 ##########
+[2026-07-28 17:35:12] 
+########## CELDA k8s · 1080p50 ##########
+[2026-07-28 17:35:12]   [RUN ] 1-1_escalado (intento 1) ...
+[2026-07-28 18:51:31]   [OK  ] 1-1_escalado en 4579s — 896 muestras, hasta 4 cámaras
+[2026-07-28 18:51:31]   [RUN ] 1-2_sostenida (intento 1) ...
+[2026-07-28 20:52:42]   [OK  ] 1-2_sostenida en 7271s — 1439 muestras
+[2026-07-28 20:52:42]   [RUN ] 2-1_lat_camara (intento 1) ...
+[2026-07-28 20:58:50]   [OK  ] 2-1_lat_camara en 368s — 100/100 ok
+[2026-07-28 20:58:50]   [RUN ] 2-2_lat_composicion (intento 1) ...
+[2026-07-28 21:04:55]   [OK  ] 2-2_lat_composicion en 364s — 100/100 ok
+[2026-07-28 21:04:55]   [RUN ] 3-1_resiliencia (intento 1) ...
+[2026-07-28 21:24:07]   [OK  ] 3-1_resiliencia en 1151s — 100/100 ok
+[2026-07-28 21:24:07] ########## FIN CELDA k8s · 1080p50 ##########
+[2026-07-28 21:24:07] 
+########## CELDA k8s · 2160p25 ##########
+[2026-07-28 21:24:07]   [RUN ] 1-1_escalado (intento 1) ...
+[2026-07-28 22:40:25]   [OK  ] 1-1_escalado en 4578s — 896 muestras, hasta 4 cámaras
+[2026-07-28 22:40:25]   [RUN ] 1-2_sostenida (intento 1) ...
+[2026-07-29 00:41:36]   [OK  ] 1-2_sostenida en 7271s — 1439 muestras
+[2026-07-29 00:41:36]   [RUN ] 2-1_lat_camara (intento 1) ...
+[2026-07-29 00:47:51]   [OK  ] 2-1_lat_camara en 375s — 100/100 ok
+[2026-07-29 00:47:51]   [RUN ] 2-2_lat_composicion (intento 1) ...
+[2026-07-29 00:54:00]   [OK  ] 2-2_lat_composicion en 369s — 100/100 ok
+[2026-07-29 00:54:00]   [RUN ] 3-1_resiliencia (intento 1) ...
+[2026-07-29 01:13:13]   [OK  ] 3-1_resiliencia en 1152s — 100/100 ok
+[2026-07-29 01:13:13] ########## FIN CELDA k8s · 2160p25 ##########
+[2026-07-29 01:13:13] 
+########## CELDA k8s · 2160p50 ##########
+[2026-07-29 01:13:13]   [RUN ] 1-1_escalado (intento 1) ...
+[2026-07-29 02:29:35]   [OK  ] 1-1_escalado en 4582s — 896 muestras, hasta 4 cámaras
+[2026-07-29 02:29:35]   [RUN ] 1-2_sostenida (intento 1) ...
+[2026-07-29 04:30:46]   [OK  ] 1-2_sostenida en 7271s — 1439 muestras
+[2026-07-29 04:30:46]   [RUN ] 2-1_lat_camara (intento 1) ...
+[2026-07-29 04:36:53]   [OK  ] 2-1_lat_camara en 366s — 100/100 ok
+[2026-07-29 04:36:53]   [RUN ] 2-2_lat_composicion (intento 1) ...
+[2026-07-29 04:43:09]   [OK  ] 2-2_lat_composicion en 375s — 100/100 ok
+[2026-07-29 04:43:09]   [RUN ] 3-1_resiliencia (intento 1) ...
+[2026-07-29 05:04:23]   [OK  ] 3-1_resiliencia en 1273s — 100/100 ok
+[2026-07-29 05:04:23] ########## FIN CELDA k8s · 2160p50 ##########
+[2026-07-29 05:04:23] 
+======================================================================
+[2026-07-29 05:04:23] MATRIZ K8S COMPLETADA. OK=19 SKIP=1 FALLIDAS=0
+[2026-07-29 05:04:23] ======================================================================

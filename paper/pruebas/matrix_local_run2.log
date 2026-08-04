@@ -1,0 +1,58 @@
+[2026-07-27 16:22:06] 
+======================================================================
+[2026-07-27 16:22:06] ORQUESTADOR MATRIZ — escenario LOCAL (nativo)
+[2026-07-27 16:22:06] ======================================================================
+[2026-07-27 16:22:06]   SMOKE LOCAL: validando arranque nativo (voctocore + 1 cámara + mix)...
+[2026-07-27 16:22:44]   SMOKE LOCAL: OK (mix nativo produce vídeo)
+[2026-07-27 16:22:44] 
+########## CELDA local · 1080p25 ##########
+[2026-07-27 16:22:44]   [SKIP] 1-1_escalado ya hecho
+[2026-07-27 16:22:44]   [SKIP] 1-2_sostenida ya hecho
+[2026-07-27 16:22:44]   [SKIP] 2-1_lat_camara ya hecho
+[2026-07-27 16:22:44]   [SKIP] 2-2_lat_composicion ya hecho
+[2026-07-27 16:22:44]   [RUN ] 3-1_resiliencia (intento 1) ...
+[2026-07-27 16:42:11]   [OK  ] 3-1_resiliencia en 1166s — 100/100 ok
+[2026-07-27 16:42:11] ########## FIN CELDA local · 1080p25 ##########
+[2026-07-27 16:42:11] 
+########## CELDA local · 1080p50 ##########
+[2026-07-27 16:42:11]   [RUN ] 1-1_escalado (intento 1) ...
+[2026-07-27 17:42:38]   [OK  ] 1-1_escalado en 3627s — 716 muestras, hasta 4 cámaras
+[2026-07-27 17:42:38]   [RUN ] 1-2_sostenida (intento 1) ...
+[2026-07-27 19:43:07]   [OK  ] 1-2_sostenida en 7228s — 1439 muestras
+[2026-07-27 19:43:07]   [RUN ] 2-1_lat_camara (intento 1) ...
+[2026-07-27 19:48:30]   [OK  ] 2-1_lat_camara en 323s — 100/100 ok
+[2026-07-27 19:48:30]   [RUN ] 2-2_lat_composicion (intento 1) ...
+[2026-07-27 19:53:54]   [OK  ] 2-2_lat_composicion en 324s — 100/100 ok
+[2026-07-27 19:53:54]   [RUN ] 3-1_resiliencia (intento 1) ...
+[2026-07-27 20:12:04]   [OK  ] 3-1_resiliencia en 1089s — 100/100 ok
+[2026-07-27 20:12:04] ########## FIN CELDA local · 1080p50 ##########
+[2026-07-27 20:12:04] 
+########## CELDA local · 2160p25 ##########
+[2026-07-27 20:12:04]   [RUN ] 1-1_escalado (intento 1) ...
+[2026-07-27 21:12:31]   [OK  ] 1-1_escalado en 3627s — 716 muestras, hasta 4 cámaras
+[2026-07-27 21:12:31]   [RUN ] 1-2_sostenida (intento 1) ...
+[2026-07-27 23:13:01]   [OK  ] 1-2_sostenida en 7229s — 1439 muestras
+[2026-07-27 23:13:01]   [RUN ] 2-1_lat_camara (intento 1) ...
+[2026-07-27 23:18:35]   [OK  ] 2-1_lat_camara en 334s — 100/100 ok
+[2026-07-27 23:18:35]   [RUN ] 2-2_lat_composicion (intento 1) ...
+[2026-07-27 23:24:08]   [OK  ] 2-2_lat_composicion en 332s — 100/100 ok
+[2026-07-27 23:24:08]   [RUN ] 3-1_resiliencia (intento 1) ...
+[2026-07-27 23:43:14]   [OK  ] 3-1_resiliencia en 1146s — 100/100 ok
+[2026-07-27 23:43:14] ########## FIN CELDA local · 2160p25 ##########
+[2026-07-27 23:43:14] 
+########## CELDA local · 2160p50 ##########
+[2026-07-27 23:43:14]   [RUN ] 1-1_escalado (intento 1) ...
+[2026-07-28 00:43:42]   [OK  ] 1-1_escalado en 3627s — 716 muestras, hasta 4 cámaras
+[2026-07-28 00:43:42]   [RUN ] 1-2_sostenida (intento 1) ...
+[2026-07-28 02:44:10]   [OK  ] 1-2_sostenida en 7228s — 1439 muestras
+[2026-07-28 02:44:10]   [RUN ] 2-1_lat_camara (intento 1) ...
+[2026-07-28 02:49:57]   [OK  ] 2-1_lat_camara en 346s — 100/100 ok
+[2026-07-28 02:49:57]   [RUN ] 2-2_lat_composicion (intento 1) ...
+[2026-07-28 02:55:52]   [OK  ] 2-2_lat_composicion en 355s — 100/100 ok
+[2026-07-28 02:55:52]   [RUN ] 3-1_resiliencia (intento 1) ...
+[2026-07-28 03:15:28]   [OK  ] 3-1_resiliencia en 1175s — 100/100 ok
+[2026-07-28 03:15:28] ########## FIN CELDA local · 2160p50 ##########
+[2026-07-28 03:15:30] 
+======================================================================
+[2026-07-28 03:15:30] MATRIZ LOCAL COMPLETADA. OK=16 SKIP=4 FALLIDAS=0
+[2026-07-28 03:15:30] ======================================================================
