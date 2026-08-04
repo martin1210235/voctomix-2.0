@@ -7,7 +7,7 @@
 Latencia de vídeo real (glass-to-glass) al conmutar de cámara en corte, detectada por color en la salida del mix. 100 repeticiones.
 
 ## Resultado
-Latencia mediana: **176.3 ms** (n=100).
+Latencia mediana: **176.35 ms** (n=100).
 
 ## Ficheros
 `datos.csv` (datos crudos), `resumen.csv` (estadística), `datos.xlsx` (Excel). El formato de

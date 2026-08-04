@@ -7,7 +7,7 @@
 Latencia de vídeo real al cambiar de composición (pantalla completa ↔ side-by-side) en corte. 100 repeticiones.
 
 ## Resultado
-Latencia mediana: **243.4 ms** (n=100).
+Latencia mediana: **243.45 ms** (n=100).
 
 ## Ficheros
 `datos.csv` (datos crudos), `resumen.csv` (estadística), `datos.xlsx` (Excel). El formato de

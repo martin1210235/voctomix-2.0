@@ -9,7 +9,7 @@ Se fuerza la caída de una cámara y se mide el MTTR (detección + restablecimie
 Mecanismo de caída/recuperación: docker exec camN pkill -9 ffmpeg (restart policy del contenedor).
 
 ## Resultado
-MTTR mediana: **1255.5 ms** (detección 337.1 ms + restablecimiento 880.6 ms), n=100.
+MTTR mediana: **1255.45 ms** (detección 337.05 ms + restablecimiento 880.6 ms), n=100.
 
 ## Ficheros
 `datos.csv` (datos crudos), `resumen.csv` (estadística), `datos.xlsx` (Excel). El formato de

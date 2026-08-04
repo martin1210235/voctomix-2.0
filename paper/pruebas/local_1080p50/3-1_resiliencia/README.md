@@ -9,7 +9,7 @@ Se fuerza la caída de una cámara y se mide el MTTR (detección + restablecimie
 Mecanismo de caída/recuperación: supervisor nativo reinicia el ffmpeg (systemd-style).
 
 ## Resultado
-MTTR mediana: **1177.7 ms** (detección 278.4 ms + restablecimiento 900.2 ms), n=100.
+MTTR mediana: **1177.65 ms** (detección 278.35 ms + restablecimiento 900.25 ms), n=100.
 
 ## Ficheros
 `datos.csv` (datos crudos), `resumen.csv` (estadística), `datos.xlsx` (Excel). El formato de

@@ -1,6 +1,6 @@
 # Resiliencia — caída y recuperación de cámara
 
-**Escenario:** Kubernetes (k3s) · **Formato:** 2160p25 (3840×2160 @ 25 fps)
+**Escenario:** Kubernetes · **Formato:** 2160p25 (3840×2160 @ 25 fps)
 **Hardware:** Intel Core i9-10900X, 128 GB RAM, Ubuntu 22.04 (aplicaciones cerradas).
 
 ## Qué se mide
@@ -9,7 +9,7 @@ Se fuerza la caída de una cámara y se mide el MTTR (detección + restablecimie
 Mecanismo de caída/recuperación: kubectl delete pod (el Deployment recrea el pod = self-healing).
 
 ## Resultado
-MTTR mediana: **795.9 ms** (detección 334.9 ms + restablecimiento 445.2 ms), n=100.
+MTTR mediana: **795.85 ms** (detección 334.95 ms + restablecimiento 445.25 ms), n=100.
 
 ## Ficheros
 `datos.csv` (datos crudos), `resumen.csv` (estadística), `datos.xlsx` (Excel). El formato de

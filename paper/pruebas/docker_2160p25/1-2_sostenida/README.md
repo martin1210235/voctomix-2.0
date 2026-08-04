@@ -7,7 +7,7 @@
 Uso de CPU (%) y RAM (%) con 4 cámaras activas durante 2 h.
 
 ## Resultado
-CPU mediana: **94.4%** · RAM mediana: **13.7%** (2 h, 4 cámaras).
+CPU mediana: **94.4%** · RAM mediana: **13.8%** (2 h, 4 cámaras).
 
 ## Ficheros
 `datos.csv` (datos crudos), `resumen.csv` (estadística), `datos.xlsx` (Excel). El formato de

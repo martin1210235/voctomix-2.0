@@ -1,6 +1,6 @@
 # Latencia — conmutación de cámara
 
-**Escenario:** Kubernetes (k3s) · **Formato:** 2160p25 (3840×2160 @ 25 fps)
+**Escenario:** Kubernetes · **Formato:** 2160p25 (3840×2160 @ 25 fps)
 **Hardware:** Intel Core i9-10900X, 128 GB RAM, Ubuntu 22.04 (aplicaciones cerradas).
 
 ## Qué se mide
