@@ -1,13 +1,13 @@
-# Latencia — conmutación de composición
+# Rendimiento — carga sostenida
 
-**Escenario:** Docker · **Formato:** 1080p25 (1920×1080 @ 25 fps)
+**Escenario:** Local (nativo) · **Formato:** 2160p50 (3840×2160 @ 50 fps)
 **Hardware:** Intel Core i9-10900X, 128 GB RAM, Ubuntu 22.04 (aplicaciones cerradas).
 
 ## Qué se mide
-Latencia de vídeo real al cambiar de composición (pantalla completa ↔ side-by-side) en corte. 100 repeticiones.
+Uso de CPU (%) y RAM (%) con 4 cámaras activas durante 2 h.
 
 ## Resultado
-Latencia mediana: **296.3 ms** (n=100).
+CPU mediana: **84.4%** · RAM mediana: **10.7%** (2 h, 4 cámaras).
 
 ## Ficheros
 `datos.csv` (datos crudos), `resumen.csv` (estadística), `datos.xlsx` (Excel). El formato de
