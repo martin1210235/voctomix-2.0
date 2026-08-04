@@ -5,7 +5,7 @@
 #   (los datos son incrementales; relanzar los perderia).
 set -u
 cd /home/sonda/Documentos/voctomix
-OUT=paper/pruebas/local_1080p25_sostenida24h
+OUT=paper/pruebas/local_1080p25/1-2_sostenida24
 W="$OUT/watchdog.log"
 mkdir -p "$OUT"
 echo "[wd] INICIO $(date '+%F %T')" >> "$W"
@@ -62,6 +62,26 @@ ok = n > 15000 and 70 <= med(cpu) <= 92 and 4 <= med(ram) if False else None
 verdict = "RAZONABLE" if (n>15000 and 70<=med(cpu)<=92 and cam4>90) else "REVISAR A MANO"
 leak = "SUBE (posible leak)" if (r_fin-r_ini)>2 else "PLANA (sin leak, esperado en Local)"
 print(f"REVISION VEREDICTO: {verdict} | RAM: {leak}")
+# README (mismo estilo que el 24h de Docker)
+readme = f"""# Sostenida 24 h — Local (nativo) · 1080p25
+
+**Escenario:** Local (nativo) · **Formato:** 1080p25 (1920×1080 @ 25 fps) · **Duración:** 24 h
+**Hardware:** Intel Core i9-10900X, 128 GB RAM, Ubuntu 22.04 (aplicaciones cerradas).
+
+## Qué se mide
+Uso de CPU (%) y RAM (%) del sistema (leídos de /proc, misma fuente que htop) con 4 cámaras
+activas durante 24 h seguidas. Análoga a la sostenida de 24 h de Docker 2160p50, aquí para
+estudiar la evolución de la RAM en el escenario nativo a largo plazo (memory-leak).
+
+## Resultado (mediana / tendencia)
+CPU mediana: **{med(cpu):.1f}%** · RAM: {r_ini:.1f}% → {r_mid:.1f}% → {r_fin:.1f}% (inicio→mitad→fin).
+Tendencia de RAM: **{leak}**. Muestras: {n} (~{horas:.1f} h), {cam4:.0f}% del tiempo con 4 cámaras.
+
+## Ficheros
+`datos.csv` (crudo, escritura incremental), `resumen.csv` (estadística), `datos.xlsx` (Excel).
+"""
+open(os.path.join(out, "README.md"), "w", encoding="utf-8").write(readme)
+print("REVISION: README.md generado")
 PY
 
 # --- push a GitHub (misma forma que la de Docker 24h) ---
