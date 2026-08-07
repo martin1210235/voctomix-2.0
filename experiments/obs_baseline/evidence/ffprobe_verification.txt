@@ -1,0 +1,67 @@
+OBS baseline recordings -- ffprobe verification (all 5 phases)
+================================================================
+
+--- recordings/2026-08-07 17-27-30.mkv ---
+[STREAM]
+codec_name=h264
+width=1920
+height=1080
+r_frame_rate=25/1
+bit_rate=N/A
+[/STREAM]
+[FORMAT]
+duration=323.720000
+size=811019
+[/FORMAT]
+
+--- recordings/2026-08-07 17-33-12.mkv ---
+[STREAM]
+codec_name=h264
+width=1920
+height=1080
+r_frame_rate=25/1
+bit_rate=N/A
+[/STREAM]
+[FORMAT]
+duration=323.760000
+size=93469596
+[/FORMAT]
+
+--- recordings/2026-08-07 17-38-55.mkv ---
+[STREAM]
+codec_name=h264
+width=1920
+height=1080
+r_frame_rate=25/1
+bit_rate=N/A
+[/STREAM]
+[FORMAT]
+duration=323.760000
+size=79263136
+[/FORMAT]
+
+--- recordings/2026-08-07 17-44-38.mkv ---
+[STREAM]
+codec_name=h264
+width=1920
+height=1080
+r_frame_rate=25/1
+bit_rate=N/A
+[/STREAM]
+[FORMAT]
+duration=323.640000
+size=119239107
+[/FORMAT]
+
+--- recordings/2026-08-07 17-50-20.mkv ---
+[STREAM]
+codec_name=h264
+width=1920
+height=1080
+r_frame_rate=25/1
+bit_rate=N/A
+[/STREAM]
+[FORMAT]
+duration=323.600000
+size=158763232
+[/FORMAT]

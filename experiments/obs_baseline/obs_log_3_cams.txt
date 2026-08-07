@@ -1,0 +1,161 @@
+Attempted path: share/obs/obs-studio/locale/en-US.ini
+Attempted path: /usr/share/obs/obs-studio/locale/en-US.ini
+Attempted path: share/obs/obs-studio/locale.ini
+Attempted path: /usr/share/obs/obs-studio/locale.ini
+Attempted path: share/obs/obs-studio/locale/es-ES.ini
+Attempted path: /usr/share/obs/obs-studio/locale/es-ES.ini
+info: Using preferred locale 'es-ES'
+Attempted path: share/obs/obs-studio/themes/Dark.qss
+Attempted path: /usr/share/obs/obs-studio/themes/Dark.qss
+info: Command Line Arguments: --profile obs_baseline --collection obs_baseline --scene 3_cams --startrecording --minimize-to-tray --disable-missing-files-check
+info: CPU Name: Intel(R) Core(TM) i9-10900X CPU @ 3.70GHz
+info: CPU Speed: 1200.037MHz
+info: Physical Cores: 10, Logical Cores: 20
+info: Physical Memory: 128499MB Total, 119108MB Free
+info: Kernel Version: Linux 6.8.0-136-generic
+info: Distribution: "Ubuntu" "22.04"
+info: Session Type: x11
+info: Window System: X11.0, Vendor: The X.Org Foundation, Version: 1.21.1
+info: Qt Version: 5.15.3 (runtime), 5.15.2 (compiled)
+info: Portable mode: false
+QMetaObject::connectSlotsByName: No matching signal for on_tbar_position_valueChanged(int)
+QMetaObject::connectSlotsByName: No matching signal for on_actionShowTransitionProperties_triggered()
+QMetaObject::connectSlotsByName: No matching signal for on_actionHideTransitionProperties_triggered()
+Attempted path: share/obs/obs-studio/themes/Dark/no_sources.svg
+Attempted path: /usr/share/obs/obs-studio/themes/Dark/no_sources.svg
+info: OBS 27.2.3+dfsg1-1 (linux)
+info: ---------------------------------
+info: ---------------------------------
+info: audio settings reset:
+	samples per sec: 48000
+	speakers:        2
+info: ---------------------------------
+info: Initializing OpenGL...
+info: Loading up OpenGL on adapter NVIDIA Corporation NVIDIA GeForce RTX 3080/PCIe/SSE2
+info: OpenGL loaded successfully, version 3.3.0 NVIDIA 580.173.02, shading language 3.30 NVIDIA via Cg compiler
+info: ---------------------------------
+info: video settings reset:
+	base resolution:   1920x1080
+	output resolution: 1920x1080
+	downscale filter:  Bicubic
+	fps:               25/1
+	format:            NV12
+	YUV mode:          709/Partial
+info: NV12 texture support not available
+info: Audio monitoring device:
+	name: Por defecto
+	id: default
+info: ---------------------------------
+warning: Failed to load 'en-US' text for module: 'decklink-captions.so'
+warning: Failed to load 'en-US' text for module: 'decklink-ouput-ui.so'
+info: Decklink API Compiled version 11.6
+info: Decklink API Installed version 14.2.1
+info: NVENC supported
+info: FFMPEG VAAPI supported
+info: [vlc-video]: VLC 3.0.16 Vetinari found, VLC video source enabled
+info: ---------------------------------
+info:   Loaded Modules:
+info:     vlc-video.so
+info:     text-freetype2.so
+info:     rtmp-services.so
+info:     obs-x264.so
+info:     obs-transitions.so
+info:     obs-outputs.so
+info:     obs-filters.so
+info:     obs-ffmpeg.so
+info:     linux-v4l2.so
+info:     linux-pulseaudio.so
+info:     linux-jack.so
+info:     linux-decklink.so
+info:     linux-capture.so
+info:     linux-alsa.so
+info:     image-source.so
+info:     frontend-tools.so
+info:     decklink-ouput-ui.so
+info:     decklink-captions.so
+info: ---------------------------------
+info: ==== Startup complete ===============================================
+info: All scene data cleared
+info: ------------------------------------------------
+info: [Media Source 'BBB_1']: settings:
+	input:                   /home/sonda/Documentos/voctomix/videos/bbb_sunflower_2160p_60fps_normal.mp4
+	input_format:            (null)
+	speed:                   100
+	is_looping:              yes
+	is_linear_alpha:         no
+	is_hw_decoding:          no
+	is_clear_on_media_end:   no
+	restart_on_activate:     yes
+	close_when_inactive:     no
+info: [Media Source 'BBB_2']: settings:
+	input:                   /home/sonda/Documentos/voctomix/videos/bbb_sunflower_2160p_60fps_normal.mp4
+	input_format:            (null)
+	speed:                   100
+	is_looping:              yes
+	is_linear_alpha:         no
+	is_hw_decoding:          no
+	is_clear_on_media_end:   no
+	restart_on_activate:     yes
+	close_when_inactive:     no
+info: [Media Source 'BBB_3']: settings:
+	input:                   /home/sonda/Documentos/voctomix/videos/bbb_sunflower_2160p_60fps_normal.mp4
+	input_format:            (null)
+	speed:                   100
+	is_looping:              yes
+	is_linear_alpha:         no
+	is_hw_decoding:          no
+	is_clear_on_media_end:   no
+	restart_on_activate:     yes
+	close_when_inactive:     no
+info: [Media Source 'BBB_4']: settings:
+	input:                   /home/sonda/Documentos/voctomix/videos/bbb_sunflower_2160p_60fps_normal.mp4
+	input_format:            (null)
+	speed:                   100
+	is_looping:              yes
+	is_linear_alpha:         no
+	is_hw_decoding:          no
+	is_clear_on_media_end:   no
+	restart_on_activate:     yes
+	close_when_inactive:     no
+info: Switched to scene '3_cams'
+info: Starting recording due to command line parameter
+info: ------------------------------------------------
+info: Loaded scenes:
+info: - scene '0_cams':
+info: - scene '1_cams':
+info:     - source: 'BBB_1' (ffmpeg_source)
+info: - scene '2_cams':
+info:     - source: 'BBB_1' (ffmpeg_source)
+info:     - source: 'BBB_2' (ffmpeg_source)
+info: - scene '3_cams':
+info:     - source: 'BBB_1' (ffmpeg_source)
+info:     - source: 'BBB_2' (ffmpeg_source)
+info:     - source: 'BBB_3' (ffmpeg_source)
+info: - scene '4_cams':
+info:     - source: 'BBB_1' (ffmpeg_source)
+info:     - source: 'BBB_2' (ffmpeg_source)
+info:     - source: 'BBB_3' (ffmpeg_source)
+info:     - source: 'BBB_4' (ffmpeg_source)
+info: ------------------------------------------------
+info: ---------------------------------
+info: [x264 encoder: 'simple_h264_recording'] preset: veryfast
+info: [x264 encoder: 'simple_h264_recording'] profile: high
+info: [x264 encoder: 'simple_h264_recording'] settings:
+	rate_control: CRF
+	bitrate:      0
+	buffer size:  0
+	crf:          23
+	fps_num:      25
+	fps_den:      1
+	width:        1920
+	height:       1080
+	keyint:       250
+
+info: ---------------------------------
+info: [FFmpeg aac encoder: 'simple_aac_recording'] bitrate: 192, channels: 2, channel_layout: 3
+
+info: ==== Recording Start ===============================================
+info: [ffmpeg muxer: 'simple_file_output'] Writing file '/home/sonda/Documentos/voctomix/experiments/obs_baseline/recordings/2026-08-07 17-44-38.mkv'...
+info: adding 21 milliseconds of audio buffering, total audio buffering is now 21 milliseconds (source: BBB_3)
+
+info: Output format name and long_name: matroska, Matroska

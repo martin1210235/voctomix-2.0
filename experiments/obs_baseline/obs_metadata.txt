@@ -1,0 +1,17 @@
+timestamp_start   : 2026-08-07T17:27:29
+hostname          : sonda
+platform          : Linux-6.8.0-136-generic-x86_64-with-glibc2.35
+python            : 3.10.12
+warmup_seconds    : 20
+window_seconds    : 300
+measurement       : whole-host CPU% (/proc/stat) and RAM% (/proc/meminfo), 1 Hz
+orchestration     : automated (OBS launched fresh per phase via --scene, no manual key-presses)
+source_material   : bbb_sunflower_2160p_60fps_normal.mp4 (same master used by the Voctomix local 1080p25 escalado test); OBS decodes+scales it in software (hw_decode=false), matching the whole-host CPU cost that the external ffmpeg source-simulator processes contribute to the Voctomix measurement.
+encoder           : x264 software (obs-x264.so), preset veryfast, CBR 8000 kbps, 1920x1080 @ 25/1 -- NVENC NOT used (verified in OBS log per phase).
+cpu_model         : Intel(R) Core(TM) i9-10900X CPU @ 3.70GHz
+logical_cpus      : 20
+ram_total_gb      : 125.5
+obs_version       : OBS Studio - 27.2.3+dfsg1-1 (linux)
+kernel            : 6.8.0-136-generic
+gpu               : GPU 0: NVIDIA GeForce RTX 3080 (UUID: GPU-65405445-31a4-7af1-67e8-4f98a6ce6841)
+timestamp_end     : 2026-08-07T17:56:01
