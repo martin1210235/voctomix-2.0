@@ -42,6 +42,14 @@ class VocConfigParser(SafeConfigParser):
         """Return whether the user is allowed to toggle the AUTO-OFF button."""
         return self.getboolean('overlay', 'user-auto-off', fallback=True)
 
+    def getOverlayDefaultText1(self):
+        """Return the text pre-loaded into the first dynamic-text field."""
+        return self.get('overlay', 'default-text1', fallback='')
+
+    def getOverlayDefaultText2(self):
+        """Return the text pre-loaded into the second dynamic-text field."""
+        return self.get('overlay', 'default-text2', fallback='')
+
 
 def load():
     global Config

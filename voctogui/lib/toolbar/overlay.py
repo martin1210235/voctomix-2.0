@@ -124,6 +124,15 @@ class OverlayToolbarController(object):
             self.dynamic_frame_2.add(self.dynamic_box_2)
             self.dynamic_main_box_2.pack_start(self.dynamic_frame_2, False, False, 0)
 
+            default_text1 = Config.getOverlayDefaultText1()
+            default_text2 = Config.getOverlayDefaultText2()
+            if default_text1:
+                self.dynamic_entry.set_text(default_text1)
+                self.dynamic_btn.set_active(True)
+            if default_text2:
+                self.dynamic_entry_2.set_text(default_text2)
+                self.dynamic_btn_2.set_active(True)
+
             vertical_container = box_insert.get_parent()
             while vertical_container is not None:
                 if isinstance(vertical_container, Gtk.Box) and vertical_container.get_orientation() == Gtk.Orientation.VERTICAL:
