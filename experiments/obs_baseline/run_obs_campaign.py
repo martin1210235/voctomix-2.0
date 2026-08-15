@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
 """
-OBS Studio baseline campaign orchestrator for the Voctomix 2.0 paper comparison.
+OBS Studio baseline campaign, run automatically instead of by hand.
 
-Fully automated equivalent of measure_obs.py (same sampling math, same CSV
-schema), but instead of waiting on operator ENTER key-presses per phase, it
-launches OBS itself once per phase (--profile/--collection/--scene/--startrecording),
-matching the pre-built "obs_baseline" profile and scene collection:
-  - Profile "obs_baseline": Simple Output, x264 SOFTWARE encoder, CBR 8000 kbps,
-    preset veryfast, canvas 1920x1080 @ 25/1 fps.
-  - Scene collection "obs_baseline": 5 scenes (0_cams..4_cams), each compositing
-    N media sources (same bbb_sunflower_2160p_60fps_normal.mp4 master used by the
-    Voctomix local escalado test) in a 2x2 grid, software-decoded (hw_decode=false).
+Does the same job as measure_obs.py (same sampling, same CSV format), but
+launches OBS from the command line for each camera count instead of waiting
+for someone to click through the interface. It uses a pre-built OBS profile
+and scene collection called "obs_baseline":
+  - Profile: Simple Output, x264 software encoder, CBR 8000 kbps, preset
+    veryfast, canvas 1920x1080 at 25 fps.
+  - Scenes: five scenes (0_cams to 4_cams), each showing the right number of
+    sources in a 2x2 grid, using the same source video as the Voctomix
+    scaling test, decoded in software.
 
-Whole-host CPU (%) and RAM (%) are read from /proc at 1 Hz, exactly as in
-measure_obs.py and in the Voctomix escalado test, so all three tables merge
-directly.
+CPU and RAM are read from /proc once per second, same as measure_obs.py and
+the Voctomix tests, so all the result tables line up.
 
 Usage:
     python3 run_obs_campaign.py [--warmup 20] [--window 300]
