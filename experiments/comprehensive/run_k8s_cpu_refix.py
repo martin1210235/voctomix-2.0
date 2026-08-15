@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Re-mide la CPU/RAM de K8s (escalado + sostenida, 4 formatos = 8 cells) con el pod de
-soporte ARREGLADO (las 5 fuentes conectan). Los datos viejos se midieron con el stack
-incompleto (sb/audio no conectaban) y salían con CPU artificialmente baja.
+"""Re-measures K8s CPU/RAM (scaling + sustained, 4 formats = 8 cells) with the support
+pod FIXED (all 5 sources connect). The old data was measured with an incomplete stack
+(stream blanker/audio not connecting) and came out with artificially low CPU.
 
-Escribe a las carpetas OFICIALES de K8s, haciendo backup de lo viejo en _pre_supportfix/.
-Checkpoints (marcador por cell), reintentos, logging. Pensado para watchdog.
+Writes to the OFFICIAL K8s folders, backing up the old data to _pre_supportfix/.
+Checkpoints (a marker per cell), retries, logging. Meant to run under a watchdog.
 """
 import csv
 import os
@@ -19,7 +19,7 @@ COMP = os.path.join(ROOT, "experiments", "comprehensive")
 LOG = os.path.join(ROOT, "paper", "pruebas", "k8s_cpu_refix_log.txt")
 ENV = dict(os.environ, KUBECONFIG=os.environ.get("KUBECONFIG", "/etc/rancher/k3s/k3s.yaml"))
 FORMATS = ["1080p25", "1080p50", "2160p25", "2160p50"]
-DONE = "K8S CPU REFIX COMPLETADO"
+DONE = "K8S CPU REFIX COMPLETE"
 
 
 def log(msg):

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Genera los manifiestos de las 4 cámaras para K8s (k3s) según formato y perfil.
+"""Generates the manifests for the 4 cameras on K8s (k3s), per format and profile.
 
-Reproduce EXACTAMENTE los comandos ffmpeg validados en experiments/comprehensive/
-local_scenario.sh (bt709 + marcadores de esquina en 'experiment', color sólido en
-'latency'), pero como Deployments de Kubernetes con hostNetwork (localhost:1000N ->
-voctocore) e imagen local importada en containerd.
+Reproduces EXACTLY the ffmpeg commands validated in experiments/comprehensive/
+local_scenario.sh (bt709 + corner markers in 'experiment', solid colour in
+'latency'), but as Kubernetes Deployments with hostNetwork (localhost:1000N ->
+voctocore) and a local image imported into containerd.
 
-El vídeo maestro BBB se monta desde el host vía hostPath (el pod no lo contiene).
+The Big Buck Bunny master video is mounted from the host via hostPath (not baked
+into the pod image).
 
 Uso:
   python3 gen_camera_manifests.py <1080p25|1080p50|2160p25|2160p50> <experiment|latency> [salida.yaml]

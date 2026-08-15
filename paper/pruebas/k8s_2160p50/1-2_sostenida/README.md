@@ -1,14 +1,14 @@
-# Rendimiento — carga sostenida
+# Performance — sustained load
 
-**Escenario:** Kubernetes · **Formato:** 2160p50 (3840×2160 @ 50 fps)
-**Hardware:** Intel Core i9-10900X, 128 GB RAM, Ubuntu 22.04 (aplicaciones cerradas).
+**Scenario:** Kubernetes · **Format:** 2160p50 (3840×2160 @ 50 fps)
+**Hardware:** Intel Core i9-10900X, 128 GB RAM, Ubuntu 22.04 (other applications closed).
 
-## Qué se mide
-Uso de CPU (%) y RAM (%) con 4 cámaras activas durante 2 h.
+## What is measured
+CPU (%) and RAM (%) usage with 4 active cameras over 2 h.
 
-## Resultado
-CPU mediana: **86.5%** · RAM mediana: **12.0%** (2 h, 4 cámaras).
+## Result
+Median CPU: **86.5%** · Median RAM: **12.0%** (2 h, 4 cameras).
 
-## Ficheros
-`datos.csv` (datos crudos), `resumen.csv` (estadística), `datos.xlsx` (Excel). El formato de
-la salida se verificó con ffprobe (ver `paper/pruebas/verificacion_formatos/`).
+## Files
+`datos.csv` (raw data), `resumen.csv` (statistics), `datos.xlsx` (Excel). The output format
+was verified with ffprobe (see `paper/pruebas/verificacion_formatos/`).

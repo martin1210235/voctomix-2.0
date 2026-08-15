@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-"""Análisis 1 (rendimiento) para el escenario KUBERNETES (k3s).
+"""Analysis 1 (performance) for the KUBERNETES (k3s) scenario.
 
-Mide CPU%/RAM% del host leyendo /proc (mismo método que Local/Docker; los pods
-corren en el host con hostNetwork, así que /proc global = k3s + pods = consumo del
-despliegue). Orquesta el escenario con k8s_scenario.sh.
+Measures host CPU%/RAM% by reading /proc (same method as Local/Docker; the pods
+run on the host with hostNetwork, so global /proc = k3s + pods = deployment
+consumption). Orchestrates the scenario with k8s_scenario.sh.
 
-  escalado  (1.1): baseline de --idle-min min a 0 cámaras, luego activa cam1..4
-                   (kubectl scale) una cada --step-min min. Etiqueta por nº activas.
-  sostenida (1.2): 4 cámaras durante --duration-min min.
+  escalado  (1.1): --idle-min min baseline at 0 cameras, then activates cam1..4
+                   (kubectl scale) one every --step-min min. Labelled by number active.
+  sostenida (1.2): 4 cameras for --duration-min min.
 
-Salidas: datos.csv, resumen.csv, datos.xlsx (mismo formato que Local/Docker).
+Outputs: datos.csv, resumen.csv, datos.xlsx (same format as Local/Docker).
 
-Uso:
+Usage:
   measure_performance_k8s.py <escalado|sostenida> <output_dir> --format 1080p25 \
       [--idle-min 15] [--step-min 15] [--duration-min 120]
 """
@@ -65,15 +65,15 @@ def main():
     ap.add_argument("--format", required=True,
                     choices=["1080p25", "1080p50", "2160p25", "2160p50"])
     ap.add_argument("--idle-min", type=float, default=15.0,
-                    help="baseline a 0 cámaras (solo escalado)")
+                    help="baseline at 0 cameras (scaling only)")
     ap.add_argument("--step-min", type=float, default=15.0)
     ap.add_argument("--duration-min", type=float, default=120.0)
     args = ap.parse_args()
 
-    print(f"[perf-k8s] up {args.format} (voctocore + soporte)...", flush=True)
+    print(f"[perf-k8s] up {args.format} (voctocore + support)...", flush=True)
     out = k8s("up", args.format, timeout=300)
-    if "successfully rolled out" not in out and "esperando voctocore" not in out:
-        print(f"ERROR: up falló:\n{out}", file=sys.stderr)
+    if "successfully rolled out" not in out and "waiting for voctocore" not in out:
+        print(f"ERROR: up failed:\n{out}", file=sys.stderr)
         k8s("down"); sys.exit(1)
 
     n_active = 0
@@ -103,11 +103,11 @@ def main():
 
     if args.mode == "escalado":
         k8s("apply-cams", args.format, "experiment", timeout=120)
-        print(f"[perf-k8s] baseline {args.idle_min} min con 0 cámaras", flush=True)
+        print(f"[perf-k8s] baseline {args.idle_min} min at 0 cameras", flush=True)
         n_active = 0
         measure_for(args.idle_min * 60)
         for cam in (1, 2, 3, 4):
-            print(f"[perf-k8s] activando cam{cam} (t={datetime.now():%H:%M:%S})", flush=True)
+            print(f"[perf-k8s] activating cam{cam} (t={datetime.now():%H:%M:%S})", flush=True)
             k8s("scale", str(cam), "1", timeout=60)
             time.sleep(8)
             n_active = cam
@@ -116,13 +116,13 @@ def main():
         k8s("cams", args.format, "experiment", timeout=240)
         n_active = 4
         time.sleep(6)
-        print(f"[perf-k8s] sostenida {args.duration_min} min con 4 cámaras", flush=True)
+        print(f"[perf-k8s] sustained {args.duration_min} min at 4 cameras", flush=True)
         measure_for(args.duration_min * 60)
 
     k8s("down", timeout=180)
 
     if not rows:
-        print("ERROR: sin muestras", file=sys.stderr)
+        print("ERROR: no samples", file=sys.stderr)
         sys.exit(1)
 
     fields = ["timestamp", "elapsed_s", "cpu_pct", "ram_pct", "n_cameras_active"]
@@ -140,7 +140,7 @@ def main():
     write_summary_csv(os.path.join(args.output_dir, "resumen.csv"), summary)
     bundle_xlsx(os.path.join(args.output_dir, "datos.xlsx"),
                 {"datos": (fields, rows), "resumen": (sfields, summary)})
-    print(f"[perf-k8s] {len(rows)} muestras -> {args.output_dir}", flush=True)
+    print(f"[perf-k8s] {len(rows)} samples -> {args.output_dir}", flush=True)
 
 
 if __name__ == "__main__":

@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
-"""Análisis 3.1 — resiliencia: caída de una cámara y tiempo de recuperación.
+"""Analysis 3.1 — resilience: camera failure and recovery time.
 
-Con la cámara víctima en pantalla completa, simula una caída realista matando
-su proceso ffmpeg dentro del contenedor (`docker exec camN pkill -9 ffmpeg`).
-La política de restart de Docker reinicia el contenedor automáticamente; se mide
-el tiempo hasta que el feed de la víctima vuelve a verse en la salida del mix.
+With the victim camera in fullscreen, simulates a realistic failure by killing
+its ffmpeg process inside the container (`docker exec camN pkill -9 ffmpeg`).
+Docker's restart policy restarts the container automatically; the time until
+the victim's feed reappears in the mix output is measured.
 
-Por iteración se registran:
-  detect_ms  = t(esquina deja de mostrar la víctima)   - t(crash)   [detección]
-  restore_ms = t(esquina vuelve a mostrar la víctima)   - t(detección) [restablecimiento]
-  mttr_ms    = t(feed restaurado)                        - t(crash)   [recuperación total]
+Per iteration, records:
+  detect_ms  = t(corner stops showing the victim)   - t(crash)   [detection]
+  restore_ms = t(corner shows the victim again)      - t(detection) [recovery]
+  mttr_ms    = t(feed restored)                       - t(crash)   [total recovery]
 
-Pensado para la config realista (BBB + marcadores). Rota la víctima cam1..cam4.
-Salidas: datos.csv, resumen.csv, datos.xlsx.
+Built for the realistic config (BBB + markers). Rotates the victim cam1..cam4.
+Outputs: datos.csv, resumen.csv, datos.xlsx.
 
-Uso:
+Usage:
   measure_camera_recovery.py <output_dir> [--n 100] [--gap 8]
 """
 
@@ -57,14 +57,14 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("output_dir")
     ap.add_argument("--n", type=int, default=100)
-    ap.add_argument("--gap", type=float, default=8.0, help="estabilización entre iteraciones (s)")
+    ap.add_argument("--gap", type=float, default=8.0, help="stabilization time between iterations (s)")
     ap.add_argument("--ctrl-port", type=int, default=9999)
     ap.add_argument("--mix-port", type=int, default=11000)
     ap.add_argument("--loss-timeout", type=float, default=10.0)
     ap.add_argument("--recover-timeout", type=float, default=40.0)
     ap.add_argument("--scenario", default="docker", choices=["docker", "local", "k8s"],
-                    help="docker: crash vía docker exec; local: crash del ffmpeg nativo; "
-                         "k8s: kubectl delete pod (el Deployment lo recrea)")
+                    help="docker: crash via docker exec; local: crash of the native ffmpeg; "
+                         "k8s: kubectl delete pod (the Deployment recreates it)")
     args = ap.parse_args()
 
     here = os.path.dirname(os.path.abspath(__file__))
@@ -89,21 +89,21 @@ def main():
     reader = MixCornerReader(args.mix_port)
     time.sleep(2.0)
     if not reader.alive():
-        print("ERROR: no se pudo abrir el lector del mix (puerto 11000).", file=sys.stderr)
+        print("ERROR: could not open the mix reader (port 11000).", file=sys.stderr)
         sys.exit(1)
 
     rows = []
-    print(f"Midiendo {args.n} caídas de cámara y recuperación...")
+    print(f"Measuring {args.n} camera failures and recoveries...")
     for i in range(args.n):
         victim = CYCLE[i % 4]
         other = CYCLE[(i + 1) % 4]
-        # Poner la víctima en pantalla completa y confirmar que se ve.
+        # Put the victim in fullscreen and confirm it is visible.
         send(s, f"cut fs({victim},{other})")
         ready = reader.wait_until(lambda c: c == victim, time.monotonic(), timeout=8.0)
         if ready is None:
             rows.append({"iteration": i + 1, "victim": victim, "detect_ms": None,
                          "restore_ms": None, "mttr_ms": None, "status": "not_ready"})
-            print(f"  [{i+1:3d}] {victim}  NO LISTA (se salta)")
+            print(f"  [{i+1:3d}] {victim}  NOT READY (skipped)")
             time.sleep(2)
             continue
         time.sleep(1.0)
@@ -114,7 +114,7 @@ def main():
         if t_down is None:
             rows.append({"iteration": i + 1, "victim": victim, "detect_ms": None,
                          "restore_ms": None, "mttr_ms": None, "status": "no_loss"})
-            print(f"  [{i+1:3d}] {victim}  no se detectó pérdida")
+            print(f"  [{i+1:3d}] {victim}  no loss detected")
             time.sleep(args.gap)
             continue
         t_rec = wait_color(reader, True, victim, t_down, args.recover_timeout)

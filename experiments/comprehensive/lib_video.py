@@ -42,9 +42,9 @@ class MixCornerReader:
     """Background reader of a small region of the mix output.
     current() -> (t_monotonic, (r,g,b)).
 
-    Defaults to the top-left 300x300 corner (camera colour marker, Análisis 2.1
+    Defaults to the top-left 300x300 corner (camera colour marker, Analysis 2.1
     and 3.1). Pass w/h/x/y (x/y accept ffmpeg expressions like 'iw*0.75-60') to
-    sample another region, e.g. right-centre for fs/sbs detection (Análisis 2.2).
+    sample another region, e.g. right-centre for fs/sbs detection (Analysis 2.2).
     """
 
     def __init__(self, port=11000, host="127.0.0.1", w=300, h=300, x="0", y="0"):

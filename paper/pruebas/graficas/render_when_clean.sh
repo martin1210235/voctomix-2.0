@@ -12,7 +12,7 @@ while pgrep -f "comprehensive/measure_" >/dev/null 2>&1; do
   sleep 15
 done
 
-echo "[render] ventana limpia a $(date '+%H:%M:%S'); instalando seaborn"
+echo "[render] clean window at $(date '+%H:%M:%S'); installing seaborn"
 python3 -m pip install --user --quiet seaborn > "$LOGDIR/seaborn_install.log" 2>&1
 echo "[render] seaborn rc=$?"
 
@@ -22,10 +22,10 @@ echo "[render] rendimiento rc=$?"
 
 nice -n 19 python3 "$LOGDIR/generar_graficas_latencia_resiliencia.py" --scenario docker \
     > "$LOGDIR/render_latres.log" 2>&1
-echo "[render] latres rc=$? fin a $(date '+%H:%M:%S')"
+echo "[render] latres rc=$? end at $(date '+%H:%M:%S')"
 
-echo "=== figuras generadas ==="
+echo "=== figures generated ==="
 ls -1 paper/figures/resultados/ 2>/dev/null
-echo "=== colas de logs ==="
+echo "=== log tails ==="
 tail -6 "$LOGDIR/render_rendimiento.log"
 tail -6 "$LOGDIR/render_latres.log"

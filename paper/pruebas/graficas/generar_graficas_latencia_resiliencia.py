@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""Latencia (2.1, 2.2) y resiliencia (3.1) -> graficas seaborn para el paper.
+"""Latency (2.1, 2.2) and resilience (3.1) -> seaborn figures for the paper.
 
-Lee los datos.csv crudos de un escenario (por defecto Docker, 4 formatos) y genera:
+Reads the raw datos.csv for a scenario (Docker by default, 4 formats) and generates:
 
-  fig_<scn>_latencia_formato      -> boxplot de latencia (camara vs composicion) por formato
-  fig_<scn>_resiliencia_mttr      -> barra apilada detect+restore (=MTTR) por formato
-  fig_<scn>_resiliencia_box       -> boxplot de MTTR por formato
+  fig_<scn>_latencia_formato      -> latency boxplot (camera vs composite) by format
+  fig_<scn>_resiliencia_mttr      -> stacked bar detect+restore (=MTTR) by format
+  fig_<scn>_resiliencia_box       -> MTTR boxplot by format
 
-Salida en paper/figures/resultados/ (PDF vectorial + PNG).
-Mensaje del paper: la latencia y el MTTR son practicamente independientes de la resolucion.
+Output in paper/figures/resultados/ (vector PDF + PNG).
+Paper's message: latency and MTTR are practically independent of resolution.
 
-Uso:
+Usage:
   python3 generar_graficas_latencia_resiliencia.py                 # Docker
   python3 generar_graficas_latencia_resiliencia.py --scenario local
 """
@@ -45,7 +45,7 @@ SCENARIOS = {
         },
     },
     "local": {
-        "title": "Local (nativo)",
+        "title": "Local (native)",
         "base": {
             "1080p25": "paper/pruebas/local_1080p25",
             "1080p50": "paper/pruebas/local_1080p50",
@@ -76,15 +76,15 @@ def load_latency(scn):
         base = scn["base"].get(fmt)
         if not base:
             continue
-        for sub, tipo in (("2-1_lat_camara", "Conmutacion de camara"),
-                          ("2-2_lat_composicion", "Conmutacion de composicion")):
+        for sub, tipo in (("2-1_lat_camara", "Camera switching"),
+                          ("2-2_lat_composicion", "Composite switching")):
             df = read_csv(base, sub)
             if df is None:
                 continue
             df = df[df["status"] == "ok"]
             for v in df["latency_ms"].values:
-                rows.append({"Formato": FORMAT_LABELS[fmt], "Latencia (ms)": v,
-                             "Tipo": tipo})
+                rows.append({"Format": FORMAT_LABELS[fmt], "Latency (ms)": v,
+                             "Type": tipo})
     return pd.DataFrame(rows)
 
 
@@ -99,7 +99,7 @@ def load_resilience(scn):
             continue
         df = df[df["status"] == "ok"]
         rows.append({
-            "Formato": FORMAT_LABELS[fmt],
+            "Format": FORMAT_LABELS[fmt],
             "detect": df["detect_ms"].median(),
             "restore": df["restore_ms"].median(),
             "mttr_med": df["mttr_ms"].median(),
@@ -111,15 +111,15 @@ def load_resilience(scn):
 def fig_latencia(scn, out):
     data = load_latency(scn)
     if data.empty:
-        print("  [aviso] sin datos de latencia")
+        print("  [warning] no latency data")
         return
     fig, ax = plt.subplots(figsize=(8.5, 5))
-    sns.boxplot(data=data, x="Formato", y="Latencia (ms)", hue="Tipo",
+    sns.boxplot(data=data, x="Format", y="Latency (ms)", hue="Type",
                 order=[FORMAT_LABELS[f] for f in FORMAT_ORDER],
                 palette="tab10", width=0.6, fliersize=2, ax=ax)
-    ax.set_title(f"Escenario {scn['title']}: latencia de conmutacion por formato "
-                 f"(n=100 por caja)", fontsize=12)
-    ax.set_xlabel("Formato de video")
+    ax.set_title(f"Scenario {scn['title']}: switching latency by format "
+                 f"(n=100 per box)", fontsize=12)
+    ax.set_xlabel("Video format")
     ax.legend(title="", fontsize=9)
     ax.margins(y=0.08)
     fig.tight_layout()
@@ -129,26 +129,26 @@ def fig_latencia(scn, out):
 def fig_resiliencia_stacked(scn, out):
     rows = load_resilience(scn)
     if not rows:
-        print("  [aviso] sin datos de resiliencia")
+        print("  [warning] no resilience data")
         return
-    labels = [r["Formato"] for r in rows]
+    labels = [r["Format"] for r in rows]
     detect = np.array([r["detect"] for r in rows])
     restore = np.array([r["restore"] for r in rows])
     pal = sns.color_palette("tab10")
     fig, ax = plt.subplots(figsize=(8, 5))
     x = np.arange(len(labels))
-    ax.bar(x, detect, width=0.55, label="Deteccion", color=pal[0])
-    ax.bar(x, restore, width=0.55, bottom=detect, label="Restablecimiento",
+    ax.bar(x, detect, width=0.55, label="Detection", color=pal[0])
+    ax.bar(x, restore, width=0.55, bottom=detect, label="Recovery",
            color=pal[1])
     for i, r in enumerate(rows):
         ax.text(i, detect[i] + restore[i] + 25, f"{r['mttr_med']:.0f} ms",
                 ha="center", va="bottom", fontsize=9, fontweight="bold")
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
-    ax.set_ylabel("Tiempo (ms)")
-    ax.set_xlabel("Formato de video")
-    ax.set_title(f"Escenario {scn['title']}: MTTR de recuperacion de camara "
-                 f"(deteccion + restablecimiento)", fontsize=12)
+    ax.set_ylabel("Time (ms)")
+    ax.set_xlabel("Video format")
+    ax.set_title(f"Scenario {scn['title']}: camera recovery MTTR "
+                 f"(detection + recovery)", fontsize=12)
     ax.legend(title="", fontsize=9)
     ax.margins(y=0.12)
     ax.grid(True, axis="y", alpha=0.3)
@@ -163,15 +163,15 @@ def fig_resiliencia_box(scn, out):
     data = []
     for r in rows:
         for v in r["mttr_all"]:
-            data.append({"Formato": r["Formato"], "MTTR (ms)": v})
+            data.append({"Format": r["Format"], "MTTR (ms)": v})
     data = pd.DataFrame(data)
     fig, ax = plt.subplots(figsize=(8, 5))
-    sns.boxplot(data=data, x="Formato", y="MTTR (ms)",
-                order=[r["Formato"] for r in rows], palette="tab10",
+    sns.boxplot(data=data, x="Format", y="MTTR (ms)",
+                order=[r["Format"] for r in rows], palette="tab10",
                 width=0.5, fliersize=2, ax=ax)
-    ax.set_title(f"Escenario {scn['title']}: distribucion del MTTR por formato "
+    ax.set_title(f"Scenario {scn['title']}: MTTR distribution by format "
                  f"(n=100)", fontsize=12)
-    ax.set_xlabel("Formato de video")
+    ax.set_xlabel("Video format")
     fig.tight_layout()
     _save(fig, out)
 
@@ -180,7 +180,7 @@ def _save(fig, out):
     for ext in ("pdf", "png"):
         fig.savefig(f"{out}.{ext}", dpi=300, bbox_inches="tight")
     plt.close(fig)
-    print(f"  guardada: {os.path.basename(out)}.pdf/.png")
+    print(f"  saved: {os.path.basename(out)}.pdf/.png")
 
 
 def main():
@@ -191,11 +191,11 @@ def main():
     sns.set_theme(style="whitegrid", context="notebook")
     os.makedirs(OUTDIR, exist_ok=True)
     tag = args.scenario
-    print(f"Escenario: {scn['title']} -> latencia y resiliencia")
+    print(f"Scenario: {scn['title']} -> latency and resilience")
     fig_latencia(scn, os.path.join(OUTDIR, f"fig_{tag}_latencia_formato"))
     fig_resiliencia_stacked(scn, os.path.join(OUTDIR, f"fig_{tag}_resiliencia_mttr"))
     fig_resiliencia_box(scn, os.path.join(OUTDIR, f"fig_{tag}_resiliencia_box"))
-    print("\nListo. Salida en paper/figures/resultados/")
+    print("\nDone. Output in paper/figures/resultados/")
 
 
 if __name__ == "__main__":

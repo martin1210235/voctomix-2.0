@@ -1,17 +1,21 @@
-# Rendimiento — carga sostenida de 24 h (estudio de memory-leak)
+# Performance — 24 h sustained load (memory-leak study)
 
-**Escenario:** Docker · **Formato:** 2160p50 (3840×2160 @ 50 fps)
-**Hardware:** Intel Core i9-10900X, 128 GB RAM, Ubuntu 22.04 (aplicaciones cerradas).
+**Scenario:** Docker · **Format:** 2160p50 (3840×2160 @ 50 fps)
+**Hardware:** Intel Core i9-10900X, 128 GB RAM, Ubuntu 22.04 (other applications closed).
 
-## Qué se mide
-Uso de CPU (%) y RAM (%) con 4 cámaras activas durante 24 h seguidas. Esta prueba es la versión larga de la sostenida de 2 h, ejecutada específicamente para descartar una fuga de memoria (memory-leak) en el escenario más exigente (Docker a 4K/50 fps).
+## What is measured
+CPU (%) and RAM (%) usage with 4 active cameras over 24 continuous hours. This test is the
+long-run version of the 2 h sustained test, run specifically to rule out a memory leak in the
+most demanding scenario (Docker at 4K/50 fps).
 
-## Resultado
-CPU mediana: **82.1%** · RAM mediana: **17.9%** (24 h, 4 cámaras).
+## Result
+Median CPU: **82.1%** · Median RAM: **17.9%** (24 h, 4 cameras).
 
-La RAM crece durante las ~2 primeras horas hasta estabilizarse en torno al 18% y se mantiene plana el resto de la prueba, sin crecimiento acumulativo. Por tanto no hay fuga de memoria: el aumento inicial es un llenado transitorio de buffers que satura y se mantiene constante.
+RAM grows over the first ~2 hours until it stabilizes around 18%, then stays flat for the rest
+of the test with no cumulative growth. There is therefore no memory leak: the initial increase
+is a transient buffer fill-up that saturates and then remains constant.
 
-## Ficheros
-`datos.csv` (datos crudos), `resumen.csv` (estadística), `datos.xlsx` (Excel). El formato de
-la salida se verificó con ffprobe (ver `paper/pruebas/verificacion_formatos/`).
-La gráfica de la evolución de CPU y RAM está en `paper/pruebas/graficas/fig_docker_2160p50_sostenida24h.png` (y `.pdf`).
+## Files
+`datos.csv` (raw data), `resumen.csv` (statistics), `datos.xlsx` (Excel). The output format
+was verified with ffprobe (see `paper/pruebas/verificacion_formatos/`).
+The CPU/RAM evolution chart is at `paper/pruebas/graficas/fig_docker_2160p50_sostenida24h.png` (and `.pdf`).

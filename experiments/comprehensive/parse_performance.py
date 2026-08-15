@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Análisis 1 (rendimiento) — parse telemetry STATE events into CSV.
+"""Analysis 1 (performance) — parse telemetry STATE events into CSV.
 
 Reads a voctomix telemetry session (sessions/sessionN.jsonl), extracts CPU%,
 RAM% and the number of active cameras per sample, and writes:
@@ -8,7 +8,7 @@ RAM% and the number of active cameras per sample, and writes:
   - datos.xlsx    convenience bundle (raw + summary sheets)
 
 The active-camera count comes straight from the telemetry `sources` field, so
-Análisis 1.1 (escalado 1->2->3->4) is labelled from real state, not assumed.
+Analysis 1.1 (escalado 1->2->3->4) is labelled from real state, not assumed.
 
 Usage:
   parse_performance.py <session.jsonl> <output_dir> [--label NAME]
@@ -99,7 +99,7 @@ def main():
 
     rows = load_samples(args.session)
     if not rows:
-        print(f"ERROR: sin muestras válidas en {args.session}", file=sys.stderr)
+        print(f"ERROR: no valid samples in {args.session}", file=sys.stderr)
         sys.exit(1)
 
     fields = ["timestamp", "elapsed_s", "cpu_pct", "ram_pct", "ram_available_mb",
@@ -115,11 +115,11 @@ def main():
     bundle_xlsx(xlsx, {"datos": (fields, rows), "resumen": (sfields, summary)})
 
     dur = rows[-1]["elapsed_s"]
-    print(f"[{args.label}] {len(rows)} muestras, {dur}s de duración")
+    print(f"[{args.label}] {len(rows)} samples, {dur}s duration")
     print(f"  → {datos}")
     print(f"  → {resumen}")
     print(f"  → {xlsx}")
-    print("  Resumen CPU%/RAM% por nº de cámaras:")
+    print("  CPU%/RAM% summary by number of cameras:")
     for s in summary:
         if s["group"] != "ALL":
             print(f"    {s['group']:>8}  {s['metric']:<8}  mediana={s['median']}  p95={s['p95']}  (n={s['n']})")

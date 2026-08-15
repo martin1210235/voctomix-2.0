@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
-"""Orquestador de la MATRIZ de pruebas para el escenario KUBERNETES (k3s).
+"""Test-MATRIX orchestrator for the KUBERNETES (k3s) scenario.
 
-4 formatos x 5 análisis, encadenados y desatendidos, con checkpoints (no repite lo
-ya válido), reintentos y un gate tras la primera celda (si hay bug sistemático, para).
+4 formats x 5 analyses, chained and unattended, with checkpoints (does not
+repeat what is already valid), retries, and a gate after the first cell (if
+there is a systematic bug, it stops).
 
-Rendimiento (1.1/1.2) lo hace measure_performance_k8s.py (se autogestiona el escenario).
-Latencia (2.x) y resiliencia (3.1): el orquestador levanta el escenario (k8s_scenario.sh),
-verifica el mix + el formato (ffprobe), lanza el medidor y baja.
+Performance (1.1/1.2) is handled by measure_performance_k8s.py (it manages the
+scenario itself). Latency (2.x) and resilience (3.1): the orchestrator brings
+up the scenario (k8s_scenario.sh), verifies the mix + the format (ffprobe),
+launches the measurer and tears down.
 
-Uso: python3 run_matrix_k8s.py
+Usage: python3 run_matrix_k8s.py
 """
 import csv
 import os
@@ -68,16 +70,16 @@ def csv_rows(path):
 def validate(analysis, folder):
     rows = csv_rows(os.path.join(folder, analysis, "datos.csv"))
     if rows is None:
-        return False, "datos.csv no existe"
+        return False, "datos.csv does not exist"
     if analysis == "1-1_escalado":
         if len(rows) < 60:
-            return False, f"pocas muestras ({len(rows)})"
+            return False, f"too few samples ({len(rows)})"
         maxc = max(int(r.get("n_cameras_active", 0) or 0) for r in rows)
         if maxc < 4:
-            return False, f"no 4 cámaras (máx {maxc})"
-        return True, f"{len(rows)} muestras, hasta {maxc} cámaras"
+            return False, f"not 4 cameras (max {maxc})"
+        return True, f"{len(rows)} samples, up to {maxc} cameras"
     if analysis == "1-2_sostenida":
-        return (len(rows) >= 150, f"{len(rows)} muestras")
+        return (len(rows) >= 150, f"{len(rows)} samples")
     ok = sum(1 for r in rows if r.get("status") == "ok")
     return (len(rows) >= 90 and ok >= 80, f"{ok}/{len(rows)} ok")
 
@@ -87,19 +89,19 @@ def k8s(*args, timeout=300):
 
 
 def up_scenario(fmt, profile):
-    """up + cams + verificación de mix y formato. Devuelve (ok, detalle)."""
+    """up + cams + mix and format verification. Returns (ok, detail)."""
     k8s("down", timeout=180)
     r = k8s("up", fmt, timeout=300)
     if "successfully rolled out" not in (r.stdout + r.stderr):
-        return False, "voctocore no ready"
+        return False, "voctocore not ready"
     k8s("cams", fmt, profile, timeout=240)
     time.sleep(20)
-    # poner cam1 en fullscreen y verificar frame + formato
+    # put cam1 in fullscreen and verify frame + format
     k8s("select", "1", timeout=20)
     time.sleep(5)
     vf = k8s("verify-format", fmt, timeout=40)
     mf = k8s("mix-frame", "/tmp/k8s_mix_check.png", timeout=40)
-    ok = "frame OK" in mf.stdout and "ANCHO/ALTO OK" in vf.stdout
+    ok = "frame OK" in mf.stdout and "WIDTH/HEIGHT OK" in vf.stdout
     return ok, (vf.stdout.strip() + " | " + mf.stdout.strip())
 
 
@@ -118,7 +120,7 @@ def run_analysis(analysis, fmt, folder):
     ok, det = up_scenario(fmt, profile)
     if not ok:
         k8s("down", timeout=180)
-        return subprocess.CompletedProcess("", 1, "", f"mix/formato no OK: {det}")
+        return subprocess.CompletedProcess("", 1, "", f"mix/format not OK: {det}")
     if analysis == "2-1_lat_camara":
         r = sh(f"python3 -u {COMP}/measure_latency_camera.py {out} --n 100 --gap 2.5", timeout=25 * 60)
     elif analysis == "2-2_lat_composicion":
@@ -130,23 +132,23 @@ def run_analysis(analysis, fmt, folder):
 
 
 def smoke():
-    log("  SMOKE K8S: validando despliegue mínimo (voctocore + soporte + cam1 + mix)...")
+    log("  SMOKE K8S: validating minimal deployment (voctocore + support + cam1 + mix)...")
     ok, det = up_scenario("1080p25", "experiment")
     k8s("down", timeout=180)
     if ok:
         log(f"  SMOKE K8S: OK ({det})")
     else:
-        log(f"  SMOKE K8S: FALLO ({det})")
+        log(f"  SMOKE K8S: FAILED ({det})")
     return ok
 
 
 def main():
     open(AUDIT, "a").close()
     log("\n" + "=" * 70)
-    log("ORQUESTADOR MATRIZ — escenario KUBERNETES (k3s)")
+    log("MATRIX ORCHESTRATOR — KUBERNETES (k3s) scenario")
     log("=" * 70)
     if not smoke():
-        log("ABORTADO: el smoke K8s falló. No se ejecuta nada.")
+        log("ABORTED: the K8s smoke test failed. Nothing will run.")
         sys.exit(1)
 
     total_ok = total_fail = total_skip = 0
@@ -154,47 +156,47 @@ def main():
     for fmt in FORMATS:
         folder = folder_for(fmt)
         os.makedirs(folder, exist_ok=True)
-        log(f"\n########## CELDA k8s · {fmt} ##########")
+        log(f"\n########## CELL k8s · {fmt} ##########")
         cell_fail = 0
         for analysis in ANALYSES:
             if validate(analysis, folder)[0]:
-                log(f"  [SKIP] {analysis} ya hecho")
+                log(f"  [SKIP] {analysis} already done")
                 total_skip += 1
                 continue
             success = False
             for attempt in range(1, MAX_RETRIES + 2):
-                log(f"  [RUN ] {analysis} (intento {attempt}) ...")
+                log(f"  [RUN ] {analysis} (attempt {attempt}) ...")
                 t0 = time.time()
                 try:
                     r = run_analysis(analysis, fmt, folder)
                 except Exception as e:
-                    log(f"  [ERROR] {analysis} intento {attempt}: {e}")
+                    log(f"  [ERROR] {analysis} attempt {attempt}: {e}")
                     k8s("down", timeout=180)
                     continue
                 okv, detv = validate(analysis, folder)
                 if okv:
-                    log(f"  [OK  ] {analysis} en {int(time.time()-t0)}s — {detv}")
+                    log(f"  [OK  ] {analysis} in {int(time.time()-t0)}s — {detv}")
                     success = True
                     break
-                log(f"  [FAIL] {analysis} intento {attempt}: {detv}. {(r.stderr or r.stdout or '')[-200:]}")
+                log(f"  [FAIL] {analysis} attempt {attempt}: {detv}. {(r.stderr or r.stdout or '')[-200:]}")
                 k8s("down", timeout=180)
             if success:
                 total_ok += 1
             else:
-                log(f"  [ABANDONADA] {analysis} tras {MAX_RETRIES+1} intentos")
+                log(f"  [ABANDONED] {analysis} after {MAX_RETRIES+1} attempts")
                 total_fail += 1
                 cell_fail += 1
-        log(f"########## FIN CELDA k8s · {fmt} ##########")
+        log(f"########## END CELL k8s · {fmt} ##########")
         if first_cell and cell_fail > 0:
-            log(f"GATE: la primera celda k8s tuvo {cell_fail} prueba(s) abandonada(s) "
-                f"→ posible bug sistemático. Se DETIENE K8s para revisión.")
+            log(f"GATE: the first k8s cell had {cell_fail} abandoned test(s) "
+                f"-> possible systematic bug. STOPPING K8s for review.")
             k8s("down", timeout=180)
             return
         first_cell = False
 
     k8s("down", timeout=180)
     log("\n" + "=" * 70)
-    log(f"MATRIZ K8S COMPLETADA. OK={total_ok} SKIP={total_skip} FALLIDAS={total_fail}")
+    log(f"K8S MATRIX COMPLETE. OK={total_ok} SKIP={total_skip} FAILED={total_fail}")
     log("=" * 70)
 
 

@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""Análisis 1 (rendimiento) para el escenario LOCAL (nativo, sin Docker).
+"""Analysis 1 (performance) for the LOCAL scenario (native, no Docker).
 
-Mide CPU%/RAM% del host leyendo /proc directamente (no depende de la telemetría
-ni de RabbitMQ). Orquesta las cámaras nativas con local_scenario.sh y etiqueta
-cada muestra por el nº de cámaras activas según el instante de activación.
+Measures host CPU%/RAM% by reading /proc directly (does not depend on
+telemetry or RabbitMQ). Orchestrates the native cameras with local_scenario.sh
+and labels each sample by the number of active cameras at that instant.
 
-  escalado  (1.1): activa cam1..4, una cada --step-min minutos.
-  sostenida (1.2): 4 cámaras durante --duration-min minutos.
+  escalado  (1.1): activates cam1..4, one every --step-min minutes.
+  sostenida (1.2): 4 cameras for --duration-min minutes.
 
-Salidas: datos.csv, resumen.csv, datos.xlsx (mismo formato que la versión Docker).
+Outputs: datos.csv, resumen.csv, datos.xlsx (same format as the Docker version).
 
-Uso:
+Usage:
   measure_performance_local.py <escalado|sostenida> <output_dir> [--step-min 15] [--duration-min 120]
 """
 
@@ -44,8 +44,8 @@ def read_ram():
 
 
 def local(*args, timeout=120):
-    """Ejecuta local_scenario.sh redirigiendo a fichero (NO pipe), para no colgarse
-    esperando a los procesos de fondo. Devuelve un objeto con .stdout (el log)."""
+    """Runs local_scenario.sh redirecting to a file (NOT a pipe), so it does not hang
+    waiting on background processes. Returns an object with .stdout (the log)."""
     logf = "/tmp/local_scn_perf.log"
     try:
         with open(logf, "w") as f:
@@ -65,16 +65,16 @@ def main():
     ap.add_argument("mode", choices=["escalado", "sostenida"])
     ap.add_argument("output_dir")
     ap.add_argument("--idle-min", type=float, default=15.0,
-                    help="baseline a 0 cámaras al inicio del escalado")
+                    help="baseline at 0 cameras at the start of scaling")
     ap.add_argument("--step-min", type=float, default=15.0)
     ap.add_argument("--duration-min", type=float, default=120.0)
     args = ap.parse_args()
 
-    print("[perf-local] bajando restos y arrancando base nativa...", flush=True)
+    print("[perf-local] tearing down leftovers and starting the native base...", flush=True)
     local("down")
     r = local("base_up", timeout=180)
     if "base_up OK" not in (r.stdout or ""):
-        print(f"ERROR: base_up falló: {r.stdout} {r.stderr}", file=sys.stderr)
+        print(f"ERROR: base_up failed: {r.stdout} {r.stderr}", file=sys.stderr)
         local("down")
         sys.exit(1)
 
@@ -104,11 +104,11 @@ def main():
             sample()
 
     if args.mode == "escalado":
-        print(f"[perf-local] baseline {args.idle_min} min con 0 cámaras", flush=True)
+        print(f"[perf-local] baseline {args.idle_min} min at 0 cameras", flush=True)
         n_active = 0
         measure_for(args.idle_min * 60)
         for cam in (1, 2, 3, 4):
-            print(f"[perf-local] activando cam{cam} (t={datetime.now():%H:%M:%S})", flush=True)
+            print(f"[perf-local] activating cam{cam} (t={datetime.now():%H:%M:%S})", flush=True)
             local("cam_up", str(cam), "experiment")
             time.sleep(8)
             n_active = cam
@@ -119,13 +119,13 @@ def main():
             time.sleep(2)
         n_active = 4
         time.sleep(6)
-        print(f"[perf-local] sostenida {args.duration_min} min con 4 cámaras", flush=True)
+        print(f"[perf-local] sustained {args.duration_min} min at 4 cameras", flush=True)
         measure_for(args.duration_min * 60)
 
     local("down")
 
     if not rows:
-        print("ERROR: sin muestras", file=sys.stderr)
+        print("ERROR: no samples", file=sys.stderr)
         sys.exit(1)
 
     fields = ["timestamp", "elapsed_s", "cpu_pct", "ram_pct", "n_cameras_active"]
@@ -143,7 +143,7 @@ def main():
     write_summary_csv(os.path.join(args.output_dir, "resumen.csv"), summary)
     bundle_xlsx(os.path.join(args.output_dir, "datos.xlsx"),
                 {"datos": (fields, rows), "resumen": (sfields, summary)})
-    print(f"[perf-local] {len(rows)} muestras -> {args.output_dir}", flush=True)
+    print(f"[perf-local] {len(rows)} samples -> {args.output_dir}", flush=True)
 
 
 if __name__ == "__main__":

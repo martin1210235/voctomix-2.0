@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""Orquestador autónomo de la matriz de pruebas — escenario DOCKER × 4 formatos.
+"""Autonomous test-matrix orchestrator — DOCKER scenario x 4 formats.
 
-Ejecuta, en orden, las 5 pruebas de cada celda (1.1, 1.2, 2.1, 2.2, 3.1) para
-1080p25, 1080p50, 2160p25, 2160p50. Por cada prueba:
-  - salta si ya está hecha (checkpoint = datos.csv existe),
-  - la ejecuta con la config correcta (BBB para 1 y 3, color sólido para 2) y el
-    monitor/GUI en pantalla,
-  - VALIDA el resultado (nº de filas, coherencia),
-  - si falla, limpia y REINTENTA hasta 2 veces; si aun así falla, lo registra y
-    continúa (no aborta la matriz).
-Registra todo en paper/pruebas/AUDIT_MATRIX.md con marcas de tiempo (heartbeat).
-Se DETIENE al terminar Docker (no toca Local ni Kubernetes).
+Runs, in order, the 5 tests for each cell (1.1, 1.2, 2.1, 2.2, 3.1) for
+1080p25, 1080p50, 2160p25, 2160p50. For each test:
+  - skips it if already done (checkpoint = datos.csv exists),
+  - runs it with the correct config (BBB for 1 and 3, solid colour for 2) and
+    the monitor/GUI on screen,
+  - VALIDATES the result (row count, consistency),
+  - if it fails, cleans up and RETRIES up to 2 times; if it still fails, logs it
+    and continues (does not abort the matrix).
+Logs everything to paper/pruebas/AUDIT_MATRIX.md with timestamps (heartbeat).
+STOPS once Docker is done (does not touch Local or Kubernetes).
 
-Diseñado para ejecución desatendida. Uso:  python3 run_matrix.py
+Designed for unattended execution. Usage:  python3 run_matrix.py
 """
 
 import csv
@@ -27,7 +27,7 @@ COMP = "experiments/comprehensive"
 AUDIT = os.path.join(ROOT, "paper/pruebas/AUDIT_MATRIX.md")
 os.environ.setdefault("DISPLAY", ":0")
 
-SCENARIOS = ["docker"]                       # Local/K8s: pendientes (tooling/instalación)
+SCENARIOS = ["docker"]                       # Local/K8s: pending (tooling/installation)
 FORMATS = ["1080p25", "1080p50", "2160p25", "2160p50"]
 ANALYSES = ["1-1_escalado", "1-2_sostenida", "2-1_lat_camara",
             "2-2_lat_composicion", "3-1_resiliencia"]
@@ -42,13 +42,13 @@ def log(msg):
 
 
 def sh(cmd, timeout=600):
-    """Ejecuta un comando de shell con timeout SIEMPRE (ninguna llamada puede
-    colgarse indefinidamente). Las medidas largas pasan su propio timeout mayor."""
+    """Runs a shell command with a timeout ALWAYS (no call is allowed to
+    hang indefinitely). Long measurements pass their own larger timeout."""
     try:
         return subprocess.run(cmd, shell=True, cwd=ROOT, capture_output=True,
                               text=True, timeout=timeout)
     except subprocess.TimeoutExpired as e:
-        return subprocess.CompletedProcess(cmd, 124, e.stdout or "", f"TIMEOUT tras {timeout}s")
+        return subprocess.CompletedProcess(cmd, 124, e.stdout or "", f"TIMEOUT after {timeout}s")
 
 
 def folder_for(scenario, fmt):
@@ -66,8 +66,8 @@ def down_all():
 
 
 def up(config):
-    """config: 'experiment' (BBB) o 'latency' (color sólido). Espera hasta 150s
-    a que las 4 cámaras estén healthy."""
+    """config: 'experiment' (BBB) or 'latency' (solid colour). Waits up to 150s
+    for all 4 cameras to become healthy."""
     sh(f"docker compose -f docker-compose.yml -f docker-compose.{config}.yml up -d", timeout=180)
     end = time.time() + 150
     while time.time() < end:
@@ -93,30 +93,30 @@ def csv_rows(path):
 
 
 def validate(analysis, folder):
-    """Devuelve (ok, detalle)."""
+    """Returns (ok, detail)."""
     path = os.path.join(folder, analysis, "datos.csv")
     rows = csv_rows(path)
     if rows is None:
-        return False, "datos.csv no existe o ilegible"
+        return False, "datos.csv does not exist or is unreadable"
     if analysis == "1-1_escalado":
         if len(rows) < 60:
-            return False, f"pocas muestras ({len(rows)})"
+            return False, f"too few samples ({len(rows)})"
         maxc = max(int(r.get("n_cameras_active", 0) or 0) for r in rows)
         if maxc < 4:
-            return False, f"no se activaron 4 cámaras (máx {maxc})"
-        return True, f"{len(rows)} muestras, hasta {maxc} cámaras"
+            return False, f"4 cameras were not activated (max {maxc})"
+        return True, f"{len(rows)} samples, up to {maxc} cameras"
     if analysis == "1-2_sostenida":
         if len(rows) < 150:
-            return False, f"pocas muestras ({len(rows)})"
-        return True, f"{len(rows)} muestras"
-    # latencia / resiliencia: 100 iteraciones con status
+            return False, f"too few samples ({len(rows)})"
+        return True, f"{len(rows)} samples"
+    # latency / resilience: 100 iterations with status
     ok = sum(1 for r in rows if r.get("status") == "ok")
     if len(rows) < 90 or ok < 80:
         return False, f"{ok}/{len(rows)} ok"
     return True, f"{ok}/{len(rows)} ok"
 
 
-# ---- runners por prueba (sin GUI; cada uno deja el entorno limpio al empezar) ----
+# ---- per-test runners (no GUI; each one leaves the environment clean before starting) ----
 def _save_log(out, r):
     try:
         with open(os.path.join(out, "run.log"), "w", encoding="utf-8") as f:
@@ -144,47 +144,47 @@ def run_analysis(analysis, scenario, fmt, folder):
     if analysis == "2-1_lat_camara":
         down_all()
         if not up("latency"):
-            return subprocess.CompletedProcess("", 1, "", "cámaras no conectaron (latency)")
+            return subprocess.CompletedProcess("", 1, "", "cameras did not connect (latency)")
         return _save_log(out, sh(
             f"python3 -u {COMP}/measure_latency_camera.py {out} --n 100 --gap 2.5",
             timeout=25 * 60))
     if analysis == "2-2_lat_composicion":
         down_all()
         if not up("latency"):
-            return subprocess.CompletedProcess("", 1, "", "cámaras no conectaron (latency)")
+            return subprocess.CompletedProcess("", 1, "", "cameras did not connect (latency)")
         return _save_log(out, sh(
             f"python3 -u {COMP}/measure_latency_composite.py {out} --n 100 --gap 2.5",
             timeout=25 * 60))
     if analysis == "3-1_resiliencia":
         down_all()
         if not up("experiment"):
-            return subprocess.CompletedProcess("", 1, "", "cámaras no conectaron (experiment)")
+            return subprocess.CompletedProcess("", 1, "", "cameras did not connect (experiment)")
         return _save_log(out, sh(
             f"python3 -u {COMP}/measure_camera_recovery.py {out} --n 100 --gap 8",
             timeout=60 * 60))
-    return subprocess.CompletedProcess("", 1, "", "prueba desconocida")
+    return subprocess.CompletedProcess("", 1, "", "unknown test")
 
 
 def smoke_2160p50():
-    log("  SMOKE TEST 2160p50: comprobando si el sistema satura con 4 cámaras 4K50...")
+    log("  SMOKE TEST 2160p50: checking whether the system saturates with 4 cameras at 4K50...")
     sh(f"bash {COMP}/set_format.sh 2160p50")
     down_all()
     ok = up("experiment")
     time.sleep(20)
     r = sh("docker ps --format '{{.Names}} {{.Status}}' | grep -cE '^cam[0-9] Up.*healthy'")
     cams = r.stdout.strip()
-    # CPU host aproximada
+    # approximate host CPU
     cpu = sh("grep 'cpu ' /proc/stat")
     down_all()
-    log(f"  SMOKE 2160p50: cámaras conectadas={cams}, arranque={'OK' if ok else 'FALLO'}. "
-        f"(Si satura, las medidas lo reflejarán como techo de rendimiento.)")
+    log(f"  SMOKE 2160p50: cameras connected={cams}, startup={'OK' if ok else 'FAILED'}. "
+        f"(If it saturates, the measurements will reflect it as a performance ceiling.)")
 
 
 def main():
     log("=" * 70)
-    log("ORQUESTADOR MATRIZ — inicio (escenario Docker, 4 formatos)")
-    log(f"Formatos: {FORMATS} · Pruebas por celda: {ANALYSES}")
-    log("Se detiene al terminar Docker (Local y Kubernetes: manual).")
+    log("MATRIX ORCHESTRATOR — start (Docker scenario, 4 formats)")
+    log(f"Formats: {FORMATS} · Tests per cell: {ANALYSES}")
+    log("Stops once Docker is done (Local and Kubernetes: manual).")
     log("=" * 70)
 
     total_ok = total_fail = total_skip = 0
@@ -192,53 +192,53 @@ def main():
         for fmt in FORMATS:
             folder = folder_for(scenario, fmt)
             os.makedirs(folder, exist_ok=True)
-            log(f"\n########## CELDA {scenario} · {fmt} ##########")
+            log(f"\n########## CELL {scenario} · {fmt} ##########")
             if fmt == "2160p50":
                 try:
                     smoke_2160p50()
                 except Exception as e:
-                    log(f"  aviso smoke: {e}")
+                    log(f"  smoke warning: {e}")
             for analysis in ANALYSES:
                 ok_ckpt, det = validate(analysis, folder)
                 if ok_ckpt:
-                    log(f"  [SKIP] {analysis} ya hecho ({det})")
+                    log(f"  [SKIP] {analysis} already done ({det})")
                     total_skip += 1
                     continue
                 success = False
                 for attempt in range(1, MAX_RETRIES + 2):
-                    log(f"  [RUN ] {analysis} (intento {attempt}) ...")
+                    log(f"  [RUN ] {analysis} (attempt {attempt}) ...")
                     t0 = time.time()
                     try:
                         r = run_analysis(analysis, scenario, fmt, folder)
                     except subprocess.TimeoutExpired:
-                        log(f"  [TIMEOUT] {analysis} intento {attempt}")
+                        log(f"  [TIMEOUT] {analysis} attempt {attempt}")
                         down_all()
                         continue
                     except Exception as e:
-                        log(f"  [ERROR] {analysis} intento {attempt}: {e}")
+                        log(f"  [ERROR] {analysis} attempt {attempt}: {e}")
                         down_all()
                         continue
                     dur = int(time.time() - t0)
                     okv, detv = validate(analysis, folder)
                     if okv:
-                        log(f"  [OK  ] {analysis} en {dur}s — {detv}")
+                        log(f"  [OK  ] {analysis} in {dur}s — {detv}")
                         success = True
                         break
                     else:
                         tail = (r.stderr or r.stdout or "")[-300:]
-                        log(f"  [FAIL] {analysis} intento {attempt} ({dur}s): {detv}. {tail}")
+                        log(f"  [FAIL] {analysis} attempt {attempt} ({dur}s): {detv}. {tail}")
                         down_all()
                 if success:
                     total_ok += 1
                 else:
-                    log(f"  [ABANDONADA] {analysis} tras {MAX_RETRIES+1} intentos — se continúa")
+                    log(f"  [ABANDONED] {analysis} after {MAX_RETRIES+1} attempts — continuing")
                     total_fail += 1
-            log(f"########## FIN CELDA {scenario} · {fmt} ##########")
+            log(f"########## END CELL {scenario} · {fmt} ##########")
 
     down_all()
     log("\n" + "=" * 70)
-    log(f"MATRIZ DOCKER COMPLETADA. OK={total_ok} SKIP={total_skip} FALLIDAS={total_fail}")
-    log("Local y Kubernetes: pendientes (manual, contigo delante).")
+    log(f"DOCKER MATRIX COMPLETE. OK={total_ok} SKIP={total_skip} FAILED={total_fail}")
+    log("Local and Kubernetes: pending (manual, with you present).")
     log("=" * 70)
 
 

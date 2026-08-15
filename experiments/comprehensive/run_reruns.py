@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
-"""Orquestador de RE-EJECUCIONES para el viaje. Corre solo, secuencial y robusto.
+"""Orchestrator for RE-RUNS. Runs unattended, sequentially, and robustly.
 
-Hace, en orden:
-  1) ESCALADOS de los 3 escenarios (docker, local, k8s) x 4 formatos, con baseline de
-     0 cámaras (15 min) + 4 pasos de 15 min. Se agrupan por FORMATO (docker/local/k8s
-     seguidos) para que la CPU se mida en condiciones lo más parecidas posible → resuelve
-     la incongruencia de CPU entre escenarios. Salida a paper/pruebas/reruns/.
-  2) LATENCIA 2.2 de Docker 2160p50 x3 (caracterizar la inestabilidad del outlier).
-  3) SOSTENIDA de 24 h de Docker 2160p50 (memory-leak).
+Does, in order:
+  1) SCALING tests for the 3 scenarios (docker, local, k8s) x 4 formats, with a
+     0-camera baseline (15 min) + 4 steps of 15 min. Grouped by FORMAT (docker/local/k8s
+     back to back) so CPU is measured under conditions as similar as possible -> resolves
+     the CPU discrepancy between scenarios. Output to paper/pruebas/reruns/.
+  2) LATENCY 2.2 of Docker 2160p50 x3 (characterize the outlier's instability).
+  3) 24 h SUSTAINED run of Docker 2160p50 (memory-leak).
 
-Limpieza cruzada total antes de cada prueba, checkpoints (no repite lo válido), reintentos.
-NO sobrescribe los datos oficiales: escribe a carpetas nuevas para comparar y decidir después.
+Full cross-cleanup before each test, checkpoints (does not repeat what is already valid),
+retries. Does NOT overwrite the official data: writes to new folders to compare and decide
+afterward.
 
-Uso:
-  python3 run_reruns.py                 # real (idle 15, step 15, sostenida 1440 min)
-  python3 run_reruns.py --quick         # validación rápida (idle 0.4, step 0.4, sost 2 min)
+Usage:
+  python3 run_reruns.py                 # real run (idle 15, step 15, sustained 1440 min)
+  python3 run_reruns.py --quick         # quick validation (idle 0.4, step 0.4, sustained 2 min)
 """
 import argparse
 import csv
@@ -55,7 +56,7 @@ def sh(cmd, timeout=600):
 
 
 def full_cleanup():
-    """Deja la máquina limpia: baja docker, local y k8s, y espera a que 9999 quede libre."""
+    """Leaves the machine clean: tears down docker, local and k8s, and waits for port 9999 to be free."""
     sh("docker compose -f docker-compose.yml -f docker-compose.experiment.yml down --remove-orphans", 150)
     sh("docker compose -f docker-compose.yml -f docker-compose.latency.yml down --remove-orphans", 150)
     sh(f"bash {COMP}/local_scenario.sh down", 90)
@@ -80,17 +81,17 @@ def esc_valid(folder):
         return False
     maxc = max(int(r.get("n_cameras_active", 0) or 0) for r in rows)
     cams = {int(r.get("n_cameras_active", 0) or 0) for r in rows}
-    return maxc >= 4 and 0 in cams  # llegó a 4 cámaras y tiene baseline 0
+    return maxc >= 4 and 0 in cams  # reached 4 cameras and has a 0 baseline
 
 
 def run_escalado(scenario, fmt, idle, step):
     out = os.path.join(OUTBASE, f"{scenario}_{fmt}", "1-1_escalado")
     os.makedirs(out, exist_ok=True)
     if esc_valid(out):
-        log(f"  [SKIP] escalado {scenario} {fmt} (ya válido)")
+        log(f"  [SKIP] escalado {scenario} {fmt} (already valid)")
         return True
     for attempt in range(1, MAX_RETRIES + 2):
-        log(f"  [RUN ] escalado {scenario} {fmt} (intento {attempt})")
+        log(f"  [RUN ] escalado {scenario} {fmt} (attempt {attempt})")
         full_cleanup()
         if scenario in ("docker", "local"):
             sh(f"bash {COMP}/set_format.sh {fmt}", 60)
@@ -107,13 +108,13 @@ def run_escalado(scenario, fmt, idle, step):
             log(f"  [OK  ] escalado {scenario} {fmt}")
             return True
         log(f"  [FAIL] escalado {scenario} {fmt}: {(e or o)[-200:]}")
-    log(f"  [ABANDONADA] escalado {scenario} {fmt}")
+    log(f"  [ABANDONED] escalado {scenario} {fmt}")
     return False
 
 
 def ffprobe_capture(scenario, fmt):
-    """Best-effort: levanta el stack (color sólido), ffprobe del mix, guarda evidencia, baja.
-    Completa la verificación de formato pendiente de Docker/Local (K8s ya la hace)."""
+    """Best-effort: brings up the stack (solid colour), ffprobe of the mix, saves evidence, tears down.
+    Completes the pending format verification for Docker/Local (K8s already does it)."""
     evid = os.path.join(ROOT, "paper", "pruebas", "verificacion_formatos")
     os.makedirs(evid, exist_ok=True)
     full_cleanup()
@@ -137,7 +138,7 @@ def ffprobe_capture(scenario, fmt):
         sh("docker compose -f docker-compose.yml -f docker-compose.latency.yml down --remove-orphans", 150)
     else:
         sh(f"bash {COMP}/local_scenario.sh down", 60)
-    log(f"  [ffprobe] {scenario} {fmt} capturado")
+    log(f"  [ffprobe] {scenario} {fmt} captured")
 
 
 def run_docker_latency_4k50(n, gap):
@@ -179,32 +180,32 @@ def main():
 
     os.makedirs(OUTBASE, exist_ok=True)
     log("\n" + "=" * 70)
-    log(f"ORQUESTADOR DE RE-EJECUCIONES {'(QUICK)' if args.quick else '(REAL)'}")
+    log(f"RE-RUN ORCHESTRATOR {'(QUICK)' if args.quick else '(REAL)'}")
     log("=" * 70)
 
-    log("### FASE 1: escalados de los 3 escenarios (agrupados por formato) ###")
+    log("### PHASE 1: scaling for the 3 scenarios (grouped by format) ###")
     for fmt in FORMATS:
         for sc in SCENARIOS:
             run_escalado(sc, fmt, idle, step)
 
-    log("### FASE 2: verificacion ffprobe de formato Docker/Local (K8s ya verificado) ###")
+    log("### PHASE 2: ffprobe format verification for Docker/Local (K8s already verified) ###")
     for sc in ("docker", "local"):
         for fmt in FORMATS:
             try:
                 ffprobe_capture(sc, fmt)
             except Exception as e:
-                log(f"  [ffprobe {sc} {fmt}] error (no bloqueante): {e}")
+                log(f"  [ffprobe {sc} {fmt}] error (non-blocking): {e}")
 
-    log("### FASE 3: latencia 2.2 Docker 2160p50 x3 (caracterizar inestabilidad) ###")
+    log("### PHASE 3: latency 2.2 Docker 2160p50 x3 (characterize instability) ###")
     for n in (1, 2, 3):
         run_docker_latency_4k50(n, gap)
 
-    log("### FASE 4: sostenida 24h Docker 2160p50 (leak) ###")
+    log("### PHASE 4: 24h sustained Docker 2160p50 (leak) ###")
     run_sostenida_24h(sost)
 
     full_cleanup()
     log("=" * 70)
-    log("RE-EJECUCIONES COMPLETADAS")
+    log("RE-RUNS COMPLETE")
     log("=" * 70)
 
 

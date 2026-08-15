@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
-"""Análisis 2.2 — latencia de vídeo de conmutación de composición (fs <-> sbs).
+"""Analysis 2.2 — composite-switching video latency (fs <-> sbs).
 
-Alterna entre pantalla completa (fs) y side-by-side (sbs) con `cut`, y mide el
-tiempo hasta que la salida del mix (puerto 11000) refleja el nuevo modo. Señal:
-el punto centro-derecha muestra la fuente A en fs y la fuente B en sbs.
+Alternates between fullscreen (fs) and side-by-side (sbs) with `cut`, and
+measures the time until the mix output (port 11000) reflects the new mode.
+Signal: the centre-right point shows source A in fs and source B in sbs.
 
-  fs->sbs: latencia = t(primer frame con B a la derecha) - t(comando)
-  sbs->fs: latencia = t(primer frame con A a la derecha) - t(comando)
+  fs->sbs: latency = t(first frame with B on the right) - t(command)
+  sbs->fs: latency = t(first frame with A on the right) - t(command)
 
-Requiere el stack con la config de latencia (colores sólidos, cam1=rojo A,
-cam2=verde B). Salidas: datos.csv, resumen.csv, datos.xlsx.
+Requires the stack with the latency config (solid colours, cam1=red A,
+cam2=green B). Outputs: datos.csv, resumen.csv, datos.xlsx.
 
-Uso:
+Usage:
   measure_latency_composite.py <output_dir> [--n 100] [--gap 2.5]
 """
 
@@ -25,8 +25,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from lib_video import MixCornerReader, classify  # noqa: E402
 from lib_common import stats, write_csv, write_summary_csv, bundle_xlsx  # noqa: E402
 
-SRC_A = "cam1"   # rojo, izquierda en sbs
-SRC_B = "cam2"   # verde, derecha en sbs
+SRC_A = "cam1"   # red, left in sbs
+SRC_B = "cam2"   # green, right in sbs
 
 
 def send(sock, cmd, wait=0.3):
@@ -62,12 +62,12 @@ def main():
     reader = MixCornerReader(args.mix_port, w=120, h=120, x="iw*0.75-60", y="ih*0.5-60")
     time.sleep(2.0)
     if not reader.alive():
-        print("ERROR: no se pudo abrir el lector del mix (puerto 11000).", file=sys.stderr)
+        print("ERROR: could not open the mix reader (port 11000).", file=sys.stderr)
         sys.exit(1)
 
     mode = "fs"
     rows = []
-    print(f"Midiendo {args.n} conmutaciones de composición (fs<->sbs, corte)...")
+    print(f"Measuring {args.n} composite switches (fs<->sbs, hard cut)...")
     for i in range(args.n):
         if mode == "fs":
             target_mode, cmd, expect = "sbs", f"cut sbs({SRC_A},{SRC_B})", SRC_B
@@ -105,7 +105,7 @@ def main():
                 {"datos": (fields, rows), "resumen": (sfields, summary)})
 
     st = stats(lat)
-    print(f"\nOK: {len(lat)}/{args.n}  mediana={st['median']} ms  p95={st['p95']} ms  "
+    print(f"\nOK: {len(lat)}/{args.n}  median={st['median']} ms  p95={st['p95']} ms  "
           f"min={st['min']} max={st['max']}")
     print(f"  → {args.output_dir}/datos.csv , resumen.csv , datos.xlsx")
 

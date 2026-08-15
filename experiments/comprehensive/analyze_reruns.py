@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Compara los escalados RE-EJECUTADOS (paper/pruebas/reruns/) con los oficiales y escribe
-un informe (COMPARACION.md) con veredicto sobre la incongruencia de CPU entre escenarios.
-No modifica nada oficial; solo genera el informe para decidir después."""
+"""Compares the RE-RUN scaling tests (paper/pruebas/reruns/) against the official ones
+and writes a report (COMPARACION.md) with a verdict on the CPU discrepancy between
+scenarios. Does not modify anything official; only generates the report to decide later."""
 import csv
 import os
 import statistics
@@ -29,29 +29,29 @@ def medians(csvpath):
 
 
 def main():
-    lines = ["# Comparación de re-ejecuciones (escalados) vs oficiales\n"]
-    lines.append("CPU% mediana por nº de cámaras (0→4). RERUN = nueva medida comparable.\n")
+    lines = ["# Re-run comparison (scaling tests) vs official\n"]
+    lines.append("Median CPU% by number of cameras (0->4). RERUN = new, comparable measurement.\n")
     for fmt in FORMATS:
-        lines.append(f"\n## Formato {fmt}\n")
-        lines.append("| escenario | fuente | 0c | 1c | 2c | 3c | 4c |")
+        lines.append(f"\n## Format {fmt}\n")
+        lines.append("| scenario | source | 0c | 1c | 2c | 3c | 4c |")
         lines.append("|---|---|---|---|---|---|---|")
         for sc in SCEN:
             new = medians(os.path.join(RERUNS, f"{sc}_{fmt}", "1-1_escalado", "datos.csv"))
             old = medians(os.path.join(ROOT, "paper", "pruebas", f"{sc}_{fmt}", "1-1_escalado", "datos.csv"))
-            for tag, m in (("RERUN", new), ("oficial", old)):
+            for tag, m in (("RERUN", new), ("official", old)):
                 if m is None:
                     lines.append(f"| {sc} | {tag} | — | — | — | — | — |")
                 else:
                     cells = " | ".join(f"{m[k][0]:.0f}%" if k in m else "—" for k in range(5))
                     lines.append(f"| {sc} | {tag} | {cells} |")
-        # veredicto anomalía CPU a 4 cams (rerun)
+        # verdict on the 4-cam CPU anomaly (rerun)
         r4 = {sc: (medians(os.path.join(RERUNS, f"{sc}_{fmt}", "1-1_escalado", "datos.csv")) or {}).get(4) for sc in SCEN}
         if all(r4.get(sc) for sc in SCEN):
             d, l, k = r4["docker"][0], r4["local"][0], r4["k8s"][0]
-            verd = ("K8s ya NO sale más bajo → la incongruencia era estado de la máquina (RESUELTA)"
+            verd = ("K8s is no longer lower -> the discrepancy was machine state (RESOLVED)"
                     if k >= min(d, l) - 2 else
-                    "K8s SIGUE más bajo que docker/local → puede ser real; revisar")
-            lines.append(f"\n**4 cams (RERUN): docker={d:.0f}% local={l:.0f}% k8s={k:.0f}% → {verd}**")
+                    "K8s is STILL lower than docker/local -> may be real; investigate")
+            lines.append(f"\n**4 cams (RERUN): docker={d:.0f}% local={l:.0f}% k8s={k:.0f}% -> {verd}**")
     out = os.path.join(RERUNS, "COMPARACION.md")
     os.makedirs(RERUNS, exist_ok=True)
     open(out, "w", encoding="utf-8").write("\n".join(lines) + "\n")

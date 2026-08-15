@@ -1,33 +1,33 @@
 #!/usr/bin/env python3
-"""Genera un README.md por celda (60) con: escenario, formato, qué se mide, cómo, comando
-y el resultado (leído del resumen.csv). Cierra el gap de documentación por prueba."""
+"""Generates a README.md per test cell (60) with: scenario, format, what is measured, how,
+command, and the result (read from resumen.csv). Closes the per-test documentation gap."""
 import csv
 import os
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-SCEN = {"docker": "Docker", "local": "Local (nativo)", "k8s": "Kubernetes (k3s)"}
+SCEN = {"docker": "Docker", "local": "Local (native)", "k8s": "Kubernetes (k3s)"}
 FMT = {"1080p25": (1920, 1080, 25), "1080p50": (1920, 1080, 50),
        "2160p25": (3840, 2160, 25), "2160p50": (3840, 2160, 50)}
 ANALYSES = {
-    "1-1_escalado": ("Rendimiento — escalado de cámaras",
-                     "Uso de CPU (%) y RAM (%) leídos de /proc (misma fuente que htop) mientras se "
-                     "activan las cámaras 1→4. Empieza con 15 min a 0 cámaras (baseline) y luego 15 "
-                     "min por cada cámara."),
-    "1-2_sostenida": ("Rendimiento — carga sostenida",
-                      "Uso de CPU (%) y RAM (%) con 4 cámaras activas durante 2 h."),
-    "2-1_lat_camara": ("Latencia — conmutación de cámara",
-                       "Latencia de vídeo real (glass-to-glass) al conmutar de cámara en corte, "
-                       "detectada por color en la salida del mix. 100 repeticiones."),
-    "2-2_lat_composicion": ("Latencia — conmutación de composición",
-                            "Latencia de vídeo real al cambiar de composición (pantalla completa ↔ "
-                            "side-by-side) en corte. 100 repeticiones."),
-    "3-1_resiliencia": ("Resiliencia — caída y recuperación de cámara",
-                        "Se fuerza la caída de una cámara y se mide el MTTR (detección + "
-                        "restablecimiento) sobre la salida del mix. 100 repeticiones."),
+    "1-1_escalado": ("Performance — camera scaling",
+                     "CPU (%) and RAM (%) usage read from /proc (the same source as htop) while "
+                     "cameras 1->4 are activated in turn. Starts with 15 min at 0 cameras "
+                     "(baseline), then 15 min per camera."),
+    "1-2_sostenida": ("Performance — sustained load",
+                      "CPU (%) and RAM (%) usage with 4 active cameras over 2 h."),
+    "2-1_lat_camara": ("Latency — camera switching",
+                       "Real (glass-to-glass) video latency when switching cameras via a hard cut, "
+                       "detected by colour in the mix output. 100 repetitions."),
+    "2-2_lat_composicion": ("Latency — composite switching",
+                            "Real video latency when switching composite mode (fullscreen <-> "
+                            "side-by-side) via a hard cut. 100 repetitions."),
+    "3-1_resiliencia": ("Resilience — camera failure and recovery",
+                        "A camera failure is forced and the MTTR (detection + "
+                        "recovery) is measured on the mix output. 100 repetitions."),
 }
-CRASH = {"docker": "docker exec camN pkill -9 ffmpeg (restart policy del contenedor)",
-         "local": "supervisor nativo reinicia el ffmpeg (systemd-style)",
-         "k8s": "kubectl delete pod (el Deployment recrea el pod = self-healing)"}
+CRASH = {"docker": "docker exec camN pkill -9 ffmpeg (container restart policy)",
+         "local": "a native supervisor restarts the ffmpeg process (systemd-style)",
+         "k8s": "kubectl delete pod (the Deployment recreates the pod = self-healing)"}
 
 
 def summ(path):
@@ -44,17 +44,17 @@ def result_block(sc, a, s):
         r = s.get((g, m))
         return f"{float(r['median']):.1f}" if r and r.get("median") else "—"
     if a == "1-1_escalado":
-        L = ["| nº cámaras | CPU mediana | RAM mediana |", "|---|---|---|"]
+        L = ["| # cameras | Median CPU | Median RAM |", "|---|---|---|"]
         for k in range(5):
             L.append(f"| {k} | {med(f'{k}_cams','cpu_pct')}% | {med(f'{k}_cams','ram_pct')}% |")
         return "\n".join(L)
     if a == "1-2_sostenida":
-        return f"CPU mediana: **{med('ALL','cpu_pct')}%** · RAM mediana: **{med('ALL','ram_pct')}%** (2 h, 4 cámaras)."
+        return f"Median CPU: **{med('ALL','cpu_pct')}%** · Median RAM: **{med('ALL','ram_pct')}%** (2 h, 4 cameras)."
     if a in ("2-1_lat_camara", "2-2_lat_composicion"):
-        return f"Latencia mediana: **{med('','latency_ms')} ms** (n=100)."
+        return f"Median latency: **{med('','latency_ms')} ms** (n=100)."
     if a == "3-1_resiliencia":
-        return (f"MTTR mediana: **{med('','mttr_ms')} ms** "
-                f"(detección {med('','detect_ms')} ms + restablecimiento {med('','restore_ms')} ms), n=100.")
+        return (f"Median MTTR: **{med('','mttr_ms')} ms** "
+                f"(detection {med('','detect_ms')} ms + recovery {med('','restore_ms')} ms), n=100.")
     return ""
 
 
@@ -67,25 +67,25 @@ def main():
                 if not os.path.isdir(d):
                     continue
                 s = summ(os.path.join(d, "resumen.csv"))
-                extra = f"\nMecanismo de caída/recuperación: {CRASH[sc]}.\n" if a == "3-1_resiliencia" else ""
+                extra = f"\nFailure/recovery mechanism: {CRASH[sc]}.\n" if a == "3-1_resiliencia" else ""
                 txt = f"""# {title}
 
-**Escenario:** {SCEN[sc]} · **Formato:** {fmt} ({w}×{h} @ {f} fps)
-**Hardware:** Intel Core i9-10900X, 128 GB RAM, Ubuntu 22.04 (aplicaciones cerradas).
+**Scenario:** {SCEN[sc]} · **Format:** {fmt} ({w}x{h} @ {f} fps)
+**Hardware:** Intel Core i9-10900X, 128 GB RAM, Ubuntu 22.04 (other applications closed).
 
-## Qué se mide
+## What is measured
 {how}
 {extra}
-## Resultado
+## Result
 {result_block(sc, a, s)}
 
-## Ficheros
-`datos.csv` (datos crudos), `resumen.csv` (estadística), `datos.xlsx` (Excel). El formato de
-la salida se verificó con ffprobe (ver `paper/pruebas/verificacion_formatos/`).
+## Files
+`datos.csv` (raw data), `resumen.csv` (statistics), `datos.xlsx` (Excel). The output format
+was verified with ffprobe (see `paper/pruebas/verificacion_formatos/`).
 """
                 open(os.path.join(d, "README.md"), "w", encoding="utf-8").write(txt)
                 n += 1
-    print(f"Generados {n} README de celda")
+    print(f"Generated {n} cell READMEs")
 
 
 if __name__ == "__main__":

@@ -248,7 +248,7 @@ def main():
         print(f"{group:8} {percentile(cpu, 50):>9.1f} {percentile(rp, 50):>9.1f} {percentile(rg, 50):>8.1f}")
     print(f"\n(host RAM total: {total_gb:.1f} GB)")
     print("\nSaved: obs_datos.csv, obs_resumen.csv, obs_metadata.txt")
-    print("[campaign] COMPLETADO")
+    print("[campaign] DONE")
 
 
 if __name__ == "__main__":

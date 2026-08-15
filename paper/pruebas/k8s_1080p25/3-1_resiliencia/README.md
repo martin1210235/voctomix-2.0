@@ -1,16 +1,16 @@
-# Resiliencia — caída y recuperación de cámara
+# Resilience — camera failure and recovery
 
-**Escenario:** Kubernetes · **Formato:** 1080p25 (1920×1080 @ 25 fps)
-**Hardware:** Intel Core i9-10900X, 128 GB RAM, Ubuntu 22.04 (aplicaciones cerradas).
+**Scenario:** Kubernetes · **Format:** 1080p25 (1920×1080 @ 25 fps)
+**Hardware:** Intel Core i9-10900X, 128 GB RAM, Ubuntu 22.04 (other applications closed).
 
-## Qué se mide
-Se fuerza la caída de una cámara y se mide el MTTR (detección + restablecimiento) sobre la salida del mix. 100 repeticiones.
+## What is measured
+A camera failure is forced and the MTTR (detection + recovery) is measured on the mix output. 100 repetitions.
 
-Mecanismo de caída/recuperación: kubectl delete pod (el Deployment recrea el pod = self-healing).
+Failure/recovery mechanism: kubectl delete pod (the Deployment recreates the pod = self-healing).
 
-## Resultado
-MTTR mediana: **2078.45 ms** (detección 1077.65 ms + restablecimiento 1000.05 ms), n=100.
+## Result
+Median MTTR: **2078.45 ms** (detection 1077.65 ms + recovery 1000.05 ms), n=100.
 
-## Ficheros
-`datos.csv` (datos crudos), `resumen.csv` (estadística), `datos.xlsx` (Excel). El formato de
-la salida se verificó con ffprobe (ver `paper/pruebas/verificacion_formatos/`).
+## Files
+`datos.csv` (raw data), `resumen.csv` (statistics), `datos.xlsx` (Excel). The output format
+was verified with ffprobe (see `paper/pruebas/verificacion_formatos/`).

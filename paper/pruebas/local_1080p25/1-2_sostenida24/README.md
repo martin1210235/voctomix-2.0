@@ -1,16 +1,16 @@
-# Sostenida 24 h — Local (nativo) · 1080p25
+# 24 h Sustained — Local (native) · 1080p25
 
-**Escenario:** Local (nativo) · **Formato:** 1080p25 (1920×1080 @ 25 fps) · **Duración:** 24 h
-**Hardware:** Intel Core i9-10900X, 128 GB RAM, Ubuntu 22.04 (aplicaciones cerradas).
+**Scenario:** Local (native) · **Format:** 1080p25 (1920×1080 @ 25 fps) · **Duration:** 24 h
+**Hardware:** Intel Core i9-10900X, 128 GB RAM, Ubuntu 22.04 (other applications closed).
 
-## Qué se mide
-Uso de CPU (%) y RAM (%) del sistema (leídos de /proc, misma fuente que htop) con 4 cámaras
-activas durante 24 h seguidas. Análoga a la sostenida de 24 h de Docker 2160p50, aquí para
-estudiar la evolución de la RAM en el escenario nativo a largo plazo (memory-leak).
+## What is measured
+System CPU (%) and RAM (%) usage (read from /proc, the same source as htop) with 4 active
+cameras over 24 continuous hours. Analogous to the Docker 2160p50 24 h sustained run, used
+here to study long-term RAM behaviour on the native scenario (memory-leak check).
 
-## Resultado (mediana / tendencia)
-CPU mediana: **88.5%** · RAM: 10.4% → 10.4% → 10.5% (inicio→mitad→fin).
-Tendencia de RAM: **PLANA (sin leak, esperado en Local)**. Muestras: 16962 (~24.0 h), 100% del tiempo con 4 cámaras.
+## Result (median / trend)
+Median CPU: **88.5%** · RAM: 10.4% → 10.4% → 10.5% (start→middle→end).
+RAM trend: **FLAT (no leak, as expected on Local)**. Samples: 16962 (~24.0 h), 100% of the time with 4 cameras.
 
-## Ficheros
-`datos.csv` (crudo, escritura incremental), `resumen.csv` (estadística), `datos.xlsx` (Excel).
+## Files
+`datos.csv` (raw, incremental writes), `resumen.csv` (statistics), `datos.xlsx` (Excel).

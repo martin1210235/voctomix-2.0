@@ -23,10 +23,10 @@ def med(sc, fmt, sub, group, metric):
 
 
 def sec_cpu_escalado():
-    L = ["## Rendimiento — CPU mediana por nº de cámaras (0→4)\n"]
+    L = ["## Performance — median CPU by number of cameras (0->4)\n"]
     for fmt in FMT:
         L.append(f"\n**{fmt}**\n")
-        L.append("| escenario | 0c | 1c | 2c | 3c | 4c |")
+        L.append("| scenario | 0c | 1c | 2c | 3c | 4c |")
         L.append("|---|---|---|---|---|---|")
         for sc in SC:
             cells = " | ".join(
@@ -38,7 +38,7 @@ def sec_cpu_escalado():
 
 
 def tab(title, sub, group, metric, unit):
-    L = [f"\n## {title}\n", "| escenario | " + " | ".join(FMT) + " |",
+    L = [f"\n## {title}\n", "| scenario | " + " | ".join(FMT) + " |",
          "|---|" + "---|" * len(FMT)]
     for sc in SC:
         vals = []
@@ -50,26 +50,26 @@ def tab(title, sub, group, metric, unit):
 
 
 def main():
-    parts = ["# Resumen global de resultados (3 escenarios × 4 formatos)\n",
-             "CPU/RAM leídos de /proc (igual que htop). Latencia = vídeo real (glass-to-glass). "
-             "Formatos verificados con ffprobe.\n",
+    parts = ["# Global results summary (3 scenarios x 4 formats)\n",
+             "CPU/RAM read from /proc (same as htop). Latency = real video (glass-to-glass). "
+             "Formats verified with ffprobe.\n",
              sec_cpu_escalado(),
-             tab("Rendimiento — RAM mediana a 4 cámaras (escalado)", "1-1_escalado", "4_cams", "ram_pct", "%"),
-             tab("Sostenida (2 h) — CPU mediana", "1-2_sostenida", "ALL", "cpu_pct", "%"),
-             tab("Sostenida (2 h) — RAM mediana", "1-2_sostenida", "ALL", "ram_pct", "%"),
-             tab("Latencia 2.1 — conmutación de cámara (mediana)", "2-1_lat_camara", "", "latency_ms", " ms"),
-             tab("Latencia 2.2 — conmutación de composición (mediana)", "2-2_lat_composicion", "", "latency_ms", " ms"),
-             tab("Resiliencia — MTTR (mediana)", "3-1_resiliencia", "", "mttr_ms", " ms"),
-             "\n## Hallazgos clave\n",
-             "- **CPU**: escala con nº de cámaras y con la resolución. A 4 cámaras el sistema satura "
-             "(~90%) y a 4K/50fps descarta frames (techo de hardware). Los 3 escenarios son comparables.",
-             "- **RAM**: sobrecarga de despliegue **Docker > K8s > Local** (contenedores añaden memoria).",
-             "- **RAM sostenida**: Docker a 4K crece hasta ~17,7% y se estabiliza (no es leak descontrolado; "
-             "confirmado con sostenida de 24 h). Local y K8s planos.",
-             "- **Latencia**: depende del framerate (≈mitad a 50 fps), no de la resolución. Docker a 4K50 "
-             "muestra composición inestable por saturación.",
-             "- **MTTR**: ~1–2 s en los 3 escenarios; recuperación por restart-policy (Docker) / supervisor "
-             "(Local) / self-healing del ReplicaSet (K8s).",
+             tab("Performance — median RAM at 4 cameras (scaling)", "1-1_escalado", "4_cams", "ram_pct", "%"),
+             tab("Sustained (2 h) — median CPU", "1-2_sostenida", "ALL", "cpu_pct", "%"),
+             tab("Sustained (2 h) — median RAM", "1-2_sostenida", "ALL", "ram_pct", "%"),
+             tab("Latency 2.1 — camera switching (median)", "2-1_lat_camara", "", "latency_ms", " ms"),
+             tab("Latency 2.2 — composite switching (median)", "2-2_lat_composicion", "", "latency_ms", " ms"),
+             tab("Resilience — MTTR (median)", "3-1_resiliencia", "", "mttr_ms", " ms"),
+             "\n## Key findings\n",
+             "- **CPU**: scales with the number of cameras and with resolution. At 4 cameras the system "
+             "saturates (~90%) and at 4K/50fps it drops frames (hardware ceiling). The 3 scenarios are comparable.",
+             "- **RAM**: deployment overhead **Docker > K8s > Local** (containers add memory).",
+             "- **Sustained RAM**: Docker at 4K grows to ~17.7% and stabilizes (not an uncontrolled leak; "
+             "confirmed with the 24 h sustained run). Local and K8s stay flat.",
+             "- **Latency**: depends on frame rate (roughly halves at 50 fps), not resolution. Docker at 4K50 "
+             "shows unstable compositing due to saturation.",
+             "- **MTTR**: ~1-2 s across the 3 scenarios; recovery via restart-policy (Docker) / supervisor "
+             "(Local) / ReplicaSet self-healing (K8s).",
              ]
     out = os.path.join(ROOT, "paper", "pruebas", "RESUMEN_GLOBAL.md")
     open(out, "w", encoding="utf-8").write("\n".join(parts) + "\n")

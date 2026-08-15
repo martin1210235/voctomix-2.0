@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""Análisis 2.1 — latencia de vídeo de conmutación de cámara (corte directo).
+"""Analysis 2.1 — camera-switching video latency (direct cut).
 
-Para cada conmutación: envía `set_video_a <cam>` por el puerto de control y
-mide el tiempo hasta que la salida del mix (puerto 11000) muestra ya el marcador
-de color de la cámara destino. Métrica en milisegundos.
+For each switch: sends `set_video_a <cam>` over the control port and measures
+the time until the mix output (port 11000) already shows the target camera's
+colour marker. Metric in milliseconds.
 
-  latencia_ms = t(primer frame del mix con la cámara destino) - t(envío comando)
+  latency_ms = t(first mix frame with the target camera) - t(command sent)
 
-Requiere el stack en marcha con las 4 cámaras conectadas y el override de
-experimento (marcadores de color). Salidas: datos.csv, resumen.csv, datos.xlsx.
+Requires the stack running with all 4 cameras connected and the experiment
+override (colour markers). Outputs: datos.csv, resumen.csv, datos.xlsx.
 
-Uso:
+Usage:
   measure_latency_camera.py <output_dir> [--n 100] [--gap 2.5]
 """
 
@@ -60,15 +60,15 @@ def main():
     reader = MixCornerReader(args.mix_port)
     time.sleep(2.0)
     if not reader.alive():
-        print("ERROR: no se pudo abrir el lector del mix (puerto 11000).", file=sys.stderr)
+        print("ERROR: could not open the mix reader (port 11000).", file=sys.stderr)
         sys.exit(1)
 
     current = "cam1"
     rows = []
-    print(f"Midiendo {args.n} conmutaciones de cámara (corte)...")
+    print(f"Measuring {args.n} camera switches (hard cut)...")
     for i in range(args.n):
-        target = CYCLE[(CYCLE.index(current) + 1) % 4]  # siempre una distinta
-        # confirmar color de partida
+        target = CYCLE[(CYCLE.index(current) + 1) % 4]  # always a different one
+        # confirm the starting colour
         _, rgb0 = reader.current()
         t0 = time.monotonic()
         send(s, f"set_video_a {target}", wait=0.0)
@@ -102,7 +102,7 @@ def main():
                 {"datos": (fields, rows), "resumen": (sfields, summary)})
 
     st = stats(lat)
-    print(f"\nOK: {len(lat)}/{args.n}  mediana={st['median']} ms  p95={st['p95']} ms  "
+    print(f"\nOK: {len(lat)}/{args.n}  median={st['median']} ms  p95={st['p95']} ms  "
           f"min={st['min']} max={st['max']}")
     print(f"  → {args.output_dir}/datos.csv , resumen.csv , datos.xlsx")
 

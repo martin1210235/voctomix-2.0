@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Verificación visual de formato para Docker y Local: por cada formato, levanta el
-# escenario, hace ffprobe de la salida del mix (:11000) y guarda un frame real (cuya
-# resolución de imagen ES la prueba). Deja la evidencia en paper/pruebas/verificacion_formatos/.
+# Visual format verification for Docker and Local: for each format, brings up the
+# scenario, runs ffprobe on the mix output (:11000) and saves a real frame (whose
+# image resolution IS the proof). Leaves the evidence in paper/pruebas/verificacion_formatos/.
 #
-# EJECUTAR SOLO con la máquina libre (NO mientras corre otra matriz: usa puertos/CPU).
+# RUN ONLY with the machine free (NOT while another matrix is running: it uses ports/CPU).
 #
 # Uso:
-#   verify_formatos.sh docker      # los 4 formatos en Docker
-#   verify_formatos.sh local       # los 4 formatos en Local (nativo)
+#   verify_formatos.sh docker      # all 4 formats on Docker
+#   verify_formatos.sh local       # all 4 formats on Local (native)
 set -u
 cd "$(dirname "${BASH_SOURCE[0]}")/../.."
 ROOT="$(pwd)"

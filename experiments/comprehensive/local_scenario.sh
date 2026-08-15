@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# Gestor del escenario LOCAL (nativo, sin Docker): voctocore + fuentes de soporte
-# + cámaras, como procesos del host. Reutiliza los mismos comandos ffmpeg de cámara
-# validados en Docker (BBB con marcadores / color sólido), pero nativos.
+# Manager for the LOCAL scenario (native, no Docker): voctocore + support sources
+# + cameras, as host processes. Reuses the same camera ffmpeg commands
+# validated on Docker (BBB with markers / solid colour), but native.
 #
 # IMPORTANTE: todos los procesos de larga vida se lanzan con `setsid ... </dev/null`
 # para que se DESLIGUEN por completo. Si no, al llamar a este script con captura de
-# salida (subprocess), heredarían el pipe y colgarían al que llama.
+# output (subprocess), they would inherit the pipe and hang the caller.
 #
 # Uso:
-#   local_scenario.sh base_up            -> voctocore + soporte (sin cámaras)
-#   local_scenario.sh cam_up <N> <cfg>   -> arranca cámara N (cfg = experiment|latency)
-#   local_scenario.sh crash <N>          -> mata la cámara N (simula caída)
+#   local_scenario.sh base_up            -> voctocore + support (no cameras)
+#   local_scenario.sh cam_up <N> <cfg>   -> starts camera N (cfg = experiment|latency)
+#   local_scenario.sh crash <N>          -> kills camera N (simulates a failure)
 #   local_scenario.sh down               -> mata todo lo nativo
 set -u
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -27,7 +27,7 @@ cam_params() {
         2) OFFSET=150; COLOR=lime;   HEX=0x00FF00; PORT=10001 ;;
         3) OFFSET=300; COLOR=blue;   HEX=0x0000FF; PORT=10002 ;;
         4) OFFSET=450; COLOR=yellow; HEX=0xFFFF00; PORT=10003 ;;
-        *) echo "cam inválida $1" >&2; return 1 ;;
+        *) echo "invalid cam $1" >&2; return 1 ;;
     esac
 }
 
@@ -55,7 +55,7 @@ start_cam() {  # $1=N $2=cfg
 case "${1:-}" in
   base_up)
     if docker ps --format '{{.Names}}' 2>/dev/null | grep -q '^voctocore$'; then
-        echo "ERROR: el voctocore de Docker está corriendo; no arranco Local"; exit 1
+        echo "ERROR: the Docker voctocore is running; not starting Local"; exit 1
     fi
     pkill -f "voctolocal_" 2>/dev/null
     pkill -f "python3 voctocore.py" 2>/dev/null
@@ -63,7 +63,7 @@ case "${1:-}" in
     # voctocore nativo (desligado con setsid)
     ( cd "$ROOT/voctocore" && setsid python3 voctocore.py </dev/null >/tmp/voctolocal_core.log 2>&1 & )
     for i in $(seq 1 45); do ss -lnt 2>/dev/null | grep -q ":9999" && break; sleep 1; done
-    ss -lnt 2>/dev/null | grep -q ":9999" || { echo "ERROR: voctocore nativo no abrió 9999"; tail -5 /tmp/voctolocal_core.log 2>/dev/null; exit 1; }
+    ss -lnt 2>/dev/null | grep -q ":9999" || { echo "ERROR: native voctocore did not open port 9999"; tail -5 /tmp/voctolocal_core.log 2>/dev/null; exit 1; }
     # fuentes de soporte (stream-blanker, audio, break, intro), todas desligadas
     setsid ffmpeg -hide_banner -nostdin -nostats -loglevel error -stream_loop -1 -re -i "$ROOT/videos/SLIDES_video_starting_soon.mp4" -pix_fmt yuv420p -s "${WIDTH}x${HEIGHT}" -r "$FRAMERATE" -c:v rawvideo -an -metadata comment=voctolocal_sb1 -f matroska tcp://127.0.0.1:17000 </dev/null >/dev/null 2>&1 &
     setsid ffmpeg -hide_banner -nostdin -nostats -loglevel error -stream_loop -1 -re -i "$ROOT/videos/stream_offline.mp4" -pix_fmt yuv420p -s "${WIDTH}x${HEIGHT}" -r "$FRAMERATE" -c:v rawvideo -an -metadata comment=voctolocal_sb2 -f matroska tcp://127.0.0.1:17001 </dev/null >/dev/null 2>&1 &
@@ -71,7 +71,7 @@ case "${1:-}" in
     setsid ffmpeg -y -nostdin -loglevel error -stream_loop -1 -i "$ROOT/videos/video_cuenta_regresiva_10s.mp4" -f lavfi -i "anullsrc=r=$AUDIORATE:cl=stereo" -filter_complex "[0:v] format=yuv420p,scale=${WIDTH}:${HEIGHT}:out_range=tv,fps=$FRAMERATE,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709 [v]; [1:a] aresample=$AUDIORATE [a]" -map "[v]" -map "[a]" -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le -metadata comment=voctolocal_break -f matroska tcp://127.0.0.1:10004 </dev/null >/dev/null 2>&1 &
     setsid ffmpeg -y -nostdin -loglevel error -stream_loop -1 -i "$ROOT/videos/intro.mp4" -f lavfi -i "anullsrc=r=$AUDIORATE:cl=stereo" -filter_complex "[0:v] format=yuv420p,scale=${WIDTH}:${HEIGHT}:out_range=tv,fps=$FRAMERATE,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709 [v]; [1:a] aresample=$AUDIORATE [a]" -map "[v]" -map "[a]" -color_primaries bt709 -color_trc bt709 -colorspace bt709 -color_range tv -pix_fmt yuv420p -c:v rawvideo -c:a pcm_s16le -metadata comment=voctolocal_intro -f matroska tcp://127.0.0.1:10005 </dev/null >/dev/null 2>&1 &
     sleep 3
-    echo "base_up OK (voctocore + cámaras de soporte)"
+    echo "base_up OK (voctocore + support cameras)"
     ;;
   cam_up)  start_cam "${2:?N}" "${3:?cfg}" ;;
   crash)

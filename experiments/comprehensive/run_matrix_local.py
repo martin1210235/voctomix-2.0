@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
-"""Orquestador del escenario LOCAL (nativo) — 4 formatos × 5 pruebas.
+"""Orchestrator for the LOCAL (native) scenario — 4 formats x 5 tests.
 
-Se ejecuta DESPUÉS de Docker (los puertos deben estar libres). Empieza con un
-SMOKE TEST que valida el arranque nativo (voctocore + 1 cámara + mix). Si el smoke
-falla, aborta sin ejecutar nada (no produce basura). Si la PRIMERA celda completa
-tiene alguna prueba abandonada (bug sistemático), también se detiene para revisión.
-Reutiliza los medidores (agnósticos al escenario) y measure_performance_local /
-local_scenario.sh para lo nativo. Checkpoints, reintentos, timeouts y auditoría.
+Runs AFTER Docker (the ports must be free). Starts with a SMOKE TEST that
+validates the native startup (voctocore + 1 camera + mix). If the smoke test
+fails, it aborts without running anything (produces no junk data). If the
+FIRST completed cell has any abandoned test (systematic bug), it also stops
+for review. Reuses the scenario-agnostic measurers and
+measure_performance_local / local_scenario.sh for the native parts.
+Checkpoints, retries, timeouts and auditing.
 
-Uso:  python3 run_matrix_local.py
+Usage:  python3 run_matrix_local.py
 """
 
 import csv
@@ -48,9 +49,9 @@ def sh(cmd, timeout=600):
 
 
 def local(cmd_args, timeout=180):
-    """Ejecuta local_scenario.sh SIN capturar por pipe (redirige a fichero), para
-    que subprocess vuelva al terminar el script y NO espere a los procesos de fondo
-    (voctocore/ffmpeg) que heredarían el pipe y colgarían la llamada."""
+    """Runs local_scenario.sh WITHOUT capturing via a pipe (redirects to a file), so
+    subprocess returns once the script finishes and does NOT wait for the background
+    processes (voctocore/ffmpeg) that would inherit the pipe and hang the call."""
     logf = "/tmp/local_scn.log"
     try:
         with open(logf, "w") as f:
@@ -82,22 +83,22 @@ def csv_rows(path):
 def validate(analysis, folder):
     rows = csv_rows(os.path.join(folder, analysis, "datos.csv"))
     if rows is None:
-        return False, "datos.csv no existe"
+        return False, "datos.csv does not exist"
     if analysis == "1-1_escalado":
         if len(rows) < 60:
-            return False, f"pocas muestras ({len(rows)})"
+            return False, f"too few samples ({len(rows)})"
         maxc = max(int(r.get("n_cameras_active", 0) or 0) for r in rows)
         if maxc < 4:
-            return False, f"no 4 cámaras (máx {maxc})"
-        return True, f"{len(rows)} muestras, hasta {maxc} cámaras"
+            return False, f"not 4 cameras (max {maxc})"
+        return True, f"{len(rows)} samples, up to {maxc} cameras"
     if analysis == "1-2_sostenida":
-        return (len(rows) >= 150, f"{len(rows)} muestras")
+        return (len(rows) >= 150, f"{len(rows)} samples")
     ok = sum(1 for r in rows if r.get("status") == "ok")
     return (len(rows) >= 90 and ok >= 80, f"{ok}/{len(rows)} ok")
 
 
 def up_cams_native(cfg):
-    """base_up + 4 cámaras nativas + espera a que el mix produzca vídeo."""
+    """base_up + 4 native cameras + wait for the mix to produce video."""
     local("down")
     r = local("base_up", timeout=180)
     if "base_up OK" not in (r.stdout or ""):
@@ -105,7 +106,7 @@ def up_cams_native(cfg):
     for n in (1, 2, 3, 4):
         local(f"cam_up {n} {cfg}")
     time.sleep(40)
-    # verificar que el mix produce un frame
+    # verify the mix produces a frame
     g = sh("timeout 20 ffmpeg -y -nostdin -loglevel error -i tcp://127.0.0.1:11000 "
            "-vf 'select=gte(t\\,1)' -frames:v 1 /tmp/local_mix.png", timeout=30)
     return os.path.isfile("/tmp/local_mix.png") and os.path.getsize("/tmp/local_mix.png") > 1000
@@ -135,30 +136,30 @@ def run_analysis(analysis, fmt, folder):
             timeout=140 * 60))
     if analysis == "2-1_lat_camara":
         if not up_cams_native("latency"):
-            return subprocess.CompletedProcess("", 1, "", "mix nativo sin vídeo (latency)")
+            return subprocess.CompletedProcess("", 1, "", "native mix has no video (latency)")
         return _save_log(out, sh(
             f"python3 -u {COMP}/measure_latency_camera.py {out} --n 100 --gap 2.5", timeout=25 * 60))
     if analysis == "2-2_lat_composicion":
         if not up_cams_native("latency"):
-            return subprocess.CompletedProcess("", 1, "", "mix nativo sin vídeo (latency)")
+            return subprocess.CompletedProcess("", 1, "", "native mix has no video (latency)")
         return _save_log(out, sh(
             f"python3 -u {COMP}/measure_latency_composite.py {out} --n 100 --gap 2.5", timeout=25 * 60))
     if analysis == "3-1_resiliencia":
         if not up_cams_native("experiment"):
-            return subprocess.CompletedProcess("", 1, "", "mix nativo sin vídeo (experiment)")
+            return subprocess.CompletedProcess("", 1, "", "native mix has no video (experiment)")
         return _save_log(out, sh(
             f"python3 -u {COMP}/measure_camera_recovery.py {out} --n 100 --gap 8 --scenario local",
             timeout=60 * 60))
-    return subprocess.CompletedProcess("", 1, "", "prueba desconocida")
+    return subprocess.CompletedProcess("", 1, "", "unknown test")
 
 
 def smoke():
-    log("  SMOKE LOCAL: validando arranque nativo (voctocore + 1 cámara + mix)...")
+    log("  SMOKE LOCAL: validating native startup (voctocore + 1 camera + mix)...")
     sh(f"bash {COMP}/set_format.sh 1080p25", timeout=60)
     local("down")
     r = local("base_up", timeout=180)
     if "base_up OK" not in (r.stdout or ""):
-        log(f"  SMOKE FALLO: voctocore nativo no arrancó. {r.stdout} {r.stderr}")
+        log(f"  SMOKE FAILED: native voctocore did not start. {r.stdout} {r.stderr}")
         local("down")
         return False
     local("cam_up 1 latency")
@@ -167,16 +168,16 @@ def smoke():
            "-vf 'select=gte(t\\,1)' -frames:v 1 /tmp/local_smoke.png", timeout=30)
     ok = os.path.isfile("/tmp/local_smoke.png") and os.path.getsize("/tmp/local_smoke.png") > 1000
     local("down")
-    log(f"  SMOKE LOCAL: {'OK (mix nativo produce vídeo)' if ok else 'FALLO (mix sin vídeo)'}")
+    log(f"  SMOKE LOCAL: {'OK (native mix produces video)' if ok else 'FAILED (mix has no video)'}")
     return ok
 
 
 def main():
     log("\n" + "=" * 70)
-    log("ORQUESTADOR MATRIZ — escenario LOCAL (nativo)")
+    log("MATRIX ORCHESTRATOR — LOCAL (native) scenario")
     log("=" * 70)
     if not smoke():
-        log("LOCAL abortado: el smoke test nativo falló. Requiere revisión manual.")
+        log("LOCAL aborted: the native smoke test failed. Requires manual review.")
         return
 
     total_ok = total_fail = total_skip = 0
@@ -184,47 +185,47 @@ def main():
     for fmt in FORMATS:
         folder = folder_for(fmt)
         os.makedirs(folder, exist_ok=True)
-        log(f"\n########## CELDA local · {fmt} ##########")
+        log(f"\n########## CELL local · {fmt} ##########")
         cell_fail = 0
         for analysis in ANALYSES:
             if validate(analysis, folder)[0]:
-                log(f"  [SKIP] {analysis} ya hecho")
+                log(f"  [SKIP] {analysis} already done")
                 total_skip += 1
                 continue
             success = False
             for attempt in range(1, MAX_RETRIES + 2):
-                log(f"  [RUN ] {analysis} (intento {attempt}) ...")
+                log(f"  [RUN ] {analysis} (attempt {attempt}) ...")
                 t0 = time.time()
                 try:
                     r = run_analysis(analysis, fmt, folder)
                 except Exception as e:
-                    log(f"  [ERROR] {analysis} intento {attempt}: {e}")
+                    log(f"  [ERROR] {analysis} attempt {attempt}: {e}")
                     local("down")
                     continue
                 okv, detv = validate(analysis, folder)
                 if okv:
-                    log(f"  [OK  ] {analysis} en {int(time.time()-t0)}s — {detv}")
+                    log(f"  [OK  ] {analysis} in {int(time.time()-t0)}s — {detv}")
                     success = True
                     break
-                log(f"  [FAIL] {analysis} intento {attempt}: {detv}. {(r.stderr or r.stdout or '')[-200:]}")
+                log(f"  [FAIL] {analysis} attempt {attempt}: {detv}. {(r.stderr or r.stdout or '')[-200:]}")
                 local("down")
             if success:
                 total_ok += 1
             else:
-                log(f"  [ABANDONADA] {analysis} tras {MAX_RETRIES+1} intentos")
+                log(f"  [ABANDONED] {analysis} after {MAX_RETRIES+1} attempts")
                 total_fail += 1
                 cell_fail += 1
-        log(f"########## FIN CELDA local · {fmt} ##########")
+        log(f"########## END CELL local · {fmt} ##########")
         if first_cell and cell_fail > 0:
-            log(f"GATE: la primera celda local tuvo {cell_fail} prueba(s) abandonada(s) "
-                f"→ posible bug sistemático. Se DETIENE Local para revisión (no se malgastan horas).")
+            log(f"GATE: the first local cell had {cell_fail} abandoned test(s) "
+                f"-> possible systematic bug. STOPPING Local for review (avoids wasting hours).")
             local("down")
             return
         first_cell = False
 
     local("down")
     log("\n" + "=" * 70)
-    log(f"MATRIZ LOCAL COMPLETADA. OK={total_ok} SKIP={total_skip} FALLIDAS={total_fail}")
+    log(f"LOCAL MATRIX COMPLETE. OK={total_ok} SKIP={total_skip} FAILED={total_fail}")
     log("=" * 70)
 
 

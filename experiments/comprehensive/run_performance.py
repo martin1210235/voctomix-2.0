@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""Análisis 1 (rendimiento) — driver de orquestación.
+"""Analysis 1 (performance) — orchestration driver.
 
-Levanta el stack (config realista BBB) y, según el modo:
-  escalado  (1.1): arranca cam1, luego cam2, cam3, cam4, cada --step-min minutos.
-  sostenida (1.2): arranca las 4 cámaras y las mantiene --duration-min minutos.
-La telemetría registra CPU%/RAM% del host todo el tiempo en sessions/sessionN.jsonl.
-Al terminar, parsea esa sesión a CSV/resumen/XLSX con parse_performance.py.
+Brings up the stack (realistic BBB config) and, depending on the mode:
+  escalado  (1.1): starts cam1, then cam2, cam3, cam4, every --step-min minutes.
+  sostenida (1.2): starts all 4 cameras and holds them for --duration-min minutes.
+Telemetry records host CPU%/RAM% the whole time in sessions/sessionN.jsonl.
+When done, that session is parsed into CSV/summary/XLSX with parse_performance.py.
 
-El formato de vídeo lo fija antes set_format.sh (no lo toca este driver).
+The video format is set beforehand by set_format.sh (this driver does not touch it).
 
-Uso:
+Usage:
   run_performance.py escalado  <output_dir> [--step-min 15]
   run_performance.py sostenida <output_dir> [--duration-min 120]
-  (opcional: --keep-up para no bajar el stack al final)
+  (optional: --keep-up to not tear down the stack at the end)
 """
 
 import argparse
@@ -45,7 +45,7 @@ def ctrl(cmd, wait=0.5):
         s.sendall((cmd + "\n").encode()); time.sleep(wait)
         s.close()
     except Exception as e:
-        print(f"[perf] aviso ctrl '{cmd}': {e}")
+        print(f"[perf] ctrl warning '{cmd}': {e}")
 
 
 def sessions_set():
@@ -69,23 +69,23 @@ def main():
     ap.add_argument("mode", choices=["escalado", "sostenida"])
     ap.add_argument("output_dir")
     ap.add_argument("--idle-min", type=float, default=15.0,
-                    help="baseline a 0 cámaras al inicio del escalado")
+                    help="baseline at 0 cameras at the start of scaling")
     ap.add_argument("--step-min", type=float, default=15.0)
     ap.add_argument("--duration-min", type=float, default=120.0)
     ap.add_argument("--keep-up", action="store_true")
     args = ap.parse_args()
 
-    print("[perf] bajando cualquier stack previo...")
+    print("[perf] tearing down any previous stack...")
     dc("down")
     time.sleep(2)
     before = sessions_set()
 
-    print("[perf] arrancando servicios base (sin cámaras)...")
+    print("[perf] starting base services (no cameras)...")
     dc("up", "-d", *NONCAM)
     if not wait_healthy("voctocore"):
-        print("ERROR: voctocore no llegó a healthy", file=sys.stderr)
+        print("ERROR: voctocore did not become healthy", file=sys.stderr)
         sys.exit(1)
-    # Esperar (hasta 30s) a que la telemetría cree su fichero de sesión.
+    # Wait (up to 30s) for telemetry to create its session file.
     session = None
     for _ in range(30):
         time.sleep(1)
@@ -94,14 +94,14 @@ def main():
             session = max(new, key=os.path.getmtime)
             break
     if session is None:
-        print("ERROR: la telemetría no creó fichero de sesión (¿SAVE_LOGS=true?).",
+        print("ERROR: telemetry did not create a session file (is SAVE_LOGS=true?).",
               file=sys.stderr)
         dc("logs", "--tail", "20", "telemetry")
         sys.exit(1)
-    print(f"[perf] sesión de telemetría: {os.path.basename(session)}")
+    print(f"[perf] telemetry session: {os.path.basename(session)}")
 
-    # Monitor del MIX en pantalla, solo si SHOW_GUI=1 (ejecución supervisada).
-    # En ejecución autónoma NO se abre GUI (evita cuelgues y no hace falta).
+    # On-screen mix monitor, only if SHOW_GUI=1 (supervised run).
+    # In unattended runs, the GUI is NOT opened (avoids hangs and isn't needed).
     if os.environ.get("SHOW_GUI") == "1":
         try:
             subprocess.run(["bash", os.path.join(os.path.dirname(__file__), "show_gui.sh")],
@@ -111,37 +111,37 @@ def main():
 
     if args.mode == "escalado":
         step = args.step_min * 60
-        print(f"[perf] baseline {args.idle_min} min con 0 cámaras (t={time.strftime('%H:%M:%S')})...")
+        print(f"[perf] baseline {args.idle_min} min at 0 cameras (t={time.strftime('%H:%M:%S')})...")
         time.sleep(args.idle_min * 60)
         for cam in CAMS:
-            print(f"[perf] activando {cam} (t={time.strftime('%H:%M:%S')}), midiendo {args.step_min} min...")
+            print(f"[perf] activating {cam} (t={time.strftime('%H:%M:%S')}), measuring {args.step_min} min...")
             dc("up", "-d", cam)
-            time.sleep(8)                 # dejar que la cámara conecte
-            ctrl(f"set_video_a {cam}")    # mostrarla en el monitor (no afecta a la medida)
+            time.sleep(8)                 # let the camera connect
+            ctrl(f"set_video_a {cam}")    # show it on the monitor (does not affect the measurement)
             time.sleep(max(0, step - 8))
     else:  # sostenida
-        print("[perf] activando las 4 cámaras...")
+        print("[perf] activating all 4 cameras...")
         dc("up", "-d", *CAMS)
         time.sleep(8)
         ctrl("set_video_a cam1")
-        print(f"[perf] carga sostenida {args.duration_min} min (t={time.strftime('%H:%M:%S')})...")
+        print(f"[perf] sustained load {args.duration_min} min (t={time.strftime('%H:%M:%S')})...")
         time.sleep(args.duration_min * 60)
 
-    print("[perf] fin de la ventana de medida.")
-    # Buscar la sesión final (por si el índice cambió)
+    print("[perf] end of the measurement window.")
+    # Look for the final session (in case the index changed)
     if session is None:
         after = sessions_set() - before
         session = max(after, key=os.path.getmtime) if after else None
     if session is None:
-        print("ERROR: no se encontró la sesión de telemetría.", file=sys.stderr)
+        print("ERROR: telemetry session not found.", file=sys.stderr)
         sys.exit(1)
 
     if not args.keep_up:
-        print("[perf] bajando el stack...")
+        print("[perf] tearing down the stack...")
         dc("down")
 
     label = args.mode
-    print(f"[perf] parseando {os.path.basename(session)} -> {args.output_dir}")
+    print(f"[perf] parsing {os.path.basename(session)} -> {args.output_dir}")
     subprocess.run([sys.executable,
                     os.path.join(os.path.dirname(__file__), "parse_performance.py"),
                     session, args.output_dir, "--label", label])

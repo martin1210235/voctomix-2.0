@@ -1,6 +1,7 @@
-# Pod mínimo que mantiene la imagen voctomix-voctocore:latest SIEMPRE en uso, para que
-# el garbage collector de imágenes de k3s no la borre (solo elimina imágenes sin usar).
-# Va en el namespace 'default' (la matriz nunca lo borra), así sobrevive a los teardowns.
+# Minimal pod that keeps the voctomix-voctocore:latest image ALWAYS in use, so
+# k3s's image garbage collector never removes it (it only removes unused images).
+# Lives in the 'default' namespace (the test matrix never tears that down), so it
+# survives every teardown.
 apiVersion: apps/v1
 kind: Deployment
 metadata:

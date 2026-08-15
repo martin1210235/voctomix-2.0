@@ -1,14 +1,14 @@
-# Latencia — conmutación de cámara
+# Latency — camera switching
 
-**Escenario:** Docker · **Formato:** 1080p25 (1920×1080 @ 25 fps)
-**Hardware:** Intel Core i9-10900X, 128 GB RAM, Ubuntu 22.04 (aplicaciones cerradas).
+**Scenario:** Docker · **Format:** 1080p25 (1920×1080 @ 25 fps)
+**Hardware:** Intel Core i9-10900X, 128 GB RAM, Ubuntu 22.04 (other applications closed).
 
-## Qué se mide
-Latencia de vídeo real (glass-to-glass) al conmutar de cámara en corte, detectada por color en la salida del mix. 100 repeticiones.
+## What is measured
+Real (glass-to-glass) video latency when switching cameras via a hard cut, detected by colour in the mix output. 100 repetitions.
 
-## Resultado
-Latencia mediana: **293.0 ms** (n=100).
+## Result
+Median latency: **293.0 ms** (n=100).
 
-## Ficheros
-`datos.csv` (datos crudos), `resumen.csv` (estadística), `datos.xlsx` (Excel). El formato de
-la salida se verificó con ffprobe (ver `paper/pruebas/verificacion_formatos/`).
+## Files
+`datos.csv` (raw data), `resumen.csv` (statistics), `datos.xlsx` (Excel). The output format
+was verified with ffprobe (see `paper/pruebas/verificacion_formatos/`).

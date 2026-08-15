@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Genera el manifiesto del pod de SOPORTE para K8s (stream-blanker, audio, break,
-intro), replicando exactamente las fuentes de local_scenario.sh base_up, con
-hostNetwork y el vídeo montado por hostPath. Parametrizado por formato.
+"""Generates the SUPPORT pod manifest for K8s (stream blanker, audio, break,
+intro), replicating exactly the sources from local_scenario.sh base_up, with
+hostNetwork and the video mounted via hostPath. Parametrized by format.
 
 Uso:
   python3 gen_support_manifest.py <1080p25|1080p50|2160p25|2160p50> [salida.yaml]

@@ -47,7 +47,7 @@ for w in scr.get_windows():
         mon = w
     elif n == "Voctomix GUI":
         gui = w
-# Monitor: pequeño arriba-derecha si hay voctogui, grande si va solo.
+# Monitor: small, top-right, if voctogui is present; large if running standalone.
 if mon:
     try:
         mon.unmaximize()

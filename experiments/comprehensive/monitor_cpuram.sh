@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Monitor EN VIVO para la demo: muestra CPU%, RAM% (misma fórmula que datos.csv, igual
-# que htop) y la RESOLUCIÓN en uso (leída del config de voctocore). Resalta el cambio de
-# resolución para que se vea claramente en el vídeo.
+# LIVE monitor for the demo: shows CPU%, RAM% (same formula as datos.csv, same
+# as htop) and the RESOLUTION in use (read from the voctocore config). Highlights the
+# resolution change so it is clearly visible in the video.
 #   CPU% = 100*(1 - Δidle/Δtotal)   RAM% = 100*(MemTotal-MemAvailable)/MemTotal
 # Uso:  monitor_cpuram.sh [segundos_entre_muestras]   (por defecto 2)
 INT="${1:-2}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-echo "  CPU/RAM (misma fórmula que datos.csv = htop) + RESOLUCIÓN en uso"
+echo "  CPU/RAM (same formula as datos.csv = htop) + RESOLUTION in use"
 echo "  ------------------------------------------------------------------"
 CFG="$ROOT/voctocore/default-config.ini" python3 - "$INT" <<'PY'
 import sys, time, os, re
@@ -39,7 +39,7 @@ while True:
     i0, t0 = i1, t1
     res = resolucion()
     if res != prev_res and prev_res is not None:
-        print(f"  ===== RESOLUCIÓN CAMBIADA A {res} =====", flush=True)
+        print(f"  ===== RESOLUTION CHANGED TO {res} =====", flush=True)
     prev_res = res
-    print(f"  {time.strftime('%H:%M:%S')}   CPU={c:5.1f}%   RAM={ram():4.1f}%   RESOLUCIÓN={res}", flush=True)
+    print(f"  {time.strftime('%H:%M:%S')}   CPU={c:5.1f}%   RAM={ram():4.1f}%   RESOLUTION={res}", flush=True)
 PY
