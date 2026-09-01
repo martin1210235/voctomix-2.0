@@ -13,7 +13,7 @@
 
 <img src="docs/assets/demo.gif" alt="Voctomix 2.0 — live multi-camera mixing, program output and telemetry" width="92%">
 
-<sub>Live demo — multi-camera switching, on-air overlays and real-time telemetry. Full thesis, defense slides and paper in <a href="entregables/">entregables/</a>.</sub>
+<sub>Live demo — multi-camera switching, on-air overlays and real-time telemetry.</sub>
 
 </div>
 
@@ -206,13 +206,9 @@ In-depth documentation is provided in [`docs/`](docs/):
 | [CONFIGURATION.md](docs/CONFIGURATION.md) | `default-config.ini` reference |
 | [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) | Known issues and fixes |
 
-The Bachelor's Thesis report, defense slides and the associated scientific paper are in [`entregables/`](entregables/):
-
-| File | Contents |
-|---|---|
-| [TFG_Voctomix2.0_Martin_Herranz.pdf](entregables/TFG_Voctomix2.0_Martin_Herranz.pdf) | Full thesis report |
-| [Presentacion_Defensa_Voctomix2.0.pptx](entregables/Presentacion_Defensa_Voctomix2.0.pptx) | Defense presentation slides |
-| [Paper_Voctomix2.0_MDPI.pdf](entregables/Paper_Voctomix2.0_MDPI.pdf) | MDPI scientific paper |
+The raw experimental data supporting the reported results is in [`paper/pruebas/`](paper/pruebas/),
+organised by deployment scenario and video profile, with one folder per test case containing the
+per-event measurements (`datos.csv`) and their summary (`resumen.csv`).
 
 ---
 
@@ -259,7 +255,7 @@ voctomix-2.0/
 ├── start_studio_single_pc.sh       # Scenario 1: single-PC native launcher
 ├── .github/workflows/              # Continuous integration (pycodestyle lint)
 ├── docs/                           # Project documentation and assets
-└── entregables/                    # Thesis report, defense slides, scientific paper
+└── paper/pruebas/                  # Raw experimental data (CSV per test case)
 ```
 
 ---
