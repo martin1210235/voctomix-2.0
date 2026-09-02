@@ -1,0 +1,63 @@
+=== output-integrity campaign :: tier=local reps=3 dur=60s ===
+
+--- local / 1080p25 (25 fps) ---
+    4/4 sources up; warm-up 35s
+[*] Counting 60s of delivered frames for 'local_1080p25' ...
+[*] Stream reported: 1920x1080@25
+[OK] local_1080p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=65.7%
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'local_1080p25' ...
+[*] Stream reported: 1920x1080@25
+[OK] local_1080p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=68.1%
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'local_1080p25' ...
+[*] Stream reported: 1920x1080@25
+[OK] local_1080p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=93.1%
+[*] Appended to output_integrity.csv
+
+--- local / 1080p50 (50 fps) ---
+    4/4 sources up; warm-up 35s
+[*] Counting 60s of delivered frames for 'local_1080p50' ...
+[*] Stream reported: 1920x1080@50
+[OK] local_1080p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=85.7%
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'local_1080p50' ...
+[*] Stream reported: 1920x1080@50
+[OK] local_1080p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=83.9%
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'local_1080p50' ...
+[*] Stream reported: 1920x1080@50
+[OK] local_1080p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=83.6%
+[*] Appended to output_integrity.csv
+
+--- local / 2160p25 (25 fps) ---
+    4/4 sources up; warm-up 35s
+[*] Counting 60s of delivered frames for 'local_2160p25' ...
+[*] Stream reported: 3840x2160@25
+[OK] local_2160p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=92.0%
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'local_2160p25' ...
+[*] Stream reported: 3840x2160@25
+[OK] local_2160p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=92.3%
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'local_2160p25' ...
+[*] Stream reported: 3840x2160@25
+[OK] local_2160p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=91.5%
+[*] Appended to output_integrity.csv
+
+--- local / 2160p50 (50 fps) ---
+    4/4 sources up; warm-up 35s
+[*] Counting 60s of delivered frames for 'local_2160p50' ...
+[*] Stream reported: 3840x2160@50
+[OK] local_2160p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=90.2%
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'local_2160p50' ...
+[*] Stream reported: 3840x2160@50
+[OK] local_2160p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=90.1%
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'local_2160p50' ...
+[*] Stream reported: 3840x2160@50
+[OK] local_2160p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=90.5%
+[*] Appended to output_integrity.csv
+
+=== local done ===

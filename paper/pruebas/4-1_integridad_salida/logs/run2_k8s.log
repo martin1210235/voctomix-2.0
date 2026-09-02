@@ -1,0 +1,99 @@
+=== output-integrity campaign :: tier=k8s reps=3 dur=60s ===
+
+--- k8s / 1080p25 (25 fps) ---
+    4/4 sources up; warm-up 35s
+[*] Counting 60s of delivered frames for 'k8s_1080p25' ...
+[*] Stream reported: 1920x1080@25
+[OK] k8s_1080p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=63.5%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'k8s_1080p25' ...
+[*] Stream reported: 1920x1080@25
+[OK] k8s_1080p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=64.1%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'k8s_1080p25' ...
+[*] Stream reported: 1920x1080@25
+[OK] k8s_1080p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=93.2%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'k8s_1080p25' ...
+[OK] k8s_1080p25: 208/250 visually distinct frames (42 duplicates, 16.80%)  unique_fps=20.80
+[*] Appended to frame_freshness.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'k8s_1080p25' ...
+[OK] k8s_1080p25: 232/250 visually distinct frames (18 duplicates, 7.20%)  unique_fps=23.20
+[*] Appended to frame_freshness.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'k8s_1080p25' ...
+[OK] k8s_1080p25: 220/250 visually distinct frames (30 duplicates, 12.00%)  unique_fps=22.00
+[*] Appended to frame_freshness.csv
+
+--- k8s / 1080p50 (50 fps) ---
+    4/4 sources up; warm-up 35s
+[*] Counting 60s of delivered frames for 'k8s_1080p50' ...
+[*] Stream reported: 1920x1080@50
+[OK] k8s_1080p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=83.7%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'k8s_1080p50' ...
+[*] Stream reported: 1920x1080@50
+[OK] k8s_1080p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=83.1%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'k8s_1080p50' ...
+[*] Stream reported: 1920x1080@50
+[OK] k8s_1080p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=82.2%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'k8s_1080p50' ...
+[OK] k8s_1080p50: 15/500 visually distinct frames (485 duplicates, 97.00%)  unique_fps=1.50
+[*] Appended to frame_freshness.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'k8s_1080p50' ...
+[OK] k8s_1080p50: 14/500 visually distinct frames (486 duplicates, 97.20%)  unique_fps=1.40
+[*] Appended to frame_freshness.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'k8s_1080p50' ...
+[OK] k8s_1080p50: 15/500 visually distinct frames (485 duplicates, 97.00%)  unique_fps=1.50
+[*] Appended to frame_freshness.csv
+
+--- k8s / 2160p25 (25 fps) ---
+    4/4 sources up; warm-up 35s
+[*] Counting 60s of delivered frames for 'k8s_2160p25' ...
+[*] Stream reported: 3840x2160@25
+[OK] k8s_2160p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=90.6%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'k8s_2160p25' ...
+[*] Stream reported: 3840x2160@25
+[OK] k8s_2160p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=91.0%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'k8s_2160p25' ...
+[*] Stream reported: 3840x2160@25
+[OK] k8s_2160p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=90.4%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'k8s_2160p25' ...
+[OK] k8s_2160p25: 11/250 visually distinct frames (239 duplicates, 95.60%)  unique_fps=1.10
+[*] Appended to frame_freshness.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'k8s_2160p25' ...
+[OK] k8s_2160p25: 11/250 visually distinct frames (239 duplicates, 95.60%)  unique_fps=1.10
+[*] Appended to frame_freshness.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'k8s_2160p25' ...
+[OK] k8s_2160p25: 11/250 visually distinct frames (239 duplicates, 95.60%)  unique_fps=1.10
+[*] Appended to frame_freshness.csv
+
+--- k8s / 2160p50 (50 fps) ---
+    4/4 sources up; warm-up 35s
+[*] Counting 60s of delivered frames for 'k8s_2160p50' ...
+[*] Stream reported: 3840x2160@50
+[OK] k8s_2160p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=88.0%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'k8s_2160p50' ...
+[*] Stream reported: 3840x2160@50
+[OK] k8s_2160p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=87.7%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'k8s_2160p50' ...
+[*] Stream reported: 3840x2160@50
+[OK] k8s_2160p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=88.2%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'k8s_2160p50' ...
+[OK] k8s_2160p50: 7/500 visually distinct frames (493 duplicates, 98.60%)  unique_fps=0.70
+[*] Appended to frame_freshness.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'k8s_2160p50' ...
+[OK] k8s_2160p50: 7/500 visually distinct frames (493 duplicates, 98.60%)  unique_fps=0.70
+[*] Appended to frame_freshness.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'k8s_2160p50' ...
+[OK] k8s_2160p50: 7/500 visually distinct frames (493 duplicates, 98.60%)  unique_fps=0.70
+[*] Appended to frame_freshness.csv
+
+=== k8s done ===

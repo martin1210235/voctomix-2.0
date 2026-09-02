@@ -1,0 +1,99 @@
+=== output-integrity campaign :: tier=local reps=3 dur=60s ===
+
+--- local / 1080p25 (25 fps) ---
+    4/4 sources up; warm-up 35s
+[*] Counting 60s of delivered frames for 'local_1080p25' ...
+[*] Stream reported: 1920x1080@25
+[OK] local_1080p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=67.1%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'local_1080p25' ...
+[*] Stream reported: 1920x1080@25
+[OK] local_1080p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=67.4%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'local_1080p25' ...
+[*] Stream reported: 1920x1080@25
+[OK] local_1080p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=94.1%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'local_1080p25' ...
+[OK] local_1080p25: 17/250 visually distinct frames (233 duplicates, 93.20%)  unique_fps=1.70
+[*] Appended to frame_freshness.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'local_1080p25' ...
+[OK] local_1080p25: 16/250 visually distinct frames (234 duplicates, 93.60%)  unique_fps=1.60
+[*] Appended to frame_freshness.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'local_1080p25' ...
+[OK] local_1080p25: 16/250 visually distinct frames (234 duplicates, 93.60%)  unique_fps=1.60
+[*] Appended to frame_freshness.csv
+
+--- local / 1080p50 (50 fps) ---
+    4/4 sources up; warm-up 35s
+[*] Counting 60s of delivered frames for 'local_1080p50' ...
+[*] Stream reported: 1920x1080@50
+[OK] local_1080p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=84.6%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'local_1080p50' ...
+[*] Stream reported: 1920x1080@50
+[OK] local_1080p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=82.8%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'local_1080p50' ...
+[*] Stream reported: 1920x1080@50
+[OK] local_1080p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=81.9%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'local_1080p50' ...
+[OK] local_1080p50: 15/500 visually distinct frames (485 duplicates, 97.00%)  unique_fps=1.50
+[*] Appended to frame_freshness.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'local_1080p50' ...
+[OK] local_1080p50: 14/500 visually distinct frames (486 duplicates, 97.20%)  unique_fps=1.40
+[*] Appended to frame_freshness.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'local_1080p50' ...
+[OK] local_1080p50: 13/500 visually distinct frames (487 duplicates, 97.40%)  unique_fps=1.30
+[*] Appended to frame_freshness.csv
+
+--- local / 2160p25 (25 fps) ---
+    4/4 sources up; warm-up 35s
+[*] Counting 60s of delivered frames for 'local_2160p25' ...
+[*] Stream reported: 3840x2160@25
+[OK] local_2160p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=91.0%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'local_2160p25' ...
+[*] Stream reported: 3840x2160@25
+[OK] local_2160p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=91.4%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'local_2160p25' ...
+[*] Stream reported: 3840x2160@25
+[OK] local_2160p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=90.7%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'local_2160p25' ...
+[OK] local_2160p25: 11/250 visually distinct frames (239 duplicates, 95.60%)  unique_fps=1.10
+[*] Appended to frame_freshness.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'local_2160p25' ...
+[OK] local_2160p25: 11/250 visually distinct frames (239 duplicates, 95.60%)  unique_fps=1.10
+[*] Appended to frame_freshness.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'local_2160p25' ...
+[OK] local_2160p25: 12/250 visually distinct frames (238 duplicates, 95.20%)  unique_fps=1.20
+[*] Appended to frame_freshness.csv
+
+--- local / 2160p50 (50 fps) ---
+    4/4 sources up; warm-up 35s
+[*] Counting 60s of delivered frames for 'local_2160p50' ...
+[*] Stream reported: 3840x2160@50
+[OK] local_2160p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=87.9%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'local_2160p50' ...
+[*] Stream reported: 3840x2160@50
+[OK] local_2160p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=87.7%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'local_2160p50' ...
+[*] Stream reported: 3840x2160@50
+[OK] local_2160p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=88.2%  sources=4->4
+[*] Appended to output_integrity.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'local_2160p50' ...
+[OK] local_2160p50: 6/500 visually distinct frames (494 duplicates, 98.80%)  unique_fps=0.60
+[*] Appended to frame_freshness.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'local_2160p50' ...
+[OK] local_2160p50: 7/500 visually distinct frames (493 duplicates, 98.60%)  unique_fps=0.70
+[*] Appended to frame_freshness.csv
+[*] Capturing 10s from tcp://127.0.0.1:11000 to RAM for 'local_2160p50' ...
+[OK] local_2160p50: 7/500 visually distinct frames (493 duplicates, 98.60%)  unique_fps=0.70
+[*] Appended to frame_freshness.csv
+
+=== local done ===

@@ -1,0 +1,8 @@
+[*] pre-rendering 2s of raw 2160p50 frames into RAM ...
+[*] source clip: 1,2G
+[*] starting voctocore + support sources
+[*] starting four copy-only cameras (no codec, no synthesis)
+[*] copy-only cameras alive: 4/4
+[*] Capturing 15s from tcp://127.0.0.1:11000 to RAM for 'rawsrc_2160p50' ...
+[OK] rawsrc_2160p50: 19/750 visually distinct frames (731 duplicates, 97.47%)  unique_fps=1.27
+[*] Appended to frame_freshness.csv

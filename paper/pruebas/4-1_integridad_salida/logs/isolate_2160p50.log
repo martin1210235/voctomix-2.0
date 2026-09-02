@@ -1,0 +1,6 @@
+[*] 2160p50: voctocore + support sources (same as the realistic run)
+[*] starting four synthetic cameras (testsrc2, no decoding)
+[*] synthetic cameras alive: 4/4
+[*] Capturing 15s from tcp://127.0.0.1:11000 to RAM for 'synthetic-src_2160p50' ...
+[OK] synthetic-src_2160p50: 17/750 visually distinct frames (733 duplicates, 97.73%)  unique_fps=1.13
+[*] Appended to frame_freshness.csv

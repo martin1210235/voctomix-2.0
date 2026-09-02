@@ -1,0 +1,63 @@
+=== output-integrity campaign :: tier=docker reps=3 dur=60s ===
+
+--- docker / 1080p25 (25 fps) ---
+    4/4 sources up; warm-up 35s
+[*] Counting 60s of delivered frames for 'docker_1080p25' ...
+[*] Stream reported: 1920x1080@25
+[OK] docker_1080p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=71.7%
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'docker_1080p25' ...
+[*] Stream reported: 1920x1080@25
+[OK] docker_1080p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=72.5%
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'docker_1080p25' ...
+[*] Stream reported: 1920x1080@25
+[OK] docker_1080p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=95.4%
+[*] Appended to output_integrity.csv
+
+--- docker / 1080p50 (50 fps) ---
+    4/4 sources up; warm-up 35s
+[*] Counting 60s of delivered frames for 'docker_1080p50' ...
+[*] Stream reported: 1920x1080@50
+[OK] docker_1080p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=86.9%
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'docker_1080p50' ...
+[*] Stream reported: 1920x1080@50
+[OK] docker_1080p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=85.7%
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'docker_1080p50' ...
+[*] Stream reported: 1920x1080@50
+[OK] docker_1080p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=85.6%
+[*] Appended to output_integrity.csv
+
+--- docker / 2160p25 (25 fps) ---
+    4/4 sources up; warm-up 35s
+[*] Counting 60s of delivered frames for 'docker_2160p25' ...
+[*] Stream reported: 3840x2160@25
+[OK] docker_2160p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=93.1%
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'docker_2160p25' ...
+[*] Stream reported: 3840x2160@25
+[OK] docker_2160p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=93.4%
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'docker_2160p25' ...
+[*] Stream reported: 3840x2160@25
+[OK] docker_2160p25: delivered 1500/1500 frames  drop=0.0000%  out_fps=25.000  host_cpu=93.1%
+[*] Appended to output_integrity.csv
+
+--- docker / 2160p50 (50 fps) ---
+    4/4 sources up; warm-up 35s
+[*] Counting 60s of delivered frames for 'docker_2160p50' ...
+[*] Stream reported: 3840x2160@50
+[OK] docker_2160p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=92.1%
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'docker_2160p50' ...
+[*] Stream reported: 3840x2160@50
+[OK] docker_2160p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=91.8%
+[*] Appended to output_integrity.csv
+[*] Counting 60s of delivered frames for 'docker_2160p50' ...
+[*] Stream reported: 3840x2160@50
+[OK] docker_2160p50: delivered 3000/3000 frames  drop=0.0000%  out_fps=50.000  host_cpu=92.1%
+[*] Appended to output_integrity.csv
+
+=== docker done ===

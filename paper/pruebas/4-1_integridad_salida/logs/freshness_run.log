@@ -1,0 +1,32 @@
+
+--- freshness :: docker / 1080p25 ---
+[*] Capturing 5s from tcp://127.0.0.1:11000 to RAM for 'docker_1080p25' ...
+[OK] docker_1080p25: 125/125 visually distinct frames (0 duplicates, 0.00%)  unique_fps=25.00
+[*] Appended to frame_freshness.csv
+
+--- freshness :: docker / 2160p50 ---
+[*] Capturing 5s from tcp://127.0.0.1:11000 to RAM for 'docker_2160p50' ...
+[OK] docker_2160p50: 4/250 visually distinct frames (246 duplicates, 98.40%)  unique_fps=0.80
+[*] Appended to frame_freshness.csv
+
+--- freshness :: local / 1080p25 ---
+[*] Capturing 5s from tcp://127.0.0.1:11000 to RAM for 'local_1080p25' ...
+[OK] local_1080p25: 125/125 visually distinct frames (0 duplicates, 0.00%)  unique_fps=25.00
+[*] Appended to frame_freshness.csv
+
+--- freshness :: local / 2160p50 ---
+[*] Capturing 5s from tcp://127.0.0.1:11000 to RAM for 'local_2160p50' ...
+[OK] local_2160p50: 3/250 visually distinct frames (247 duplicates, 98.80%)  unique_fps=0.60
+[*] Appended to frame_freshness.csv
+
+--- freshness :: k8s / 1080p25 ---
+[*] Capturing 5s from tcp://127.0.0.1:11000 to RAM for 'k8s_1080p25' ...
+[OK] k8s_1080p25: 123/125 visually distinct frames (2 duplicates, 1.60%)  unique_fps=24.60
+[*] Appended to frame_freshness.csv
+
+--- freshness :: k8s / 2160p50 ---
+[*] Capturing 5s from tcp://127.0.0.1:11000 to RAM for 'k8s_2160p50' ...
+[OK] k8s_2160p50: 4/250 visually distinct frames (246 duplicates, 98.40%)  unique_fps=0.80
+[*] Appended to frame_freshness.csv
+
+=== freshness campaign done ===
