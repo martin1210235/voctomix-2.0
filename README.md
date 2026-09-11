@@ -21,11 +21,21 @@ Voctomix 2.0 is an evolution of the open-source live video mixing system origina
 
 The system has been used within the **CyberNEMO** European research project at the Grupo de Aplicación de Telecomunicaciones Visuales (GATV), Universidad Politécnica de Madrid (UPM).
 
-> **Academic context.** This repository contains the software developed for a Bachelor's Thesis (Trabajo Fin de Grado) in Telecommunication Engineering.
-> - **Author:** Martín Herranz Sánchez
+> **Publication.** This repository contains the software evaluated in the following peer-reviewed article, currently under review:
+>
+> M. Herranz-Sánchez, Á. Llorente-Gómez, A. del Río-Ponce and D. Jiménez-Bermejo,
+> *"Beyond Hardware Mixers: A Resilient Cloud-Native Architecture for Real-Time Remote Video Production"*,
+> **Applied Sciences**, MDPI. Manuscript ID `applsci-4524474`.
+>
+> The raw experimental data supporting the article is archived with a persistent identifier at
+> [Kaggle, DOI 10.34740/KAGGLE/DSV/19389804](https://www.kaggle.com/dsv/19389804).
+>
+> - **Software author:** Martín Herranz-Sánchez ([ORCID 0009-0002-7781-7118](https://orcid.org/0009-0002-7781-7118))
 > - **Institution:** Escuela Técnica Superior de Ingenieros de Telecomunicación (ETSIT), Universidad Politécnica de Madrid (UPM)
-> - **Research group / project:** GATV — CyberNEMO
-> - **Academic year:** 2025–2026
+> - **Research group / project:** GATV — CyberNEMO, Horizon Europe grant agreement No. 101168182
+>
+> This is the development repository. The institutional repository referenced by the article is hosted at
+> [GATV GitLab](https://gitlab.com/GATV/cybernemo/voctomix-journal).
 
 ---
 
@@ -328,14 +338,17 @@ The complete AMQP event chain and JSON schema are documented in [docs/TELEMETRY.
 
 ## Validation and Reproducibility
 
-The system was validated across the four deployment scenarios. Resilience was measured as the median time for the program output to recover after an input source disconnects and reconnects:
+The system was evaluated across three deployment tiers, native, Docker Compose and single-node Kubernetes, and four video profiles from 1080p25 to 2160p50, on a single workstation (Intel Core i9-10900X, 128 GB RAM, Ubuntu 22.04). Headline results under a continuous four-source 1080p25 workload:
 
-| Deployment | Median program-recovery time |
+| Metric | Result |
 |---|---|
-| Docker Compose | ≈ 520 ms |
-| Kubernetes (Minikube) | ≈ 570 ms |
+| Command-to-output switching latency (median) | 293 ms, IQR 291–294 ms (Docker and Kubernetes) |
+| Camera recovery after an ungraceful failure (median) | ≈ 1.8 s, with the programme feed kept live throughout |
+| Delivered frames at the programme sink | 0.00% drop rate across 72 measurements |
 
-The measurement scripts used to reproduce these figures are kept under [`experiments/`](experiments/). Selected result artifacts are kept under `sessions/` in the development repository; large runtime logs are not bundled in the public export by default. The complete experimental methodology and the full set of results are reported in the thesis.
+The switching figure is an internal command-to-output latency of the mixer. It excludes camera capture and wide-area transport, so it is not an end-to-end REMI latency.
+
+The measurement scripts are kept under [`experiments/`](experiments/), and the per-event raw data under [`paper/pruebas/`](paper/pruebas/), organised by deployment tier and video profile, with `datos.csv` and `resumen.csv` per test case. The complete dataset is also archived with a persistent identifier at [Kaggle, DOI 10.34740/KAGGLE/DSV/19389804](https://www.kaggle.com/dsv/19389804). Full methodology and results are reported in the article.
 
 <div align="center">
 <img src="docs/assets/production_cybernemo.png" alt="Voctomix 2.0 in production during a CyberNEMO trial" width="80%">
@@ -346,7 +359,9 @@ The measurement scripts used to reproduce these figures are kept under [`experim
 
 ## Based On
 
-This project is a fork and extension of [voc/voctomix](https://github.com/voc/voctomix) (branch `voctomix2`), originally developed by the C3VOC team. The new features, the container and Kubernetes deployment, the launch scripts and this documentation were developed as part of a Bachelor's Thesis in Telecommunication Engineering (2025–2026).
+This project is a fork and extension of [voc/voctomix](https://github.com/voc/voctomix), originally developed by the C3VOC team. The fork point is branch `voctomix2` at commit [`558489d`](https://github.com/voc/voctomix/tree/558489d187958efac1d8285c77b2ad368487335f) (December 2018).
+
+The composite and transition engine, the mirroring, the base stream blanker and the audio mixer are inherited from upstream. The contributions of this work are the overlay subsystem, the AMQP telemetry exporter, the operator-level three-state blanking control with its audio coupling, the container and Kubernetes deployment topologies, modifications to the compositing path, and the empirical evaluation. The article reports this delta capability by capability.
 
 ---
 

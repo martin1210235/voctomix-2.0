@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+message: "If you use this software, please cite both the software and the article below."
 title: "Voctomix 2.0 — Full-HD software live video mixer for reproducible remote production"
 abstract: >-
   An evolution of the C3VOC voctomix live video mixer (voctocore + voctogui),
@@ -8,8 +8,21 @@ abstract: >-
   validated across single-PC, two-PC, Docker Compose and Kubernetes scenarios.
 type: software
 authors:
-  - family-names: "Herranz Sánchez"
+  - family-names: "Herranz-Sánchez"
     given-names: "Martín"
+    orcid: "https://orcid.org/0009-0002-7781-7118"
+    affiliation: "ETSIT, Universidad Politécnica de Madrid (UPM)"
+  - family-names: "Llorente-Gómez"
+    given-names: "Álvaro"
+    orcid: "https://orcid.org/0000-0001-8737-2402"
+    affiliation: "ETSIT, Universidad Politécnica de Madrid (UPM)"
+  - family-names: "del Río-Ponce"
+    given-names: "Alberto"
+    orcid: "https://orcid.org/0000-0002-6832-4381"
+    affiliation: "ETSIT, Universidad Politécnica de Madrid (UPM)"
+  - family-names: "Jiménez-Bermejo"
+    given-names: "David"
+    orcid: "https://orcid.org/0000-0002-7382-4276"
     affiliation: "ETSIT, Universidad Politécnica de Madrid (UPM)"
 version: 2.0.0
 date-released: 2026-07-13
@@ -19,7 +32,45 @@ keywords:
   - live video mixing
   - GStreamer
   - remote production
-  - broadcasting
+  - REMI
+  - broadcast automation
+  - low-latency streaming
   - Docker
   - Kubernetes
   - telemetry
+references:
+  - type: data
+    title: "Voctomix 2.0 — experimental dataset"
+    authors:
+      - family-names: "Herranz-Sánchez"
+        given-names: "Martín"
+      - family-names: "Llorente-Gómez"
+        given-names: "Álvaro"
+      - family-names: "del Río-Ponce"
+        given-names: "Alberto"
+      - family-names: "Jiménez-Bermejo"
+        given-names: "David"
+    doi: "10.34740/KAGGLE/DSV/19389804"
+    url: "https://www.kaggle.com/dsv/19389804"
+    year: 2026
+preferred-citation:
+  type: article
+  title: "Beyond Hardware Mixers: A Resilient Cloud-Native Architecture for Real-Time Remote Video Production"
+  authors:
+    - family-names: "Herranz-Sánchez"
+      given-names: "Martín"
+      orcid: "https://orcid.org/0009-0002-7781-7118"
+    - family-names: "Llorente-Gómez"
+      given-names: "Álvaro"
+      orcid: "https://orcid.org/0000-0001-8737-2402"
+    - family-names: "del Río-Ponce"
+      given-names: "Alberto"
+      orcid: "https://orcid.org/0000-0002-6832-4381"
+    - family-names: "Jiménez-Bermejo"
+      given-names: "David"
+      orcid: "https://orcid.org/0000-0002-7382-4276"
+  journal: "Applied Sciences"
+  publisher:
+    name: "MDPI"
+  year: 2026
+  notes: "Under review. Manuscript ID applsci-4524474."
