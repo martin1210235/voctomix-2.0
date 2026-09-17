@@ -72,5 +72,11 @@ preferred-citation:
   journal: "Applied Sciences"
   publisher:
     name: "MDPI"
+  volume: 16
+  issue: 18
+  number: "9253"
   year: 2026
-  notes: "Under review. Manuscript ID applsci-4524474."
+  month: 9
+  issn: "2076-3417"
+  doi: "10.3390/app16189253"
+  url: "https://www.mdpi.com/2076-3417/16/18/9253"

@@ -5,6 +5,7 @@
 **Full-HD software live video mixer, extended and containerized for reproducible remote production.**
 
 [![CI](https://github.com/martin1210235/voctomix-2.0/actions/workflows/ci.yml/badge.svg)](https://github.com/martin1210235/voctomix-2.0/actions/workflows/ci.yml)
+[![DOI](https://img.shields.io/badge/DOI-10.3390%2Fapp16189253-B31B1B)](https://doi.org/10.3390/app16189253)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![GStreamer](https://img.shields.io/badge/GStreamer-1.20%2B-orange)
@@ -21,11 +22,12 @@ Voctomix 2.0 is an evolution of the open-source live video mixing system origina
 
 The system has been used within the **CyberNEMO** European research project at the Grupo de Aplicación de Telecomunicaciones Visuales (GATV), Universidad Politécnica de Madrid (UPM).
 
-> **Publication.** This repository contains the software evaluated in the following peer-reviewed article, currently under review:
+> **Publication.** This repository contains the software evaluated in the following peer-reviewed article:
 >
 > M. Herranz-Sánchez, Á. Llorente-Gómez, A. del Río-Ponce and D. Jiménez-Bermejo,
 > *"Beyond Hardware Mixers: A Resilient Cloud-Native Architecture for Real-Time Remote Video Production"*,
-> **Applied Sciences**, MDPI. Manuscript ID `applsci-4524474`.
+> **Applied Sciences**, vol. 16, no. 18, art. 9253, 2026. Open access.
+> [doi:10.3390/app16189253](https://doi.org/10.3390/app16189253)
 >
 > The raw experimental data supporting the article is archived with a persistent identifier at
 > [Kaggle, DOI 10.34740/KAGGLE/DSV/19389804](https://www.kaggle.com/dsv/19389804).
